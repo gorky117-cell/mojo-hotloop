@@ -1,5 +1,6 @@
 import math
 import os
+os.environ["HOTLOOP_FORCE_NATIVE"] = "1"
 import random
 import sys
 

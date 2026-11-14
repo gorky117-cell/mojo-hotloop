@@ -164,7 +164,27 @@ def _is_strict_active(explicit_strict: bool) -> bool:
     val = os.environ.get("HOTLOOP_STRICT", "").strip().lower()
     return val in ("1", "true", "yes")
 
-def _create_hotloop_wrapper(fn: Callable, strict: bool = False, cache_check: Optional[str] = None) -> Callable:
+def _is_force_native(explicit_force: bool, explicit_strict: bool) -> bool:
+    if explicit_force or explicit_strict:
+        return True
+    val = os.environ.get("HOTLOOP_FORCE_NATIVE", "").strip().lower()
+    return val in ("1", "true", "yes")
+
+def _is_slower_workload(args: Tuple, kwargs: Dict) -> bool:
+    """
+    Checks if any input argument is a standard Python collection (list/set),
+    which incurs per-element PythonObject FFI conversion overhead that makes
+    native Mojo execution slower than pure Python loops.
+    """
+    for a in args:
+        if isinstance(a, (list, set)):
+            return True
+    for v in kwargs.values():
+        if isinstance(v, (list, set)):
+            return True
+    return False
+
+def _create_hotloop_wrapper(fn: Callable, strict: bool = False, force_native: bool = False, cache_check: Optional[str] = None) -> Callable:
     compiled_fn, loaded_mod, init_error, mod_file, source_hash, loaded_mtime = _find_and_load_native_fn(fn)
 
     # Determine cache check policy:
@@ -185,6 +205,34 @@ def _create_hotloop_wrapper(fn: Callable, strict: bool = False, cache_check: Opt
 
     @functools.wraps(fn)
     def wrapper(*args, **kwargs):
+        # Performance-aware qualification check:
+        # Standard Python lists/sets have high FFI boxing/unboxing overhead that is slower
+        # than pure Python. Fall back to Python unless explicitly forced by user.
+        is_forced = _is_force_native(wrapper._force_native, strict)
+        if wrapper._compiled is not None and not is_forced and _is_slower_workload(args, kwargs):
+            strict_perf = os.environ.get("HOTLOOP_STRICT_PERF", "").strip().lower() in ("1", "true", "yes")
+            if strict_perf:
+                wrapper._last_backend = "performance_not_qualified"
+                raise HotloopNativeExecutionError(
+                    f"Strict performance mode enabled: native Mojo backend for '{fn.__name__}' is not "
+                    f"qualified as faster than pure Python for standard collection inputs."
+                )
+
+            wrapper._last_backend = "python_fallback_slower"
+            wrapper._call_count_fallback += 1
+            warn_key = (f"{fn.__module__}.{fn.__qualname__}", "slower_than_python")
+            if warn_key not in _WARNED_FALLBACKS:
+                _WARNED_FALLBACKS.add(warn_key)
+                warnings.warn(
+                    f"[mojo-hotloop] Python list input detected for '{fn.__name__}'; "
+                    f"per-element FFI conversion overhead makes native execution slower than pure Python. "
+                    f"Safely executing pure Python implementation. "
+                    f"(Pass a NumPy ndarray or set force_native=True / HOTLOOP_FORCE_NATIVE=1 to run compiled Mojo.)",
+                    HotloopFallbackWarning,
+                    stacklevel=2
+                )
+            return wrapper._original(*args, **kwargs)
+
         # Check for runtime modification of the source file (if runtime checking is active)
         nonlocal last_check_time
         if check_interval is not None and wrapper._compiled is not None and wrapper._mod_file:
@@ -276,6 +324,7 @@ def _create_hotloop_wrapper(fn: Callable, strict: bool = False, cache_check: Opt
     wrapper._module = loaded_mod
     wrapper._fallback_reason = init_error
     wrapper._is_strict = strict
+    wrapper._force_native = force_native
     wrapper._cache_check = mode
     wrapper._last_backend = "native" if compiled_fn is not None else ("python_fallback_stale_cache" if ("Stale" in (init_error or "")) else "python_fallback")
     wrapper._call_count_native = 0
@@ -286,13 +335,13 @@ def _create_hotloop_wrapper(fn: Callable, strict: bool = False, cache_check: Opt
 
     return wrapper
 
-def hotloop(fn: Optional[Callable] = None, *, strict: bool = False, cache_check: Optional[str] = None):
+def hotloop(fn: Optional[Callable] = None, *, strict: bool = False, force_native: bool = False, cache_check: Optional[str] = None):
     """
     Decorator that transparently routes calls to a compiled Mojo .so shared library
     if present in the same directory, falling back cleanly to Python or raising
     HotloopNativeExecutionError in strict mode.
-    Supports both @hotloop and @hotloop(strict=True).
+    Supports @hotloop, @hotloop(strict=True), @hotloop(force_native=True), and @hotloop(cache_check="import").
     """
     if fn is None:
-        return lambda f: _create_hotloop_wrapper(f, strict=strict, cache_check=cache_check)
-    return _create_hotloop_wrapper(fn, strict=strict, cache_check=cache_check)
+        return lambda f: _create_hotloop_wrapper(f, strict=strict, force_native=force_native, cache_check=cache_check)
+    return _create_hotloop_wrapper(fn, strict=strict, force_native=force_native, cache_check=cache_check)
