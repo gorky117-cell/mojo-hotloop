@@ -2,37 +2,37 @@
   "short": {
     "desc": "Short trail (100 waypoints)",
     "points": 100,
-    "py_ms": 0.071501502,
-    "numpy_ms": 0.037494941000000004,
-    "numba_ms": 0.00800337,
-    "mojo_direct_ms": 0.022543920500000002,
-    "mojo_wrapped_ms": 0.0249365805,
-    "speedup_vs_py": 2.8673338752280007,
-    "speedup_vs_np": 1.50361197278031,
-    "speedup_vs_numba": 0.3209489769457364
+    "py_ms": 0.0665022103,
+    "numpy_ms": 0.0358294603,
+    "numba_ms": 0.0070938699999999995,
+    "mojo_direct_ms": 0.0176138,
+    "mojo_wrapped_ms": 0.0192432102,
+    "speedup_vs_py": 3.455879222272384,
+    "speedup_vs_np": 1.8619273981635351,
+    "speedup_vs_numba": 0.3686427537958297
   },
   "medium": {
     "desc": "Medium trail (1,000 waypoints)",
     "points": 1000,
-    "py_ms": 0.8409691199999999,
-    "numpy_ms": 0.118237904,
-    "numba_ms": 0.09443600199999999,
-    "mojo_direct_ms": 0.312356807,
-    "mojo_wrapped_ms": 0.332434409,
-    "speedup_vs_py": 2.5297294661215406,
-    "speedup_vs_np": 0.3556728810223734,
-    "speedup_vs_numba": 0.2840740893341158
+    "py_ms": 0.645461304,
+    "numpy_ms": 0.0893041,
+    "numba_ms": 0.062217299999999996,
+    "mojo_direct_ms": 0.164574002,
+    "mojo_wrapped_ms": 0.167160001,
+    "speedup_vs_py": 3.8613382396426283,
+    "speedup_vs_np": 0.5342432368135723,
+    "speedup_vs_numba": 0.37220207961113855
   },
   "large": {
     "desc": "Long route (10,000 waypoints)",
     "points": 10000,
-    "py_ms": 7.984874209999999,
-    "numpy_ms": 0.7429129999999999,
-    "numba_ms": 0.7501050300000001,
-    "mojo_direct_ms": 2.57617907,
-    "mojo_wrapped_ms": 2.58649005,
-    "speedup_vs_py": 3.0871466951902633,
-    "speedup_vs_np": 0.2872282458616069,
-    "speedup_vs_numba": 0.290008859689988
+    "py_ms": 7.162917039999999,
+    "numpy_ms": 0.64451301,
+    "numba_ms": 0.667821,
+    "mojo_direct_ms": 1.8224900099999999,
+    "mojo_wrapped_ms": 1.86254801,
+    "speedup_vs_py": 3.845762365073209,
+    "speedup_vs_np": 0.34603833379843996,
+    "speedup_vs_numba": 0.3585523682688856
   }
 }

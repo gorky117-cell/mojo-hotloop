@@ -291,51 +291,67 @@ def clean_pdf_text(arg0: PythonObject) raises -> PythonObject:
     return PythonObject(_res)
 
 def _native_clean_pdf_text(_arg_text: String) raises -> String:
-    var text: _PyStr = _PyStr(_arg_text)
-    var n: Int = _len(text)
-    if (n == 0):
+    var text = _PyStr(_arg_text)
+    var n = len(text._cps)
+    if n == 0:
         return ''
-    var result: String = String()
-    var i: Int = 0
-    while (i < n):
-        var ch: String = text[i]
-        if ((ch == '-') and (_checked_add(i, 1) < n) and ((text[_checked_add(i, 1)] == '\n') or (text[_checked_add(i, 1)] == '\r'))):
-            if ((i > 0) and (((text[_checked_sub(i, 1)] >= 'a') and (text[_checked_sub(i, 1)] <= 'z')) or ((text[_checked_sub(i, 1)] >= 'A') and (text[_checked_sub(i, 1)] <= 'Z')))):
-                i = _checked_add(i, 1)
-                while ((i < n) and ((text[i] == '\n') or (text[i] == '\r') or (text[i] == ' ') or (text[i] == '\t'))):
-                    i = _checked_add(i, 1)
+    var result = String()
+    result.reserve_bytes(_arg_text.byte_length())
+
+    var i = 0
+    while i < n:
+        var cp = text._cps[i]
+        var c = Int(cp)
+
+        # 1. Hyphen repair at line break: e.g. "word-\nnext" -> "wordnext"
+        if c == 45 and i + 1 < n and (Int(text._cps[i + 1]) == 10 or Int(text._cps[i + 1]) == 13):
+            if i > 0 and ((Int(text._cps[i - 1]) >= 97 and Int(text._cps[i - 1]) <= 122) or (Int(text._cps[i - 1]) >= 65 and Int(text._cps[i - 1]) <= 90)):
+                i += 1
+                while i < n and (Int(text._cps[i]) == 10 or Int(text._cps[i]) == 13 or Int(text._cps[i]) == 32 or Int(text._cps[i]) == 9):
+                    i += 1
                 continue
-        if (ch == '\x0c'):
+
+        # 2. Form feed / page break character: \f = 12
+        if c == 12:
             result.write('\n\n')
-            i = _checked_add(i, 1)
-            while ((i < n) and ((text[i] == ' ') or (text[i] == '\t') or (text[i] == '\n') or (text[i] == '\r'))):
-                i = _checked_add(i, 1)
+            i += 1
+            while i < n and (Int(text._cps[i]) == 32 or Int(text._cps[i]) == 9 or Int(text._cps[i]) == 10 or Int(text._cps[i]) == 13):
+                i += 1
             continue
-        if ((ch == '\n') and (_checked_add(i, 1) < n)):
-            if ((_checked_add(i, 6) <= n) and (text[_checked_add(i, 1):_checked_add(i, 6)] == 'Page ')):
-                var j: Int = _checked_add(i, 6)
-                while ((j < n) and (text[j] >= '0') and (text[j] <= '9')):
-                    j = _checked_add(j, 1)
-                if ((j == n) or (text[j] == '\n') or (text[j] == '\r')):
-                    i = j
-                    continue
-        if ((ch == ' ') or (ch == '\t')):
+
+        # 3. Page header removal: e.g. "\nPage 4\n"
+        if c == 10 and i + 1 < n:
+            if i + 6 <= n:
+                if Int(text._cps[i + 1]) == 80 and Int(text._cps[i + 2]) == 97 and Int(text._cps[i + 3]) == 103 and Int(text._cps[i + 4]) == 101 and Int(text._cps[i + 5]) == 32:
+                    var j = i + 6
+                    while j < n and Int(text._cps[j]) >= 48 and Int(text._cps[j]) <= 57:
+                        j += 1
+                    if j == n or Int(text._cps[j]) == 10 or Int(text._cps[j]) == 13:
+                        i = j
+                        continue
+
+        # 4. Whitespace normalization: multiple spaces/tabs into single space
+        if c == 32 or c == 9:
             result.write(' ')
-            i = _checked_add(i, 1)
-            while ((i < n) and ((text[i] == ' ') or (text[i] == '\t'))):
-                i = _checked_add(i, 1)
+            i += 1
+            while i < n and (Int(text._cps[i]) == 32 or Int(text._cps[i]) == 9):
+                i += 1
             continue
-        if (ch == '\n'):
-            var nl_count: Int = 0
-            while ((i < n) and ((text[i] == '\n') or (text[i] == '\r'))):
-                if (text[i] == '\n'):
-                    nl_count = _checked_add(nl_count, 1)
-                i = _checked_add(i, 1)
-            if (nl_count >= 2):
+
+        # 5. Collapse 3+ newlines into 2 newlines (paragraph break)
+        if c == 10:
+            var nl_count = 0
+            while i < n and (Int(text._cps[i]) == 10 or Int(text._cps[i]) == 13):
+                if Int(text._cps[i]) == 10:
+                    nl_count += 1
+                i += 1
+            if nl_count >= 2:
                 result.write('\n\n')
             else:
                 result.write('\n')
             continue
-        result.write(ch)
-        i = _checked_add(i, 1)
+
+        result.write(cp)
+        i += 1
+
     return result^

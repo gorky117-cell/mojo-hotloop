@@ -1,6 +1,7 @@
 from std.python import Python, PythonObject
 from std.python.bindings import PythonModuleBuilder
 from std.collections import List
+from std.memory import OpaquePointer
 from std.os import abort
 import std.math as math
 
@@ -285,27 +286,88 @@ def PyInit_fast() abi("C") -> PythonObject:
     except e:
         abort(String("error creating Python Mojo module: ", e))
 
+@always_inline
+def _ptr_find_closest_point_to_ray(
+    xs_ptr: OpaquePointer[MutUntrackedOrigin],
+    ys_ptr: OpaquePointer[MutUntrackedOrigin],
+    zs_ptr: OpaquePointer[MutUntrackedOrigin],
+    n: Int,
+    ray_ox: Float64,
+    ray_oy: Float64,
+    ray_oz: Float64,
+    ray_dx: Float64,
+    ray_dy: Float64,
+    ray_dz: Float64,
+) -> Int:
+    if n == 0:
+        return -1
+    var dir_len_sq = ray_dx * ray_dx + ray_dy * ray_dy + ray_dz * ray_dz
+    if dir_len_sq <= 0.0:
+        return -1
+    var inv_len = 1.0 / math.sqrt(dir_len_sq)
+    var dx = ray_dx * inv_len
+    var dy = ray_dy * inv_len
+    var dz = ray_dz * inv_len
+    var best_idx = -1
+    var min_dist_sq: Float64 = 1e30
+
+    var xs = xs_ptr.unsafe_bitcast[Float64]()
+    var ys = ys_ptr.unsafe_bitcast[Float64]()
+    var zs = zs_ptr.unsafe_bitcast[Float64]()
+
+    for i in range(n):
+        var vx = xs[i] - ray_ox
+        var vy = ys[i] - ray_oy
+        var vz = zs[i] - ray_oz
+        var t = vx * dx + vy * dy + vz * dz
+        if t < 0.0:
+            t = 0.0
+        var wx = vx - t * dx
+        var wy = vy - t * dy
+        var wz = vz - t * dz
+        var dist_sq = wx * wx + wy * wy + wz * wz
+        if dist_sq < min_dist_sq:
+            min_dist_sq = dist_sq
+            best_idx = i
+    return best_idx
+
 def find_closest_point_to_ray(arg0: PythonObject, arg1: PythonObject, arg2: PythonObject, arg3: PythonObject, arg4: PythonObject, arg5: PythonObject, arg6: PythonObject, arg7: PythonObject, arg8: PythonObject) raises -> PythonObject:
-    var xs = List[Float64]()
-    var _n_xs = Int(py=arg0.__len__())
-    for _i in range(_n_xs):
-        xs.append(Float64(py=arg0[_i]))
-    var ys = List[Float64]()
-    var _n_ys = Int(py=arg1.__len__())
-    for _i in range(_n_ys):
-        ys.append(Float64(py=arg1[_i]))
-    var zs = List[Float64]()
-    var _n_zs = Int(py=arg2.__len__())
-    for _i in range(_n_zs):
-        zs.append(Float64(py=arg2[_i]))
+    var builtins = Python.import_module("builtins")
+    var has_ctypes = Bool(py=builtins.hasattr(arg0, "ctypes")) and Bool(py=builtins.hasattr(arg1, "ctypes")) and Bool(py=builtins.hasattr(arg2, "ctypes"))
     var ray_ox = Float64(py=arg3)
     var ray_oy = Float64(py=arg4)
     var ray_oz = Float64(py=arg5)
     var ray_dx = Float64(py=arg6)
     var ray_dy = Float64(py=arg7)
     var ray_dz = Float64(py=arg8)
-    var _res = _native_find_closest_point_to_ray(xs, ys, zs, ray_ox, ray_oy, ray_oz, ray_dx, ray_dy, ray_dz)
-    return PythonObject(_res)
+
+    if has_ctypes:
+        var n = Int(py=arg0.__len__())
+        if n == 0 or Int(py=arg1.__len__()) != n or Int(py=arg2.__len__()) != n:
+            return PythonObject(-1)
+        var x_addr = Int(py=arg0.ctypes.data)
+        var y_addr = Int(py=arg1.ctypes.data)
+        var z_addr = Int(py=arg2.ctypes.data)
+        var x_op = OpaquePointer[MutUntrackedOrigin](unsafe_from_address=x_addr)
+        var y_op = OpaquePointer[MutUntrackedOrigin](unsafe_from_address=y_addr)
+        var z_op = OpaquePointer[MutUntrackedOrigin](unsafe_from_address=z_addr)
+        var _res = _ptr_find_closest_point_to_ray(x_op, y_op, z_op, n, ray_ox, ray_oy, ray_oz, ray_dx, ray_dy, ray_dz)
+        return PythonObject(_res)
+    else:
+        var xs = List[Float64]()
+        var _n_xs = Int(py=arg0.__len__())
+        for _i in range(_n_xs):
+            xs.append(Float64(py=arg0[_i]))
+        var ys = List[Float64]()
+        var _n_ys = Int(py=arg1.__len__())
+        for _i in range(_n_ys):
+            ys.append(Float64(py=arg1[_i]))
+        var zs = List[Float64]()
+        var _n_zs = Int(py=arg2.__len__())
+        for _i in range(_n_zs):
+            zs.append(Float64(py=arg2[_i]))
+        var _res = _native_find_closest_point_to_ray(xs, ys, zs, ray_ox, ray_oy, ray_oz, ray_dx, ray_dy, ray_dz)
+        return PythonObject(_res)
 
 def _native_find_closest_point_to_ray(xs: List[Float64], ys: List[Float64], zs: List[Float64], ray_ox: Float64, ray_oy: Float64, ray_oz: Float64, ray_dx: Float64, ray_dy: Float64, ray_dz: Float64) raises -> Int:
     var n: Int = _len(xs)
