@@ -1,0 +1,7 @@
+.venv/
+.env
+*.so
+__pycache__/
+__mojocache__/
+build/
+.modular/
