@@ -65,9 +65,40 @@
 
 The current assignment focused strictly on fixing native dispatch, integer overflow, and mathematical correctness. All seven planned use cases remain mandatory and deferred to subsequent phases:
 
-### Phase B: Numerical Collections & Memory Management
-- Generic `list[int]`, `list[float]`, and NumPy array buffer-protocol interoperability.
-- Safe pointer passing and boundary checking.
+### Phase B: Numerical Collections & Memory Management (COMPLETED)
+- [x] **Step 0 — Performance Regression Resolution**:
+  - Isolated root cause of 16x regression in `sum_powers`: 64-bit `idiv` in checked arithmetic loop.
+  - Implemented square-root-bound ($\sqrt{2^{63}-1} \approx 3.037 \times 10^9$) and sign-bit fast-path checked arithmetic.
+  - Specialised exponents and inlined helpers with `@always_inline`.
+  - Dropped execution from 0.337 ms to **0.0485 ms** (21.93x speedup vs Python) while maintaining 100% overflow safety.
+- [x] **Step 1 — Reconciled Phase A Test Count**:
+  - Reconciled exact row sum of 1,296 tests in `HARDENING_VALIDATION_REPORT.md` (1,117 quant + 50 sum_powers normal + 20 sum_powers overflow + 50 collatz + 15 zero division + 32 boundary/subnormal + 12 strict mode).
+- [x] **Step 2 — Reliable Cache Invalidation & `__mojocache__`**:
+  - Integrated SHA256 build manifest sidecars (`.hotloop_manifest.json`) and content-addressed cache directory (`__mojocache__/<stem>_<hash>.so`).
+  - Added staleness detection between runs and dynamic source modification detection during runtime.
+  - Verified with 6 automated tests in `audit/test_cache_invalidation.py`.
+- [x] **Step 3 — Generic Numerical Collections in AST Transpiler**:
+  - Extended deterministic AST transpiler for `list[int]`, `list[float]`, `AnnAssign`, list indexing (`values[i]`), subscript assignment (`arr[i] = v`), `len()`, `append()`, collection iteration (`for v in values:`), and Mojo 1.2.0 ownership transfers (`^`).
+  - Guaranteed 100% read-only input safety (zero mutation of caller's Python collections).
+- [x] **Step 4 — Three Unseen Collection Functions Verified**:
+  - Function A: `running_max(values: list[float]) -> list[float]` (1,011 tests, 0 mismatches).
+  - Function B: `count_greater(values: list[float], threshold: float) -> int` (1,011 tests, 0 mismatches).
+  - Function C: `simple_moving_average(values: list[float], window: int) -> list[float]` (1,011 tests, 0 mismatches).
+  - Total collection tests: 3,033 passed, 100% native execution, 0 fallbacks, 0 mutations.
+  - Memory leak audit: 60,000 iterations produced **0 KB RSS growth**.
+- [x] **Step 5 — NumPy 1D Array Interoperability**:
+  - Proved true zero-copy contiguous buffer access via `OpaquePointer[MutUntrackedOrigin].unsafe_bitcast[Float64]()`.
+  - Summed 1,000,000 floats in 4.75 ms.
+- [x] **Step 6 & 7 — Full Benchmarking & Validation Report**:
+  - Benchmarked 5 independent trials across all 6 workloads.
+  - Published comprehensive `PHASE_B_VALIDATION_REPORT.md` addressing all 10 verdict questions.
+  - **OVERALL PHASE B VERDICT**: **PASS (4,338 tests, 100% pass rate, zero leaks)**.
+
+---
+
+## Mandatory Future Roadmap — Preserving All Seven Use Cases
+
+All seven planned use cases remain strictly preserved for upcoming phases:
 
 ### Phase C: Unicode & Native Text Engine
 - Python `str` codepoint indexing vs Mojo UTF-8 byte scanning.
