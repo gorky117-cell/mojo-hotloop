@@ -11,7 +11,7 @@ from dotenv import load_dotenv
 from .base import BaseBackend
 from ..ast_transpiler import transpile_python_to_mojo, ASTTranspileError
 
-TRANSPILER_VERSION = "1.2.0-phaseC"
+TRANSPILER_VERSION = "1.2.0-phaseD"
 
 class MojoBackend(BaseBackend):
     def __init__(self, mojo_bin: Optional[str] = None):

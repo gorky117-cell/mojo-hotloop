@@ -10,6 +10,7 @@ TYPE_MAP = {
     "list[int]": "List[Int]",
     "list[float]": "List[Float64]",
     "list[bool]": "List[Bool]",
+    "list[str]": "List[String]",
 }
 
 PY_CONVERT_MAP = {
@@ -17,6 +18,7 @@ PY_CONVERT_MAP = {
     "float": "Float64(py={var})",
     "bool": "Bool(py={var})",
     "str": "String(py={var})",
+    "list[str]": "List[String]()",
 }
 
 def parse_type_annotation(node: Optional[ast.AST]) -> Tuple[str, str, Optional[str]]:
@@ -54,8 +56,10 @@ def parse_type_annotation(node: Optional[ast.AST]) -> Tuple[str, str, Optional[s
                     return "list[float]", "List[Float64]", "float"
                 elif elem_id == "bool":
                     return "list[bool]", "List[Bool]", "bool"
+                elif elem_id == "str":
+                    return "list[str]", "List[String]", "str"
                 else:
-                    raise ASTTranspileError(f"Unsupported list element type '{elem_id}'. Supported: int, float, bool")
+                    raise ASTTranspileError(f"Unsupported list element type '{elem_id}'. Supported: int, float, bool, str")
             else:
                 raise ASTTranspileError(f"Unsupported complex list element type: {ast.dump(elem_node)}")
         else:
@@ -289,6 +293,54 @@ def _len(l: List[Float64]) -> Int:
 @always_inline
 def _len(l: List[Bool]) -> Int:
     return len(l)
+
+@always_inline
+def _len(l: List[String]) -> Int:
+    return len(l)
+
+struct _PyStr(Sized):
+    var _cps: List[Codepoint]
+
+    @always_inline
+    def __init__(out self, s: String):
+        self._cps = List[Codepoint]()
+        for cp in s.codepoints():
+            self._cps.append(cp)
+
+    @always_inline
+    def __len__(self) -> Int:
+        return len(self._cps)
+
+    @always_inline
+    def __getitem__(self, idx: Int) -> String:
+        var i = idx
+        if i < 0:
+            i += len(self._cps)
+        return String(self._cps[i])
+
+    @always_inline
+    def __getitem__(self, s: Slice) -> String:
+        var n = len(self._cps)
+        var start = s.start.or_else(0)
+        var end = s.end.or_else(n)
+        if start < 0:
+            start += n
+        if end < 0:
+            end += n
+        var s_c = max(0, min(n, start))
+        var e_c = max(0, min(n, end))
+        var res = String()
+        for k in range(s_c, e_c):
+            res.write(self._cps[k])
+        return res^
+
+    @always_inline
+    def codepoints(self) -> List[Codepoint]:
+        return self._cps.copy()
+
+@always_inline
+def _len(s: _PyStr) -> Int:
+    return len(s)
 """
 
 class ASTTranspileError(Exception):
@@ -296,10 +348,11 @@ class ASTTranspileError(Exception):
     pass
 
 class MojoASTTranspiler:
-    def __init__(self, mod_name: str):
+    def __init__(self, mod_name: str, known_funcs: Optional[Set[str]] = None):
         self.mod_name = mod_name
+        self.known_funcs: Set[str] = known_funcs or set()
         self.indent_level = 0
-        self.declared_vars: Set[str] = set()
+        self.scopes: List[Set[str]] = [set()]
         self.var_types: Dict[str, str] = {}
         self.has_math = False
         self.ret_mojo_type: str = "Int"
@@ -316,7 +369,7 @@ class MojoASTTranspiler:
             c_abi_wrapper: wrapper function callable from Python
             native_function: native compiled implementation
         """
-        self.declared_vars.clear()
+        self.scopes = [set()]
         self.var_types.clear()
 
         # 1. Validate argument types
@@ -327,7 +380,7 @@ class MojoASTTranspiler:
                 raise ASTTranspileError(f"Argument '{arg_name}' must have explicit type annotation (e.g. int, float, list[float])")
             py_type, mojo_type, elem_type = parse_type_annotation(arg.annotation)
             args.append((arg_name, py_type, mojo_type, elem_type))
-            self.declared_vars.add(arg_name)
+            self.scopes[0].add(arg_name)
             self.var_types[arg_name] = mojo_type
 
         # 2. Validate return type
@@ -337,9 +390,26 @@ class MojoASTTranspiler:
         self.ret_mojo_type = ret_mojo_type
         self.ret_elem_type = ret_elem_type
 
+        # 2b. Check which String arguments are subscripted/sliced
+        subscripted_args = set()
+        for arg in func_def.args.args:
+            arg_name = arg.arg
+            if any(isinstance(n, ast.Subscript) and isinstance(n.value, ast.Name) and n.value.id == arg_name for n in ast.walk(func_def)):
+                subscripted_args.add(arg_name)
+
+        native_args = []
+        body_prep = []
+        for name, py_type, mojo_type, elem_type in args:
+            if name in subscripted_args and mojo_type == "String":
+                native_args.append(f"_arg_{name}: String")
+                body_prep.append(f"    var {name}: _PyStr = _PyStr(_arg_{name})")
+                self.var_types[name] = "_PyStr"
+            else:
+                native_args.append(f"{name}: {mojo_type}")
+
         # 3. Transpile body
         self.indent_level = 1
-        body_lines = []
+        body_lines = list(body_prep)
         for stmt in func_def.body:
             body_lines.append(self.visit_stmt(stmt))
         body_code = "\n".join(body_lines)
@@ -350,7 +420,7 @@ class MojoASTTranspiler:
         call_args = []
         for i, (name, py_type, mojo_type, elem_type) in enumerate(args):
             if elem_type is not None:
-                inner_mojo = "Float64" if elem_type == "float" else ("Int" if elem_type == "int" else "Bool")
+                inner_mojo = "Float64" if elem_type == "float" else ("Int" if elem_type == "int" else ("String" if elem_type == "str" else "Bool"))
                 conv = (
                     f"    var {name} = {mojo_type}()\n"
                     f"    var _n_{name} = Int(py=arg{i}.__len__())\n"
@@ -380,7 +450,7 @@ class MojoASTTranspiler:
 {conv_block}
 {call_block}"""
 
-        native_code = f"""def _native_{func_def.name}({", ".join([f"{name}: {m_type}" for name, _, m_type, _ in args])}) raises -> {ret_mojo_type}:
+        native_code = f"""def _native_{func_def.name}({", ".join(native_args)}) raises -> {ret_mojo_type}:
 {body_code}"""
 
         export_reg = f'        m.def_function[{func_def.name}]("{func_def.name}")'
@@ -406,7 +476,7 @@ class MojoASTTranspiler:
             self.var_types[var_name] = mojo_type
 
             if node.value is None:
-                self.declared_vars.add(var_name)
+                self.scopes[-1].add(var_name)
                 return f"{self.indent()}var {var_name}: {mojo_type}"
 
             if isinstance(node.value, ast.List) and len(node.value.elts) == 0:
@@ -416,8 +486,8 @@ class MojoASTTranspiler:
             else:
                 expr_code = self.visit_expr(node.value)
 
-            if var_name not in self.declared_vars:
-                self.declared_vars.add(var_name)
+            if var_name not in self.scopes[-1]:
+                self.scopes[-1].add(var_name)
                 return f"{self.indent()}var {var_name}: {mojo_type} = {expr_code}"
             else:
                 return f"{self.indent()}{var_name} = {expr_code}"
@@ -440,8 +510,9 @@ class MojoASTTranspiler:
                 else:
                     expr_code = self.visit_expr(node.value)
 
-                if var_name not in self.declared_vars:
-                    self.declared_vars.add(var_name)
+                is_declared = any(var_name in s for s in self.scopes)
+                if not is_declared:
+                    self.scopes[-1].add(var_name)
                     return f"{self.indent()}var {var_name} = {expr_code}"
                 else:
                     return f"{self.indent()}{var_name} = {expr_code}"
@@ -507,7 +578,7 @@ class MojoASTTranspiler:
             if not isinstance(node.target, ast.Name):
                 raise ASTTranspileError("Only simple variable loop targets are supported")
             var_name = node.target.id
-            self.declared_vars.add(var_name)
+            self.scopes[-1].add(var_name)
 
             if isinstance(node.iter, ast.Call) and isinstance(node.iter.func, ast.Name) and node.iter.func.id == "range":
                 range_args = [self.visit_expr(a) for a in node.iter.args]
@@ -527,8 +598,10 @@ class MojoASTTranspiler:
 
             lines = [f"{self.indent()}for {var_name} in {iter_code}:"]
             self.indent_level += 1
+            self.scopes.append(set())
             for s in node.body:
                 lines.append(self.visit_stmt(s))
+            self.scopes.pop()
             self.indent_level -= 1
             return "\n".join(lines)
 
@@ -536,8 +609,10 @@ class MojoASTTranspiler:
             test_code = self.visit_expr(node.test)
             lines = [f"{self.indent()}while {test_code}:"]
             self.indent_level += 1
+            self.scopes.append(set())
             for s in node.body:
                 lines.append(self.visit_stmt(s))
+            self.scopes.pop()
             self.indent_level -= 1
             return "\n".join(lines)
 
@@ -573,8 +648,16 @@ class MojoASTTranspiler:
 
         elif isinstance(node, ast.Subscript):
             val = self.visit_expr(node.value)
-            is_str = (isinstance(node.value, ast.Name) and self.var_types.get(node.value.id) == "String")
-            if is_str:
+            val_type = self.var_types.get(node.value.id) if isinstance(node.value, ast.Name) else None
+            if val_type == "_PyStr":
+                if isinstance(node.slice, ast.Slice):
+                    start = self.visit_expr(node.slice.lower) if node.slice.lower else "0"
+                    end = self.visit_expr(node.slice.upper) if node.slice.upper else f"_len({val})"
+                    return f"{val}[{start}:{end}]"
+                else:
+                    idx = self.visit_expr(node.slice)
+                    return f"{val}[{idx}]"
+            elif val_type == "String":
                 if isinstance(node.slice, ast.Slice):
                     start = self.visit_expr(node.slice.lower) if node.slice.lower else "0"
                     end = self.visit_expr(node.slice.upper) if node.slice.upper else f"_len({val})"
@@ -590,7 +673,7 @@ class MojoASTTranspiler:
             if len(node.elts) == 0:
                 return f"{self.ret_mojo_type}()"
             elts = [self.visit_expr(e) for e in node.elts]
-            return f"{self.ret_mojo_type}({', '.join(elts)})"
+            return f"[{', '.join(elts)}]"
 
         elif isinstance(node, ast.BinOp):
             left = self.visit_expr(node.left)
@@ -657,6 +740,10 @@ class MojoASTTranspiler:
                 args = [self.visit_expr(a) for a in node.args]
                 if fn_name == "len":
                     return f"_len({', '.join(args)})"
+                elif fn_name == "ord":
+                    return f"Int({args[0]})"
+                elif fn_name == "chr":
+                    return f"String(Codepoint({args[0]}))"
                 elif fn_name in ("abs", "min", "max", "int", "float"):
                     if fn_name == "int":
                         return f"Int({', '.join(args)})"
@@ -665,6 +752,8 @@ class MojoASTTranspiler:
                     return f"{fn_name}({', '.join(args)})"
                 elif fn_name == "range":
                     return f"range({', '.join(args)})"
+                elif fn_name in self.known_funcs:
+                    return f"_native_{fn_name}({', '.join(args)})"
                 else:
                     return f"{fn_name}({', '.join(args)})"
             elif isinstance(node.func, ast.Attribute):
@@ -672,6 +761,9 @@ class MojoASTTranspiler:
                     obj = self.visit_expr(node.func.value)
                     arg = self.visit_expr(node.args[0])
                     return f"{obj}.append({arg})"
+                elif node.func.attr == "clear":
+                    obj = self.visit_expr(node.func.value)
+                    return f"{obj}.clear()"
                 elif node.func.attr == "write":
                     obj = self.visit_expr(node.func.value)
                     arg = self.visit_expr(node.args[0])
@@ -723,14 +815,15 @@ class MojoASTTranspiler:
         raise ASTTranspileError(f"Unsupported comparison operator: {type(op).__name__}")
 
 def transpile_python_to_mojo(source_code: str, mod_name: str) -> str:
-    """Parses Python source, finds ALL @hotloop functions, and transpiles them into a unified Mojo module."""
+    """Parses Python source, finds ALL @hotloop functions and helpers, and transpiles them into a unified Mojo module."""
     tree = ast.parse(source_code)
     hotloop_nodes = []
-    all_funcs = []
+    helper_nodes = []
+    all_func_names = set()
 
     for node in tree.body:
         if isinstance(node, ast.FunctionDef):
-            all_funcs.append(node)
+            all_func_names.add(node.name)
             is_hotloop = any(
                 (isinstance(d, ast.Name) and d.id == "hotloop") or
                 (isinstance(d, ast.Attribute) and d.attr == "hotloop") or
@@ -742,17 +835,28 @@ def transpile_python_to_mojo(source_code: str, mod_name: str) -> str:
             )
             if is_hotloop:
                 hotloop_nodes.append(node)
+            else:
+                helper_nodes.append(node)
 
     # If no explicit @hotloop decorator, default to all functions if only 1 exists
-    target_nodes = hotloop_nodes if hotloop_nodes else (all_funcs if len(all_funcs) == 1 else [])
+    target_nodes = hotloop_nodes if hotloop_nodes else (helper_nodes if len(helper_nodes) == 1 else [])
     if not target_nodes:
         raise ASTTranspileError("No @hotloop-decorated function found in source file.")
 
-    transpiler = MojoASTTranspiler(mod_name)
+    if not hotloop_nodes and len(helper_nodes) == 1:
+        helper_nodes = []
+
+    transpiler = MojoASTTranspiler(mod_name, known_funcs=all_func_names)
     export_regs = []
     wrappers = []
     native_funcs = []
 
+    # First, transpile unexported helper functions as native functions
+    for node in helper_nodes:
+        _, _, nat = transpiler.transpile_function_components(node)
+        native_funcs.append(nat)
+
+    # Next, transpile @hotloop target functions with C-ABI wrappers and module export
     for node in target_nodes:
         reg, wrap, nat = transpiler.transpile_function_components(node)
         export_regs.append(reg)
