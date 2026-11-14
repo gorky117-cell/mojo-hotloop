@@ -1,0 +1,26 @@
+{
+  "small": {
+    "desc": "Small document (1024 chars, size=250, ovlp=50)",
+    "len": 1024,
+    "py_ms": 0.00600412,
+    "mojo_direct_ms": 0.048559179200000004,
+    "mojo_wrapped_ms": 0.05612221900000001,
+    "speedup_vs_py": 0.10698294021481936
+  },
+  "medium": {
+    "desc": "Medium document (10240 chars, size=500, ovlp=100)",
+    "len": 10240,
+    "py_ms": 0.030554500000000002,
+    "mojo_direct_ms": 0.468235297,
+    "mojo_wrapped_ms": 0.484652697,
+    "speedup_vs_py": 0.06304411424744429
+  },
+  "large": {
+    "desc": "Large corpus (100000 chars, size=1000, ovlp=200)",
+    "len": 100000,
+    "py_ms": 0.20973866666666666,
+    "mojo_direct_ms": 4.322233973333333,
+    "mojo_wrapped_ms": 4.2856339666666665,
+    "speedup_vs_py": 0.0489399394110645
+  }
+}
