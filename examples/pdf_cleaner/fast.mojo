@@ -1,0 +1,341 @@
+from std.python import Python, PythonObject
+from std.python.bindings import PythonModuleBuilder
+from std.collections import List
+from std.os import abort
+import std.math as math
+
+# Checked Arithmetic and Error Signaling Helpers (Mojo 1.2.0)
+@always_inline
+def _checked_add(a: Int, b: Int) raises -> Int:
+    if (a ^ b) < 0:
+        return a + b
+    if a >= 0:
+        if a <= 4611686018427387903 and b <= 4611686018427387903:
+            return a + b
+        if a > 9223372036854775807 - b:
+            raise Error("HOTLOOP_INTEGER_OVERFLOW: integer addition overflow")
+        return a + b
+    if a >= -4611686018427387904 and b >= -4611686018427387904:
+        return a + b
+    if a < -9223372036854775808 - b:
+        raise Error("HOTLOOP_INTEGER_OVERFLOW: integer addition underflow")
+    return a + b
+
+@always_inline
+def _checked_add(a: Float64, b: Float64) raises -> Float64:
+    return a + b
+
+@always_inline
+def _checked_add(a: Float64, b: Int) raises -> Float64:
+    return a + Float64(b)
+
+@always_inline
+def _checked_add(a: Int, b: Float64) raises -> Float64:
+    return Float64(a) + b
+
+@always_inline
+def _checked_sub(a: Int, b: Int) raises -> Int:
+    if (a >= 0 and b >= 0) or (a < 0 and b > -9223372036854775808 and b <= 0):
+        return a - b
+    if b > 0 and a < -9223372036854775808 + b:
+        raise Error("HOTLOOP_INTEGER_OVERFLOW: integer subtraction underflow")
+    if b < 0 and a > 9223372036854775807 + b:
+        raise Error("HOTLOOP_INTEGER_OVERFLOW: integer subtraction overflow")
+    return a - b
+
+@always_inline
+def _checked_sub(a: Float64, b: Float64) raises -> Float64:
+    return a - b
+
+@always_inline
+def _checked_sub(a: Float64, b: Int) raises -> Float64:
+    return a - Float64(b)
+
+@always_inline
+def _checked_sub(a: Int, b: Float64) raises -> Float64:
+    return Float64(a) - b
+
+@always_inline
+def _checked_mul(a: Int, b: Int) raises -> Int:
+    var abs_a = -a if a < 0 else a
+    var abs_b = -b if b < 0 else b
+    if abs_a <= 3037000499 and abs_b <= 3037000499:
+        return a * b
+    if a == 0 or b == 0:
+        return 0
+    if a == -1 and b == -9223372036854775808:
+        raise Error("HOTLOOP_INTEGER_OVERFLOW: integer multiplication overflow")
+    if b == -1 and a == -9223372036854775808:
+        raise Error("HOTLOOP_INTEGER_OVERFLOW: integer multiplication overflow")
+    if a == -9223372036854775808 or b == -9223372036854775808:
+        raise Error("HOTLOOP_INTEGER_OVERFLOW: integer multiplication overflow")
+    if a > 0:
+        if b > 0 and a > 9223372036854775807 // b:
+            raise Error("HOTLOOP_INTEGER_OVERFLOW: integer multiplication overflow")
+        if b < 0 and b < -9223372036854775808 // a:
+            raise Error("HOTLOOP_INTEGER_OVERFLOW: integer multiplication underflow")
+    else:
+        if b > 0 and a < -9223372036854775808 // b:
+            raise Error("HOTLOOP_INTEGER_OVERFLOW: integer multiplication underflow")
+        if b < 0 and b < 9223372036854775807 // a:
+            raise Error("HOTLOOP_INTEGER_OVERFLOW: integer multiplication overflow")
+    return a * b
+
+@always_inline
+def _checked_mul(a: Float64, b: Float64) raises -> Float64:
+    return a * b
+
+@always_inline
+def _checked_mul(a: Float64, b: Int) raises -> Float64:
+    return a * Float64(b)
+
+@always_inline
+def _checked_mul(a: Int, b: Float64) raises -> Float64:
+    return Float64(a) * b
+
+@always_inline
+def _checked_neg(a: Int) raises -> Int:
+    if a == -9223372036854775808:
+        raise Error("HOTLOOP_INTEGER_OVERFLOW: integer negation overflow")
+    return -a
+
+@always_inline
+def _checked_neg(a: Float64) raises -> Float64:
+    return -a
+
+@always_inline
+def _checked_div(a: Float64, b: Float64) raises -> Float64:
+    if b == 0.0:
+        raise Error("HOTLOOP_ZERO_DIVISION_ERROR: float division by zero")
+    return a / b
+
+@always_inline
+def _checked_div(a: Int, b: Int) raises -> Float64:
+    if b == 0:
+        raise Error("HOTLOOP_ZERO_DIVISION_ERROR: division by zero")
+    return Float64(a) / Float64(b)
+
+@always_inline
+def _checked_div(a: Float64, b: Int) raises -> Float64:
+    if b == 0:
+        raise Error("HOTLOOP_ZERO_DIVISION_ERROR: float division by zero")
+    return a / Float64(b)
+
+@always_inline
+def _checked_div(a: Int, b: Float64) raises -> Float64:
+    if b == 0.0:
+        raise Error("HOTLOOP_ZERO_DIVISION_ERROR: float division by zero")
+    return Float64(a) / b
+
+@always_inline
+def _checked_floordiv(a: Int, b: Int) raises -> Int:
+    if b == 0:
+        raise Error("HOTLOOP_ZERO_DIVISION_ERROR: integer division or modulo by zero")
+    if a == -9223372036854775808 and b == -1:
+        raise Error("HOTLOOP_INTEGER_OVERFLOW: integer division overflow")
+    return a // b
+
+@always_inline
+def _checked_floordiv(a: Float64, b: Float64) raises -> Float64:
+    if b == 0.0:
+        raise Error("HOTLOOP_ZERO_DIVISION_ERROR: float division by zero")
+    return math.floor(a / b)
+
+@always_inline
+def _checked_mod(a: Int, b: Int) raises -> Int:
+    if b == 0:
+        raise Error("HOTLOOP_ZERO_DIVISION_ERROR: integer division or modulo by zero")
+    if a == -9223372036854775808 and b == -1:
+        return 0
+    return a % b
+
+@always_inline
+def _checked_mod(a: Float64, b: Float64) raises -> Float64:
+    if b == 0.0:
+        raise Error("HOTLOOP_ZERO_DIVISION_ERROR: float modulo by zero")
+    return a % b
+
+@always_inline
+def _checked_pow(base: Int, exp: Int) raises -> Int:
+    if exp == 2:
+        return _checked_mul(base, base)
+    if exp == 1:
+        return base
+    if exp == 0:
+        return 1
+    if exp == 3:
+        var b2 = _checked_mul(base, base)
+        return _checked_mul(b2, base)
+    if exp < 0:
+        raise Error("HOTLOOP_VALUE_ERROR: negative power exponent")
+    if base == 0:
+        return 0
+    if base == 1:
+        return 1
+    if base == -1:
+        return 1 if (exp % 2 == 0) else -1
+    if exp > 62:
+        raise Error("HOTLOOP_INTEGER_OVERFLOW: integer power overflow")
+    var res: Int = 1
+    var cur_base: Int = base
+    var cur_exp: Int = exp
+    while cur_exp > 0:
+        if cur_exp % 2 == 1:
+            res = _checked_mul(res, cur_base)
+        cur_exp = cur_exp // 2
+        if cur_exp > 0:
+            cur_base = _checked_mul(cur_base, cur_base)
+    return res
+
+@always_inline
+def _checked_pow(base: Float64, exp: Float64) raises -> Float64:
+    return base ** exp
+
+@always_inline
+def _checked_pow(base: Float64, exp: Int) raises -> Float64:
+    return base ** Float64(exp)
+
+@always_inline
+def _checked_pow(base: Int, exp: Float64) raises -> Float64:
+    return Float64(base) ** exp
+
+@always_inline
+def _checked_add(a: String, b: String) -> String:
+    var res = a
+    res.write(b)
+    return res^
+
+@always_inline
+def _checked_add(a: String, b: Codepoint) -> String:
+    var res = a
+    res.write(b)
+    return res^
+
+@always_inline
+def _len(s: String) -> Int:
+    return len(s.codepoints())
+
+@always_inline
+def _len(l: List[Int]) -> Int:
+    return len(l)
+
+@always_inline
+def _len(l: List[Float64]) -> Int:
+    return len(l)
+
+@always_inline
+def _len(l: List[Bool]) -> Int:
+    return len(l)
+
+@always_inline
+def _len(l: List[String]) -> Int:
+    return len(l)
+
+struct _PyStr(Sized):
+    var _cps: List[Codepoint]
+
+    @always_inline
+    def __init__(out self, s: String):
+        self._cps = List[Codepoint]()
+        for cp in s.codepoints():
+            self._cps.append(cp)
+
+    @always_inline
+    def __len__(self) -> Int:
+        return len(self._cps)
+
+    @always_inline
+    def __getitem__(self, idx: Int) -> String:
+        var i = idx
+        if i < 0:
+            i += len(self._cps)
+        return String(self._cps[i])
+
+    @always_inline
+    def __getitem__(self, s: Slice) -> String:
+        var n = len(self._cps)
+        var start = s.start.or_else(0)
+        var end = s.end.or_else(n)
+        if start < 0:
+            start += n
+        if end < 0:
+            end += n
+        var s_c = max(0, min(n, start))
+        var e_c = max(0, min(n, end))
+        var res = String()
+        for k in range(s_c, e_c):
+            res.write(self._cps[k])
+        return res^
+
+    @always_inline
+    def codepoints(self) -> List[Codepoint]:
+        return self._cps.copy()
+
+@always_inline
+def _len(s: _PyStr) -> Int:
+    return len(s)
+
+
+@export
+def PyInit_fast() abi("C") -> PythonObject:
+    try:
+        var m = PythonModuleBuilder("fast")
+        m.def_function[clean_pdf_text]("clean_pdf_text")
+        return m.finalize()
+    except e:
+        abort(String("error creating Python Mojo module: ", e))
+
+def clean_pdf_text(arg0: PythonObject) raises -> PythonObject:
+    var text = String(py=arg0)
+    var _res = _native_clean_pdf_text(text)
+    return PythonObject(_res)
+
+def _native_clean_pdf_text(_arg_text: String) raises -> String:
+    var text: _PyStr = _PyStr(_arg_text)
+    var n: Int = _len(text)
+    if (n == 0):
+        return ''
+    var result: String = String()
+    var i: Int = 0
+    while (i < n):
+        var ch: String = text[i]
+        if ((ch == '-') and (_checked_add(i, 1) < n) and ((text[_checked_add(i, 1)] == '\n') or (text[_checked_add(i, 1)] == '\r'))):
+            if ((i > 0) and (((text[_checked_sub(i, 1)] >= 'a') and (text[_checked_sub(i, 1)] <= 'z')) or ((text[_checked_sub(i, 1)] >= 'A') and (text[_checked_sub(i, 1)] <= 'Z')))):
+                i = _checked_add(i, 1)
+                while ((i < n) and ((text[i] == '\n') or (text[i] == '\r') or (text[i] == ' ') or (text[i] == '\t'))):
+                    i = _checked_add(i, 1)
+                continue
+        if (ch == '\x0c'):
+            result.write('\n\n')
+            i = _checked_add(i, 1)
+            while ((i < n) and ((text[i] == ' ') or (text[i] == '\t') or (text[i] == '\n') or (text[i] == '\r'))):
+                i = _checked_add(i, 1)
+            continue
+        if ((ch == '\n') and (_checked_add(i, 1) < n)):
+            if ((_checked_add(i, 6) <= n) and (text[_checked_add(i, 1):_checked_add(i, 6)] == 'Page ')):
+                var j: Int = _checked_add(i, 6)
+                while ((j < n) and (text[j] >= '0') and (text[j] <= '9')):
+                    j = _checked_add(j, 1)
+                if ((j == n) or (text[j] == '\n') or (text[j] == '\r')):
+                    i = j
+                    continue
+        if ((ch == ' ') or (ch == '\t')):
+            result.write(' ')
+            i = _checked_add(i, 1)
+            while ((i < n) and ((text[i] == ' ') or (text[i] == '\t'))):
+                i = _checked_add(i, 1)
+            continue
+        if (ch == '\n'):
+            var nl_count: Int = 0
+            while ((i < n) and ((text[i] == '\n') or (text[i] == '\r'))):
+                if (text[i] == '\n'):
+                    nl_count = _checked_add(nl_count, 1)
+                i = _checked_add(i, 1)
+            if (nl_count >= 2):
+                result.write('\n\n')
+            else:
+                result.write('\n')
+            continue
+        result.write(ch)
+        i = _checked_add(i, 1)
+    return result^

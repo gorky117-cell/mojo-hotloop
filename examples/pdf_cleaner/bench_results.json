@@ -1,0 +1,32 @@
+{
+  "small": {
+    "desc": "Small extract (1024 chars)",
+    "len": 1024,
+    "py_ms": 0.2975512694,
+    "regex_ms": 0.1328482242,
+    "mojo_direct_ms": 0.1181823438,
+    "mojo_wrapped_ms": 0.1064303834,
+    "speedup_vs_py": 2.7957361412643373,
+    "speedup_vs_regex": 1.2482170969986377
+  },
+  "medium": {
+    "desc": "Medium document (10240 chars)",
+    "len": 10240,
+    "py_ms": 3.090140903,
+    "regex_ms": 1.410251949,
+    "mojo_direct_ms": 0.977772735,
+    "mojo_wrapped_ms": 0.988561633,
+    "speedup_vs_py": 3.1258960492147687,
+    "speedup_vs_regex": 1.4265695753539325
+  },
+  "large": {
+    "desc": "Large corpus (100000 chars)",
+    "len": 100000,
+    "py_ms": 32.029396586666664,
+    "regex_ms": 14.241120560000002,
+    "mojo_direct_ms": 10.486713086666665,
+    "mojo_wrapped_ms": 11.230717773333334,
+    "speedup_vs_py": 2.851945639905452,
+    "speedup_vs_regex": 1.2680507913585621
+  }
+}
