@@ -6,6 +6,9 @@ TYPE_MAP = {
     "int": "Int",
     "float": "Float64",
     "bool": "Bool",
+    "list[int]": "List[Int]",
+    "list[float]": "List[Float64]",
+    "list[bool]": "List[Bool]",
 }
 
 PY_CONVERT_MAP = {
@@ -13,6 +16,52 @@ PY_CONVERT_MAP = {
     "float": "Float64(py={var})",
     "bool": "Bool(py={var})",
 }
+
+def parse_type_annotation(node: Optional[ast.AST]) -> Tuple[str, str, Optional[str]]:
+    """
+    Parses a Python AST type annotation node.
+    Returns:
+        (canonical_py_type, mojo_type, item_type_or_none)
+    """
+    if node is None:
+        raise ASTTranspileError("Missing type annotation")
+
+    if isinstance(node, ast.Name):
+        t_id = node.id
+        if t_id == "int":
+            return "int", "Int", None
+        elif t_id == "float":
+            return "float", "Float64", None
+        elif t_id == "bool":
+            return "bool", "Bool", None
+        elif t_id in ("list", "List"):
+            raise ASTTranspileError("Generic list must have element type, e.g. list[float] or list[int]")
+        else:
+            raise ASTTranspileError(f"Unsupported type '{t_id}'. Supported: int, float, bool, list[int], list[float]")
+
+    elif isinstance(node, ast.Subscript):
+        if isinstance(node.value, ast.Name) and node.value.id in ("list", "List"):
+            elem_node = node.slice
+            if isinstance(elem_node, ast.Name):
+                elem_id = elem_node.id
+                if elem_id == "int":
+                    return "list[int]", "List[Int]", "int"
+                elif elem_id == "float":
+                    return "list[float]", "List[Float64]", "float"
+                elif elem_id == "bool":
+                    return "list[bool]", "List[Bool]", "bool"
+                else:
+                    raise ASTTranspileError(f"Unsupported list element type '{elem_id}'. Supported: int, float, bool")
+            else:
+                raise ASTTranspileError(f"Unsupported complex list element type: {ast.dump(elem_node)}")
+        else:
+            raise ASTTranspileError(f"Unsupported subscripted type annotation: {ast.dump(node)}")
+
+    elif isinstance(node, ast.Constant) and isinstance(node.value, str):
+        parsed = ast.parse(node.value, mode="eval")
+        return parse_type_annotation(parsed.body)
+
+    raise ASTTranspileError(f"Unsupported type annotation expression: {type(node).__name__}")
 
 CHECKED_HELPERS_MOJO = """# Checked Arithmetic and Error Signaling Helpers (Mojo 1.2.0)
 @always_inline
@@ -221,6 +270,8 @@ class MojoASTTranspiler:
         self.declared_vars: Set[str] = set()
         self.var_types: Dict[str, str] = {}
         self.has_math = False
+        self.ret_mojo_type: str = "Int"
+        self.ret_elem_type: Optional[str] = None
 
     def indent(self) -> str:
         return "    " * self.indent_level
@@ -240,22 +291,19 @@ class MojoASTTranspiler:
         args = []
         for arg in func_def.args.args:
             arg_name = arg.arg
-            if not arg.annotation or not isinstance(arg.annotation, ast.Name):
-                raise ASTTranspileError(f"Argument '{arg_name}' must have explicit type annotation (int, float, bool)")
-            py_type = arg.annotation.id
-            if py_type not in TYPE_MAP:
-                raise ASTTranspileError(f"Unsupported argument type '{py_type}' for '{arg_name}'. Supported: int, float, bool")
-            args.append((arg_name, py_type, TYPE_MAP[py_type]))
+            if not arg.annotation:
+                raise ASTTranspileError(f"Argument '{arg_name}' must have explicit type annotation (e.g. int, float, list[float])")
+            py_type, mojo_type, elem_type = parse_type_annotation(arg.annotation)
+            args.append((arg_name, py_type, mojo_type, elem_type))
             self.declared_vars.add(arg_name)
-            self.var_types[arg_name] = TYPE_MAP[py_type]
+            self.var_types[arg_name] = mojo_type
 
         # 2. Validate return type
-        if not func_def.returns or not isinstance(func_def.returns, ast.Name):
-            raise ASTTranspileError(f"Function '{func_def.name}' must have explicit return type annotation (int, float, bool)")
-        ret_py_type = func_def.returns.id
-        if ret_py_type not in TYPE_MAP:
-            raise ASTTranspileError(f"Unsupported return type '{ret_py_type}'. Supported: int, float, bool")
-        ret_mojo_type = TYPE_MAP[ret_py_type]
+        if not func_def.returns:
+            raise ASTTranspileError(f"Function '{func_def.name}' must have explicit return type annotation")
+        ret_py_type, ret_mojo_type, ret_elem_type = parse_type_annotation(func_def.returns)
+        self.ret_mojo_type = ret_mojo_type
+        self.ret_elem_type = ret_elem_type
 
         # 3. Transpile body
         self.indent_level = 1
@@ -268,19 +316,39 @@ class MojoASTTranspiler:
         wrapper_args_def = ", ".join([f"arg{i}: PythonObject" for i in range(len(args))])
         wrapper_conversions = []
         call_args = []
-        for i, (name, py_type, mojo_type) in enumerate(args):
-            conv = PY_CONVERT_MAP[py_type].format(var=f"arg{i}")
-            wrapper_conversions.append(f"    var {name} = {conv}")
+        for i, (name, py_type, mojo_type, elem_type) in enumerate(args):
+            if elem_type is not None:
+                inner_mojo = "Float64" if elem_type == "float" else ("Int" if elem_type == "int" else "Bool")
+                conv = (
+                    f"    var {name} = {mojo_type}()\n"
+                    f"    var _n_{name} = Int(py=arg{i}.__len__())\n"
+                    f"    for _i in range(_n_{name}):\n"
+                    f"        {name}.append({inner_mojo}(py=arg{i}[_i]))"
+                )
+            else:
+                conv = f"    var {name} = {mojo_type}(py=arg{i})"
+            wrapper_conversions.append(conv)
             call_args.append(name)
 
         conv_block = "\n".join(wrapper_conversions)
-        call_block = f"    var res = _native_{func_def.name}({', '.join(call_args)})\n    return PythonObject(res)"
+
+        if ret_elem_type is not None:
+            call_block = (
+                f"    var _res = _native_{func_def.name}({', '.join(call_args)})\n"
+                f"    var _builtins = Python.import_module(\"builtins\")\n"
+                f"    var _py_res = _builtins.list()\n"
+                f"    for _i in range(len(_res)):\n"
+                f"        _py_res.append(_res[_i])\n"
+                f"    return _py_res"
+            )
+        else:
+            call_block = f"    var _res = _native_{func_def.name}({', '.join(call_args)})\n    return PythonObject(_res)"
 
         wrapper_code = f"""def {func_def.name}({wrapper_args_def}) raises -> PythonObject:
 {conv_block}
 {call_block}"""
 
-        native_code = f"""def _native_{func_def.name}({", ".join([f"{name}: {m_type}" for name, _, m_type in args])}) raises -> {ret_mojo_type}:
+        native_code = f"""def _native_{func_def.name}({", ".join([f"{name}: {m_type}" for name, _, m_type, _ in args])}) raises -> {ret_mojo_type}:
 {body_code}"""
 
         export_reg = f'        m.def_function[{func_def.name}]("{func_def.name}")'
@@ -289,19 +357,60 @@ class MojoASTTranspiler:
 
     def visit_stmt(self, node: ast.stmt) -> str:
         if isinstance(node, ast.Return):
-            val = self.visit_expr(node.value) if node.value else ""
+            if node.value is None:
+                return f"{self.indent()}return"
+            if isinstance(node.value, ast.List) and len(node.value.elts) == 0:
+                return f"{self.indent()}return {self.ret_mojo_type}()"
+            val = self.visit_expr(node.value)
+            if self.ret_elem_type is not None and isinstance(node.value, ast.Name):
+                return f"{self.indent()}return {val}^"
             return f"{self.indent()}return {val}"
 
-        elif isinstance(node, ast.Assign):
-            if len(node.targets) != 1 or not isinstance(node.targets[0], ast.Name):
-                raise ASTTranspileError("Only single variable assignments are currently supported")
-            var_name = node.targets[0].id
-            expr_code = self.visit_expr(node.value)
+        elif isinstance(node, ast.AnnAssign):
+            if not isinstance(node.target, ast.Name):
+                raise ASTTranspileError("Annotated assignment target must be a simple variable name")
+            var_name = node.target.id
+            py_type, mojo_type, elem_type = parse_type_annotation(node.annotation)
+            self.var_types[var_name] = mojo_type
+
+            if node.value is None:
+                self.declared_vars.add(var_name)
+                return f"{self.indent()}var {var_name}: {mojo_type}"
+
+            if isinstance(node.value, ast.List) and len(node.value.elts) == 0:
+                expr_code = f"{mojo_type}()"
+            else:
+                expr_code = self.visit_expr(node.value)
+
             if var_name not in self.declared_vars:
                 self.declared_vars.add(var_name)
-                return f"{self.indent()}var {var_name} = {expr_code}"
+                return f"{self.indent()}var {var_name}: {mojo_type} = {expr_code}"
             else:
                 return f"{self.indent()}{var_name} = {expr_code}"
+
+        elif isinstance(node, ast.Assign):
+            if len(node.targets) != 1:
+                raise ASTTranspileError("Only single variable assignments are currently supported")
+            target = node.targets[0]
+            if isinstance(target, ast.Subscript):
+                target_code = self.visit_expr(target)
+                expr_code = self.visit_expr(node.value)
+                return f"{self.indent()}{target_code} = {expr_code}"
+            elif isinstance(target, ast.Name):
+                var_name = target.id
+                if isinstance(node.value, ast.List) and len(node.value.elts) == 0:
+                    inferred_type = self.var_types.get(var_name, self.ret_mojo_type)
+                    expr_code = f"{inferred_type}()"
+                else:
+                    expr_code = self.visit_expr(node.value)
+
+                if var_name not in self.declared_vars:
+                    self.declared_vars.add(var_name)
+                    return f"{self.indent()}var {var_name} = {expr_code}"
+                else:
+                    return f"{self.indent()}{var_name} = {expr_code}"
+            else:
+                raise ASTTranspileError(f"Unsupported assignment target: {type(target).__name__}")
 
         elif isinstance(node, ast.AugAssign):
             if not isinstance(node.target, ast.Name):
@@ -360,10 +469,14 @@ class MojoASTTranspiler:
             if not isinstance(node.target, ast.Name):
                 raise ASTTranspileError("Only simple variable loop targets are supported")
             var_name = node.target.id
-            if not isinstance(node.iter, ast.Call) or not isinstance(node.iter.func, ast.Name) or node.iter.func.id != "range":
-                raise ASTTranspileError("Only 'for ... in range(...)' loops are supported in AST transpiler")
-            range_args = [self.visit_expr(a) for a in node.iter.args]
-            iter_code = f"range({', '.join(range_args)})"
+            self.declared_vars.add(var_name)
+
+            if isinstance(node.iter, ast.Call) and isinstance(node.iter.func, ast.Name) and node.iter.func.id == "range":
+                range_args = [self.visit_expr(a) for a in node.iter.args]
+                iter_code = f"range({', '.join(range_args)})"
+            else:
+                iter_code = self.visit_expr(node.iter)
+
             lines = [f"{self.indent()}for {var_name} in {iter_code}:"]
             self.indent_level += 1
             for s in node.body:
@@ -409,6 +522,17 @@ class MojoASTTranspiler:
 
         elif isinstance(node, ast.Name):
             return node.id
+
+        elif isinstance(node, ast.Subscript):
+            val = self.visit_expr(node.value)
+            idx = self.visit_expr(node.slice)
+            return f"{val}[{idx}]"
+
+        elif isinstance(node, ast.List):
+            if len(node.elts) == 0:
+                return f"{self.ret_mojo_type}()"
+            elts = [self.visit_expr(e) for e in node.elts]
+            return f"{self.ret_mojo_type}({', '.join(elts)})"
 
         elif isinstance(node, ast.BinOp):
             left = self.visit_expr(node.left)
@@ -465,7 +589,9 @@ class MojoASTTranspiler:
             if isinstance(node.func, ast.Name):
                 fn_name = node.func.id
                 args = [self.visit_expr(a) for a in node.args]
-                if fn_name in ("abs", "min", "max", "int", "float"):
+                if fn_name == "len":
+                    return f"len({', '.join(args)})"
+                elif fn_name in ("abs", "min", "max", "int", "float"):
                     if fn_name == "int":
                         return f"Int({', '.join(args)})"
                     if fn_name == "float":
@@ -476,7 +602,11 @@ class MojoASTTranspiler:
                 else:
                     return f"{fn_name}({', '.join(args)})"
             elif isinstance(node.func, ast.Attribute):
-                if isinstance(node.func.value, ast.Name) and node.func.value.id == "math":
+                if node.func.attr == "append":
+                    obj = self.visit_expr(node.func.value)
+                    arg = self.visit_expr(node.args[0])
+                    return f"{obj}.append({arg})"
+                elif isinstance(node.func.value, ast.Name) and node.func.value.id == "math":
                     fn_name = node.func.attr
                     args = [self.visit_expr(a) for a in node.args]
                     return f"math.{fn_name}({', '.join(args)})"
@@ -563,8 +693,9 @@ def transpile_python_to_mojo(source_code: str, mod_name: str) -> str:
     wrappers_block = "\n\n".join(wrappers)
     native_block = "\n\n".join(native_funcs)
 
-    mojo_source = f"""from std.python import PythonObject
+    mojo_source = f"""from std.python import Python, PythonObject
 from std.python.bindings import PythonModuleBuilder
+from std.collections import List
 from std.os import abort
 import std.math as math
 
