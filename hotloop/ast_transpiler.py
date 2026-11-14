@@ -6,6 +6,7 @@ TYPE_MAP = {
     "int": "Int",
     "float": "Float64",
     "bool": "Bool",
+    "str": "String",
     "list[int]": "List[Int]",
     "list[float]": "List[Float64]",
     "list[bool]": "List[Bool]",
@@ -15,6 +16,7 @@ PY_CONVERT_MAP = {
     "int": "Int(py={var})",
     "float": "Float64(py={var})",
     "bool": "Bool(py={var})",
+    "str": "String(py={var})",
 }
 
 def parse_type_annotation(node: Optional[ast.AST]) -> Tuple[str, str, Optional[str]]:
@@ -34,10 +36,12 @@ def parse_type_annotation(node: Optional[ast.AST]) -> Tuple[str, str, Optional[s
             return "float", "Float64", None
         elif t_id == "bool":
             return "bool", "Bool", None
+        elif t_id == "str":
+            return "str", "String", None
         elif t_id in ("list", "List"):
             raise ASTTranspileError("Generic list must have element type, e.g. list[float] or list[int]")
         else:
-            raise ASTTranspileError(f"Unsupported type '{t_id}'. Supported: int, float, bool, list[int], list[float]")
+            raise ASTTranspileError(f"Unsupported type '{t_id}'. Supported: int, float, bool, str, list[int], list[float]")
 
     elif isinstance(node, ast.Subscript):
         if isinstance(node.value, ast.Name) and node.value.id in ("list", "List"):
@@ -257,6 +261,34 @@ def _checked_pow(base: Float64, exp: Int) raises -> Float64:
 @always_inline
 def _checked_pow(base: Int, exp: Float64) raises -> Float64:
     return Float64(base) ** exp
+
+@always_inline
+def _checked_add(a: String, b: String) -> String:
+    var res = a
+    res.write(b)
+    return res^
+
+@always_inline
+def _checked_add(a: String, b: Codepoint) -> String:
+    var res = a
+    res.write(b)
+    return res^
+
+@always_inline
+def _len(s: String) -> Int:
+    return len(s.codepoints())
+
+@always_inline
+def _len(l: List[Int]) -> Int:
+    return len(l)
+
+@always_inline
+def _len(l: List[Float64]) -> Int:
+    return len(l)
+
+@always_inline
+def _len(l: List[Bool]) -> Int:
+    return len(l)
 """
 
 class ASTTranspileError(Exception):
@@ -362,7 +394,7 @@ class MojoASTTranspiler:
             if isinstance(node.value, ast.List) and len(node.value.elts) == 0:
                 return f"{self.indent()}return {self.ret_mojo_type}()"
             val = self.visit_expr(node.value)
-            if self.ret_elem_type is not None and isinstance(node.value, ast.Name):
+            if (self.ret_elem_type is not None or self.ret_mojo_type == "String") and isinstance(node.value, ast.Name):
                 return f"{self.indent()}return {val}^"
             return f"{self.indent()}return {val}"
 
@@ -379,6 +411,8 @@ class MojoASTTranspiler:
 
             if isinstance(node.value, ast.List) and len(node.value.elts) == 0:
                 expr_code = f"{mojo_type}()"
+            elif mojo_type == "String" and isinstance(node.value, ast.Constant) and node.value.value == "":
+                expr_code = "String()"
             else:
                 expr_code = self.visit_expr(node.value)
 
@@ -401,6 +435,8 @@ class MojoASTTranspiler:
                 if isinstance(node.value, ast.List) and len(node.value.elts) == 0:
                     inferred_type = self.var_types.get(var_name, self.ret_mojo_type)
                     expr_code = f"{inferred_type}()"
+                elif isinstance(node.value, ast.Constant) and node.value.value == "" and self.var_types.get(var_name) == "String":
+                    expr_code = "String()"
                 else:
                     expr_code = self.visit_expr(node.value)
 
@@ -417,7 +453,9 @@ class MojoASTTranspiler:
                 raise ASTTranspileError("Only single variable augmented assignments are supported")
             var_name = node.target.id
             expr_code = self.visit_expr(node.value)
-            if isinstance(node.op, ast.Add):
+            if self.var_types.get(var_name) == "String" and isinstance(node.op, ast.Add):
+                return f"{self.indent()}{var_name}.write({expr_code})"
+            elif isinstance(node.op, ast.Add):
                 return f"{self.indent()}{var_name} = _checked_add({var_name}, {expr_code})"
             elif isinstance(node.op, ast.Sub):
                 return f"{self.indent()}{var_name} = _checked_sub({var_name}, {expr_code})"
@@ -474,8 +512,18 @@ class MojoASTTranspiler:
             if isinstance(node.iter, ast.Call) and isinstance(node.iter.func, ast.Name) and node.iter.func.id == "range":
                 range_args = [self.visit_expr(a) for a in node.iter.args]
                 iter_code = f"range({', '.join(range_args)})"
+                self.var_types[var_name] = "Int"
             else:
-                iter_code = self.visit_expr(node.iter)
+                iter_expr = self.visit_expr(node.iter)
+                if self.var_types.get(iter_expr) == "String":
+                    iter_code = f"{iter_expr}.codepoints()"
+                    self.var_types[var_name] = "Codepoint"
+                else:
+                    iter_code = iter_expr
+                    if self.var_types.get(iter_expr) == "List[Int]":
+                        self.var_types[var_name] = "Int"
+                    elif self.var_types.get(iter_expr) == "List[Float64]":
+                        self.var_types[var_name] = "Float64"
 
             lines = [f"{self.indent()}for {var_name} in {iter_code}:"]
             self.indent_level += 1
@@ -525,8 +573,18 @@ class MojoASTTranspiler:
 
         elif isinstance(node, ast.Subscript):
             val = self.visit_expr(node.value)
-            idx = self.visit_expr(node.slice)
-            return f"{val}[{idx}]"
+            is_str = (isinstance(node.value, ast.Name) and self.var_types.get(node.value.id) == "String")
+            if is_str:
+                if isinstance(node.slice, ast.Slice):
+                    start = self.visit_expr(node.slice.lower) if node.slice.lower else "0"
+                    end = self.visit_expr(node.slice.upper) if node.slice.upper else f"_len({val})"
+                    return f"String({val}[codepoint={start}:{end}])"
+                else:
+                    idx = self.visit_expr(node.slice)
+                    return f"String({val}[codepoint={idx}])"
+            else:
+                idx = self.visit_expr(node.slice)
+                return f"{val}[{idx}]"
 
         elif isinstance(node, ast.List):
             if len(node.elts) == 0:
@@ -572,11 +630,19 @@ class MojoASTTranspiler:
                 raise ASTTranspileError(f"Unsupported unary operator: {type(node.op).__name__}")
 
         elif isinstance(node, ast.Compare):
+            left_is_cp = (isinstance(node.left, ast.Name) and self.var_types.get(node.left.id) == "Codepoint")
             left = self.visit_expr(node.left)
             parts = [left]
             for op, comparator in zip(node.ops, node.comparators):
                 comp_op = self.visit_cmp_op(op)
-                comp_val = self.visit_expr(comparator)
+                comp_is_cp = (isinstance(comparator, ast.Name) and self.var_types.get(comparator.id) == "Codepoint")
+                if left_is_cp and isinstance(comparator, ast.Constant) and isinstance(comparator.value, str):
+                    comp_val = f'Codepoint({repr(comparator.value)})'
+                elif comp_is_cp and isinstance(node.left, ast.Constant) and isinstance(node.left.value, str):
+                    parts[0] = f'Codepoint({repr(node.left.value)})'
+                    comp_val = self.visit_expr(comparator)
+                else:
+                    comp_val = self.visit_expr(comparator)
                 parts.append(f"{comp_op} {comp_val}")
             return f"({' '.join(parts)})"
 
@@ -590,7 +656,7 @@ class MojoASTTranspiler:
                 fn_name = node.func.id
                 args = [self.visit_expr(a) for a in node.args]
                 if fn_name == "len":
-                    return f"len({', '.join(args)})"
+                    return f"_len({', '.join(args)})"
                 elif fn_name in ("abs", "min", "max", "int", "float"):
                     if fn_name == "int":
                         return f"Int({', '.join(args)})"
@@ -606,6 +672,10 @@ class MojoASTTranspiler:
                     obj = self.visit_expr(node.func.value)
                     arg = self.visit_expr(node.args[0])
                     return f"{obj}.append({arg})"
+                elif node.func.attr == "write":
+                    obj = self.visit_expr(node.func.value)
+                    arg = self.visit_expr(node.args[0])
+                    return f"{obj}.write({arg})"
                 elif isinstance(node.func.value, ast.Name) and node.func.value.id == "math":
                     fn_name = node.func.attr
                     args = [self.visit_expr(a) for a in node.args]

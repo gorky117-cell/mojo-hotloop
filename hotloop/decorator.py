@@ -184,6 +184,25 @@ def _is_slower_workload(args: Tuple, kwargs: Dict) -> bool:
             return True
     return False
 
+def _has_unsupported_surrogates(args: Tuple, kwargs: Dict) -> bool:
+    """
+    Checks if any string input argument contains lone surrogates (U+D800 - U+DFFF),
+    which are invalid in UTF-8 and cannot be converted across C-ABI boundary.
+    """
+    for a in args:
+        if isinstance(a, str) and not a.isascii():
+            try:
+                a.encode("utf-8")
+            except UnicodeEncodeError:
+                return True
+    for v in kwargs.values():
+        if isinstance(v, str) and not v.isascii():
+            try:
+                v.encode("utf-8")
+            except UnicodeEncodeError:
+                return True
+    return False
+
 def _create_hotloop_wrapper(fn: Callable, strict: bool = False, force_native: bool = False, cache_check: Optional[str] = None) -> Callable:
     compiled_fn, loaded_mod, init_error, mod_file, source_hash, loaded_mtime = _find_and_load_native_fn(fn)
 
@@ -248,6 +267,29 @@ def _create_hotloop_wrapper(fn: Callable, strict: bool = False, force_native: bo
                             wrapper._fallback_reason = "Stale native binary detected: Source file modified during runtime"
                 except OSError:
                     pass
+
+
+        # Check for lone surrogate codepoints which cannot cross UTF-8 C-ABI boundary safely
+        if wrapper._compiled is not None and _has_unsupported_surrogates(args, kwargs):
+            is_strict = _is_strict_active(strict)
+            if is_strict:
+                wrapper._last_backend = "native_error"
+                raise HotloopNativeExecutionError(
+                    f"Strict native mode enabled: input contains lone surrogate codepoints (U+D800 - U+DFFF) "
+                    f"which cannot be converted across UTF-8 C-ABI boundary."
+                )
+            wrapper._last_backend = "python_fallback_surrogate"
+            wrapper._call_count_fallback += 1
+            warn_key = (f"{fn.__module__}.{fn.__qualname__}", "surrogate_fallback")
+            if warn_key not in _WARNED_FALLBACKS:
+                _WARNED_FALLBACKS.add(warn_key)
+                warnings.warn(
+                    f"[mojo-hotloop] Input contains lone surrogate codepoints for '{fn.__name__}'; "
+                    f"UTF-8 C-ABI boundary cannot represent surrogates. Safely executing pure Python implementation.",
+                    HotloopFallbackWarning,
+                    stacklevel=2,
+                )
+            return wrapper._original(*args, **kwargs)
 
         if wrapper._compiled is not None:
             wrapper._last_backend = "native"
