@@ -1,0 +1,38 @@
+{
+  "small": {
+    "desc": "Small cloud (100 vertices)",
+    "points": 100,
+    "py_ms": 0.0324098008,
+    "numpy_ms": 0.0639335615,
+    "numba_ms": 0.0012422000000000002,
+    "mojo_direct_ms": 0.0200228505,
+    "mojo_wrapped_ms": 0.0231198005,
+    "speedup_vs_py": 1.4018200892347665,
+    "speedup_vs_np": 2.7653163140399935,
+    "speedup_vs_numba": 0.05372883732279611
+  },
+  "medium": {
+    "desc": "Medium cloud (1,000 vertices)",
+    "points": 1000,
+    "py_ms": 0.347534309,
+    "numpy_ms": 0.296050206,
+    "numba_ms": 0.006723600000000001,
+    "mojo_direct_ms": 0.228340306,
+    "mojo_wrapped_ms": 0.234135205,
+    "speedup_vs_py": 1.4843317091079915,
+    "speedup_vs_np": 1.2644412274523174,
+    "speedup_vs_numba": 0.028716740825028855
+  },
+  "large": {
+    "desc": "Large cloud (10,000 vertices)",
+    "points": 10000,
+    "py_ms": 3.7650450999999996,
+    "numpy_ms": 3.08881807,
+    "numba_ms": 0.057082999999999995,
+    "mojo_direct_ms": 2.37335905,
+    "mojo_wrapped_ms": 2.39527805,
+    "speedup_vs_py": 1.5718613962166104,
+    "speedup_vs_np": 1.2895446814619287,
+    "speedup_vs_numba": 0.023831471256541593
+  }
+}
