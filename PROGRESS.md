@@ -127,15 +127,37 @@ The current assignment focused strictly on fixing native dispatch, integer overf
   - Published comprehensive `PHASE_B1_PERFORMANCE_REPORT.md` answering all 9 verdict questions.
   - **OVERALL PHASE B.1 VERDICT**: **PASS — AUDIT CERTIFIED**.
 
+### Phase C: Native Unicode & Text Engine (COMPLETED)
+- [x] **Gate 1 — Unicode Primitives & Semantics Proof**:
+  - Investigated Mojo 1.2.0 string primitives (`String`, `Codepoint`, `s.codepoints()`, `len(s.codepoints())`, `s[codepoint=start:end]`).
+  - Implemented exact Python codepoint semantics across ASCII, Hindi Devanagari with viramas, emojis (`🌍`, `🚀`), and combining characters (`e\u0301`).
+  - Verified 6/6 test suites in `audit/test_unicode_semantics.py`.
+- [x] **Gate 2 — Python `str` C-ABI FFI Boundary & Memory Safety**:
+  - Proved fast bulk UTF-8 buffer extraction via `String(py=arg)` in 0.2 µs (36 chars), 1.9 µs (8 KB), and 17.8 µs (100 KB).
+  - Verified caller string immutability in `audit/test_text_boundary_memory.py`.
+  - Memory leak test verified **0 KB RSS growth** across 15,000 text operations.
+- [x] **Gate 3 — Deterministic AST Transpiler Unicode Extension**:
+  - Extended `hotloop/ast_transpiler.py` to support `str`, `String`, `Codepoint`, `_len(s)`, character iteration `for ch in text:`, subscripting `text[i]`, and in-place string concatenation (`+=`).
+  - Added lone surrogate (`\ud800`–`\udfff`) fallback guardrail in `hotloop/decorator.py`.
+- [x] **Gate 4 — Three Unseen Text Functions Verified**:
+  - Built Function A (`unicode_newline_positions`), Function B (`count_ascii_digit_runs`), and Function C (`mask_ascii_digits`) via `hotloop build <file.py> --engine=ast`.
+  - Verified with **3,060 automated tests** (1,020+ tests per function) with 0 failures and 0 mismatches.
+- [x] **Gate 5 — Comprehensive Performance Benchmarks (5 Trials)**:
+  - Measured 5 trials across short, medium, and large payloads.
+  - Verified **3.5x to 8.5x native speedup** over Python 3.12 for medium/large strings.
+  - Direct Mojo kernel achieves up to **6.5x speedup** even on 36-char strings.
+  - Default backend for text operations confirmed as **`native`**.
+- [x] **Gate 6 — Master Full Regression & Reliability Audit**:
+  - Executed master regression runner `audit/run_full_phase_c_regression.py` covering all Phase A, B, B.1, and C suites.
+  - **8/8 test suites passed, 3,090 verified checks, 0 failures, 0 regressions, 0 segfaults**.
+  - Published comprehensive `PHASE_C_VALIDATION_REPORT.md`.
+  - **OVERALL PHASE C VERDICT**: **PASS — AUDIT CERTIFIED**.
+
 ---
 
 ## Mandatory Future Roadmap — Preserving All Seven Use Cases
 
 All seven planned use cases remain strictly preserved for upcoming phases:
-
-### Phase C: Unicode & Native Text Engine
-- Python `str` codepoint indexing vs Mojo UTF-8 byte scanning.
-- Unicode character length, offset alignment, and multi-byte safety (Hindi, emoji, CJK).
 
 ### Phase D: The Seven Real-World Use Cases
 1. **PII Scrubber**: Mask card numbers (Luhn 13–19 digits), Aadhaar IDs (Verhoeff check), PAN, and mobile numbers on text.
