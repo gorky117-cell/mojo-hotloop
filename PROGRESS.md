@@ -54,9 +54,11 @@
 - **GATE**: PASSED (0 mismatches, 80.5x faster than Python, competitive with warmed Numba)
 
 ### STAGE 3A: Deterministic AST Transpiler (`--engine=ast`)
-- [ ] Build `hotloop` package with CLI, decorator, AST transpiler, isolated verifier, backends
-- [ ] Compile `quant_backtest` via `--engine=ast`
-- **GATE**: Pending
+- [x] Write `hotloop` package with modular architecture (`hotloop.cli`, `hotloop.ast_transpiler`, `hotloop.backends.mojo`)
+- [x] Built deterministic AST transpiler for scalar numerical kernels (`int`, `float`, `bool`, `range`, `if/elif/else`, arithmetic, bitwise)
+- [x] Deleted hand-written `.so` and rebuilt `quant_backtest` purely using `hotloop build ... --engine=ast`
+- [x] Verification passed with 0 mismatches across all 1,109 tests in isolated subprocess
+- **GATE 3A**: PASSED
 
 ### STAGE 3B: Gemini Compiler-in-the-Loop Engine
 - [ ] Check `.env` for keys (Stop condition if missing)

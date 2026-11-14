@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mojo-hotloop"
+version = "0.1.0"
+description = "Transparent JIT/AOT acceleration of Python hot loops using Mojo shared libraries"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "python-dotenv",
+]
+
+[project.scripts]
+hotloop = "hotloop.cli:main"
