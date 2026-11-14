@@ -1,5 +1,6 @@
-from std.python import PythonObject
+from std.python import Python, PythonObject
 from std.python.bindings import PythonModuleBuilder
+from std.collections import List
 from std.os import abort
 import std.math as math
 
@@ -198,6 +199,82 @@ def _checked_pow(base: Float64, exp: Int) raises -> Float64:
 def _checked_pow(base: Int, exp: Float64) raises -> Float64:
     return Float64(base) ** exp
 
+@always_inline
+def _checked_add(a: String, b: String) -> String:
+    var res = a
+    res.write(b)
+    return res^
+
+@always_inline
+def _checked_add(a: String, b: Codepoint) -> String:
+    var res = a
+    res.write(b)
+    return res^
+
+@always_inline
+def _len(s: String) -> Int:
+    return len(s.codepoints())
+
+@always_inline
+def _len(l: List[Int]) -> Int:
+    return len(l)
+
+@always_inline
+def _len(l: List[Float64]) -> Int:
+    return len(l)
+
+@always_inline
+def _len(l: List[Bool]) -> Int:
+    return len(l)
+
+@always_inline
+def _len(l: List[String]) -> Int:
+    return len(l)
+
+struct _PyStr(Sized):
+    var _cps: List[Codepoint]
+
+    @always_inline
+    def __init__(out self, s: String):
+        self._cps = List[Codepoint]()
+        for cp in s.codepoints():
+            self._cps.append(cp)
+
+    @always_inline
+    def __len__(self) -> Int:
+        return len(self._cps)
+
+    @always_inline
+    def __getitem__(self, idx: Int) -> String:
+        var i = idx
+        if i < 0:
+            i += len(self._cps)
+        return String(self._cps[i])
+
+    @always_inline
+    def __getitem__(self, s: Slice) -> String:
+        var n = len(self._cps)
+        var start = s.start.or_else(0)
+        var end = s.end.or_else(n)
+        if start < 0:
+            start += n
+        if end < 0:
+            end += n
+        var s_c = max(0, min(n, start))
+        var e_c = max(0, min(n, end))
+        var res = String()
+        for k in range(s_c, e_c):
+            res.write(self._cps[k])
+        return res^
+
+    @always_inline
+    def codepoints(self) -> List[Codepoint]:
+        return self._cps.copy()
+
+@always_inline
+def _len(s: _PyStr) -> Int:
+    return len(s)
+
 
 @export
 def PyInit_fast() abi("C") -> PythonObject:
@@ -213,8 +290,8 @@ def stateful_trailing_backtest(arg0: PythonObject, arg1: PythonObject, arg2: Pyt
     var start_price = Float64(py=arg1)
     var stop_pct = Float64(py=arg2)
     var fee_rate = Float64(py=arg3)
-    var res = _native_stateful_trailing_backtest(ticks, start_price, stop_pct, fee_rate)
-    return PythonObject(res)
+    var _res = _native_stateful_trailing_backtest(ticks, start_price, stop_pct, fee_rate)
+    return PythonObject(_res)
 
 def _native_stateful_trailing_backtest(ticks: Int, start_price: Float64, stop_pct: Float64, fee_rate: Float64) raises -> Float64:
     if (ticks <= 0):
