@@ -2,37 +2,37 @@
   "short": {
     "desc": "Short trail (100 waypoints)",
     "points": 100,
-    "py_ms": 0.07223858159999999,
-    "numpy_ms": 0.039615461,
-    "numba_ms": 0.0080521504,
-    "mojo_direct_ms": 0.0230574005,
-    "mojo_wrapped_ms": 0.0253526806,
-    "speedup_vs_py": 2.8493468891806253,
-    "speedup_vs_np": 1.5625748466219385,
-    "speedup_vs_numba": 0.31760548428949953
+    "py_ms": 0.071501502,
+    "numpy_ms": 0.037494941000000004,
+    "numba_ms": 0.00800337,
+    "mojo_direct_ms": 0.022543920500000002,
+    "mojo_wrapped_ms": 0.0249365805,
+    "speedup_vs_py": 2.8673338752280007,
+    "speedup_vs_np": 1.50361197278031,
+    "speedup_vs_numba": 0.3209489769457364
   },
   "medium": {
     "desc": "Medium trail (1,000 waypoints)",
     "points": 1000,
-    "py_ms": 0.762736223,
-    "numpy_ms": 0.118656703,
-    "numba_ms": 0.075300302,
-    "mojo_direct_ms": 0.24232790799999998,
-    "mojo_wrapped_ms": 0.258474907,
-    "speedup_vs_py": 2.9509101361239685,
-    "speedup_vs_np": 0.4590646897882432,
-    "speedup_vs_numba": 0.2913253857946064
+    "py_ms": 0.8409691199999999,
+    "numpy_ms": 0.118237904,
+    "numba_ms": 0.09443600199999999,
+    "mojo_direct_ms": 0.312356807,
+    "mojo_wrapped_ms": 0.332434409,
+    "speedup_vs_py": 2.5297294661215406,
+    "speedup_vs_np": 0.3556728810223734,
+    "speedup_vs_numba": 0.2840740893341158
   },
   "large": {
     "desc": "Long route (10,000 waypoints)",
     "points": 10000,
-    "py_ms": 8.30489425,
-    "numpy_ms": 0.75288702,
-    "numba_ms": 0.75818702,
-    "mojo_direct_ms": 2.71889409,
-    "mojo_wrapped_ms": 3.3274171100000003,
-    "speedup_vs_py": 2.4958981622835976,
-    "speedup_vs_np": 0.2262677010758053,
-    "speedup_vs_numba": 0.227860528131984
+    "py_ms": 7.984874209999999,
+    "numpy_ms": 0.7429129999999999,
+    "numba_ms": 0.7501050300000001,
+    "mojo_direct_ms": 2.57617907,
+    "mojo_wrapped_ms": 2.58649005,
+    "speedup_vs_py": 3.0871466951902633,
+    "speedup_vs_np": 0.2872282458616069,
+    "speedup_vs_numba": 0.290008859689988
   }
 }
