@@ -102,9 +102,46 @@ def _create_hotloop_wrapper(fn: Callable, strict: bool = False) -> Callable:
         if wrapper._compiled is not None:
             wrapper._last_backend = "native"
             wrapper._call_count_native += 1
-            return wrapper._compiled(*args, **kwargs)
+            try:
+                return wrapper._compiled(*args, **kwargs)
+            except Exception as e:
+                err_str = str(e)
+                # Check for integer overflow (either at C-ABI conversion or inside intermediate calculations)
+                if ("HOTLOOP_INTEGER_OVERFLOW" in err_str or
+                    "Python int too large to convert to C ssize_t" in err_str):
+                    if is_strict:
+                        wrapper._last_backend = "native_error"
+                        raise HotloopNativeExecutionError(
+                            f"Strict native mode enabled: native Mojo 64-bit integer overflow occurred: {err_str}"
+                        ) from e
 
-        # Fallback path
+                    # Pure scalar function fallback: safe to re-execute in arbitrary-precision Python
+                    wrapper._last_backend = "python_fallback_overflow"
+                    wrapper._call_count_fallback += 1
+                    warn_key = (f"{fn.__module__}.{fn.__qualname__}", "integer_overflow")
+                    if warn_key not in _WARNED_FALLBACKS:
+                        _WARNED_FALLBACKS.add(warn_key)
+                        warnings.warn(
+                            f"[mojo-hotloop] Integer overflow in native execution for '{fn.__name__}'; "
+                            f"falling back to arbitrary-precision Python: {err_str}",
+                            HotloopFallbackWarning,
+                            stacklevel=2
+                        )
+                    return wrapper._original(*args, **kwargs)
+
+                elif "HOTLOOP_ZERO_DIVISION_ERROR" in err_str:
+                    # Restore exact Python ZeroDivisionError
+                    msg = err_str.split("HOTLOOP_ZERO_DIVISION_ERROR: ", 1)[-1]
+                    raise ZeroDivisionError(msg) from None
+
+                elif "HOTLOOP_VALUE_ERROR" in err_str:
+                    msg = err_str.split("HOTLOOP_VALUE_ERROR: ", 1)[-1]
+                    raise ValueError(msg) from None
+
+                # Re-raise any other native exception
+                raise
+
+        # Fallback path when native binary is missing or failed to load
         reason = wrapper._fallback_reason or "Compiled native implementation not available"
         if is_strict:
             raise HotloopNativeExecutionError(
