@@ -15,39 +15,62 @@ PY_CONVERT_MAP = {
 }
 
 CHECKED_HELPERS_MOJO = """# Checked Arithmetic and Error Signaling Helpers (Mojo 1.2.0)
+@always_inline
 def _checked_add(a: Int, b: Int) raises -> Int:
-    if b > 0 and a > 9223372036854775807 - b:
-        raise Error("HOTLOOP_INTEGER_OVERFLOW: integer addition overflow")
-    if b < 0 and a < -9223372036854775808 - b:
+    if (a ^ b) < 0:
+        return a + b
+    if a >= 0:
+        if a <= 4611686018427387903 and b <= 4611686018427387903:
+            return a + b
+        if a > 9223372036854775807 - b:
+            raise Error("HOTLOOP_INTEGER_OVERFLOW: integer addition overflow")
+        return a + b
+    if a >= -4611686018427387904 and b >= -4611686018427387904:
+        return a + b
+    if a < -9223372036854775808 - b:
         raise Error("HOTLOOP_INTEGER_OVERFLOW: integer addition underflow")
     return a + b
 
+@always_inline
 def _checked_add(a: Float64, b: Float64) raises -> Float64:
     return a + b
 
+@always_inline
 def _checked_add(a: Float64, b: Int) raises -> Float64:
     return a + Float64(b)
 
+@always_inline
 def _checked_add(a: Int, b: Float64) raises -> Float64:
     return Float64(a) + b
 
+@always_inline
 def _checked_sub(a: Int, b: Int) raises -> Int:
+    if (a >= 0 and b >= 0) or (a < 0 and b > -9223372036854775808 and b <= 0):
+        return a - b
     if b > 0 and a < -9223372036854775808 + b:
         raise Error("HOTLOOP_INTEGER_OVERFLOW: integer subtraction underflow")
     if b < 0 and a > 9223372036854775807 + b:
         raise Error("HOTLOOP_INTEGER_OVERFLOW: integer subtraction overflow")
     return a - b
 
+@always_inline
 def _checked_sub(a: Float64, b: Float64) raises -> Float64:
     return a - b
 
+@always_inline
 def _checked_sub(a: Float64, b: Int) raises -> Float64:
     return a - Float64(b)
 
+@always_inline
 def _checked_sub(a: Int, b: Float64) raises -> Float64:
     return Float64(a) - b
 
+@always_inline
 def _checked_mul(a: Int, b: Int) raises -> Int:
+    var abs_a = -a if a < 0 else a
+    var abs_b = -b if b < 0 else b
+    if abs_a <= 3037000499 and abs_b <= 3037000499:
+        return a * b
     if a == 0 or b == 0:
         return 0
     if a == -1 and b == -9223372036854775808:
@@ -68,43 +91,53 @@ def _checked_mul(a: Int, b: Int) raises -> Int:
             raise Error("HOTLOOP_INTEGER_OVERFLOW: integer multiplication overflow")
     return a * b
 
+@always_inline
 def _checked_mul(a: Float64, b: Float64) raises -> Float64:
     return a * b
 
+@always_inline
 def _checked_mul(a: Float64, b: Int) raises -> Float64:
     return a * Float64(b)
 
+@always_inline
 def _checked_mul(a: Int, b: Float64) raises -> Float64:
     return Float64(a) * b
 
+@always_inline
 def _checked_neg(a: Int) raises -> Int:
     if a == -9223372036854775808:
         raise Error("HOTLOOP_INTEGER_OVERFLOW: integer negation overflow")
     return -a
 
+@always_inline
 def _checked_neg(a: Float64) raises -> Float64:
     return -a
 
+@always_inline
 def _checked_div(a: Float64, b: Float64) raises -> Float64:
     if b == 0.0:
         raise Error("HOTLOOP_ZERO_DIVISION_ERROR: float division by zero")
     return a / b
 
+@always_inline
 def _checked_div(a: Int, b: Int) raises -> Float64:
     if b == 0:
         raise Error("HOTLOOP_ZERO_DIVISION_ERROR: division by zero")
     return Float64(a) / Float64(b)
 
+@always_inline
 def _checked_div(a: Float64, b: Int) raises -> Float64:
     if b == 0:
         raise Error("HOTLOOP_ZERO_DIVISION_ERROR: float division by zero")
     return a / Float64(b)
 
+@always_inline
 def _checked_div(a: Int, b: Float64) raises -> Float64:
     if b == 0.0:
         raise Error("HOTLOOP_ZERO_DIVISION_ERROR: float division by zero")
     return Float64(a) / b
 
+@always_inline
 def _checked_floordiv(a: Int, b: Int) raises -> Int:
     if b == 0:
         raise Error("HOTLOOP_ZERO_DIVISION_ERROR: integer division or modulo by zero")
@@ -112,11 +145,13 @@ def _checked_floordiv(a: Int, b: Int) raises -> Int:
         raise Error("HOTLOOP_INTEGER_OVERFLOW: integer division overflow")
     return a // b
 
+@always_inline
 def _checked_floordiv(a: Float64, b: Float64) raises -> Float64:
     if b == 0.0:
         raise Error("HOTLOOP_ZERO_DIVISION_ERROR: float division by zero")
     return math.floor(a / b)
 
+@always_inline
 def _checked_mod(a: Int, b: Int) raises -> Int:
     if b == 0:
         raise Error("HOTLOOP_ZERO_DIVISION_ERROR: integer division or modulo by zero")
@@ -124,16 +159,25 @@ def _checked_mod(a: Int, b: Int) raises -> Int:
         return 0
     return a % b
 
+@always_inline
 def _checked_mod(a: Float64, b: Float64) raises -> Float64:
     if b == 0.0:
         raise Error("HOTLOOP_ZERO_DIVISION_ERROR: float modulo by zero")
     return a % b
 
+@always_inline
 def _checked_pow(base: Int, exp: Int) raises -> Int:
-    if exp < 0:
-        raise Error("HOTLOOP_VALUE_ERROR: negative power exponent")
+    if exp == 2:
+        return _checked_mul(base, base)
+    if exp == 1:
+        return base
     if exp == 0:
         return 1
+    if exp == 3:
+        var b2 = _checked_mul(base, base)
+        return _checked_mul(b2, base)
+    if exp < 0:
+        raise Error("HOTLOOP_VALUE_ERROR: negative power exponent")
     if base == 0:
         return 0
     if base == 1:
@@ -153,12 +197,15 @@ def _checked_pow(base: Int, exp: Int) raises -> Int:
             cur_base = _checked_mul(cur_base, cur_base)
     return res
 
+@always_inline
 def _checked_pow(base: Float64, exp: Float64) raises -> Float64:
     return base ** exp
 
+@always_inline
 def _checked_pow(base: Float64, exp: Int) raises -> Float64:
     return base ** Float64(exp)
 
+@always_inline
 def _checked_pow(base: Int, exp: Float64) raises -> Float64:
     return Float64(base) ** exp
 """
