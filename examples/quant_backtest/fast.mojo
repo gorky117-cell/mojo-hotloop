@@ -1,6 +1,7 @@
 from std.python import Python, PythonObject
 from std.python.bindings import PythonModuleBuilder
 from std.collections import List
+from std.memory import OpaquePointer
 from std.os import abort
 import std.math as math
 
@@ -201,13 +202,17 @@ def _checked_pow(base: Int, exp: Float64) raises -> Float64:
 
 @always_inline
 def _checked_add(a: String, b: String) -> String:
-    var res = a
+    var res = String()
+    res.reserve_bytes(a.byte_length() + b.byte_length())
+    res.write(a)
     res.write(b)
     return res^
 
 @always_inline
 def _checked_add(a: String, b: Codepoint) -> String:
-    var res = a
+    var res = String()
+    res.reserve_bytes(a.byte_length() + 4)
+    res.write(a)
     res.write(b)
     return res^
 
@@ -236,7 +241,7 @@ struct _PyStr(Sized):
 
     @always_inline
     def __init__(out self, s: String):
-        self._cps = List[Codepoint]()
+        self._cps = List[Codepoint](capacity=len(s.codepoints()))
         for cp in s.codepoints():
             self._cps.append(cp)
 
@@ -252,6 +257,20 @@ struct _PyStr(Sized):
         return String(self._cps[i])
 
     @always_inline
+    def get_cp(self, idx: Int) -> Codepoint:
+        var i = idx
+        if i < 0:
+            i += len(self._cps)
+        return self._cps[i]
+
+    @always_inline
+    def get_ord(self, idx: Int) -> Int:
+        var i = idx
+        if i < 0:
+            i += len(self._cps)
+        return Int(self._cps[i])
+
+    @always_inline
     def __getitem__(self, s: Slice) -> String:
         var n = len(self._cps)
         var start = s.start.or_else(0)
@@ -263,6 +282,7 @@ struct _PyStr(Sized):
         var s_c = max(0, min(n, start))
         var e_c = max(0, min(n, end))
         var res = String()
+        res.reserve_bytes(max(0, e_c - s_c) * 4)
         for k in range(s_c, e_c):
             res.write(self._cps[k])
         return res^

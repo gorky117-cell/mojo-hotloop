@@ -268,13 +268,17 @@ def _checked_pow(base: Int, exp: Float64) raises -> Float64:
 
 @always_inline
 def _checked_add(a: String, b: String) -> String:
-    var res = a
+    var res = String()
+    res.reserve_bytes(a.byte_length() + b.byte_length())
+    res.write(a)
     res.write(b)
     return res^
 
 @always_inline
 def _checked_add(a: String, b: Codepoint) -> String:
-    var res = a
+    var res = String()
+    res.reserve_bytes(a.byte_length() + 4)
+    res.write(a)
     res.write(b)
     return res^
 
@@ -303,7 +307,7 @@ struct _PyStr(Sized):
 
     @always_inline
     def __init__(out self, s: String):
-        self._cps = List[Codepoint]()
+        self._cps = List[Codepoint](capacity=len(s.codepoints()))
         for cp in s.codepoints():
             self._cps.append(cp)
 
@@ -319,6 +323,20 @@ struct _PyStr(Sized):
         return String(self._cps[i])
 
     @always_inline
+    def get_cp(self, idx: Int) -> Codepoint:
+        var i = idx
+        if i < 0:
+            i += len(self._cps)
+        return self._cps[i]
+
+    @always_inline
+    def get_ord(self, idx: Int) -> Int:
+        var i = idx
+        if i < 0:
+            i += len(self._cps)
+        return Int(self._cps[i])
+
+    @always_inline
     def __getitem__(self, s: Slice) -> String:
         var n = len(self._cps)
         var start = s.start.or_else(0)
@@ -330,6 +348,7 @@ struct _PyStr(Sized):
         var s_c = max(0, min(n, start))
         var e_c = max(0, min(n, end))
         var res = String()
+        res.reserve_bytes(max(0, e_c - s_c) * 4)
         for k in range(s_c, e_c):
             res.write(self._cps[k])
         return res^
@@ -414,7 +433,38 @@ class MojoASTTranspiler:
             body_lines.append(self.visit_stmt(stmt))
         body_code = "\n".join(body_lines)
 
-        # 4. Generate C-ABI wrapper
+        # 4. Check for typed array collections to generate pointer fast-path
+        coll_args = [
+            (name, py_type, mojo_type, elem_type, i)
+            for i, (name, py_type, mojo_type, elem_type) in enumerate(args)
+            if elem_type in ("float", "int")
+        ]
+
+        ptr_native_code = ""
+        if coll_args:
+            ptr_args_def = []
+            ptr_body_lines = []
+            for name, py_type, mojo_type, elem_type in args:
+                if elem_type in ("float", "int"):
+                    inner_m = "Float64" if elem_type == "float" else "Int"
+                    ptr_args_def.append(f"{name}_ptr: OpaquePointer[MutUntrackedOrigin]")
+                    ptr_args_def.append(f"_n_{name}: Int")
+                    ptr_body_lines.append(f"    var {name} = {name}_ptr.unsafe_bitcast[{inner_m}]()")
+                elif name in subscripted_args and mojo_type == "String":
+                    ptr_args_def.append(f"_arg_{name}: String")
+                    ptr_body_lines.append(f"    var {name}: _PyStr = _PyStr(_arg_{name})")
+                else:
+                    ptr_args_def.append(f"{name}: {mojo_type}")
+
+            for line in body_lines:
+                mod_line = line
+                for name, _, _, elem_type, _ in coll_args:
+                    mod_line = mod_line.replace(f"_len({name})", f"_n_{name}")
+                ptr_body_lines.append(mod_line)
+            ptr_body_code = "\n".join(ptr_body_lines)
+            ptr_native_code = f"""@always_inline\ndef _ptr_{func_def.name}({", ".join(ptr_args_def)}) raises -> {ret_mojo_type}:\n{ptr_body_code}"""
+
+        # 5. Generate C-ABI wrapper
         wrapper_args_def = ", ".join([f"arg{i}: PythonObject" for i in range(len(args))])
         wrapper_conversions = []
         call_args = []
@@ -432,8 +482,6 @@ class MojoASTTranspiler:
             wrapper_conversions.append(conv)
             call_args.append(name)
 
-        conv_block = "\n".join(wrapper_conversions)
-
         if ret_elem_type is not None:
             call_block = (
                 f"    var _res = _native_{func_def.name}({', '.join(call_args)})\n"
@@ -446,12 +494,45 @@ class MojoASTTranspiler:
         else:
             call_block = f"    var _res = _native_{func_def.name}({', '.join(call_args)})\n    return PythonObject(_res)"
 
-        wrapper_code = f"""def {func_def.name}({wrapper_args_def}) raises -> PythonObject:
-{conv_block}
+        if coll_args:
+            ctypes_cond = " and ".join([f'Bool(py=_builtins.hasattr(arg{i}, "ctypes"))' for _, _, _, _, i in coll_args])
+            ptr_calls = []
+            for i, (name, py_type, mojo_type, elem_type) in enumerate(args):
+                if elem_type in ("float", "int"):
+                    ptr_calls.append(f"_{name}_op")
+                    ptr_calls.append(f"_n_{name}")
+                else:
+                    ptr_calls.append(f"{mojo_type}(py=arg{i})")
+
+            len_checks = "\n".join([f"        var _n_{name} = Int(py=arg{i}.__len__())" for name, _, _, _, i in coll_args])
+            addr_fetches = "\n".join([f"        var _{name}_addr = Int(py=arg{i}.ctypes.data)" for name, _, _, _, i in coll_args])
+            op_wraps = "\n".join([f"        var _{name}_op = OpaquePointer[MutUntrackedOrigin](unsafe_from_address=_{name}_addr)" for name, _, _, _, i in coll_args])
+
+            conv_block_8 = "\n".join(["    " + l if l.strip() else "" for l in "\n".join(wrapper_conversions).splitlines()])
+            call_block_8 = "\n".join(["    " + l if l.strip() else "" for l in call_block.splitlines()])
+
+            wrapper_code = f"""def {func_def.name}({wrapper_args_def}) raises -> PythonObject:
+    var _builtins = Python.import_module("builtins")
+    var _has_ctypes = {ctypes_cond}
+    if _has_ctypes:
+{len_checks}
+{addr_fetches}
+{op_wraps}
+        var _res = _ptr_{func_def.name}({', '.join(ptr_calls)})
+        return PythonObject(_res)
+    else:
+{conv_block_8}
+{call_block_8}"""
+        else:
+            conv_block_4 = "\n".join(wrapper_conversions)
+            wrapper_code = f"""def {func_def.name}({wrapper_args_def}) raises -> PythonObject:
+{conv_block_4}
 {call_block}"""
 
         native_code = f"""def _native_{func_def.name}({", ".join(native_args)}) raises -> {ret_mojo_type}:
 {body_code}"""
+        if ptr_native_code:
+            native_code = f"{ptr_native_code}\n\n{native_code}"
 
         export_reg = f'        m.def_function[{func_def.name}]("{func_def.name}")'
 
@@ -713,13 +794,32 @@ class MojoASTTranspiler:
                 raise ASTTranspileError(f"Unsupported unary operator: {type(node.op).__name__}")
 
         elif isinstance(node, ast.Compare):
+            def _is_pystr_sub(n):
+                return (
+                    isinstance(n, ast.Subscript) and
+                    isinstance(n.value, ast.Name) and
+                    self.var_types.get(n.value.id) == "_PyStr"
+                )
+
             left_is_cp = (isinstance(node.left, ast.Name) and self.var_types.get(node.left.id) == "Codepoint")
+            left_is_sub = _is_pystr_sub(node.left)
             left = self.visit_expr(node.left)
             parts = [left]
             for op, comparator in zip(node.ops, node.comparators):
                 comp_op = self.visit_cmp_op(op)
                 comp_is_cp = (isinstance(comparator, ast.Name) and self.var_types.get(comparator.id) == "Codepoint")
-                if left_is_cp and isinstance(comparator, ast.Constant) and isinstance(comparator.value, str):
+                comp_is_sub = _is_pystr_sub(comparator)
+                if left_is_sub and isinstance(comparator, ast.Constant) and isinstance(comparator.value, str) and len(comparator.value) == 1:
+                    vname = node.left.value.id
+                    slice_code = self.visit_expr(node.left.slice)
+                    parts[0] = f"{vname}.get_ord({slice_code})"
+                    comp_val = str(ord(comparator.value))
+                elif comp_is_sub and isinstance(node.left, ast.Constant) and isinstance(node.left.value, str) and len(node.left.value) == 1:
+                    cname = comparator.value.id
+                    slice_code = self.visit_expr(comparator.slice)
+                    parts[0] = str(ord(node.left.value))
+                    comp_val = f"{cname}.get_ord({slice_code})"
+                elif left_is_cp and isinstance(comparator, ast.Constant) and isinstance(comparator.value, str):
                     comp_val = f'Codepoint({repr(comparator.value)})'
                 elif comp_is_cp and isinstance(node.left, ast.Constant) and isinstance(node.left.value, str):
                     parts[0] = f'Codepoint({repr(node.left.value)})'
@@ -874,6 +974,7 @@ def transpile_python_to_mojo(source_code: str, mod_name: str) -> str:
     mojo_source = f"""from std.python import Python, PythonObject
 from std.python.bindings import PythonModuleBuilder
 from std.collections import List
+from std.memory import OpaquePointer
 from std.os import abort
 import std.math as math
 

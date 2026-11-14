@@ -2,37 +2,37 @@
   "small": {
     "desc": "Small cloud (100 vertices)",
     "points": 100,
-    "py_ms": 0.0266244001,
-    "numpy_ms": 0.0525155003,
-    "numba_ms": 0.00101067,
-    "mojo_direct_ms": 0.0200018701,
-    "mojo_wrapped_ms": 0.022544920200000002,
-    "speedup_vs_py": 1.1809489616201878,
-    "speedup_vs_np": 2.3293717535536005,
-    "speedup_vs_numba": 0.04482916732612786
+    "py_ms": 0.036675590699999996,
+    "numpy_ms": 0.0670449496,
+    "numba_ms": 0.0012356304999999999,
+    "mojo_direct_ms": 0.0247961572,
+    "mojo_wrapped_ms": 0.0289630386,
+    "speedup_vs_py": 1.2662894666031346,
+    "speedup_vs_np": 2.3148451557841723,
+    "speedup_vs_numba": 0.042662322730184804
   },
   "medium": {
     "desc": "Medium cloud (1,000 vertices)",
     "points": 1000,
-    "py_ms": 0.2808175,
-    "numpy_ms": 0.23765730000000002,
-    "numba_ms": 0.0053986,
-    "mojo_direct_ms": 0.211733304,
-    "mojo_wrapped_ms": 0.21898190099999998,
-    "speedup_vs_py": 1.2823776701070835,
-    "speedup_vs_np": 1.0852828426217747,
-    "speedup_vs_numba": 0.024653178985782943
+    "py_ms": 0.384941313,
+    "numpy_ms": 0.339575499,
+    "numba_ms": 0.007047502999999999,
+    "mojo_direct_ms": 0.302901188,
+    "mojo_wrapped_ms": 0.306797991,
+    "speedup_vs_py": 1.2547061072508783,
+    "speedup_vs_np": 1.1068374271068808,
+    "speedup_vs_numba": 0.022971151072498384
   },
   "large": {
     "desc": "Large cloud (10,000 vertices)",
     "points": 10000,
-    "py_ms": 2.90420102,
-    "numpy_ms": 2.461204,
-    "numba_ms": 0.049090999999999996,
-    "mojo_direct_ms": 2.18742501,
-    "mojo_wrapped_ms": 2.19365603,
-    "speedup_vs_py": 1.3239090268860427,
-    "speedup_vs_np": 1.1219644129895787,
-    "speedup_vs_numba": 0.022378622413286916
+    "py_ms": 3.94448316,
+    "numpy_ms": 3.3824579800000003,
+    "numba_ms": 0.06435202999999999,
+    "mojo_direct_ms": 2.7966678000000003,
+    "mojo_wrapped_ms": 2.7997418400000003,
+    "speedup_vs_py": 1.40887388388638,
+    "speedup_vs_np": 1.2081320969221934,
+    "speedup_vs_numba": 0.022984987072950977
   }
 }

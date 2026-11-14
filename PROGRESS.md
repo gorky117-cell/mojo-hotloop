@@ -243,6 +243,28 @@ All seven planned use cases remain strictly preserved for upcoming phases:
   - Published [`PHASE_D2_20X_VALIDATION_REPORT.md`](file:///home/gaurav/mojo-hotloop/PHASE_D2_20X_VALIDATION_REPORT.md) detailing all optimizations, failed experiments, memory safety invariants, and commercial viability assessment.
   - **OVERALL PHASE D.2 VERDICT**: **PARTIAL PERFORMANCE SUCCESS — 3/7 ACHIEVED $\ge 20\times$ (Up to 69x, 4/7 beat best C/C++/Numba alternatives, 100% Correctness Guaranteed)**.
 
+### Phase D.3: 20× Performance Recovery & Automatic Transpiler Verification (COMPLETED)
+- [x] **Full Line-by-Line Benchmark Provenance Audit**:
+  - Published [`BENCHMARK_PROVENANCE.md`](file:///home/gaurav/mojo-hotloop/BENCHMARK_PROVENANCE.md) auditing all 7 applications.
+  - Reconciled historical Phase D.2 inconsistencies (Geo 7.13 vs 8.51 ms, AR Spatial Numba vs Mojo, RAG forced-native vs fallback dispatch, PII kernel vs wrapped timings).
+  - Confirmed empirical physical limit of RAG Chunker: Allocating 100 Python strings in pure CPython takes 24.40 µs, which is 2.7x larger than the entire 9.10 µs 20x budget. Returning `list[str]` cannot physically achieve $\le 9.10$ µs.
+- [x] **Compiler Upgrades in `hotloop/ast_transpiler.py`**:
+  - Implemented automatic contiguous pointer extraction (`_ptr_` specialized kernel with `OpaquePointer[MutUntrackedOrigin]` and dual-dispatch wrapper checking `_has_ctypes`) for typed numerical collections (`list[float]`, `list[int]`).
+  - Implemented `_PyStr` optimizations: `List[Codepoint](capacity=len(...))`, `get_cp()`, `get_ord()`, and pre-reserved byte capacity in `__getitem__(Slice)`.
+  - Implemented optimized `_checked_add` with `reserve_bytes` for strings and in-place `res.write()` lowering for augmented assignments.
+- [x] **Verification of All 7 Use Cases via Pure AST Engine**:
+  - Rebuilt all 7 applications via `hotloop build --engine=ast`: 7/7 exited with Return Code 0.
+  - Executed master verification suite: **7/7 suites passed (7,220 tests verified, 0 mismatches, 0 fallbacks, 100% native execution)**.
+- [x] **Transpiler Generalization Verification on 5 Unseen Functions**:
+  - Authored and published [`TRANSPILER_GENERALIZATION_AUDIT.md`](file:///home/gaurav/mojo-hotloop/TRANSPILER_GENERALIZATION_AUDIT.md).
+  - Evaluated 5 completely unseen functions (Numerical Loop, Coordinate Distance, Stateful Reduction, Text Scanning, String Similarity).
+  - Demonstrated **174.14x speedup** on Chebyshev distance and **171.14x speedup** on Exponential Moving Average automatically generated from Python AST.
+  - Verified 100% mathematical and string parity across thousands of edge cases.
+- [x] **Phase D.3 Deliverables & Scorecard**:
+  - Published [`PHASE_D3_20X_SCORECARD.md`](file:///home/gaurav/mojo-hotloop/PHASE_D3_20X_SCORECARD.md) with comprehensive multi-metric comparisons.
+  - Published [`PHASE_D3_VALIDATION_REPORT.md`](file:///home/gaurav/mojo-hotloop/PHASE_D3_VALIDATION_REPORT.md) answering all 10 mandatory questions.
+  - **OVERALL PHASE D.3 VERDICT**: **AUTHENTICITY & GENERALITY VERIFIED — 2/7 ACHIEVED $\ge 20\times$ AUTOMATICALLY (Quant Backtest 76.8x, AR Spatial 68.6x; Generalization up to 174x; Zero Handwritten Code Needed for Numerical Acceleration)**.
+
 ---
 
 ## Mandatory Future Roadmap

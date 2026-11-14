@@ -1,6 +1,7 @@
 from std.python import Python, PythonObject
 from std.python.bindings import PythonModuleBuilder
 from std.collections import List
+from std.memory import OpaquePointer
 from std.os import abort
 import std.math as math
 
@@ -201,13 +202,17 @@ def _checked_pow(base: Int, exp: Float64) raises -> Float64:
 
 @always_inline
 def _checked_add(a: String, b: String) -> String:
-    var res = a
+    var res = String()
+    res.reserve_bytes(a.byte_length() + b.byte_length())
+    res.write(a)
     res.write(b)
     return res^
 
 @always_inline
 def _checked_add(a: String, b: Codepoint) -> String:
-    var res = a
+    var res = String()
+    res.reserve_bytes(a.byte_length() + 4)
+    res.write(a)
     res.write(b)
     return res^
 
@@ -236,7 +241,7 @@ struct _PyStr(Sized):
 
     @always_inline
     def __init__(out self, s: String):
-        self._cps = List[Codepoint]()
+        self._cps = List[Codepoint](capacity=len(s.codepoints()))
         for cp in s.codepoints():
             self._cps.append(cp)
 
@@ -252,6 +257,20 @@ struct _PyStr(Sized):
         return String(self._cps[i])
 
     @always_inline
+    def get_cp(self, idx: Int) -> Codepoint:
+        var i = idx
+        if i < 0:
+            i += len(self._cps)
+        return self._cps[i]
+
+    @always_inline
+    def get_ord(self, idx: Int) -> Int:
+        var i = idx
+        if i < 0:
+            i += len(self._cps)
+        return Int(self._cps[i])
+
+    @always_inline
     def __getitem__(self, s: Slice) -> String:
         var n = len(self._cps)
         var start = s.start.or_else(0)
@@ -263,6 +282,7 @@ struct _PyStr(Sized):
         var s_c = max(0, min(n, start))
         var e_c = max(0, min(n, end))
         var res = String()
+        res.reserve_bytes(max(0, e_c - s_c) * 4)
         for k in range(s_c, e_c):
             res.write(self._cps[k])
         return res^
@@ -291,67 +311,51 @@ def clean_pdf_text(arg0: PythonObject) raises -> PythonObject:
     return PythonObject(_res)
 
 def _native_clean_pdf_text(_arg_text: String) raises -> String:
-    var text = _PyStr(_arg_text)
-    var n = len(text._cps)
-    if n == 0:
+    var text: _PyStr = _PyStr(_arg_text)
+    var n: Int = _len(text)
+    if (n == 0):
         return ''
-    var result = String()
-    result.reserve_bytes(_arg_text.byte_length())
-
-    var i = 0
-    while i < n:
-        var cp = text._cps[i]
-        var c = Int(cp)
-
-        # 1. Hyphen repair at line break: e.g. "word-\nnext" -> "wordnext"
-        if c == 45 and i + 1 < n and (Int(text._cps[i + 1]) == 10 or Int(text._cps[i + 1]) == 13):
-            if i > 0 and ((Int(text._cps[i - 1]) >= 97 and Int(text._cps[i - 1]) <= 122) or (Int(text._cps[i - 1]) >= 65 and Int(text._cps[i - 1]) <= 90)):
-                i += 1
-                while i < n and (Int(text._cps[i]) == 10 or Int(text._cps[i]) == 13 or Int(text._cps[i]) == 32 or Int(text._cps[i]) == 9):
-                    i += 1
+    var result: String = String()
+    var i: Int = 0
+    while (i < n):
+        var ch: String = text[i]
+        if ((ch == '-') and (_checked_add(i, 1) < n) and ((text.get_ord(_checked_add(i, 1)) == 10) or (text.get_ord(_checked_add(i, 1)) == 13))):
+            if ((i > 0) and (((text.get_ord(_checked_sub(i, 1)) >= 97) and (text.get_ord(_checked_sub(i, 1)) <= 122)) or ((text.get_ord(_checked_sub(i, 1)) >= 65) and (text.get_ord(_checked_sub(i, 1)) <= 90)))):
+                i = _checked_add(i, 1)
+                while ((i < n) and ((text.get_ord(i) == 10) or (text.get_ord(i) == 13) or (text.get_ord(i) == 32) or (text.get_ord(i) == 9))):
+                    i = _checked_add(i, 1)
                 continue
-
-        # 2. Form feed / page break character: \f = 12
-        if c == 12:
+        if (ch == '\x0c'):
             result.write('\n\n')
-            i += 1
-            while i < n and (Int(text._cps[i]) == 32 or Int(text._cps[i]) == 9 or Int(text._cps[i]) == 10 or Int(text._cps[i]) == 13):
-                i += 1
+            i = _checked_add(i, 1)
+            while ((i < n) and ((text.get_ord(i) == 32) or (text.get_ord(i) == 9) or (text.get_ord(i) == 10) or (text.get_ord(i) == 13))):
+                i = _checked_add(i, 1)
             continue
-
-        # 3. Page header removal: e.g. "\nPage 4\n"
-        if c == 10 and i + 1 < n:
-            if i + 6 <= n:
-                if Int(text._cps[i + 1]) == 80 and Int(text._cps[i + 2]) == 97 and Int(text._cps[i + 3]) == 103 and Int(text._cps[i + 4]) == 101 and Int(text._cps[i + 5]) == 32:
-                    var j = i + 6
-                    while j < n and Int(text._cps[j]) >= 48 and Int(text._cps[j]) <= 57:
-                        j += 1
-                    if j == n or Int(text._cps[j]) == 10 or Int(text._cps[j]) == 13:
-                        i = j
-                        continue
-
-        # 4. Whitespace normalization: multiple spaces/tabs into single space
-        if c == 32 or c == 9:
+        if ((ch == '\n') and (_checked_add(i, 1) < n)):
+            if ((_checked_add(i, 6) <= n) and (text[_checked_add(i, 1):_checked_add(i, 6)] == 'Page ')):
+                var j: Int = _checked_add(i, 6)
+                while ((j < n) and (text.get_ord(j) >= 48) and (text.get_ord(j) <= 57)):
+                    j = _checked_add(j, 1)
+                if ((j == n) or (text.get_ord(j) == 10) or (text.get_ord(j) == 13)):
+                    i = j
+                    continue
+        if ((ch == ' ') or (ch == '\t')):
             result.write(' ')
-            i += 1
-            while i < n and (Int(text._cps[i]) == 32 or Int(text._cps[i]) == 9):
-                i += 1
+            i = _checked_add(i, 1)
+            while ((i < n) and ((text.get_ord(i) == 32) or (text.get_ord(i) == 9))):
+                i = _checked_add(i, 1)
             continue
-
-        # 5. Collapse 3+ newlines into 2 newlines (paragraph break)
-        if c == 10:
-            var nl_count = 0
-            while i < n and (Int(text._cps[i]) == 10 or Int(text._cps[i]) == 13):
-                if Int(text._cps[i]) == 10:
-                    nl_count += 1
-                i += 1
-            if nl_count >= 2:
+        if (ch == '\n'):
+            var nl_count: Int = 0
+            while ((i < n) and ((text.get_ord(i) == 10) or (text.get_ord(i) == 13))):
+                if (text.get_ord(i) == 10):
+                    nl_count = _checked_add(nl_count, 1)
+                i = _checked_add(i, 1)
+            if (nl_count >= 2):
                 result.write('\n\n')
             else:
                 result.write('\n')
             continue
-
-        result.write(cp)
-        i += 1
-
+        result.write(ch)
+        i = _checked_add(i, 1)
     return result^

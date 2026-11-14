@@ -1,6 +1,7 @@
 from std.python import Python, PythonObject
 from std.python.bindings import PythonModuleBuilder
 from std.collections import List
+from std.memory import OpaquePointer
 from std.os import abort
 import std.math as math
 
@@ -201,13 +202,17 @@ def _checked_pow(base: Int, exp: Float64) raises -> Float64:
 
 @always_inline
 def _checked_add(a: String, b: String) -> String:
-    var res = a
+    var res = String()
+    res.reserve_bytes(a.byte_length() + b.byte_length())
+    res.write(a)
     res.write(b)
     return res^
 
 @always_inline
 def _checked_add(a: String, b: Codepoint) -> String:
-    var res = a
+    var res = String()
+    res.reserve_bytes(a.byte_length() + 4)
+    res.write(a)
     res.write(b)
     return res^
 
@@ -236,7 +241,7 @@ struct _PyStr(Sized):
 
     @always_inline
     def __init__(out self, s: String):
-        self._cps = List[Codepoint]()
+        self._cps = List[Codepoint](capacity=len(s.codepoints()))
         for cp in s.codepoints():
             self._cps.append(cp)
 
@@ -252,6 +257,20 @@ struct _PyStr(Sized):
         return String(self._cps[i])
 
     @always_inline
+    def get_cp(self, idx: Int) -> Codepoint:
+        var i = idx
+        if i < 0:
+            i += len(self._cps)
+        return self._cps[i]
+
+    @always_inline
+    def get_ord(self, idx: Int) -> Int:
+        var i = idx
+        if i < 0:
+            i += len(self._cps)
+        return Int(self._cps[i])
+
+    @always_inline
     def __getitem__(self, s: Slice) -> String:
         var n = len(self._cps)
         var start = s.start.or_else(0)
@@ -263,6 +282,7 @@ struct _PyStr(Sized):
         var s_c = max(0, min(n, start))
         var e_c = max(0, min(n, end))
         var res = String()
+        res.reserve_bytes(max(0, e_c - s_c) * 4)
         for k in range(s_c, e_c):
             res.write(self._cps[k])
         return res^
@@ -295,65 +315,26 @@ def find_closest_match(arg0: PythonObject, arg1: PythonObject, arg2: PythonObjec
     var _res = _native_find_closest_match(query, candidates, max_distance)
     return PythonObject(_res)
 
-@always_inline
-def _is_ascii(s: String) -> Bool:
-    var b = s.as_bytes()
-    for i in range(len(b)):
-        if Int(b[i]) >= 128:
-            return False
-    return True
-
 def _native_levenshtein_distance(_arg_s1: String, _arg_s2: String, max_dist: Int) raises -> Int:
-    var m = _arg_s1.byte_length()
-    var n = _arg_s2.byte_length()
-    var diff = m - n if m >= n else n - m
-    if diff > max_dist:
-        return max_dist + 1
-    if m <= 64 and n <= 64 and _is_ascii(_arg_s1) and _is_ascii(_arg_s2):
-        var s1_bytes = _arg_s1.as_bytes()
-        var s2_bytes = _arg_s2.as_bytes()
-        var peq = List[UInt64]()
-        for _ in range(128):
-            peq.append(0)
-        for i in range(m):
-            var c = Int(s1_bytes[i])
-            if c < 128:
-                peq[c] |= (UInt64(1) << UInt64(i))
-        var score = m
-        var vp: UInt64 = (UInt64(1) << UInt64(m)) - 1
-        var vn: UInt64 = 0
-        for j in range(n):
-            var c = Int(s2_bytes[j])
-            var pm = peq[c] if c < 128 else UInt64(0)
-            var d0 = (((pm & vp) + vp) ^ vp) | pm | vn
-            var hp = vn | ~(d0 | vp)
-            var hn = d0 & vp
-            if (hp & (UInt64(1) << UInt64(m - 1))) != 0:
-                score += 1
-            elif (hn & (UInt64(1) << UInt64(m - 1))) != 0:
-                score -= 1
-            hp = (hp << UInt64(1)) | 1
-            hn = hn << UInt64(1)
-            d0 = (d0 >> UInt64(1)) | (UInt64(1) << UInt64(63))
-            vp = hn | ~(d0 | hp)
-            vn = hp & d0
-        return score
-
-    # Fallback to standard dynamic programming for non-ASCII or long strings
     var s1: _PyStr = _PyStr(_arg_s1)
     var s2: _PyStr = _PyStr(_arg_s2)
-    var m_cp: Int = _len(s1)
-    var n_cp: Int = _len(s2)
+    var m: Int = _len(s1)
+    var n: Int = _len(s2)
+    var diff: Int = _checked_sub(m, n)
+    if (diff < 0):
+        diff = _checked_neg(diff)
+    if (diff > max_dist):
+        return _checked_add(max_dist, 1)
     var prev: List[Int] = List[Int]()
     var curr: List[Int] = List[Int]()
-    for j in range(_checked_add(n_cp, 1)):
+    for j in range(_checked_add(n, 1)):
         prev.append(j)
         curr.append(0)
-    for i in range(1, _checked_add(m_cp, 1)):
+    for i in range(1, _checked_add(m, 1)):
         curr[0] = i
         var min_row: Int = i
         var ch1: String = s1[_checked_sub(i, 1)]
-        for j in range(1, _checked_add(n_cp, 1)):
+        for j in range(1, _checked_add(n, 1)):
             var cost: Int = 1
             if (ch1 == s2[_checked_sub(j, 1)]):
                 cost = 0
@@ -370,66 +351,14 @@ def _native_levenshtein_distance(_arg_s1: String, _arg_s2: String, max_dist: Int
                 min_row = val
         if (min_row > max_dist):
             return _checked_add(max_dist, 1)
-        for j in range(_checked_add(n_cp, 1)):
+        for j in range(_checked_add(n, 1)):
             prev[j] = curr[j]
-    return prev[n_cp]
+    return prev[n]
 
 def _native_find_closest_match(query: String, candidates: List[String], max_distance: Int) raises -> Int:
     var best_idx: Int = _checked_neg(1)
     var best_dist: Int = _checked_add(max_distance, 1)
     var num_candidates: Int = _len(candidates)
-    var m = query.byte_length()
-
-    if m <= 64 and _is_ascii(query):
-        var s1_bytes = query.as_bytes()
-        var peq = List[UInt64]()
-        for _ in range(128):
-            peq.append(0)
-        for i in range(m):
-            var c = Int(s1_bytes[i])
-            if c < 128:
-                peq[c] |= (UInt64(1) << UInt64(i))
-
-        for i in range(num_candidates):
-            var cand = candidates[i]
-            var n = cand.byte_length()
-            var diff = m - n if m >= n else n - m
-            if diff > best_dist - 1:
-                continue
-            if n <= 64 and _is_ascii(cand):
-                var s2_bytes = cand.as_bytes()
-                var score = m
-                var vp: UInt64 = (UInt64(1) << UInt64(m)) - 1
-                var vn: UInt64 = 0
-                for j in range(n):
-                    var c = Int(s2_bytes[j])
-                    var pm = peq[c] if c < 128 else UInt64(0)
-                    var d0 = (((pm & vp) + vp) ^ vp) | pm | vn
-                    var hp = vn | ~(d0 | vp)
-                    var hn = d0 & vp
-                    if (hp & (UInt64(1) << UInt64(m - 1))) != 0:
-                        score += 1
-                    elif (hn & (UInt64(1) << UInt64(m - 1))) != 0:
-                        score -= 1
-                    hp = (hp << UInt64(1)) | 1
-                    hn = hn << UInt64(1)
-                    d0 = (d0 >> UInt64(1)) | (UInt64(1) << UInt64(63))
-                    vp = hn | ~(d0 | hp)
-                    vn = hp & d0
-                if score < best_dist:
-                    best_dist = score
-                    best_idx = i
-                    if best_dist == 0:
-                        break
-            else:
-                var dist: Int = _native_levenshtein_distance(query, cand, _checked_sub(best_dist, 1))
-                if (dist < best_dist):
-                    best_dist = dist
-                    best_idx = i
-                    if (best_dist == 0):
-                        break
-        return best_idx
-
     for i in range(num_candidates):
         var cand: String = candidates[i]
         var dist: Int = _native_levenshtein_distance(query, cand, _checked_sub(best_dist, 1))

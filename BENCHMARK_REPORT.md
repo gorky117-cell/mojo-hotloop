@@ -11,10 +11,10 @@
 ## Results Table
 | Benchmark Workload | Engine | Comparison Tool | Pure Python p50 (ms) | Comparison Tool p50 (ms) | Mojo .so p50 (ms) | Speedup vs Python |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| `quant_backtest` (100k ticks) | Hand-crafted (Stage 2) / AST | Numba @njit (916.9ms JIT) | 28.378 ms | 0.450 ms | 0.413 ms | **68.6x** |
+| `quant_backtest` (100k ticks) | Hand-crafted (Stage 2) / AST | Numba @njit (672.2ms JIT) | 26.382 ms | 0.377 ms | 0.344 ms | **76.7x** |
 
 ### Detailed Notes on `quant_backtest`
-- **Pure Python**: 28.378 ms (p95: 30.635 ms)
-- **Numba @njit**: 0.450 ms (p95: 0.568 ms), with a initial cold-start compile delay of 916.9 ms.
-- **Mojo .so (C-ABI)**: 0.413 ms (p95: 0.479 ms), zero runtime compilation lag, pure native execution.
+- **Pure Python**: 26.382 ms (p95: 28.092 ms)
+- **Numba @njit**: 0.377 ms (p95: 0.394 ms), with a initial cold-start compile delay of 672.2 ms.
+- **Mojo .so (C-ABI)**: 0.344 ms (p95: 0.365 ms), zero runtime compilation lag, pure native execution.
 - **Verification**: 1,109 tests (boundary, 1000 randomized, hypothesis) passed with 0 mismatches.

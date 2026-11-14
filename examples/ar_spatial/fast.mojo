@@ -202,13 +202,17 @@ def _checked_pow(base: Int, exp: Float64) raises -> Float64:
 
 @always_inline
 def _checked_add(a: String, b: String) -> String:
-    var res = a
+    var res = String()
+    res.reserve_bytes(a.byte_length() + b.byte_length())
+    res.write(a)
     res.write(b)
     return res^
 
 @always_inline
 def _checked_add(a: String, b: Codepoint) -> String:
-    var res = a
+    var res = String()
+    res.reserve_bytes(a.byte_length() + 4)
+    res.write(a)
     res.write(b)
     return res^
 
@@ -237,7 +241,7 @@ struct _PyStr(Sized):
 
     @always_inline
     def __init__(out self, s: String):
-        self._cps = List[Codepoint]()
+        self._cps = List[Codepoint](capacity=len(s.codepoints()))
         for cp in s.codepoints():
             self._cps.append(cp)
 
@@ -253,6 +257,20 @@ struct _PyStr(Sized):
         return String(self._cps[i])
 
     @always_inline
+    def get_cp(self, idx: Int) -> Codepoint:
+        var i = idx
+        if i < 0:
+            i += len(self._cps)
+        return self._cps[i]
+
+    @always_inline
+    def get_ord(self, idx: Int) -> Int:
+        var i = idx
+        if i < 0:
+            i += len(self._cps)
+        return Int(self._cps[i])
+
+    @always_inline
     def __getitem__(self, s: Slice) -> String:
         var n = len(self._cps)
         var start = s.start.or_else(0)
@@ -264,6 +282,7 @@ struct _PyStr(Sized):
         var s_c = max(0, min(n, start))
         var e_c = max(0, min(n, end))
         var res = String()
+        res.reserve_bytes(max(0, e_c - s_c) * 4)
         for k in range(s_c, e_c):
             res.write(self._cps[k])
         return res^
@@ -286,72 +305,20 @@ def PyInit_fast() abi("C") -> PythonObject:
     except e:
         abort(String("error creating Python Mojo module: ", e))
 
-@always_inline
-def _ptr_find_closest_point_to_ray(
-    xs_ptr: OpaquePointer[MutUntrackedOrigin],
-    ys_ptr: OpaquePointer[MutUntrackedOrigin],
-    zs_ptr: OpaquePointer[MutUntrackedOrigin],
-    n: Int,
-    ray_ox: Float64,
-    ray_oy: Float64,
-    ray_oz: Float64,
-    ray_dx: Float64,
-    ray_dy: Float64,
-    ray_dz: Float64,
-) -> Int:
-    if n == 0:
-        return -1
-    var dir_len_sq = ray_dx * ray_dx + ray_dy * ray_dy + ray_dz * ray_dz
-    if dir_len_sq <= 0.0:
-        return -1
-    var inv_len = 1.0 / math.sqrt(dir_len_sq)
-    var dx = ray_dx * inv_len
-    var dy = ray_dy * inv_len
-    var dz = ray_dz * inv_len
-    var best_idx = -1
-    var min_dist_sq: Float64 = 1e30
-
-    var xs = xs_ptr.unsafe_bitcast[Float64]()
-    var ys = ys_ptr.unsafe_bitcast[Float64]()
-    var zs = zs_ptr.unsafe_bitcast[Float64]()
-
-    for i in range(n):
-        var vx = xs[i] - ray_ox
-        var vy = ys[i] - ray_oy
-        var vz = zs[i] - ray_oz
-        var t = vx * dx + vy * dy + vz * dz
-        if t < 0.0:
-            t = 0.0
-        var wx = vx - t * dx
-        var wy = vy - t * dy
-        var wz = vz - t * dz
-        var dist_sq = wx * wx + wy * wy + wz * wz
-        if dist_sq < min_dist_sq:
-            min_dist_sq = dist_sq
-            best_idx = i
-    return best_idx
-
 def find_closest_point_to_ray(arg0: PythonObject, arg1: PythonObject, arg2: PythonObject, arg3: PythonObject, arg4: PythonObject, arg5: PythonObject, arg6: PythonObject, arg7: PythonObject, arg8: PythonObject) raises -> PythonObject:
-    var builtins = Python.import_module("builtins")
-    var has_ctypes = Bool(py=builtins.hasattr(arg0, "ctypes")) and Bool(py=builtins.hasattr(arg1, "ctypes")) and Bool(py=builtins.hasattr(arg2, "ctypes"))
-    var ray_ox = Float64(py=arg3)
-    var ray_oy = Float64(py=arg4)
-    var ray_oz = Float64(py=arg5)
-    var ray_dx = Float64(py=arg6)
-    var ray_dy = Float64(py=arg7)
-    var ray_dz = Float64(py=arg8)
-
-    if has_ctypes:
-        var n = Int(py=arg0.__len__())
-        if n == 0 or Int(py=arg1.__len__()) != n or Int(py=arg2.__len__()) != n:
-            return PythonObject(-1)
-        var x_addr = Int(py=arg0.ctypes.data)
-        var y_addr = Int(py=arg1.ctypes.data)
-        var z_addr = Int(py=arg2.ctypes.data)
-        var x_op = OpaquePointer[MutUntrackedOrigin](unsafe_from_address=x_addr)
-        var y_op = OpaquePointer[MutUntrackedOrigin](unsafe_from_address=y_addr)
-        var z_op = OpaquePointer[MutUntrackedOrigin](unsafe_from_address=z_addr)
-        var _res = _ptr_find_closest_point_to_ray(x_op, y_op, z_op, n, ray_ox, ray_oy, ray_oz, ray_dx, ray_dy, ray_dz)
+    var _builtins = Python.import_module("builtins")
+    var _has_ctypes = Bool(py=_builtins.hasattr(arg0, "ctypes")) and Bool(py=_builtins.hasattr(arg1, "ctypes")) and Bool(py=_builtins.hasattr(arg2, "ctypes"))
+    if _has_ctypes:
+        var _n_xs = Int(py=arg0.__len__())
+        var _n_ys = Int(py=arg1.__len__())
+        var _n_zs = Int(py=arg2.__len__())
+        var _xs_addr = Int(py=arg0.ctypes.data)
+        var _ys_addr = Int(py=arg1.ctypes.data)
+        var _zs_addr = Int(py=arg2.ctypes.data)
+        var _xs_op = OpaquePointer[MutUntrackedOrigin](unsafe_from_address=_xs_addr)
+        var _ys_op = OpaquePointer[MutUntrackedOrigin](unsafe_from_address=_ys_addr)
+        var _zs_op = OpaquePointer[MutUntrackedOrigin](unsafe_from_address=_zs_addr)
+        var _res = _ptr_find_closest_point_to_ray(_xs_op, _n_xs, _ys_op, _n_ys, _zs_op, _n_zs, Float64(py=arg3), Float64(py=arg4), Float64(py=arg5), Float64(py=arg6), Float64(py=arg7), Float64(py=arg8))
         return PythonObject(_res)
     else:
         var xs = List[Float64]()
@@ -366,8 +333,47 @@ def find_closest_point_to_ray(arg0: PythonObject, arg1: PythonObject, arg2: Pyth
         var _n_zs = Int(py=arg2.__len__())
         for _i in range(_n_zs):
             zs.append(Float64(py=arg2[_i]))
+        var ray_ox = Float64(py=arg3)
+        var ray_oy = Float64(py=arg4)
+        var ray_oz = Float64(py=arg5)
+        var ray_dx = Float64(py=arg6)
+        var ray_dy = Float64(py=arg7)
+        var ray_dz = Float64(py=arg8)
         var _res = _native_find_closest_point_to_ray(xs, ys, zs, ray_ox, ray_oy, ray_oz, ray_dx, ray_dy, ray_dz)
         return PythonObject(_res)
+
+@always_inline
+def _ptr_find_closest_point_to_ray(xs_ptr: OpaquePointer[MutUntrackedOrigin], _n_xs: Int, ys_ptr: OpaquePointer[MutUntrackedOrigin], _n_ys: Int, zs_ptr: OpaquePointer[MutUntrackedOrigin], _n_zs: Int, ray_ox: Float64, ray_oy: Float64, ray_oz: Float64, ray_dx: Float64, ray_dy: Float64, ray_dz: Float64) raises -> Int:
+    var xs = xs_ptr.unsafe_bitcast[Float64]()
+    var ys = ys_ptr.unsafe_bitcast[Float64]()
+    var zs = zs_ptr.unsafe_bitcast[Float64]()
+    var n: Int = _n_xs
+    if ((n == 0) or (_n_ys != n) or (_n_zs != n)):
+        return _checked_neg(1)
+    var dir_len_sq: Float64 = _checked_add(_checked_add(_checked_mul(ray_dx, ray_dx), _checked_mul(ray_dy, ray_dy)), _checked_mul(ray_dz, ray_dz))
+    if (dir_len_sq <= 0.0):
+        return _checked_neg(1)
+    var inv_len: Float64 = _checked_div(1.0, math.sqrt(dir_len_sq))
+    var dx: Float64 = _checked_mul(ray_dx, inv_len)
+    var dy: Float64 = _checked_mul(ray_dy, inv_len)
+    var dz: Float64 = _checked_mul(ray_dz, inv_len)
+    var best_idx: Int = _checked_neg(1)
+    var min_dist_sq: Float64 = 1e+30
+    for i in range(n):
+        var vx: Float64 = _checked_sub(xs[i], ray_ox)
+        var vy: Float64 = _checked_sub(ys[i], ray_oy)
+        var vz: Float64 = _checked_sub(zs[i], ray_oz)
+        var t: Float64 = _checked_add(_checked_add(_checked_mul(vx, dx), _checked_mul(vy, dy)), _checked_mul(vz, dz))
+        if (t < 0.0):
+            t = 0.0
+        var wx: Float64 = _checked_sub(vx, _checked_mul(t, dx))
+        var wy: Float64 = _checked_sub(vy, _checked_mul(t, dy))
+        var wz: Float64 = _checked_sub(vz, _checked_mul(t, dz))
+        var dist_sq: Float64 = _checked_add(_checked_add(_checked_mul(wx, wx), _checked_mul(wy, wy)), _checked_mul(wz, wz))
+        if (dist_sq < min_dist_sq):
+            min_dist_sq = dist_sq
+            best_idx = i
+    return best_idx
 
 def _native_find_closest_point_to_ray(xs: List[Float64], ys: List[Float64], zs: List[Float64], ray_ox: Float64, ray_oy: Float64, ray_oz: Float64, ray_dx: Float64, ray_dy: Float64, ray_dz: Float64) raises -> Int:
     var n: Int = _len(xs)

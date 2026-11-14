@@ -202,13 +202,17 @@ def _checked_pow(base: Int, exp: Float64) raises -> Float64:
 
 @always_inline
 def _checked_add(a: String, b: String) -> String:
-    var res = a
+    var res = String()
+    res.reserve_bytes(a.byte_length() + b.byte_length())
+    res.write(a)
     res.write(b)
     return res^
 
 @always_inline
 def _checked_add(a: String, b: Codepoint) -> String:
-    var res = a
+    var res = String()
+    res.reserve_bytes(a.byte_length() + 4)
+    res.write(a)
     res.write(b)
     return res^
 
@@ -237,7 +241,7 @@ struct _PyStr(Sized):
 
     @always_inline
     def __init__(out self, s: String):
-        self._cps = List[Codepoint]()
+        self._cps = List[Codepoint](capacity=len(s.codepoints()))
         for cp in s.codepoints():
             self._cps.append(cp)
 
@@ -253,6 +257,20 @@ struct _PyStr(Sized):
         return String(self._cps[i])
 
     @always_inline
+    def get_cp(self, idx: Int) -> Codepoint:
+        var i = idx
+        if i < 0:
+            i += len(self._cps)
+        return self._cps[i]
+
+    @always_inline
+    def get_ord(self, idx: Int) -> Int:
+        var i = idx
+        if i < 0:
+            i += len(self._cps)
+        return Int(self._cps[i])
+
+    @always_inline
     def __getitem__(self, s: Slice) -> String:
         var n = len(self._cps)
         var start = s.start.or_else(0)
@@ -264,6 +282,7 @@ struct _PyStr(Sized):
         var s_c = max(0, min(n, start))
         var e_c = max(0, min(n, end))
         var res = String()
+        res.reserve_bytes(max(0, e_c - s_c) * 4)
         for k in range(s_c, e_c):
             res.write(self._cps[k])
         return res^
@@ -286,57 +305,17 @@ def PyInit_fast() abi("C") -> PythonObject:
     except e:
         abort(String("error creating Python Mojo module: ", e))
 
-@always_inline
-def _ptr_accumulate_haversine_distance(lats_ptr: OpaquePointer[MutUntrackedOrigin], lons_ptr: OpaquePointer[MutUntrackedOrigin], n: Int) -> Float64:
-    if n <= 1:
-        return 0.0
-    var lats = lats_ptr.unsafe_bitcast[Float64]()
-    var lons = lons_ptr.unsafe_bitcast[Float64]()
-    var total_dist: Float64 = 0.0
-    var r: Float64 = 6371.0
-    var rad_factor: Float64 = 3.141592653589793 / 180.0
-
-    var lat1 = lats[0] * rad_factor
-    var lon1 = lons[0] * rad_factor
-    var cos_lat1 = math.cos(lat1)
-
-    for i in range(1, n):
-        var lat2 = lats[i] * rad_factor
-        var lon2 = lons[i] * rad_factor
-        var cos_lat2 = math.cos(lat2)
-
-        var half_dlat = (lat2 - lat1) * 0.5
-        var half_dlon = (lon2 - lon1) * 0.5
-        var sin_dlat = math.sin(half_dlat)
-        var sin_dlon = math.sin(half_dlon)
-
-        var a = sin_dlat * sin_dlat + cos_lat1 * cos_lat2 * sin_dlon * sin_dlon
-        if a > 1.0:
-            a = 1.0
-        elif a < 0.0:
-            a = 0.0
-
-        var c = 2.0 * math.asin(math.sqrt(a))
-        total_dist += r * c
-
-        lat1 = lat2
-        lon1 = lon2
-        cos_lat1 = cos_lat2
-
-    return total_dist
-
 def accumulate_haversine_distance(arg0: PythonObject, arg1: PythonObject) raises -> PythonObject:
-    var builtins = Python.import_module("builtins")
-    var has_ctypes = Bool(py=builtins.hasattr(arg0, "ctypes")) and Bool(py=builtins.hasattr(arg1, "ctypes"))
-    if has_ctypes:
-        var n = Int(py=arg0.__len__())
-        if n <= 1:
-            return PythonObject(0.0)
-        var lats_addr = Int(py=arg0.ctypes.data)
-        var lons_addr = Int(py=arg1.ctypes.data)
-        var lats_op = OpaquePointer[MutUntrackedOrigin](unsafe_from_address=lats_addr)
-        var lons_op = OpaquePointer[MutUntrackedOrigin](unsafe_from_address=lons_addr)
-        var _res = _ptr_accumulate_haversine_distance(lats_op, lons_op, n)
+    var _builtins = Python.import_module("builtins")
+    var _has_ctypes = Bool(py=_builtins.hasattr(arg0, "ctypes")) and Bool(py=_builtins.hasattr(arg1, "ctypes"))
+    if _has_ctypes:
+        var _n_lats = Int(py=arg0.__len__())
+        var _n_lons = Int(py=arg1.__len__())
+        var _lats_addr = Int(py=arg0.ctypes.data)
+        var _lons_addr = Int(py=arg1.ctypes.data)
+        var _lats_op = OpaquePointer[MutUntrackedOrigin](unsafe_from_address=_lats_addr)
+        var _lons_op = OpaquePointer[MutUntrackedOrigin](unsafe_from_address=_lons_addr)
+        var _res = _ptr_accumulate_haversine_distance(_lats_op, _n_lats, _lons_op, _n_lons)
         return PythonObject(_res)
     else:
         var lats = List[Float64]()
@@ -350,39 +329,59 @@ def accumulate_haversine_distance(arg0: PythonObject, arg1: PythonObject) raises
         var _res = _native_accumulate_haversine_distance(lats, lons)
         return PythonObject(_res)
 
+@always_inline
+def _ptr_accumulate_haversine_distance(lats_ptr: OpaquePointer[MutUntrackedOrigin], _n_lats: Int, lons_ptr: OpaquePointer[MutUntrackedOrigin], _n_lons: Int) raises -> Float64:
+    var lats = lats_ptr.unsafe_bitcast[Float64]()
+    var lons = lons_ptr.unsafe_bitcast[Float64]()
+    var n: Int = _n_lats
+    if (n <= 1):
+        return 0.0
+    var total_dist: Float64 = 0.0
+    var r: Float64 = 6371.0
+    var rad_factor: Float64 = _checked_div(3.141592653589793, 180.0)
+    for i in range(1, n):
+        var lat1: Float64 = _checked_mul(lats[_checked_sub(i, 1)], rad_factor)
+        var lon1: Float64 = _checked_mul(lons[_checked_sub(i, 1)], rad_factor)
+        var lat2: Float64 = _checked_mul(lats[i], rad_factor)
+        var lon2: Float64 = _checked_mul(lons[i], rad_factor)
+        var dlat: Float64 = _checked_sub(lat2, lat1)
+        var dlon: Float64 = _checked_sub(lon2, lon1)
+        var half_dlat: Float64 = _checked_mul(dlat, 0.5)
+        var half_dlon: Float64 = _checked_mul(dlon, 0.5)
+        var sin_dlat: Float64 = math.sin(half_dlat)
+        var sin_dlon: Float64 = math.sin(half_dlon)
+        var a: Float64 = _checked_add(_checked_mul(sin_dlat, sin_dlat), _checked_mul(_checked_mul(_checked_mul(math.cos(lat1), math.cos(lat2)), sin_dlon), sin_dlon))
+        if (a > 1.0):
+            a = 1.0
+        elif (a < 0.0):
+            a = 0.0
+        var c: Float64 = _checked_mul(2.0, math.atan2(math.sqrt(a), math.sqrt(_checked_sub(1.0, a))))
+        total_dist = _checked_add(total_dist, _checked_mul(r, c))
+    return total_dist
+
 def _native_accumulate_haversine_distance(lats: List[Float64], lons: List[Float64]) raises -> Float64:
     var n: Int = _len(lats)
     if (n <= 1):
         return 0.0
     var total_dist: Float64 = 0.0
     var r: Float64 = 6371.0
-    var rad_factor: Float64 = 3.141592653589793 / 180.0
-
-    var lat1 = lats[0] * rad_factor
-    var lon1 = lons[0] * rad_factor
-    var cos_lat1 = math.cos(lat1)
-
+    var rad_factor: Float64 = _checked_div(3.141592653589793, 180.0)
     for i in range(1, n):
-        var lat2 = lats[i] * rad_factor
-        var lon2 = lons[i] * rad_factor
-        var cos_lat2 = math.cos(lat2)
-
-        var half_dlat = (lat2 - lat1) * 0.5
-        var half_dlon = (lon2 - lon1) * 0.5
-        var sin_dlat = math.sin(half_dlat)
-        var sin_dlon = math.sin(half_dlon)
-
-        var a = sin_dlat * sin_dlat + cos_lat1 * cos_lat2 * sin_dlon * sin_dlon
-        if a > 1.0:
+        var lat1: Float64 = _checked_mul(lats[_checked_sub(i, 1)], rad_factor)
+        var lon1: Float64 = _checked_mul(lons[_checked_sub(i, 1)], rad_factor)
+        var lat2: Float64 = _checked_mul(lats[i], rad_factor)
+        var lon2: Float64 = _checked_mul(lons[i], rad_factor)
+        var dlat: Float64 = _checked_sub(lat2, lat1)
+        var dlon: Float64 = _checked_sub(lon2, lon1)
+        var half_dlat: Float64 = _checked_mul(dlat, 0.5)
+        var half_dlon: Float64 = _checked_mul(dlon, 0.5)
+        var sin_dlat: Float64 = math.sin(half_dlat)
+        var sin_dlon: Float64 = math.sin(half_dlon)
+        var a: Float64 = _checked_add(_checked_mul(sin_dlat, sin_dlat), _checked_mul(_checked_mul(_checked_mul(math.cos(lat1), math.cos(lat2)), sin_dlon), sin_dlon))
+        if (a > 1.0):
             a = 1.0
-        elif a < 0.0:
+        elif (a < 0.0):
             a = 0.0
-
-        var c = 2.0 * math.asin(math.sqrt(a))
-        total_dist += r * c
-
-        lat1 = lat2
-        lon1 = lon2
-        cos_lat1 = cos_lat2
-
+        var c: Float64 = _checked_mul(2.0, math.atan2(math.sqrt(a), math.sqrt(_checked_sub(1.0, a))))
+        total_dist = _checked_add(total_dist, _checked_mul(r, c))
     return total_dist
