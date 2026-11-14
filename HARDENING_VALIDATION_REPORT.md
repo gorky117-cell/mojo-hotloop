@@ -24,7 +24,7 @@
 | **Boundary & Subnormal Floats** | **YES** (`_last_backend == 'native'`) | 32 | 32 | 0 | 0 | Bit-for-bit IEEE-754 | **PROVEN** |
 | **Strict Mode Rejection Tests** | **YES** (`HotloopNativeExecutionError`) | 12 | 12 | 0 | 0 | Actionable error raised | **PROVEN** |
 
-**Total Regression Tests Executed**: 1,246  
+**Total Regression Tests Executed**: 1,296 (Reconciled row sum: 1,117 quant_backtest + 50 sum_powers normal + 20 sum_powers overflow + 50 collatz_steps + 15 zero division + 32 boundary/subnormal + 12 strict mode = 1,296)  
 **Total Failures / Unhandled Segfaults**: 0  
 **Overall Correctness Status**: **100% PASS**
 
