@@ -777,6 +777,10 @@ class MojoASTTranspiler:
             else:
                 raise ASTTranspileError(f"Unsupported function call expression: {type(node.func).__name__}")
 
+        elif isinstance(node, ast.Attribute):
+            val = self.visit_expr(node.value)
+            return f"{val}.{node.attr}"
+
         else:
             raise ASTTranspileError(f"Unsupported expression type: {type(node).__name__}")
 

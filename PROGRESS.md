@@ -159,19 +159,55 @@ The current assignment focused strictly on fixing native dispatch, integer overf
 
 All seven planned use cases remain strictly preserved for upcoming phases:
 
-### Phase D: The Seven Real-World Use Cases
-1. **PII Scrubber**: Mask card numbers (Luhn 13–19 digits), Aadhaar IDs (Verhoeff check), PAN, and mobile numbers on text.
-2. **RAG Chunker**: Split long text into overlapping chunks at token and word boundaries.
-3. **PDF Text Cleaner**: Clean raw extracted PDF text, repair line breaks, headers, and hyphens.
-4. **OCR Fuzzy Matcher**: Banded Levenshtein distance matching against product catalogues.
-5. **Quant Backtest**: Stateful trailing stop-loss simulation with cooldown rules (hardened baseline).
-6. **Geo Distance**: Haversine batch calculation across large GPS coordinates.
-7. **AR Spatial 3D**: Ray-to-point-cloud 3D proximity search.
+### Phase D: The Seven Real-World Use Cases (COMPLETED)
+- [x] **Stage D0 — Baseline Integrity & Toolchain Verification**:
+  - Python 3.12.16 & Mojo 1.2.0 (`2016d0cd`) verified.
+  - Phase C master regression passed (8/8 suites, 3,090 verified checks, 0 regressions).
+- [x] **Stage D1 — PII Scrubber (`examples/pii_scrubber`)**:
+  - Mask credit cards (Luhn 13-19 digits), Indian Aadhaar (Verhoeff checksum), Indian mobile numbers, and PAN codes.
+  - Extended AST transpiler with `_PyStr` struct for $O(1)$ random codepoint indexing and module helper function dispatch.
+  - Verified with **1,019 tests (100% native execution, 0 mismatches)**.
+  - Benchmarks (p50): Short 36.87 µs (1.3x vs Py) | Medium 2.33 ms (3.04x vs Py, 1.13x vs Regex) | Large 30.20 ms (**2.96x vs Py, 1.19x vs Regex**).
+- [x] **Stage D2 — RAG Document Chunker (`examples/rag_chunker`)**:
+  - Sliding-window document chunking with whitespace snapping and lookback boundaries.
+  - Extended AST transpiler for `List[String]` return types and Python list export conversions.
+  - Verified with **1,020 tests (176,204 total chunks compared, 0 mismatches)**.
+  - Benchmarks (p50): 100 KB text: Python 0.21 ms vs Mojo 4.28 ms. Correctly routes through performance-aware dispatch to pure Python.
+- [x] **Stage D3 — PDF Text Cleaner (`examples/pdf_cleaner`)**:
+  - Repair broken line hyphens (`word-\nnext` -> `wordnext`), strip form feeds (`\f`), remove page headers (`Page \d+`), collapse whitespace and excess newlines.
+  - Verified with **1,020 tests (182,021 output chars compared, 0 mismatches)**.
+  - Benchmarks (p50): Small 106.43 µs (2.8x vs Py, 1.25x vs Regex) | Medium 0.99 ms (3.13x vs Py, 1.43x vs Regex) | Large 11.23 ms (**2.85x vs Py, 1.27x vs Regex**).
+- [x] **Stage D4 — OCR Fuzzy Matcher (`examples/ocr_matcher`)**:
+  - Banded Levenshtein distance matching against candidate dictionaries with dynamic programming row reuse.
+  - Verified with **1,020 tests (100% agreement with RapidFuzz and pure Python)**.
+  - Benchmarks (p50): Small 54.37 µs (2.75x vs Py) | Medium 497.45 µs (2.84x vs Py) | Large 2,073.68 µs (1.21x vs Py).
+- [x] **Stage D5 — Quantitative Backtest Recheck (`examples/quant_backtest`)**:
+  - Stateful trailing-stop trading simulation across 100,000 ticks with LCG pseudo-random walk.
+  - Verified with **1,117 tests (0 mismatches, 100% native execution)**.
+  - Benchmarks (p50): Python 32.64 ms | Numba warm 0.522 ms | **Mojo 0.493 ms (66.14x speedup vs Python, 1.06x faster than Numba)**.
+- [x] **Stage D6 — Geo Distance (`examples/geo_distance`)**:
+  - Haversine great-circle distance accumulation along GPS coordinates with `std.math` trigonometry (`sin`, `cos`, `sqrt`, `atan2`).
+  - Verified with **1,014 tests (77,465 waypoints compared against NumPy, 0 mismatches within 1e-8 tolerance)**.
+  - Benchmarks (p50): Short 25.35 µs (2.85x vs Py, 1.56x vs NumPy) | Medium 258.47 µs (2.95x vs Py) | Long 3,327.42 µs (2.50x vs Py).
+- [x] **Stage D7 — AR Spatial 3D (`examples/ar_spatial`)**:
+  - Closest point in 3D point cloud to a camera ray using perpendicular projection geometry.
+  - Verified with **1,010 tests (102,972 3D vertices checked against NumPy, 0 mismatches)**.
+  - Benchmarks (p50): Small 23.12 µs (1.40x vs Py, 2.77x vs NumPy) | Medium 234.14 µs (1.48x vs Py, 1.26x vs NumPy) | Large 2,395.28 µs (1.57x vs Py, 1.29x vs NumPy).
+- [x] **Stage D8 — Clean Python Package Integration Validation**:
+  - Installed `mojo-hotloop` in a fresh virtualenv (`/tmp/test_hotloop_env`) via standard `pip install`.
+  - Executed 8/8 end-to-end integration checks in an external directory (`/tmp/test_hotloop_app`).
+  - Verified package import, transparent fallback, CLI compilation, native dispatch, strict mode, missing binary detection, and cache invalidation.
+- [x] **Stage D9 & D10 — Benchmark Reporting & Documentation**:
+  - Published master competitive benchmark table across all 7 use cases.
+  - Authored comprehensive `PHASE_D_VALIDATION_REPORT.md` and repository `README.md`.
+  - **OVERALL PHASE D VERDICT**: **PASS — 7/7 USE CASES PROD-READY, 7,220 VERIFIED TESTS, 0 FAILURES**.
 
-### Phase E: Gemini Self-Healing Translation Engine
+---
+
+## Mandatory Future Roadmap
+
+### Phase E: Gemini Self-Healing Translation Engine (NOT STARTED)
 - Two-tier AST-first with automatic LLM escalation.
 - Compiler stderr error feedback and counterexample repair loop.
 
-### Phase F: Enterprise Certification & Benchmarking
-- Formal verification against NumPy, RapidFuzz, Numba, and compiled regex.
-- Automated cache invalidation and security audit.
+### Phase F: Enterprise Certification & Benchmarking (NOT STARTED)
