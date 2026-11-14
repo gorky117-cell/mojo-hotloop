@@ -3,6 +3,7 @@
 ## System Information & Environment
 - **Date**: 2026-11-14
 - **OS**: Linux workstation-10 6.6.87.2-microsoft-standard-WSL2 #1 SMP PREEMPT_DYNAMIC x86_64 GNU/Linux
+- **Hardware**: Intel(R) Core(TM) i5-8265U CPU @ 1.60GHz | 8 cores | 7.6 GB RAM
 - **Working Directory**: `/home/gaurav/mojo-hotloop`
 - **Disk Space**:
   - `/` (`~`): 925G Available / 1007G Total
@@ -39,12 +40,18 @@
 - **GATE**: PASSED (`mojo --version` returned `1.2.0`, Python printed `5` from `.so`)
 
 ### STAGE 2: First Example - Numerical Kernel Baseline (`quant_backtest`)
-- [ ] Create `examples/quant_backtest/original.py` with `stateful_trailing_backtest`
-- [ ] Create `examples/quant_backtest/fast.mojo`
-- [ ] Create `examples/quant_backtest/verify.py` (subprocess isolation, boundaries, hypothesis, 1000 seeded random tests)
-- [ ] Create `examples/quant_backtest/bench.py` (pure Python vs Numba @njit vs Mojo .so latency p50/p95)
-- [ ] Run verification & benchmark, write `BENCHMARK_REPORT.md`
-- **GATE**: Pending
+- [x] Create `examples/quant_backtest/original.py` with `stateful_trailing_backtest` and `@hotloop`
+- [x] Create `examples/quant_backtest/fast.mojo` with hand-written Mojo 1.2.0 C-ABI bindings
+- [x] Create `examples/quant_backtest/verify.py` with isolated child subprocess runner (1,109 total tests: boundaries, 1,000 seeded random tests, hypothesis property tests)
+- [x] Run verification: 0 mismatches, 100% compliant with Numerical Tolerance Policy
+- [x] Create `examples/quant_backtest/bench.py`: Pure Python vs Numba @njit vs Mojo .so end-to-end latency
+- [x] Run benchmark:
+  - Pure Python p50: 25.934 ms
+  - Numba (@njit) p50: 0.353 ms (JIT compile delay: 2375.5 ms)
+  - Mojo (.so) p50: 0.322 ms
+  - Speedup vs Pure Python: **80.49x** (1.09x faster than warmed Numba, zero runtime compile lag)
+- [x] Generated `BENCHMARK_REPORT.md`
+- **GATE**: PASSED (0 mismatches, 80.5x faster than Python, competitive with warmed Numba)
 
 ### STAGE 3A: Deterministic AST Transpiler (`--engine=ast`)
 - [ ] Build `hotloop` package with CLI, decorator, AST transpiler, isolated verifier, backends
