@@ -1,15 +1,57 @@
+import hashlib
+import json
 import os
+import shutil
 import subprocess
 import sys
+import time
 from typing import Optional, Tuple
 from dotenv import load_dotenv
 
 from .base import BaseBackend
 from ..ast_transpiler import transpile_python_to_mojo, ASTTranspileError
 
+TRANSPILER_VERSION = "1.2.0-phaseB"
+
 class MojoBackend(BaseBackend):
     def __init__(self, mojo_bin: Optional[str] = None):
         self.mojo_bin = mojo_bin or self._find_mojo()
+        self._compiler_version: Optional[str] = None
+
+    def get_compiler_version(self) -> str:
+        if self._compiler_version is None:
+            try:
+                proc = subprocess.run([self.mojo_bin, "--version"], capture_output=True, text=True)
+                self._compiler_version = proc.stdout.strip() or "mojo unknown"
+            except Exception:
+                self._compiler_version = "mojo unknown"
+        return self._compiler_version
+
+    def _write_build_metadata(self, file_path: str, mod_name: str, so_path: str) -> None:
+        dir_name = os.path.dirname(os.path.abspath(file_path))
+        with open(file_path, "rb") as f:
+            source_bytes = f.read()
+        source_hash = hashlib.sha256(source_bytes).hexdigest()
+
+        manifest_path = os.path.join(dir_name, f"{mod_name}.hotloop_manifest.json")
+        manifest_data = {
+            "source_file": os.path.basename(file_path),
+            "source_sha256": source_hash,
+            "compiler_version": self.get_compiler_version(),
+            "transpiler_version": TRANSPILER_VERSION,
+            "build_timestamp": time.time(),
+        }
+        with open(manifest_path, "w", encoding="utf-8") as f:
+            json.dump(manifest_data, f, indent=2)
+
+        # Content-addressed cache directory
+        cache_dir = os.path.join(dir_name, "__mojocache__")
+        os.makedirs(cache_dir, exist_ok=True)
+        cached_so_path = os.path.join(cache_dir, f"{mod_name}_{source_hash[:16]}.so")
+        try:
+            shutil.copy2(so_path, cached_so_path)
+        except OSError:
+            pass
 
     def _find_mojo(self) -> str:
         # Check venv first, then PATH
@@ -45,6 +87,7 @@ class MojoBackend(BaseBackend):
 
         ok, err = self.compile_mojo(mojo_path, so_path)
         if ok:
+            self._write_build_metadata(file_path, mod_name, so_path)
             return True, f"Successfully transpiled and built {so_path} via AST engine.", so_path
         else:
             return False, f"Mojo compilation failed:\n{err}", None
@@ -158,6 +201,7 @@ Return ONLY valid Mojo source code inside a single ```mojo code block without ex
                     print("  [Gemini Engine] Compiled successfully, running isolated verification...")
                     v_proc = subprocess.run([sys.executable, verify_path], capture_output=True, text=True, timeout=30)
                     if v_proc.returncode == 0:
+                        self._write_build_metadata(file_path, mod_name, so_path)
                         return True, f"Successfully built and verified {so_path} via Gemini engine on attempt {attempt}.", so_path
                     else:
                         print(f"  [Gemini Engine] Verification failed on attempt {attempt}.")
@@ -165,6 +209,7 @@ Return ONLY valid Mojo source code inside a single ```mojo code block without ex
                         clean_err = (v_proc.stdout + "\n" + v_proc.stderr).strip()[:256]
                         last_error = f"Verification failed:\n{clean_err}"
                         continue
+                self._write_build_metadata(file_path, mod_name, so_path)
                 return True, f"Successfully compiled {so_path} via Gemini engine on attempt {attempt}.", so_path
             else:
                 print(f"  [Gemini Engine] Mojo build error on attempt {attempt}: {err.strip()[:100]}...")

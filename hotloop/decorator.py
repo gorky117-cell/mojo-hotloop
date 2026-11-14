@@ -1,6 +1,8 @@
 import functools
+import hashlib
 import importlib.machinery
 import importlib.util
+import json
 import os
 import sys
 import types
@@ -25,7 +27,7 @@ _LOADED_MODULES: Dict[str, types.ModuleType] = {}
 # Set of (function_qualname, reason_key) to prevent warning spam
 _WARNED_FALLBACKS: Set[Tuple[str, str]] = set()
 
-def _load_native_module(so_path: str) -> Tuple[Optional[types.ModuleType], Optional[str]]:
+def _load_native_module(so_path: str, export_symbol: Optional[str] = None) -> Tuple[Optional[types.ModuleType], Optional[str]]:
     """
     Dynamically loads a compiled shared library with proper C-ABI namespacing.
     In Python, ExtensionFileLoader('<namespace>.<stem>', so_path) looks for
@@ -40,8 +42,12 @@ def _load_native_module(so_path: str) -> Tuple[Optional[types.ModuleType], Optio
         return None, f"File does not exist: {real_path}"
 
     stem = os.path.splitext(os.path.basename(real_path))[0]
+    sym = export_symbol or stem
+    if export_symbol is None and "_" in stem and len(stem.rsplit("_", 1)[-1]) == 16:
+        sym = stem.rsplit("_", 1)[0]
+
     # Hierarchical module name: Python looks for PyInit_<last_part>
-    unique_mod_name = f"_hotloop_mod_{len(_LOADED_MODULES)}_{stem}.{stem}"
+    unique_mod_name = f"_hotloop_mod_{len(_LOADED_MODULES)}_{stem}.{sym}"
 
     try:
         loader = importlib.machinery.ExtensionFileLoader(unique_mod_name, real_path)
@@ -56,48 +62,120 @@ def _load_native_module(so_path: str) -> Tuple[Optional[types.ModuleType], Optio
     except Exception as e:
         return None, f"Dynamic load error ({type(e).__name__}): {e}"
 
-def _find_and_load_native_fn(fn: Callable) -> Tuple[Optional[Callable], Optional[types.ModuleType], Optional[str]]:
+def _compute_file_hash(path: str) -> Optional[str]:
+    try:
+        with open(path, "rb") as f:
+            return hashlib.sha256(f.read()).hexdigest()
+    except OSError:
+        return None
+
+def _is_binary_stale(so_path: str, mod_file: str, current_hash: Optional[str]) -> Tuple[bool, Optional[str]]:
+    """
+    Checks if a candidate .so is stale compared to mod_file.
+    Returns (is_stale, reason).
+    """
+    stem = os.path.splitext(os.path.basename(so_path))[0]
+    manifest_path = os.path.join(os.path.dirname(so_path), f"{stem}.hotloop_manifest.json")
+    if os.path.isfile(manifest_path):
+        try:
+            with open(manifest_path, "r", encoding="utf-8") as f:
+                data = json.load(f)
+            expected_hash = data.get("source_sha256")
+            if current_hash and expected_hash and current_hash != expected_hash:
+                return True, f"Source SHA256 mismatch (source modified after '{stem}.so' was built)"
+            if current_hash and expected_hash and current_hash == expected_hash:
+                return False, None
+        except Exception:
+            pass
+
+    # Fallback to mtime check
+    try:
+        so_mtime = os.path.getmtime(so_path)
+        py_mtime = os.path.getmtime(mod_file)
+        if so_mtime < py_mtime:
+            return True, f"Binary mtime ({so_mtime:.1f}) is older than source file mtime ({py_mtime:.1f})"
+    except OSError:
+        pass
+
+    return False, None
+
+def _find_and_load_native_fn(fn: Callable) -> Tuple[Optional[Callable], Optional[types.ModuleType], Optional[str], Optional[str], Optional[str], float]:
     """
     Searches for a compiled .so in the directory containing the defining Python file.
-    Returns (compiled_fn, loaded_mod, failure_reason).
+    Returns (compiled_fn, loaded_mod, failure_reason, mod_file, source_hash, loaded_mtime).
     """
     fn_name = fn.__name__
     mod_name = getattr(fn, "__module__", None)
     mod_file = sys.modules[mod_name].__file__ if mod_name in sys.modules else None
 
     if not mod_file:
-        return None, None, f"Cannot determine defining source file for function '{fn_name}'"
+        return None, None, f"Cannot determine defining source file for function '{fn_name}'", None, None, 0.0
 
     mod_dir = os.path.dirname(os.path.abspath(mod_file))
     base_name = os.path.splitext(os.path.basename(mod_file))[0]
+    current_hash = _compute_file_hash(mod_file)
+    try:
+        loaded_mtime = os.path.getmtime(mod_file)
+    except OSError:
+        loaded_mtime = 0.0
 
-    # Search candidates: <base_name>.so, <base_name>_mojo.so, fast.so
+    # 1. Content-addressed lookup in __mojocache__
+    if current_hash:
+        cache_dir = os.path.join(mod_dir, "__mojocache__")
+        for stem in [base_name, f"{base_name}_mojo", "fast"]:
+            cached_so = os.path.join(cache_dir, f"{stem}_{current_hash[:16]}.so")
+            if os.path.isfile(cached_so):
+                mod, load_err = _load_native_module(cached_so, export_symbol=stem)
+                if mod and hasattr(mod, fn_name):
+                    return getattr(mod, fn_name), mod, None, mod_file, current_hash, loaded_mtime
+
+    # 2. Co-located candidate search with staleness checks
     candidates = [base_name, f"{base_name}_mojo", "fast"]
     attempted_paths = []
+    stale_reasons = []
 
     for c in candidates:
         so_path = os.path.join(mod_dir, f"{c}.so")
         attempted_paths.append(so_path)
         if os.path.isfile(so_path):
             mod, load_err = _load_native_module(so_path)
-            if mod is not None:
-                if hasattr(mod, fn_name):
-                    compiled_fn = getattr(mod, fn_name)
-                    return compiled_fn, mod, None
-                else:
-                    return None, mod, f"Module '{c}' found at {so_path} but does not export function '{fn_name}'"
-            else:
-                return None, None, f"Found candidate {so_path} but failed to load: {load_err}"
+            if mod is None:
+                return None, None, f"Found candidate {so_path} but failed to load: {load_err}", mod_file, current_hash, loaded_mtime
 
-    return None, None, f"No native binary found. Checked candidates: {', '.join(attempted_paths)}"
+            if not hasattr(mod, fn_name):
+                return None, mod, f"Module '{c}' found at {so_path} but does not export function '{fn_name}'", mod_file, current_hash, loaded_mtime
+
+            is_stale, stale_reason = _is_binary_stale(so_path, mod_file, current_hash)
+            if is_stale:
+                stale_reasons.append(f"{c}.so: {stale_reason}")
+                continue
+
+            return getattr(mod, fn_name), mod, None, mod_file, current_hash, loaded_mtime
+
+    if stale_reasons:
+        return None, None, f"Stale native binary detected: {'; '.join(stale_reasons)}", mod_file, current_hash, loaded_mtime
+
+    return None, None, f"No native binary found. Checked candidates: {', '.join(attempted_paths)}", mod_file, current_hash, loaded_mtime
 
 def _create_hotloop_wrapper(fn: Callable, strict: bool = False) -> Callable:
-    compiled_fn, loaded_mod, init_error = _find_and_load_native_fn(fn)
+    compiled_fn, loaded_mod, init_error, mod_file, source_hash, loaded_mtime = _find_and_load_native_fn(fn)
 
     @functools.wraps(fn)
     def wrapper(*args, **kwargs):
         # Allow runtime override of strict mode via environment variable
         is_strict = strict or (os.environ.get("HOTLOOP_STRICT", "").strip().lower() in ("1", "true", "yes"))
+
+        # Check for runtime modification of the source file
+        if wrapper._compiled is not None and wrapper._mod_file:
+            try:
+                curr_mtime = os.path.getmtime(wrapper._mod_file)
+                if curr_mtime > wrapper._loaded_mtime:
+                    curr_hash = _compute_file_hash(wrapper._mod_file)
+                    if curr_hash != wrapper._source_hash:
+                        wrapper._compiled = None
+                        wrapper._fallback_reason = "Stale native binary detected: Source file modified during runtime"
+            except OSError:
+                pass
 
         if wrapper._compiled is not None:
             wrapper._last_backend = "native"
@@ -141,15 +219,17 @@ def _create_hotloop_wrapper(fn: Callable, strict: bool = False) -> Callable:
                 # Re-raise any other native exception
                 raise
 
-        # Fallback path when native binary is missing or failed to load
+        # Fallback path when native binary is missing, stale, or failed to load
         reason = wrapper._fallback_reason or "Compiled native implementation not available"
+        is_stale = "Stale native binary" in reason or "stale cache" in reason
+
         if is_strict:
             raise HotloopNativeExecutionError(
                 f"Strict native mode enabled: failed to execute native Mojo backend for '{fn.__name__}'. "
                 f"Reason: {reason}"
             )
 
-        wrapper._last_backend = "python_fallback"
+        wrapper._last_backend = "python_fallback_stale_cache" if is_stale else "python_fallback"
         wrapper._call_count_fallback += 1
 
         # Non-repetitive warning emission
@@ -173,6 +253,9 @@ def _create_hotloop_wrapper(fn: Callable, strict: bool = False) -> Callable:
     wrapper._last_backend = None
     wrapper._call_count_native = 0
     wrapper._call_count_fallback = 0
+    wrapper._mod_file = mod_file
+    wrapper._source_hash = source_hash
+    wrapper._loaded_mtime = loaded_mtime
 
     return wrapper
 
