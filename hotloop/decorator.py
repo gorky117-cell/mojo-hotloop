@@ -5,6 +5,7 @@ import importlib.util
 import json
 import os
 import sys
+import time
 import types
 import warnings
 from typing import Callable, Dict, Optional, Set, Tuple
@@ -157,25 +158,48 @@ def _find_and_load_native_fn(fn: Callable) -> Tuple[Optional[Callable], Optional
 
     return None, None, f"No native binary found. Checked candidates: {', '.join(attempted_paths)}", mod_file, current_hash, loaded_mtime
 
-def _create_hotloop_wrapper(fn: Callable, strict: bool = False) -> Callable:
+def _is_strict_active(explicit_strict: bool) -> bool:
+    if explicit_strict:
+        return True
+    val = os.environ.get("HOTLOOP_STRICT", "").strip().lower()
+    return val in ("1", "true", "yes")
+
+def _create_hotloop_wrapper(fn: Callable, strict: bool = False, cache_check: Optional[str] = None) -> Callable:
     compiled_fn, loaded_mod, init_error, mod_file, source_hash, loaded_mtime = _find_and_load_native_fn(fn)
+
+    # Determine cache check policy:
+    # "import": check cache only at decoration/import time (zero runtime filesystem overhead)
+    # "runtime" or "interval": throttled check (at most once every check_interval seconds)
+    # "always": check on every single call
+    env_cache_mode = os.environ.get("HOTLOOP_CACHE_CHECK", "").strip().lower()
+    mode = (cache_check or env_cache_mode or "runtime").lower()
+    if mode in ("import", "none", "off"):
+        check_interval: Optional[float] = None
+    elif mode == "always":
+        check_interval = 0.0
+    else:
+        # Default runtime mode: throttled to 20ms
+        check_interval = 0.02
+
+    last_check_time = 0.0
 
     @functools.wraps(fn)
     def wrapper(*args, **kwargs):
-        # Allow runtime override of strict mode via environment variable
-        is_strict = strict or (os.environ.get("HOTLOOP_STRICT", "").strip().lower() in ("1", "true", "yes"))
-
-        # Check for runtime modification of the source file
-        if wrapper._compiled is not None and wrapper._mod_file:
-            try:
-                curr_mtime = os.path.getmtime(wrapper._mod_file)
-                if curr_mtime > wrapper._loaded_mtime:
-                    curr_hash = _compute_file_hash(wrapper._mod_file)
-                    if curr_hash != wrapper._source_hash:
-                        wrapper._compiled = None
-                        wrapper._fallback_reason = "Stale native binary detected: Source file modified during runtime"
-            except OSError:
-                pass
+        # Check for runtime modification of the source file (if runtime checking is active)
+        nonlocal last_check_time
+        if check_interval is not None and wrapper._compiled is not None and wrapper._mod_file:
+            now = time.monotonic() if check_interval > 0.0 else 0.0
+            if check_interval == 0.0 or (now - last_check_time) >= check_interval:
+                last_check_time = now
+                try:
+                    curr_mtime = os.path.getmtime(wrapper._mod_file)
+                    if curr_mtime > wrapper._loaded_mtime:
+                        curr_hash = _compute_file_hash(wrapper._mod_file)
+                        if curr_hash != wrapper._source_hash:
+                            wrapper._compiled = None
+                            wrapper._fallback_reason = "Stale native binary detected: Source file modified during runtime"
+                except OSError:
+                    pass
 
         if wrapper._compiled is not None:
             wrapper._last_backend = "native"
@@ -183,6 +207,7 @@ def _create_hotloop_wrapper(fn: Callable, strict: bool = False) -> Callable:
             try:
                 return wrapper._compiled(*args, **kwargs)
             except Exception as e:
+                is_strict = _is_strict_active(strict)
                 err_str = str(e)
                 # Check for integer overflow (either at C-ABI conversion or inside intermediate calculations)
                 if ("HOTLOOP_INTEGER_OVERFLOW" in err_str or
@@ -220,6 +245,7 @@ def _create_hotloop_wrapper(fn: Callable, strict: bool = False) -> Callable:
                 raise
 
         # Fallback path when native binary is missing, stale, or failed to load
+        is_strict = _is_strict_active(strict)
         reason = wrapper._fallback_reason or "Compiled native implementation not available"
         is_stale = "Stale native binary" in reason or "stale cache" in reason
 
@@ -250,7 +276,8 @@ def _create_hotloop_wrapper(fn: Callable, strict: bool = False) -> Callable:
     wrapper._module = loaded_mod
     wrapper._fallback_reason = init_error
     wrapper._is_strict = strict
-    wrapper._last_backend = None
+    wrapper._cache_check = mode
+    wrapper._last_backend = "native" if compiled_fn is not None else ("python_fallback_stale_cache" if ("Stale" in (init_error or "")) else "python_fallback")
     wrapper._call_count_native = 0
     wrapper._call_count_fallback = 0
     wrapper._mod_file = mod_file
@@ -259,7 +286,7 @@ def _create_hotloop_wrapper(fn: Callable, strict: bool = False) -> Callable:
 
     return wrapper
 
-def hotloop(fn: Optional[Callable] = None, *, strict: bool = False):
+def hotloop(fn: Optional[Callable] = None, *, strict: bool = False, cache_check: Optional[str] = None):
     """
     Decorator that transparently routes calls to a compiled Mojo .so shared library
     if present in the same directory, falling back cleanly to Python or raising
@@ -267,5 +294,5 @@ def hotloop(fn: Optional[Callable] = None, *, strict: bool = False):
     Supports both @hotloop and @hotloop(strict=True).
     """
     if fn is None:
-        return lambda f: _create_hotloop_wrapper(f, strict=strict)
-    return _create_hotloop_wrapper(fn, strict=strict)
+        return lambda f: _create_hotloop_wrapper(f, strict=strict, cache_check=cache_check)
+    return _create_hotloop_wrapper(fn, strict=strict, cache_check=cache_check)
