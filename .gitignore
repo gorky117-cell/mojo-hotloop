@@ -4,4 +4,6 @@
 __pycache__/
 __mojocache__/
 build/
+dist/
+*.egg-info/
 .modular/

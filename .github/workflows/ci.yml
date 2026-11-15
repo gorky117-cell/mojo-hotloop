@@ -1,0 +1,86 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  python-tests:
+    name: "Python Tests (Python ${{ matrix.python-version }})"
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.12"]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install package
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .
+
+      - name: Verify import
+        run: |
+          python -c "from hotloop import hotloop, HotloopError, HotloopNativeExecutionError, HotloopFallbackWarning; print('Import OK')"
+
+      - name: Run adversarial compiler tests
+        run: |
+          python tests/test_compiler_adversarial.py
+
+      - name: Smoke test - fallback behavior
+        run: |
+          python - << 'EOF'
+          import warnings
+          warnings.simplefilter("always")
+          from hotloop import hotloop
+
+          @hotloop
+          def sum_squares(xs: list[float]) -> float:
+              total: float = 0.0
+              for i in range(len(xs)):
+                  total += xs[i] * xs[i]
+              return total
+
+          data = [1.0, 2.0, 3.0, 4.0, 5.0]
+          result = sum_squares(data)
+          assert abs(result - 55.0) < 1e-9, f"Mismatch: {result}"
+          # Must fall back cleanly (no Mojo on GitHub runner)
+          assert sum_squares._last_backend in ("python_fallback", "native"), \
+              f"Unexpected backend: {sum_squares._last_backend}"
+          print(f"Smoke test PASS — backend: {sum_squares._last_backend}")
+          EOF
+
+      - name: Check packaging metadata
+        run: |
+          pip show mojo-hotloop
+          python -c "
+          import importlib.metadata
+          meta = importlib.metadata.metadata('mojo-hotloop')
+          assert meta['Version'] == '0.1.0', f'Wrong version: {meta[\"Version\"]}'
+          assert meta['License'] == 'Apache-2.0', f'Wrong license: {meta[\"License\"]}'
+          print(f'Package metadata OK: {meta[\"Name\"]} {meta[\"Version\"]}')
+          "
+
+  # MOJO_REQUIRED: The following job requires Mojo 1.2.0 which is not available
+  # on GitHub Actions runners. It is documented here for reference and must be
+  # run manually on a machine with Mojo installed.
+  #
+  # native-build-test:
+  #   name: "Native Build & Verification (Mojo Required)"
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - name: Install Mojo 1.2.0
+  #       run: pip install modular && modular install mojo  # MOJO_REQUIRED: skip on GitHub Actions runner
+  #     - name: Build all use cases
+  #       run: .venv/bin/python audit/test_ast_provenance.py  # MOJO_REQUIRED
+  #     - name: Run verification suites
+  #       run: .venv/bin/python audit/run_all_verifications.py  # MOJO_REQUIRED

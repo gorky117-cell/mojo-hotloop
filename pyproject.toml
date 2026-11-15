@@ -5,12 +5,53 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "mojo-hotloop"
 version = "0.1.0"
-description = "Transparent JIT/AOT acceleration of Python hot loops using Mojo shared libraries"
+description = "Transparent AOT acceleration of Python hot loops using Mojo shared libraries"
 readme = "README.md"
+license = "Apache-2.0"
 requires-python = ">=3.12"
+authors = [
+    { name = "mojo-hotloop Contributors" }
+]
+keywords = [
+    "mojo",
+    "performance",
+    "compiler",
+    "jit",
+    "aot",
+    "acceleration",
+    "transpiler",
+    "native",
+    "hotloop",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3 :: Only",
+    "Topic :: Software Development :: Compilers",
+    "Topic :: Scientific/Engineering",
+    "Topic :: System :: Benchmark",
+]
 dependencies = [
     "python-dotenv",
 ]
+
+[project.optional-dependencies]
+numpy = [
+    "numpy>=1.24",
+]
+dev = [
+    "numpy>=1.24",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/mojo-hotloop/mojo-hotloop"
+"Bug Tracker" = "https://github.com/mojo-hotloop/mojo-hotloop/issues"
+"Changelog" = "https://github.com/mojo-hotloop/mojo-hotloop/blob/main/CHANGELOG.md"
+"Documentation" = "https://github.com/mojo-hotloop/mojo-hotloop/tree/main/docs"
 
 [project.scripts]
 hotloop = "hotloop.cli:main"

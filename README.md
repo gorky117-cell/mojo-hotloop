@@ -1,104 +1,219 @@
 # mojo-hotloop
 
-Accelerate slow Python hot loops using compiled Mojo shared libraries with identical semantics, zero boilerplate, and transparent fallback.
-
-`mojo-hotloop` is an open-source compiler tool and decorator that transpiles Python hot loops into high-performance Mojo shared libraries (`.so`) using deterministic AST analysis.
+Accelerate slow Python hot loops using compiled Mojo shared libraries.
+Transparent fallback, zero boilerplate, identical semantics.
 
 ---
 
-## Key Features
+## What It Does
 
-- **Zero-Boilerplate Decorator**: Simply decorate your CPU-bound Python function with `@hotloop`.
-- **Deterministic AST Transpiler**: Ahead-of-time (AOT) transpile numerical loops, Unicode string algorithms, and collection pipelines to native Mojo without AI hallucinations or external network calls.
-- **Identical Semantics**: Preserves 100% Python behavior including checked 64-bit integer arithmetic, arbitrary-precision BigInt overflow fallback, `ZeroDivisionError` parity, and full Unicode/codepoint compliance.
-- **Multi-Tiered Safety & Transparent Fallback**: If a shared library is missing or stale, `mojo-hotloop` safely falls back to executing your original Python function.
-- **Strict Performance Mode**: Detects when per-element FFI conversion overhead would exceed pure Python execution time (e.g. naive Python list allocations) and defaults to Python or warns the developer.
-- **CLI Tooling**: Build native shared libraries directly from the terminal via `hotloop build <file.py>`.
+`mojo-hotloop` is an open-source compiler tool and Python decorator that:
+
+1. **Transpiles** annotated Python functions to Mojo 1.2.0 source code using a
+   deterministic AST transpiler (no AI, no network calls required)
+2. **Compiles** the Mojo source to a native shared library (`.so`)
+3. **Dispatches** calls to the native library transparently — the same `@hotloop`
+   function works with or without Mojo installed
+
+If the native library is missing, stale, or Mojo is unavailable, your function
+falls back cleanly to Python.
+
+---
+
+## Supported Python Subset
+
+The AST transpiler supports a **strict subset** of annotated Python. See
+[`docs/SUPPORTED_SYNTAX.md`](docs/SUPPORTED_SYNTAX.md) for the complete reference.
+
+**Supported**:
+- Types: `int`, `float`, `bool`, `str`, `list[int]`, `list[float]`, `list[str]`, `list[bool]`
+- Control flow: `for i in range(...)`, `while`, `if/elif/else`, `return` (including early return)
+- Arithmetic: `+`, `-`, `*`, `/`, `//`, `%`, `**`, bitwise operators
+- Builtins: `len()`, `range()`, `ord()`, `abs()`, `min()`, `max()`, type conversion
+- Math: `math.sin`, `math.cos`, `math.sqrt`, `math.atan2`, `math.pi`, and more
+- Lists: `.append()`, `.clear()`, index read/write
+- Strings: `+=` accumulation, `len()`, `ord(s[i])`
+
+**Not supported**: `numpy`, `dict`, `set`, `tuple`, list comprehensions, `lambda`,
+`break`, `continue`, `*args`/`**kwargs`, `try`/`except`.
 
 ---
 
 ## Installation
 
-Inside a Linux environment (or WSL2 Ubuntu):
+Requires **Linux** (or WSL2 on Windows 11) and **Python 3.12+**.
 
 ```bash
-# Install with standard pip
-pip install .
-
-# Or editable install for development
-pip install -e .
+pip install mojo-hotloop
 ```
 
-Ensure Mojo 1.2.0 is installed in your virtual environment:
+For native acceleration, also install **Mojo 1.2.0**:
 
 ```bash
 pip install modular
 modular install mojo
+mojo --version   # Should show: mojo 1.2.0
 ```
+
+> **Without Mojo**, all `@hotloop` functions fall back to Python automatically.
+> This is correct behavior — the package is fully usable without Mojo for
+> development and testing.
 
 ---
 
-## Quickstart
+## Quick Start
 
-### 1. Write Python Code with `@hotloop`
+### Step 1 — Annotate your function
 
 ```python
-# app.py
+# myapp.py
 from hotloop import hotloop
 
 @hotloop
-def vector_dot_product(xs: list[float], ys: list[float]) -> float:
+def running_sum(values: list[float]) -> float:
     total: float = 0.0
-    for i in range(len(xs)):
-        total += xs[i] * ys[i]
+    for i in range(len(values)):
+        total += values[i]
     return total
 ```
 
-### 2. Build Native Mojo Shared Library
+**All arguments and the return type must be annotated.** Local variables must
+also be annotated on first assignment (`total: float = 0.0`).
+
+### Step 2 — Build the native library
 
 ```bash
-hotloop build app.py --engine=ast
+hotloop build myapp.py --engine=ast
 ```
 
-This generates `fast.so` alongside your code, verified with content-addressed SHA-256 manifests.
+This creates `fast.so` and `fast.hotloop_manifest.json` alongside `myapp.py`.
 
-### 3. Run Your Application
+### Step 3 — Run at native speed
 
 ```python
-import app
+import myapp
 
-# Executes natively at compiled C-ABI speed!
-result = app.vector_dot_product([1.0, 2.0, 3.0], [10.0, 20.0, 30.0])
-print(result) # 140.0
+result = myapp.running_sum([1.0, 2.0, 3.0, 4.0, 5.0])
+print(result)  # 15.0
+print(myapp.running_sum._last_backend)  # "native"
 ```
 
 ---
 
-## Real-World Use Cases (Phase D Benchmarks)
+## How Fallback Works
 
-All 7 real-world use cases have been built via AST transpilation, validated across 1,000+ tests each (7,220 total tests), and benchmarked on equivalent hardware:
+```
+@hotloop function called
+        │
+        ▼
+  .so present and fresh?
+   ├─ Yes → native execution via Mojo C-ABI
+   └─ No  → HotloopFallbackWarning issued
+              → original Python function called
+```
 
-| Workload | Domain | Python 3.12 | Best Alternative | Mojo @hotloop | Speedup vs Python | Status |
-|---|---|---:|---:|---:|---:|---|
-| **Quantitative Backtest** | Financial Math | 32.64 ms | 0.522 ms (Numba) | **0.493 ms** | **66.14x** | PASS (Native Win) |
-| **PDF Text Cleaner** | Document Processing | 32.03 ms | 14.24 ms (Regex) | **11.23 ms** | **2.85x** | PASS (Native Win) |
-| **PII Scrubber** | Text Security | 89.37 ms | 35.88 ms (Regex) | **30.20 ms** | **2.96x** | PASS (Native Win) |
-| **Geo Distance (Haversine)** | Geospatial Analytics | 0.763 ms | 0.075 ms (Numba) | **0.258 ms** | **2.95x** | PASS (Native Win) |
-| **OCR Fuzzy Matcher** | Text Search | 1.414 ms | 0.060 ms (RapidFuzz) | **0.497 ms** | **2.84x** | PASS (Native Win) |
-| **AR Spatial 3D Ray** | 3D Graphics / AR | 0.348 ms | 0.007 ms (Numba) | **0.234 ms** | **1.48x** | PASS (Native Win) |
-| **RAG Document Chunker** | LLM Ingestion | 0.210 ms | 0.210 ms (Python) | 4.286 ms | 0.05x | PASS (Safe Fallback) |
+The fallback is **automatic and transparent**. No exceptions. No data corruption.
+The result is always correct.
+
+Enable strict mode if you want an error instead of a silent fallback:
+
+```python
+@hotloop(strict=True)
+def my_function(x: float) -> float:
+    ...
+```
 
 ---
 
-## Configuration & Environment Variables
+## Verified Real-World Use Cases
 
-- `HOTLOOP_STRICT=1`: Raise `HotloopNativeExecutionError` if a compiled `.so` is missing or stale instead of falling back to Python.
-- `HOTLOOP_FORCE_NATIVE=1`: Force native execution even for standard Python collection workloads where FFI overhead is present.
-- `HOTLOOP_CACHE_CHECK`: Control cache validation policy (`runtime` [default, throttled 20ms], `import`, `always`, or `off`).
-- `HOTLOOP_STRICT_PERF=1`: Enforce strict performance qualification — raises an error if an unaccelerated backend would execute.
+All 7 use cases below were transpiled using `--engine=ast` (deterministic,
+offline), verified against Python reference implementations, and benchmarked on
+an Intel i5-8265U running Ubuntu 24.04 (WSL2).
+
+| Use Case | Domain | Speedup vs Python | Tests |
+|----------|--------|-------------------|-------|
+| Quantitative Backtest | Financial simulation | **66x** | 1,117 |
+| PII Scrubber | Text security | 2.96x | 1,019 |
+| PDF Text Cleaner | Document processing | 2.85x | 1,020 |
+| Geo Distance (Haversine) | Geospatial | 2.95x | 1,014 |
+| OCR Fuzzy Matcher | String search | 2.84x | 1,020 |
+| AR Spatial 3D Ray | Graphics/AR | 1.48x | 1,010 |
+| RAG Document Chunker | LLM ingestion | Python fallback¹ | 1,020 |
+
+¹ The RAG chunker returns `list[str]`. The FFI overhead of boxing each string
+exceeds the native computation savings. `mojo-hotloop` detects this automatically
+and falls back to Python — this is **correct behavior**, not a bug.
+
+> [!IMPORTANT]
+> These benchmarks reflect **this specific hardware and workload**. Your results
+> will vary. The 66x speedup for the quant backtest is real but specific to that
+> pattern (stateful simulation, no data-parallel structure). Do not expect
+> universal 66x speedups.
+
+---
+
+## Environment Variables
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `HOTLOOP_STRICT` | `0` | Set to `1` to raise `HotloopNativeExecutionError` instead of falling back |
+| `HOTLOOP_FORCE_NATIVE` | `0` | Set to `1` to bypass performance qualification heuristics |
+| `HOTLOOP_CACHE_CHECK` | `runtime` | Cache validation policy: `runtime`, `import`, `always`, `off` |
+| `HOTLOOP_STRICT_PERF` | `0` | Set to `1` to raise an error for unaccelerated backends |
+| `GEMINI_API_KEY` | (none) | Required for `--engine=gemini` only |
+| `HOTLOOP_MODEL` | (none) | Gemini model name, required for `--engine=gemini` |
+
+---
+
+## Running Tests
+
+```bash
+# Adversarial compiler tests (no Mojo required, ~2 seconds)
+.venv/bin/python tests/test_compiler_adversarial.py
+
+# Build all 7 use cases (requires Mojo)
+.venv/bin/python audit/test_ast_provenance.py
+
+# Run all 7 verification suites (requires Mojo + pre-built .so files)
+.venv/bin/python audit/run_all_verifications.py
+```
+
+---
+
+## Reproducing Benchmarks
+
+See [`docs/BENCHMARKS.md`](docs/BENCHMARKS.md) for the full methodology,
+hardware specs, and measurement scripts.
+
+---
+
+## Known Limitations
+
+1. **Negative list indexing** (`xs[-1]`): Accepted by the transpiler but may
+   produce incorrect Mojo. Use `xs[len(xs) - 1]` instead.
+2. **Chained comparisons** (`a < b < c`): May compile incorrectly. Use
+   `a < b and b < c`.
+3. **Linux only**: macOS and Windows (native) are not supported in v0.1.0.
+4. **No `break`/`continue`**: Use early `return` instead.
+5. **Mojo 1.2.0 only**: Not tested with other Mojo versions.
+6. **`list[str]` return type**: FFI overhead may cause auto-fallback to Python.
+7. **Functions must have full type annotations**: Unannotated parameters are rejected.
+
+---
+
+## Contributing
+
+Contributions welcome! See [`CONTRIBUTING.md`](CONTRIBUTING.md).
+
+- DCO sign-off required (`git commit -s`) — no CLA
+- All new transpiler features need a test in `tests/test_compiler_adversarial.py`
+- Performance claims need benchmark evidence (see `docs/BENCHMARKS.md`)
 
 ---
 
 ## License
 
-Apache 2.0
+Apache License 2.0. See [`LICENSE`](LICENSE).
+
+Copyright 2026 mojo-hotloop Contributors.

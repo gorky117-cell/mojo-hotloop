@@ -1,2 +1,0 @@
-[console_scripts]
-hotloop = hotloop.cli:main
