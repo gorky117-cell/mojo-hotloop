@@ -170,12 +170,21 @@ def _is_force_native(explicit_force: bool, explicit_strict: bool) -> bool:
     val = os.environ.get("HOTLOOP_FORCE_NATIVE", "").strip().lower()
     return val in ("1", "true", "yes")
 
-def _is_slower_workload(args: Tuple, kwargs: Dict) -> bool:
+def _is_slower_workload(args: Tuple, kwargs: Dict, fn: Optional[Callable] = None) -> bool:
     """
     Checks if any input argument is a standard Python collection (list/set),
+    or if the function returns a list of strings (list[str]),
     which incurs per-element PythonObject FFI conversion overhead that makes
     native Mojo execution slower than pure Python loops.
     """
+    if fn is not None:
+        try:
+            ret_type = getattr(fn, "__annotations__", {}).get("return")
+            if ret_type in (list[str], "list[str]"):
+                return True
+        except Exception:
+            pass
+
     for a in args:
         if isinstance(a, (list, set)):
             return True
@@ -228,7 +237,7 @@ def _create_hotloop_wrapper(fn: Callable, strict: bool = False, force_native: bo
         # Standard Python lists/sets have high FFI boxing/unboxing overhead that is slower
         # than pure Python. Fall back to Python unless explicitly forced by user.
         is_forced = _is_force_native(wrapper._force_native, strict)
-        if wrapper._compiled is not None and not is_forced and _is_slower_workload(args, kwargs):
+        if wrapper._compiled is not None and not is_forced and _is_slower_workload(args, kwargs, fn):
             strict_perf = os.environ.get("HOTLOOP_STRICT_PERF", "").strip().lower() in ("1", "true", "yes")
             if strict_perf:
                 wrapper._last_backend = "performance_not_qualified"
@@ -243,7 +252,7 @@ def _create_hotloop_wrapper(fn: Callable, strict: bool = False, force_native: bo
             if warn_key not in _WARNED_FALLBACKS:
                 _WARNED_FALLBACKS.add(warn_key)
                 warnings.warn(
-                    f"[mojo-hotloop] Python list input detected for '{fn.__name__}'; "
+                    f"[mojo-hotloop] Python collection input/output detected for '{fn.__name__}'; "
                     f"per-element FFI conversion overhead makes native execution slower than pure Python. "
                     f"Safely executing pure Python implementation. "
                     f"(Pass a NumPy ndarray or set force_native=True / HOTLOOP_FORCE_NATIVE=1 to run compiled Mojo.)",
