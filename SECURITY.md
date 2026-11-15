@@ -38,8 +38,10 @@ Security issues we care about:
 
 ## Security Design Notes
 
-- The `.env` file (containing `GEMINI_API_KEY`) is git-ignored by default and never committed
+- Offline-by-design: v0.1.0 compiles and runs completely offline with zero network calls or AI API keys; `.gitignore` excludes local `.env` files
 - All `subprocess` calls use list-form arguments, never `shell=True`
-- The AST transpiler uses Python's `ast.parse()` only on source text, never on runtime values
-- The `mojo` compiler binary path is validated to be an executable file before invocation
-- Shared library loading uses `importlib` with namespaced module names to avoid symbol collisions
+- No `eval()` or `exec()` on user inputs; AST transpiler uses Python's `ast.parse()` on source text
+- The `mojo` compiler binary path (`MOJO_BIN` / venv / `PATH`) is validated to exist before invocation
+- Generated shared libraries are checked for the ELF magic header (`\x7fELF`) before `dlopen`
+- Compilation writes `.mojo`, `.so`, and manifests atomically via temp files + `os.replace`
+- Thread-safe module cache (`threading.Lock`) guards shared module loading and fallback warnings

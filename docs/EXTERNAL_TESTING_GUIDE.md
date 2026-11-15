@@ -36,9 +36,8 @@ from scratch on your own machine.
 git clone https://github.com/mojo-hotloop/mojo-hotloop
 cd mojo-hotloop
 
-# Verify git HEAD
+# Verify git HEAD / branch
 git log --oneline -1
-# Should show: 47a2c41 or the v0.1.0 release commit
 
 # Create venv and install
 python3 -m venv .venv
@@ -104,11 +103,18 @@ SMOKE TEST: PASS
 ```
 ...
 ========================================================================
-TOTAL: 50 tests  |  PASS: 47  |  EXP_FAIL: 3  |  UNEXPECTED FAIL: 0
+TOTAL: 50 tests  |  PASS: 49  |  EXP_FAIL: 1  |  UNEXPECTED FAIL: 0
 ========================================================================
 ```
 
 Exit code should be `0`.
+
+With Mojo installed, you can also run the runtime security & unfamiliar-function suites:
+
+```bash
+.venv/bin/python tests/test_runtime_security.py
+.venv/bin/python tests/test_unfamiliar_functions.py
+```
 
 ---
 

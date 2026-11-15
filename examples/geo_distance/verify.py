@@ -43,11 +43,23 @@ def run_tests():
         ([10.0, 10.0, 10.0], [20.0, 20.0, 20.0]), # Multi-point stationary
     ]
 
+    import numpy as np
     deterministic_passed = 0
     for lats, lons in deterministic_cases:
         py_res = accumulate_haversine_distance._original(lats, lons)
         np_res = numpy_haversine(lats, lons)
-        mojo_res = accumulate_haversine_distance._compiled(lats, lons)
+        np_lats = np.array(lats, dtype=np.float64)
+        np_lons = np.array(lons, dtype=np.float64)
+        mojo_res = accumulate_haversine_distance(np_lats, np_lons)
+
+        if accumulate_haversine_distance._last_backend != "native":
+            print(f"[FAIL] Expected native backend for NumPy trail, got {accumulate_haversine_distance._last_backend}")
+            sys.exit(1)
+
+        fb_res = accumulate_haversine_distance(lats, lons)
+        if not math.isclose(fb_res, py_res, rel_tol=1e-12) or accumulate_haversine_distance._last_backend != "python_fallback_slower":
+            print(f"[FAIL] List fallback check failed: {accumulate_haversine_distance._last_backend}")
+            sys.exit(1)
 
         if not math.isclose(py_res, mojo_res, rel_tol=1e-8, abs_tol=1e-8):
             print(f"[FAIL] Deterministic mismatch: py={py_res}, mojo={mojo_res}")
@@ -61,7 +73,7 @@ def run_tests():
 
     print(f"  [✓] Deterministic cases passed ({deterministic_passed} tests)")
 
-    # 2. Randomized GPS trails (1,000 cases)
+    # 2. Randomized GPS trails (1,000 cases via public @hotloop + NumPy ndarray)
     rng = random.Random(42)
     random_passed = 0
     total_points = 0
@@ -82,8 +94,14 @@ def run_tests():
             lats.append(cur_lat)
             lons.append(cur_lon)
 
+        np_lats = np.array(lats, dtype=np.float64)
+        np_lons = np.array(lons, dtype=np.float64)
         py_res = accumulate_haversine_distance._original(lats, lons)
-        mojo_res = accumulate_haversine_distance._compiled(lats, lons)
+        mojo_res = accumulate_haversine_distance(np_lats, np_lons)
+
+        if accumulate_haversine_distance._last_backend != "native":
+            print(f"[FAIL] Expected native backend at #{test_idx}, got {accumulate_haversine_distance._last_backend}")
+            sys.exit(1)
 
         if not math.isclose(py_res, mojo_res, rel_tol=1e-8, abs_tol=1e-8):
             print(f"[FAIL] Random trail #{test_idx} mismatch:")
@@ -96,7 +114,8 @@ def run_tests():
         total_points += n_points
 
     total_tests = deterministic_passed + random_passed
-    print(f"[✓] Stage D6: Geo Distance PASSED: {total_tests} tests verified ({total_points} GPS waypoints, 100% matched against NumPy & Py, 100% native execution, 0 mismatches, 0 fallbacks). Zero errors.")
+    native_runs = accumulate_haversine_distance._call_count_native
+    print(f"[✓] Stage D6: Geo Distance PASSED: {total_tests} tests verified ({total_points} GPS waypoints, 100% matched against NumPy & Py, {native_runs} native @hotloop ndarray executions, 0 mismatches). Zero errors.")
 
 if __name__ == "__main__":
     run_tests()

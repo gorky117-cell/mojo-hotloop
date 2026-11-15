@@ -61,13 +61,22 @@ jobs:
       - name: Check packaging metadata
         run: |
           pip show mojo-hotloop
-          python -c "
+          python - << 'EOF'
           import importlib.metadata
+          from hotloop.ast_transpiler import transpile_python_to_mojo
           meta = importlib.metadata.metadata('mojo-hotloop')
-          assert meta['Version'] == '0.1.0', f'Wrong version: {meta[\"Version\"]}'
-          assert meta['License'] == 'Apache-2.0', f'Wrong license: {meta[\"License\"]}'
-          print(f'Package metadata OK: {meta[\"Name\"]} {meta[\"Version\"]}')
-          "
+          assert meta['Version'] == '0.1.0', f'Wrong version: {meta["Version"]}'
+          lic = meta.get('License-Expression') or meta.get('License')
+          assert lic == 'Apache-2.0', f'Wrong license: {lic}'
+          reqs = [r for r in (importlib.metadata.requires('mojo-hotloop') or []) if '; extra ==' not in r]
+          assert len(reqs) == 0, f'Expected zero base runtime deps, got: {reqs}'
+          mojo_src = transpile_python_to_mojo(
+              "def add_one(x: int) -> int:\n    return x + 1\n",
+              "fast",
+          )
+          assert "def _pywrap_add_one(" in mojo_src
+          print(f'Package metadata & offline AST check OK: {meta["Name"]} {meta["Version"]}')
+          EOF
 
   # MOJO_REQUIRED: The following job requires Mojo 1.2.0 which is not available
   # on GitHub Actions runners. It is documented here for reference and must be

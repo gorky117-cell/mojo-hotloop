@@ -2,9 +2,11 @@ import functools
 import hashlib
 import importlib.machinery
 import importlib.util
+import inspect
 import json
 import os
 import sys
+import threading
 import time
 import types
 import warnings
@@ -22,11 +24,22 @@ class HotloopFallbackWarning(UserWarning):
     """Warning issued when execution falls back to the original Python implementation."""
     pass
 
+_STATE_LOCK = threading.Lock()
+
 # Global cache of loaded native modules keyed by canonical absolute .so path
 _LOADED_MODULES: Dict[str, types.ModuleType] = {}
 
 # Set of (function_qualname, reason_key) to prevent warning spam
 _WARNED_FALLBACKS: Set[Tuple[str, str]] = set()
+
+
+def _warn_once(warn_key: Tuple[str, str], message: str) -> None:
+    with _STATE_LOCK:
+        if warn_key in _WARNED_FALLBACKS:
+            return
+        _WARNED_FALLBACKS.add(warn_key)
+    warnings.warn(message, HotloopFallbackWarning, stacklevel=3)
+
 
 def _load_native_module(so_path: str, export_symbol: Optional[str] = None) -> Tuple[Optional[types.ModuleType], Optional[str]]:
     """
@@ -36,32 +49,41 @@ def _load_native_module(so_path: str, export_symbol: Optional[str] = None) -> Tu
     ensuring module isolation in sys.modules.
     """
     real_path = os.path.realpath(so_path)
-    if real_path in _LOADED_MODULES:
-        return _LOADED_MODULES[real_path], None
+    with _STATE_LOCK:
+        if real_path in _LOADED_MODULES:
+            return _LOADED_MODULES[real_path], None
 
-    if not os.path.isfile(real_path):
-        return None, f"File does not exist: {real_path}"
+        if not os.path.isfile(real_path):
+            return None, f"File does not exist: {real_path}"
 
-    stem = os.path.splitext(os.path.basename(real_path))[0]
-    sym = export_symbol or stem
-    if export_symbol is None and "_" in stem and len(stem.rsplit("_", 1)[-1]) == 16:
-        sym = stem.rsplit("_", 1)[0]
+        try:
+            with open(real_path, "rb") as f:
+                magic = f.read(4)
+            if magic != b"\x7fELF":
+                return None, f"Dynamic load error (CorruptedELF): missing ELF header in {real_path}"
+        except OSError as e:
+            return None, f"Dynamic load error (OSError): cannot read shared library {real_path}: {e}"
 
-    # Hierarchical module name: Python looks for PyInit_<last_part>
-    unique_mod_name = f"_hotloop_mod_{len(_LOADED_MODULES)}_{stem}.{sym}"
+        stem = os.path.splitext(os.path.basename(real_path))[0]
+        sym = export_symbol or stem
+        if export_symbol is None and "_" in stem and len(stem.rsplit("_", 1)[-1]) == 16:
+            sym = stem.rsplit("_", 1)[0]
 
-    try:
-        loader = importlib.machinery.ExtensionFileLoader(unique_mod_name, real_path)
-        spec = importlib.util.spec_from_loader(unique_mod_name, loader)
-        if spec is None or spec.loader is None:
-            return None, f"Failed to create module spec for {real_path}"
+        # Hierarchical module name: Python looks for PyInit_<last_part>
+        unique_mod_name = f"_hotloop_mod_{len(_LOADED_MODULES)}_{stem}.{sym}"
 
-        mod = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(mod)
-        _LOADED_MODULES[real_path] = mod
-        return mod, None
-    except Exception as e:
-        return None, f"Dynamic load error ({type(e).__name__}): {e}"
+        try:
+            loader = importlib.machinery.ExtensionFileLoader(unique_mod_name, real_path)
+            spec = importlib.util.spec_from_loader(unique_mod_name, loader)
+            if spec is None or spec.loader is None:
+                return None, f"Failed to create module spec for {real_path}"
+
+            mod = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(mod)
+            _LOADED_MODULES[real_path] = mod
+            return mod, None
+        except Exception as e:
+            return None, f"Dynamic load error ({type(e).__name__}): {e}"
 
 def _compute_file_hash(path: str) -> Optional[str]:
     try:
@@ -229,15 +251,40 @@ def _create_hotloop_wrapper(fn: Callable, strict: bool = False, force_native: bo
         # Default runtime mode: throttled to 20ms
         check_interval = 0.02
 
+    try:
+        _sig = inspect.signature(fn)
+        _params = list(_sig.parameters.values())
+        _can_bind_sig = not any(
+            p.kind in (inspect.Parameter.VAR_POSITIONAL, inspect.Parameter.VAR_KEYWORD)
+            for p in _params
+        )
+        _param_count = len(_params)
+    except (ValueError, TypeError):
+        _sig = None
+        _can_bind_sig = False
+        _param_count = -1
+
     last_check_time = 0.0
 
     @functools.wraps(fn)
     def wrapper(*args, **kwargs):
+        if _can_bind_sig and (kwargs or len(args) != _param_count):
+            try:
+                bound = _sig.bind(*args, **kwargs)
+                bound.apply_defaults()
+                call_args = bound.args
+                call_kwargs: Dict = {}
+            except TypeError:
+                return wrapper._original(*args, **kwargs)
+        else:
+            call_args = args
+            call_kwargs = kwargs
+
         # Performance-aware qualification check:
         # Standard Python lists/sets have high FFI boxing/unboxing overhead that is slower
         # than pure Python. Fall back to Python unless explicitly forced by user.
         is_forced = _is_force_native(wrapper._force_native, strict)
-        if wrapper._compiled is not None and not is_forced and _is_slower_workload(args, kwargs, fn):
+        if wrapper._compiled is not None and not is_forced and _is_slower_workload(call_args, call_kwargs, fn):
             strict_perf = os.environ.get("HOTLOOP_STRICT_PERF", "").strip().lower() in ("1", "true", "yes")
             if strict_perf:
                 wrapper._last_backend = "performance_not_qualified"
@@ -248,17 +295,13 @@ def _create_hotloop_wrapper(fn: Callable, strict: bool = False, force_native: bo
 
             wrapper._last_backend = "python_fallback_slower"
             wrapper._call_count_fallback += 1
-            warn_key = (f"{fn.__module__}.{fn.__qualname__}", "slower_than_python")
-            if warn_key not in _WARNED_FALLBACKS:
-                _WARNED_FALLBACKS.add(warn_key)
-                warnings.warn(
-                    f"[mojo-hotloop] Python collection input/output detected for '{fn.__name__}'; "
-                    f"per-element FFI conversion overhead makes native execution slower than pure Python. "
-                    f"Safely executing pure Python implementation. "
-                    f"(Pass a NumPy ndarray or set force_native=True / HOTLOOP_FORCE_NATIVE=1 to run compiled Mojo.)",
-                    HotloopFallbackWarning,
-                    stacklevel=2
-                )
+            _warn_once(
+                (f"{fn.__module__}.{fn.__qualname__}", "slower_than_python"),
+                f"[mojo-hotloop] Python collection input/output detected for '{fn.__name__}'; "
+                f"per-element FFI conversion overhead makes native execution slower than pure Python. "
+                f"Safely executing pure Python implementation. "
+                f"(Pass a NumPy ndarray or set force_native=True / HOTLOOP_FORCE_NATIVE=1 to run compiled Mojo.)"
+            )
             return wrapper._original(*args, **kwargs)
 
         # Check for runtime modification of the source file (if runtime checking is active)
@@ -279,7 +322,7 @@ def _create_hotloop_wrapper(fn: Callable, strict: bool = False, force_native: bo
 
 
         # Check for lone surrogate codepoints which cannot cross UTF-8 C-ABI boundary safely
-        if wrapper._compiled is not None and _has_unsupported_surrogates(args, kwargs):
+        if wrapper._compiled is not None and _has_unsupported_surrogates(call_args, call_kwargs):
             is_strict = _is_strict_active(strict)
             if is_strict:
                 wrapper._last_backend = "native_error"
@@ -289,22 +332,19 @@ def _create_hotloop_wrapper(fn: Callable, strict: bool = False, force_native: bo
                 )
             wrapper._last_backend = "python_fallback_surrogate"
             wrapper._call_count_fallback += 1
-            warn_key = (f"{fn.__module__}.{fn.__qualname__}", "surrogate_fallback")
-            if warn_key not in _WARNED_FALLBACKS:
-                _WARNED_FALLBACKS.add(warn_key)
-                warnings.warn(
-                    f"[mojo-hotloop] Input contains lone surrogate codepoints for '{fn.__name__}'; "
-                    f"UTF-8 C-ABI boundary cannot represent surrogates. Safely executing pure Python implementation.",
-                    HotloopFallbackWarning,
-                    stacklevel=2,
-                )
+            _warn_once(
+                (f"{fn.__module__}.{fn.__qualname__}", "surrogate_fallback"),
+                f"[mojo-hotloop] Input contains lone surrogate codepoints for '{fn.__name__}'; "
+                f"UTF-8 C-ABI boundary cannot represent surrogates. Safely executing pure Python implementation."
+            )
             return wrapper._original(*args, **kwargs)
 
         if wrapper._compiled is not None:
             wrapper._last_backend = "native"
-            wrapper._call_count_native += 1
             try:
-                return wrapper._compiled(*args, **kwargs)
+                res = wrapper._compiled(*call_args, **call_kwargs)
+                wrapper._call_count_native += 1
+                return res
             except Exception as e:
                 is_strict = _is_strict_active(strict)
                 err_str = str(e)
@@ -320,27 +360,30 @@ def _create_hotloop_wrapper(fn: Callable, strict: bool = False, force_native: bo
                     # Pure scalar function fallback: safe to re-execute in arbitrary-precision Python
                     wrapper._last_backend = "python_fallback_overflow"
                     wrapper._call_count_fallback += 1
-                    warn_key = (f"{fn.__module__}.{fn.__qualname__}", "integer_overflow")
-                    if warn_key not in _WARNED_FALLBACKS:
-                        _WARNED_FALLBACKS.add(warn_key)
-                        warnings.warn(
-                            f"[mojo-hotloop] Integer overflow in native execution for '{fn.__name__}'; "
-                            f"falling back to arbitrary-precision Python: {err_str}",
-                            HotloopFallbackWarning,
-                            stacklevel=2
-                        )
+                    _warn_once(
+                        (f"{fn.__module__}.{fn.__qualname__}", "integer_overflow"),
+                        f"[mojo-hotloop] Integer overflow in native execution for '{fn.__name__}'; "
+                        f"falling back to arbitrary-precision Python: {err_str}"
+                    )
                     return wrapper._original(*args, **kwargs)
 
                 elif "HOTLOOP_ZERO_DIVISION_ERROR" in err_str:
-                    # Restore exact Python ZeroDivisionError
+                    wrapper._call_count_native += 1
                     msg = err_str.split("HOTLOOP_ZERO_DIVISION_ERROR: ", 1)[-1]
                     raise ZeroDivisionError(msg) from None
 
                 elif "HOTLOOP_VALUE_ERROR" in err_str:
+                    wrapper._call_count_native += 1
                     msg = err_str.split("HOTLOOP_VALUE_ERROR: ", 1)[-1]
                     raise ValueError(msg) from None
 
+                elif "HOTLOOP_INDEX_ERROR" in err_str:
+                    wrapper._call_count_native += 1
+                    msg = err_str.split("HOTLOOP_INDEX_ERROR: ", 1)[-1]
+                    raise IndexError(msg) from None
+
                 # Re-raise any other native exception
+                wrapper._call_count_native += 1
                 raise
 
         # Fallback path when native binary is missing, stale, or failed to load
@@ -357,15 +400,10 @@ def _create_hotloop_wrapper(fn: Callable, strict: bool = False, force_native: bo
         wrapper._last_backend = "python_fallback_stale_cache" if is_stale else "python_fallback"
         wrapper._call_count_fallback += 1
 
-        # Non-repetitive warning emission
-        warn_key = (f"{fn.__module__}.{fn.__qualname__}", reason)
-        if warn_key not in _WARNED_FALLBACKS:
-            _WARNED_FALLBACKS.add(warn_key)
-            warnings.warn(
-                f"[mojo-hotloop] Falling back to Python implementation for '{fn.__name__}': {reason}",
-                HotloopFallbackWarning,
-                stacklevel=2
-            )
+        _warn_once(
+            (f"{fn.__module__}.{fn.__qualname__}", reason),
+            f"[mojo-hotloop] Falling back to Python implementation for '{fn.__name__}': {reason}"
+        )
 
         return wrapper._original(*args, **kwargs)
 

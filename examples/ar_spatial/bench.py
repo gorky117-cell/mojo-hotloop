@@ -89,7 +89,6 @@ def main():
 
     py_ref = find_closest_point_to_ray._original
     direct_mojo = find_closest_point_to_ray._compiled
-    os.environ["HOTLOOP_FORCE_NATIVE"] = "1"
     wrapped_mojo = find_closest_point_to_ray
 
     workloads = [
@@ -107,7 +106,7 @@ def main():
     for w_key, n_points, iters, desc in workloads:
         xs, ys, zs, np_xs, np_ys, np_zs, ray = generate_cloud(n_points)
         py_args = (xs, ys, zs, *ray)
-        np_args = (xs, ys, zs, *ray) # numpy_closest_point_to_ray takes lists and turns to np internally or accepts np
+        np_args = (np_xs, np_ys, np_zs, *ray)
         numba_args = (np_xs, np_ys, np_zs, *ray)
 
         # Warmup
@@ -115,8 +114,8 @@ def main():
             py_ref(*py_args)
             numpy_closest_point_to_ray(*np_args)
             numba_closest_point_to_ray(*numba_args)
-            direct_mojo(*py_args)
-            wrapped_mojo(*py_args)
+            direct_mojo(*np_args)
+            wrapped_mojo(*np_args)
 
         trials_py = []
         trials_np = []
@@ -128,8 +127,8 @@ def main():
             trials_py.append(time_callable(py_ref, py_args, iters))
             trials_np.append(time_callable(numpy_closest_point_to_ray, np_args, iters))
             trials_numba.append(time_callable(numba_closest_point_to_ray, numba_args, iters))
-            trials_direct.append(time_callable(direct_mojo, py_args, iters))
-            trials_wrapped.append(time_callable(wrapped_mojo, py_args, iters))
+            trials_direct.append(time_callable(direct_mojo, np_args, iters))
+            trials_wrapped.append(time_callable(wrapped_mojo, np_args, iters))
 
         py_mean = sum(trials_py) / len(trials_py)
         np_mean = sum(trials_np) / len(trials_np)
@@ -142,11 +141,11 @@ def main():
         speedup_vs_numba = numba_mean / wrapped_mean if wrapped_mean > 0 else 0
 
         print(f"\n[{desc}] (iters={iters})")
-        print(f"  Python 3.12:    {py_mean * 1000:8.2f} µs  (p50: {sorted(trials_py)[2] * 1000:8.2f} µs)")
-        print(f"  NumPy Vector:   {np_mean * 1000:8.2f} µs  (p50: {sorted(trials_np)[2] * 1000:8.2f} µs) -> {np_mean / wrapped_mean:5.2f}x vs Mojo @hotloop")
-        print(f"  Numba (@njit):  {numba_mean * 1000:8.2f} µs  (p50: {sorted(trials_numba)[2] * 1000:8.2f} µs) -> {numba_mean / wrapped_mean:5.2f}x vs Mojo @hotloop")
-        print(f"  Mojo Direct:    {direct_mean * 1000:8.2f} µs  (p50: {sorted(trials_direct)[2] * 1000:8.2f} µs)")
-        print(f"  Mojo @hotloop:  {wrapped_mean * 1000:8.2f} µs  (p50: {sorted(trials_wrapped)[2] * 1000:8.2f} µs) -> {speedup_vs_py:5.2f}x vs Python")
+        print(f"  Python 3.12:           {py_mean * 1000:8.2f} µs  (p50: {sorted(trials_py)[2] * 1000:8.2f} µs)")
+        print(f"  NumPy Vector:          {np_mean * 1000:8.2f} µs  (p50: {sorted(trials_np)[2] * 1000:8.2f} µs) -> {np_mean / wrapped_mean:5.2f}x vs Mojo @hotloop")
+        print(f"  Numba (@njit):         {numba_mean * 1000:8.2f} µs  (p50: {sorted(trials_numba)[2] * 1000:8.2f} µs) -> {numba_mean / wrapped_mean:5.2f}x vs Mojo @hotloop")
+        print(f"  Mojo Direct (ndarray): {direct_mean * 1000:8.2f} µs  (p50: {sorted(trials_direct)[2] * 1000:8.2f} µs)")
+        print(f"  Mojo @hotloop(ndarray):{wrapped_mean * 1000:8.2f} µs  (p50: {sorted(trials_wrapped)[2] * 1000:8.2f} µs) -> {speedup_vs_py:5.2f}x vs Python")
 
         results[w_key] = {
             "desc": desc,

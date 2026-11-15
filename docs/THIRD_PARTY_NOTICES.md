@@ -7,13 +7,7 @@ and notes on algorithmic provenance.
 
 ## Runtime Dependencies
 
-### python-dotenv
-
-- **Package**: `python-dotenv`
-- **License**: BSD 3-Clause
-- **Usage**: Loading `GEMINI_API_KEY` and `HOTLOOP_MODEL` from `.env` file
-  in `hotloop/backends/mojo.py` (Gemini engine path only)
-- **Source**: https://github.com/theskumar/python-dotenv
+**None.** `mojo-hotloop` v0.1.0 has zero third-party Python runtime dependencies (`dependencies = []` in `pyproject.toml`). Only the Python 3.12+ standard library is required at runtime.
 
 ---
 
@@ -23,18 +17,11 @@ and notes on algorithmic provenance.
 
 - **Package**: `numpy`
 - **License**: BSD 3-Clause
-- **Usage**: Zero-copy 1-D array pointer fast-path in the native dispatcher
-  (`hotloop/decorator.py`). Activated when `numpy` is importable at runtime.
+- **Usage**: Zero-copy 1-D C-contiguous `float64`/`int64` `ndarray` pointer fast-path
+  in AST-generated C-ABI wrappers (`hotloop/ast_transpiler.py`) and runtime
+  qualification checks (`hotloop/decorator.py`). Activated automatically when a
+  compatible `numpy.ndarray` is passed at runtime.
 - **Source**: https://github.com/numpy/numpy
-
-### google-genai
-
-- **Package**: `google-genai`
-- **License**: Apache 2.0
-- **Usage**: Gemini LLM compiler-in-the-loop engine (`hotloop/backends/mojo.py`).
-  Only imported when `--engine=gemini` or `--engine=auto` with AST fallback.
-  Not required for the default `--engine=ast` path.
-- **Source**: https://github.com/google-gemini/generative-ai-python
 
 ---
 

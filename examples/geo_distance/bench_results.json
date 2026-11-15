@@ -2,37 +2,37 @@
   "short": {
     "desc": "Short trail (100 waypoints)",
     "points": 100,
-    "py_ms": 0.0598205958,
-    "numpy_ms": 0.031968783300000005,
-    "numba_ms": 0.0065853806,
-    "mojo_direct_ms": 0.020880032,
-    "mojo_wrapped_ms": 0.023111242100000002,
-    "speedup_vs_py": 2.5883764940526497,
-    "speedup_vs_np": 1.3832568220121757,
-    "speedup_vs_numba": 0.28494273788945335
+    "py_ms": 0.07797455639999999,
+    "numpy_ms": 0.0431207277,
+    "numba_ms": 0.008627409499999999,
+    "mojo_direct_ms": 0.0340854182,
+    "mojo_wrapped_ms": 0.045213277499999996,
+    "speedup_vs_py": 1.724594205761792,
+    "speedup_vs_np": 0.9537182457078013,
+    "speedup_vs_numba": 0.19081583944008482
   },
   "medium": {
     "desc": "Medium trail (1,000 waypoints)",
     "points": 1000,
-    "py_ms": 0.616274059,
-    "numpy_ms": 0.086671108,
-    "numba_ms": 0.060977806,
-    "mojo_direct_ms": 0.207616821,
-    "mojo_wrapped_ms": 0.208792221,
-    "speedup_vs_py": 2.9516140785724003,
-    "speedup_vs_np": 0.4151069785305842,
-    "speedup_vs_numba": 0.2920501813139868
+    "py_ms": 1.468724021,
+    "numpy_ms": 0.212306589,
+    "numba_ms": 0.11800619399999998,
+    "mojo_direct_ms": 0.19415629,
+    "mojo_wrapped_ms": 0.23765788699999998,
+    "speedup_vs_py": 6.179992759928898,
+    "speedup_vs_np": 0.8933286064265984,
+    "speedup_vs_numba": 0.4965380930109843
   },
   "large": {
     "desc": "Long route (10,000 waypoints)",
     "points": 10000,
-    "py_ms": 6.28887462,
-    "numpy_ms": 0.58392105,
-    "numba_ms": 0.60426705,
-    "mojo_direct_ms": 2.09312121,
-    "mojo_wrapped_ms": 2.0776741999999997,
-    "speedup_vs_py": 3.0268819914113583,
-    "speedup_vs_np": 0.2810455315852698,
-    "speedup_vs_numba": 0.29083821226638906
+    "py_ms": 13.0902553,
+    "numpy_ms": 1.18455293,
+    "numba_ms": 1.1886769400000001,
+    "mojo_direct_ms": 1.63689593,
+    "mojo_wrapped_ms": 1.5295909,
+    "speedup_vs_py": 8.558010707307425,
+    "speedup_vs_np": 0.7744246713287847,
+    "speedup_vs_numba": 0.7771208236136865
   }
 }

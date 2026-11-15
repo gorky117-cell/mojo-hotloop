@@ -34,37 +34,34 @@ stability roadmap.
 
 ### ✅ 7 Real-World Use Cases Verified
 
-All 7 use cases compile via AST transpilation with 0 correctness mismatches
+All 7 use cases compile offline via `--engine=ast` (`-O3`) with 0 correctness mismatches
 across 7,220 total tests:
 
 | Use Case | Tests | Speedup vs Python |
 |----------|-------|-------------------|
-| Quantitative Backtest | 1,117 | **66x** |
-| PII Scrubber | 1,019 | 2.96x |
-| PDF Text Cleaner | 1,020 | 2.85x |
-| Geo Distance (Haversine) | 1,014 | 2.95x |
-| OCR Fuzzy Matcher | 1,020 | 2.84x |
-| AR Spatial 3D Ray | 1,010 | 1.48x |
-| RAG Document Chunker | 1,020 | (safe Python fallback) |
+| Quantitative Backtest | 1,117 | **82.39x** (`1.14x` vs Numba) |
+| AR Spatial 3D Ray (`ndarray`) | 1,010 | **40.60x** at 10k vertices (`0.73x` at 100v; `16.81x` vs NumPy) |
+| Geo Distance (`ndarray`) | 1,014 | **8.56x** at 10k waypoints (`1.72x` at 100w) |
+| PDF Text Cleaner | 1,020 | **6.16x–7.32x** (`2.94x–3.08x` vs Regex) |
+| PII Scrubber | 1,019 | **3.22x–7.49x** (`1.27x–2.51x` vs Regex) |
+| OCR Fuzzy Matcher | 1,020 | **3.62x–6.34x** (`0.23x–0.78x` vs RapidFuzz C) |
+| RAG Document Chunker | 1,020 | (safe Python fallback on `list[str]` return) |
 
-### ✅ 50-Test Adversarial Compiler Suite
+### ✅ Adversarial, Unfamiliar-Function & Security Test Suites
 
-A new adversarial test suite (`tests/test_compiler_adversarial.py`) exercises
-50 previously-unseen functions across all major edge cases. Result: **47/50
-PASS, 3 expected limitations, 0 unexpected failures.**
+- `tests/test_compiler_adversarial.py`: **49/50 PASS, 1 expected rejection (`T42`), 0 unexpected failures**
+- `tests/test_unfamiliar_functions.py`: **6/6 tests OK** across unfamiliar compiled functions (`12.12x` dot product, `18.11x` Welford variance, `3.28x` RLE compress, `7.03x` Caesar cipher) plus `audit/bench_generalization.py` (`8.56x` `mask_digits`, `66.39x` EMA, `57.17x` Chebyshev)
+- `tests/test_runtime_security.py`: **6/6 tests OK** (OOB `IndexError` isolation, `ndarray` shape/stride/dtype safety, strict overflow, corrupted ELF `.so` / manifest resilience, concurrent compilation, 25k-iteration RSS stability)
 
-### ✅ Clean pip Install with Graceful Fallback
+### ✅ Clean pip Install with Zero Runtime Dependencies
 
-Installing via `pip install mojo-hotloop` works without Mojo. Functions
-decorated with `@hotloop` fall back to Python automatically, issuing a
-`HotloopFallbackWarning`. Full acceleration requires Mojo 1.2.0.
+Installing via `pip install mojo-hotloop` requires zero third-party runtime packages and works cleanly offline with or without Mojo. Functions fall back to Python automatically when `.so` is unavailable or unsupported. Full native acceleration requires Mojo 1.2.0 (`modular install mojo`).
 
 ### ✅ Security-Clean
 
-- No credentials in source code or git history
-- `.env` file is git-ignored
-- No `shell=True` subprocess calls
-- No `eval()`/`exec()` on user data
+- 100% offline compilation & execution; no network calls or AI API keys
+- No `shell=True` subprocess calls and no `eval()`/`exec()` on user data
+- ELF header validation (`\x7fELF`) before `dlopen` and atomic file replacement for manifests/binaries
 
 ---
 
@@ -101,21 +98,17 @@ python myfile.py
 
 ## Known Limitations
 
-1. **Negative list indexing** (`xs[-1]`): The transpiler accepts this but may
-   produce incorrect Mojo code. Workaround: `xs[len(xs) - 1]`.
+1. **`dict`, `set`, `tuple`, list slicing (`xs[1:3]`), `break`/`continue`, `try`/`except`**: Rejected cleanly with `ASTTranspileError` (safe Python fallback).
 
-2. **Chained comparisons** (`a < b < c`): The transpiler accepts this but may
-   compile incorrectly. Workaround: `a < b and b < c`.
+2. **`numpy` pointer fast path scope**: Automatic zero-copy C-pointer dispatch applies to read-only 1-D C-contiguous `float64`/`int64` `ndarray` inputs; multi-dimensional, strided, or mutated arrays fall back safely.
 
-3. **`list[str]` return type**: FFI overhead for string boxing may cause the
-   function to be slower than pure Python. The decorator detects this and
-   falls back automatically.
+3. **`list[str]` return types & tiny inputs**: C-ABI marshaling overhead on `list[str]` returns or ~100-element calls can exceed compute cost; heuristic auto-fallback routes collection-heavy signatures to Python unless `force_native=True` or `ndarray` is used.
 
-4. **Linux only**: macOS and Windows (native, not WSL2) are not supported in v0.1.0.
+4. **Linux / WSL2 only**: macOS and native Windows (outside WSL2) are not supported in v0.1.0.
 
-5. **No `break`/`continue`**: Use early `return` instead.
+5. **Mojo reserved keywords**: Using Mojo keywords (`fn`, `var`, `struct`, `mut`, `out`, etc.) as parameter or variable names raises `ASTTranspileError`.
 
-6. **Mojo 1.2.0 only**: Not tested with other Mojo versions.
+6. **Mojo 1.2.0 only**: Tested against Mojo 1.2.0 (`2016d0cd`).
 
 ---
 

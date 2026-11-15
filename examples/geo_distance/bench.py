@@ -90,7 +90,6 @@ def main():
 
     py_ref = accumulate_haversine_distance._original
     direct_mojo = accumulate_haversine_distance._compiled
-    os.environ["HOTLOOP_FORCE_NATIVE"] = "1"
     wrapped_mojo = accumulate_haversine_distance
 
     workloads = [
@@ -113,8 +112,8 @@ def main():
             py_ref(lats, lons)
             numpy_haversine(np_lats, np_lons)
             numba_haversine(np_lats, np_lons)
-            direct_mojo(lats, lons)
-            wrapped_mojo(lats, lons)
+            direct_mojo(np_lats, np_lons)
+            wrapped_mojo(np_lats, np_lons)
 
         trials_py = []
         trials_np = []
@@ -126,8 +125,8 @@ def main():
             trials_py.append(time_callable(py_ref, lats, lons, iters))
             trials_np.append(time_callable(numpy_haversine, np_lats, np_lons, iters))
             trials_numba.append(time_callable(numba_haversine, np_lats, np_lons, iters))
-            trials_direct.append(time_callable(direct_mojo, lats, lons, iters))
-            trials_wrapped.append(time_callable(wrapped_mojo, lats, lons, iters))
+            trials_direct.append(time_callable(direct_mojo, np_lats, np_lons, iters))
+            trials_wrapped.append(time_callable(wrapped_mojo, np_lats, np_lons, iters))
 
         py_mean = sum(trials_py) / len(trials_py)
         np_mean = sum(trials_np) / len(trials_np)
@@ -140,11 +139,11 @@ def main():
         speedup_vs_numba = numba_mean / wrapped_mean if wrapped_mean > 0 else 0
 
         print(f"\n[{desc}] (iters={iters})")
-        print(f"  Python 3.12:    {py_mean * 1000:8.2f} µs  (p50: {sorted(trials_py)[2] * 1000:8.2f} µs)")
-        print(f"  NumPy Vector:   {np_mean * 1000:8.2f} µs  (p50: {sorted(trials_np)[2] * 1000:8.2f} µs) -> {np_mean / wrapped_mean:5.2f}x vs Mojo @hotloop")
-        print(f"  Numba (@njit):  {numba_mean * 1000:8.2f} µs  (p50: {sorted(trials_numba)[2] * 1000:8.2f} µs) -> {numba_mean / wrapped_mean:5.2f}x vs Mojo @hotloop")
-        print(f"  Mojo Direct:    {direct_mean * 1000:8.2f} µs  (p50: {sorted(trials_direct)[2] * 1000:8.2f} µs)")
-        print(f"  Mojo @hotloop:  {wrapped_mean * 1000:8.2f} µs  (p50: {sorted(trials_wrapped)[2] * 1000:8.2f} µs) -> {speedup_vs_py:5.2f}x vs Python")
+        print(f"  Python 3.12:           {py_mean * 1000:8.2f} µs  (p50: {sorted(trials_py)[2] * 1000:8.2f} µs)")
+        print(f"  NumPy Vector:          {np_mean * 1000:8.2f} µs  (p50: {sorted(trials_np)[2] * 1000:8.2f} µs) -> {np_mean / wrapped_mean:5.2f}x vs Mojo @hotloop")
+        print(f"  Numba (@njit):         {numba_mean * 1000:8.2f} µs  (p50: {sorted(trials_numba)[2] * 1000:8.2f} µs) -> {numba_mean / wrapped_mean:5.2f}x vs Mojo @hotloop")
+        print(f"  Mojo Direct (ndarray): {direct_mean * 1000:8.2f} µs  (p50: {sorted(trials_direct)[2] * 1000:8.2f} µs)")
+        print(f"  Mojo @hotloop(ndarray):{wrapped_mean * 1000:8.2f} µs  (p50: {sorted(trials_wrapped)[2] * 1000:8.2f} µs) -> {speedup_vs_py:5.2f}x vs Python")
 
         results[w_key] = {
             "desc": desc,

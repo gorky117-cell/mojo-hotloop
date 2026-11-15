@@ -60,5 +60,5 @@ args = (...)
 ### Additional Notes
 
 - Does the crash happen on every call, or only specific inputs?
-- Does it crash with `--engine=gemini` as well?
-- Does the Python fallback (remove `.so`) work correctly?
+- Can you reproduce it with `HOTLOOP_FORCE_NATIVE=1` or different array dtypes/shapes?
+- Does the Python fallback (remove `.so` / `__mojocache__/`) work correctly?

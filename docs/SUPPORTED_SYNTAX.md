@@ -1,7 +1,7 @@
 # Supported Python Syntax — mojo-hotloop AST Transpiler
 
 > **Version**: mojo-hotloop v0.1.0, Mojo 1.2.0 target  
-> **Transpiler**: `hotloop/ast_transpiler.py`, version `1.2.0-phaseD`
+> **Transpiler**: `hotloop/ast_transpiler.py`, offline AST engine (`0.1.0-ast`)
 
 This document describes exactly which Python constructs the AST transpiler
 supports, and what must be rewritten for a function to be transpilable.
@@ -35,8 +35,19 @@ All function parameters and return types **must** be annotated.
 | `list[bool]`      | `List[Bool]` |
 | `list[str]`       | `List[String]` |
 
-**Not supported**: `numpy.ndarray`, `dict`, `set`, `tuple`, `Optional`, `Union`,
+**Not directly annotated yet**: `dict`, `set`, `tuple`, `Optional`, `Union`,
 `Any`, generic type parameters.
+
+> [!TIP]
+> **Zero-copy `numpy.ndarray` acceleration**: Parameters annotated `list[float]`
+> or `list[int]` (when only read via `len(xs)` and `xs[i]`) automatically receive a
+> zero-copy C-pointer dispatch fast-path when passed a 1-D, C-contiguous `float64`
+> or `int64` `numpy.ndarray`. Multi-dimensional, strided, or wrong-dtype arrays are
+> safely routed away from raw pointer dereferencing.
+
+**Keyword & default arguments**: Functions compiled by `@hotloop` support default
+parameter values and keyword call-site arguments (bound via `inspect.signature`
+when needed).
 
 ### Example — Correctly Annotated
 
@@ -104,7 +115,7 @@ total = 0.0          # ❌ rejected — missing type annotation
 | Operator | Supported |
 |----------|-----------|
 | `==`, `!=`, `<`, `<=`, `>`, `>=` | ✅ |
-| Chained: `a < b < c` | ⚠️ **Known limitation** — accepted but may compile incorrectly. Rewrite as `a < b and b < c` |
+| Chained comparisons (`a < b < c`) | ✅ Supported (`0 <= ord(ch) <= 127`, numeric chains, etc.; slice targets excluded) |
 
 ### Boolean Operators
 
@@ -136,7 +147,8 @@ x **= 2   # ✅
 | `range(start, stop)` | ✅ | |
 | `range(start, stop, step)` | ✅ | |
 | `ord(c)` | ✅ | Returns Unicode codepoint of single-char string |
-| `abs(x)` | ✅ | Scalar only |
+| `chr(code)` | ✅ | Returns single-character string (`ValueError` if outside `0..0x10FFFF`) |
+| `abs(x)` | ✅ | Scalar only (checks `INT64_MIN` overflow) |
 | `int(x)`, `float(x)`, `str(x)` | ✅ | Type conversion |
 | `bool(x)` | ✅ | |
 | `min(a, b)`, `max(a, b)` | ✅ | Two scalars only; list form not supported |
@@ -173,10 +185,9 @@ Import with `import math`, then use `math.<function>`:
 ```python
 result: list[float] = []        # ✅ Empty list initialization
 result.append(value)            # ✅ Append element
-result[i]                       # ✅ Positive index access
-result[i] = value               # ✅ Positive index write
-result[-1]                      # ⚠️ KNOWN BUG — accepted but generates wrong code
-                                #   Workaround: result[len(result) - 1]
+result[i]                       # ✅ Positive & negative index read (IndexError on OOB)
+result[-1]                      # ✅ Negative index read
+result[i] = value               # ✅ Index write (including negative indices & AugAssign)
 result.clear()                  # ✅ Clear list
 len(result)                     # ✅ Length
 ```
@@ -186,12 +197,14 @@ len(result)                     # ✅ Length
 ## String Operations
 
 ```python
-s: str = ""                     # ✅
+s: str = ""                     # ✅ Empty string (also supports unannotated s = "")
 s += "text"                     # ✅ String concatenation
-s += other_str                  # ✅
-len(s)                          # ✅
+s += s[i]                       # ✅ Direct single-character write without temp allocation
+len(s)                          # ✅ Length in Unicode codepoints
 ord(s[i])                       # ✅ Character access + codepoint
-s[i]                            # ✅ Single-character access by index
+s[i]                            # ✅ Positive & negative indexing (IndexError on OOB)
+s[start:stop]                   # ✅ String slicing
+s[start:stop:step]              # ✅ Stepped slicing (ValueError if step == 0)
 ```
 
 ---
@@ -220,9 +233,9 @@ s[i]                            # ✅ Single-character access by index
 - `del`
 - Walrus operator (`:=`)
 - f-strings
-- Slice notation (`xs[1:3]`)
+- List slice notation (`xs[1:3]`) — note: string slices `s[1:3]` *are* supported
 - `dict`, `set`, `tuple`, `frozenset`
-- `numpy` / any third-party types
+- Mojo hard keywords (`fn`, `var`, `struct`, `ref`, `trait`, `comptime`, `Self`) used as variable/parameter names, or argument-convention keywords (`out`, `mut`, `owned`, `borrowed`, `inout`, `read`) used as parameter names (rejected with `ASTTranspileError`)
 
 ---
 

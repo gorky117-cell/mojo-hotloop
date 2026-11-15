@@ -2,31 +2,31 @@
   "small": {
     "desc": "Small extract (1024 chars)",
     "len": 1024,
-    "py_ms": 0.2088376008,
-    "regex_ms": 0.0914062292,
-    "mojo_direct_ms": 0.0449633646,
-    "mojo_wrapped_ms": 0.0477117446,
-    "speedup_vs_py": 4.377069053978797,
-    "speedup_vs_regex": 1.9158014439907944
+    "py_ms": 0.5022847256,
+    "regex_ms": 0.21112219859999998,
+    "mojo_direct_ms": 0.06654693419999999,
+    "mojo_wrapped_ms": 0.0686166734,
+    "speedup_vs_py": 7.320155593552865,
+    "speedup_vs_regex": 3.0768352375415504
   },
   "medium": {
     "desc": "Medium document (10240 chars)",
     "len": 10240,
-    "py_ms": 2.181927318,
-    "regex_ms": 0.946220295,
-    "mojo_direct_ms": 0.45778744600000004,
-    "mojo_wrapped_ms": 0.489045348,
-    "speedup_vs_py": 4.461605302909455,
-    "speedup_vs_regex": 1.9348313993163677
+    "py_ms": 4.830470375,
+    "regex_ms": 2.333423637,
+    "mojo_direct_ms": 0.768991557,
+    "mojo_wrapped_ms": 0.783773054,
+    "speedup_vs_py": 6.163098297839671,
+    "speedup_vs_regex": 2.9771674658771827
   },
   "large": {
     "desc": "Large corpus (100000 chars)",
     "len": 100000,
-    "py_ms": 19.435664626666668,
-    "regex_ms": 8.586703153333334,
-    "mojo_direct_ms": 4.1486516133333335,
-    "mojo_wrapped_ms": 4.157728973333333,
-    "speedup_vs_py": 4.674586715806229,
-    "speedup_vs_regex": 2.0652387898312683
+    "py_ms": 48.81799516666667,
+    "regex_ms": 21.32396324,
+    "mojo_direct_ms": 7.241652640000001,
+    "mojo_wrapped_ms": 7.253667986666668,
+    "speedup_vs_py": 6.730111614758421,
+    "speedup_vs_regex": 2.9397490041171794
   }
 }

@@ -35,9 +35,7 @@ classifiers = [
     "Topic :: Scientific/Engineering",
     "Topic :: System :: Benchmark",
 ]
-dependencies = [
-    "python-dotenv",
-]
+dependencies = []
 
 [project.optional-dependencies]
 numpy = [

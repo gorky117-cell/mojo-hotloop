@@ -69,110 +69,107 @@ including OS scheduler jitter on a typical developer machine.
 
 ## Results — 7 Real-World Use Cases
 
-All benchmarks run with `--engine=ast` (deterministic, offline transpilation).
+All benchmarks run with `--engine=ast` (deterministic, offline transpilation, compiled with `mojo build --emit shared-lib -O3`). Both `@hotloop` (full Python wrapper + dispatch) and Direct Mojo module calls are shown alongside the best semantically equivalent baseline (`Numba`, `NumPy`, `Compiled Regex`, `RapidFuzz`).
 
 ### 1. Quantitative Backtest (100,000 ticks)
 
-**Function**: `stateful_trailing_backtest(ticks, start_price, stop_pct, fee_rate)`  
-**Input size**: 100,000 simulated price ticks, LCG-based random price series  
+**Function**: `stateful_trailing_backtest(ticks, start_price, stop_pct, fee_rate)` (`examples/quant_backtest/bench.py`, 100 iterations)  
 **Engine**: AST-auto
 
-| Implementation | p50 (ms) | Speedup vs Python |
-|----------------|----------|-------------------|
-| Python 3.12    | 32.64    | 1.00x (baseline) |
-| Numba JIT      | 0.522    | 62.5x |
-| **Mojo @hotloop (AST)** | **0.493** | **66.1x** |
+| Implementation | p50 (ms) | p95 (ms) | Mean (ms) | Speedup vs Python (p50) |
+|----------------|----------|----------|-----------|-------------------------|
+| Python 3.12    | 43.780   | 62.290   | 46.258    | 1.00x (baseline) |
+| Numba `@njit` (warmed; 1810.4 ms JIT) | 0.604 | 0.828 | 0.637 | 72.48x |
+| **Mojo `@hotloop` (AST)** | **0.531** | **0.764** | **0.570** | **82.39x** (1.14x vs Numba) |
 
-This is the **flagship benchmark**. The function involves stateful simulation
-with conditionals, float arithmetic, and no data-parallel structure — exactly
-the class of loop where native compilation dominates.
+This stateful loop with tight conditional branches and float arithmetic has no data-parallel array structure, allowing native Mojo AOT code to run slightly faster than warmed Numba without JIT startup latency.
 
-### 2. PDF Text Cleaner
+### 2. PII Scrubber
 
-**Function**: `clean_pdf_text(text: str) -> str`  
-**Input size**: ~180 characters of OCR-extracted text with artifacts  
+**Function**: `scrub_pii(text: str) -> str` (`examples/pii_scrubber/bench.py`)  
+**Engine**: AST-auto (`_PyStr` ASCII fast-path + zero-alloc single-char write)
+
+| Workload | Python Mean (p50) | Regex Mean (p50) | Mojo Direct Mean | Mojo `@hotloop` Mean (p50) | Speedup vs Py (Mean) | Speedup vs Regex |
+|----------|-------------------|------------------|------------------|----------------------------|----------------------|------------------|
+| Short (53 chars, 5000 iters) | 30.93 µs (31.01 µs) | 12.15 µs (12.02 µs) | 5.83 µs | **9.60 µs** (9.64 µs) | **3.22x** | **1.27x** |
+| Medium (8,192 chars, 300 iters) | 10,200.06 µs (9,690.64 µs) | 3,642.21 µs (4,302.63 µs) | 1,724.62 µs | **1,538.16 µs** (1,463.64 µs) | **6.63x** | **2.37x** |
+| Large (100k chars, 30 iters) | 109,986.30 µs (103,355.55 µs) | 36,909.60 µs (34,717.24 µs) | 15,567.43 µs | **14,687.96 µs** (15,181.70 µs) | **7.49x** | **2.51x** |
+
+### 3. PDF Text Cleaner
+
+**Function**: `clean_pdf_text(text: str) -> str` (`examples/pdf_cleaner/bench.py`)  
 **Engine**: AST-auto
 
-| Implementation | p50 (ms) | Speedup vs Python |
-|----------------|----------|-------------------|
-| Python 3.12    | 32.03    | 1.00x |
-| Compiled Regex | 14.24    | 2.25x |
-| **Mojo @hotloop (AST)** | **11.23** | **2.85x** |
+| Workload | Python Mean (p50) | Regex Mean (p50) | Mojo Direct Mean | Mojo `@hotloop` Mean (p50) | Speedup vs Py (Mean) | Speedup vs Regex |
+|----------|-------------------|------------------|------------------|----------------------------|----------------------|------------------|
+| Small (1,024 chars, 1000 iters) | 502.28 µs (504.45 µs) | 211.12 µs (182.62 µs) | 66.55 µs | **68.62 µs** (68.74 µs) | **7.32x** | **3.08x** |
+| Medium (10,240 chars, 200 iters) | 4,830.47 µs (4,641.37 µs) | 2,333.42 µs (2,214.14 µs) | 768.99 µs | **783.77 µs** (698.25 µs) | **6.16x** | **2.98x** |
+| Large (100k chars, 30 iters) | 48,818.00 µs (48,177.50 µs) | 21,323.96 µs (20,159.51 µs) | 7,241.65 µs | **7,253.67 µs** (7,042.77 µs) | **6.73x** | **2.94x** |
 
-### 3. PII Scrubber
+### 4. Geo Distance (Haversine, 1-D `ndarray` Dispatch)
 
-**Function**: `scrub_pii(text: str) -> str`  
-**Input size**: ~200-character text with phone/email/SSN patterns  
-**Engine**: AST-auto
+**Function**: `haversine` batch route calculation (`examples/geo_distance/bench.py`)  
+**Engine**: AST-auto (zero-copy 1-D C-contiguous `float64` `ndarray` pointer dispatch)
 
-| Implementation | p50 (ms) | Speedup vs Python |
-|----------------|----------|-------------------|
-| Python 3.12    | 89.37    | 1.00x |
-| Compiled Regex | 35.88    | 2.49x |
-| **Mojo @hotloop (AST)** | **30.20** | **2.96x** |
-
-### 4. Geo Distance (Haversine)
-
-**Function**: `haversine_km(lat1, lon1, lat2, lon2) -> float`  
-**Input size**: GPS waypoint pair (scalar)  
-**Engine**: AST-auto
-
-| Implementation | p50 (ms) | Speedup vs Python |
-|----------------|----------|-------------------|
-| Python 3.12    | 0.763    | 1.00x |
-| NumPy (vectorized) | 0.075 | 10.2x |
-| Numba JIT      | 0.075    | 10.2x |
-| **Mojo @hotloop (AST)** | **0.258** | **2.95x** |
+| Workload | Python Mean (p50) | NumPy Mean (p50) | Numba Mean (p50) | Mojo Direct Mean | Mojo `@hotloop` Mean (p50) | Speedup vs Py |
+|----------|-------------------|------------------|------------------|------------------|----------------------------|---------------|
+| Short (100 waypoints, 2000 iters) | 77.97 µs (77.11 µs) | 43.12 µs (43.17 µs) | 8.63 µs (8.72 µs) | 34.09 µs | **45.21 µs** (45.83 µs) | **1.72x** |
+| Medium (1,000 waypoints, 200 iters) | 1,468.72 µs (1,392.25 µs) | 212.31 µs (186.38 µs) | 118.01 µs (111.95 µs) | 194.16 µs | **237.66 µs** (227.17 µs) | **6.18x** |
+| Long (10,000 waypoints, 20 iters) | 13,090.26 µs (12,727.48 µs) | 1,184.55 µs (1,105.08 µs) | 1,188.68 µs (1,093.87 µs) | 1,636.90 µs | **1,529.59 µs** (1,468.35 µs) | **8.56x** |
 
 > [!NOTE]
-> Numba and NumPy outperform Mojo here because they are pre-warmed JITs with
-> SIMD vectorization for scalar haversine. The Mojo AST-auto path is 2.95x over
-> Python and does not require annotations-free NumPy arrays.
+> NumPy and Numba achieve ~`0.77x–0.89x` relative latency vs Mojo `@hotloop` on 1k–10k waypoints due to vectorized libm/SIMD transcendentals.
 
 ### 5. OCR Fuzzy Matcher
 
-**Function**: `levenshtein_distance(a: str, b: str) -> int`  
-**Input size**: Two ~20-character OCR strings  
-**Engine**: AST-auto (Myers edit distance algorithm)
-
-| Implementation | p50 (ms) | Speedup vs Python |
-|----------------|----------|-------------------|
-| Python 3.12    | 1.414    | 1.00x |
-| RapidFuzz (C ext) | 0.060 | 23.6x |
-| **Mojo @hotloop (AST)** | **0.497** | **2.84x** |
-
-### 6. AR Spatial 3D Ray
-
-**Function**: `ray_triangle_intersect(origin, direction, v0, v1, v2) -> float`  
-**Input size**: 3D ray-triangle intersection (12 floats)  
+**Function**: candidate distance search (`examples/ocr_matcher/bench.py`, with `list[str]` forced-native for collection comparison)  
 **Engine**: AST-auto
 
-| Implementation | p50 (ms) | Speedup vs Python |
-|----------------|----------|-------------------|
-| Python 3.12    | 0.348    | 1.00x |
-| NumPy          | 0.012    | 29.0x |
-| Numba JIT      | 0.007    | 49.7x |
-| **Mojo @hotloop (AST)** | **0.234** | **1.48x** |
+| Workload | Python Mean (p50) | RapidFuzz (C) Mean (p50) | Mojo Direct Mean | Mojo `@hotloop` Mean (p50) | Speedup vs Py |
+|----------|-------------------|--------------------------|------------------|----------------------------|---------------|
+| Small (20 cands, 500 iters) | 191.61 µs (192.32 µs) | 9.53 µs (9.56 µs) | 29.75 µs | **35.44 µs** (35.16 µs) | **5.41x** |
+| Medium (200 cands, 50 iters) | 1,910.38 µs (1,924.94 µs) | 68.86 µs (63.43 µs) | 305.30 µs | **301.29 µs** (296.58 µs) | **6.34x** |
+| Large (2,000 cands, 10 iters) | 4,327.32 µs (4,409.30 µs) | 934.02 µs (930.38 µs) | 1,048.71 µs | **1,195.80 µs** (1,108.84 µs) | **3.62x** |
+
+> [!NOTE]
+> RapidFuzz (bit-parallel C extension) remains faster (`0.23x–0.78x` ratio), while AST-generated Mojo outperforms pure Python `3.62x–6.34x`.
+
+### 6. AR Spatial 3D (Ray Point-Cloud Intersection, 1-D `ndarray` Dispatch)
+
+**Function**: ray-point-cloud intersection (`examples/ar_spatial/bench.py`)  
+**Engine**: AST-auto
+
+| Workload | Python Mean (p50) | NumPy Mean (p50) | Numba Mean (p50) | Mojo Direct Mean | Mojo `@hotloop` Mean (p50) | Speedup vs Py | vs NumPy |
+|----------|-------------------|------------------|------------------|------------------|----------------------------|---------------|----------|
+| Small (100 vertices, 2000 iters) | 38.38 µs (37.52 µs) | 53.93 µs (53.14 µs) | 1.32 µs (1.31 µs) | 39.16 µs | **52.38 µs** (49.38 µs) | **0.73x** | 1.03x |
+| Medium (1,000 vertices, 200 iters) | 425.84 µs (429.56 µs) | 166.31 µs (156.63 µs) | 7.16 µs (7.18 µs) | 47.70 µs | **56.48 µs** (54.75 µs) | **7.54x** | **2.94x** |
+| Large (10,000 vertices, 20 iters) | 4,291.97 µs (4,202.30 µs) | 1,777.39 µs (1,786.76 µs) | 69.15 µs (66.34 µs) | 96.90 µs | **105.72 µs** (103.08 µs) | **40.60x** | **16.81x** |
+
+> [!NOTE]
+> On tiny clouds (`100` vertices), C-ABI wrapper `ndim`/`dtype`/`flags` checks (~35 µs) exceed the compute time of 100 loop iterations (`0.73x`); on `1,000`–`10,000` vertices, zero-copy pointer execution reaches **7.54x–40.60x** over Python and **2.94x–16.81x** over vectorized NumPy (Numba reaches `0.65x` ratio at 10k vertices).
 
 ### 7. RAG Document Chunker — Safe Fallback
 
-**Function**: `chunk_document(text: str, chunk_size: int, overlap: int) -> list[str]`  
-**Engine**: AST-auto (but executes via Python fallback)
+**Function**: `chunk_document(text: str, chunk_size: int, overlap: int) -> list[str]` (`examples/rag_chunker/bench.py`)  
+**Engine**: AST-auto (automatically routed to Python fallback due to `list[str]` return boxing cost)
 
-| Implementation | p50 (ms) | Note |
-|----------------|----------|------|
-| Python 3.12    | 0.210    | Baseline |
-| **Mojo @hotloop** | **4.286** | **Python fallback activated** |
+| Workload | Python Mean (p50) | Mojo Direct Mean (p50) | Mojo `@hotloop` Mean (p50) | Note |
+|----------|-------------------|------------------------|----------------------------|------|
+| Small (1,024 chars, 1000 iters) | 6.93 µs (6.58 µs) | 62.73 µs (63.44 µs) | 17.89 µs (17.34 µs) | **0.39x** (fallback active) |
+| Medium (10,240 chars, 200 iters) | 55.51 µs (41.79 µs) | 552.73 µs (554.57 µs) | 53.61 µs (49.09 µs) | **1.04x** (fallback active) |
+| Large (100k chars, 30 iters) | 283.85 µs (273.66 µs) | 6,035.19 µs (6,133.51 µs) | 365.37 µs (392.48 µs) | **0.78x** (direct native is ~21x slower!) |
 
-> [!WARNING]
-> The RAG chunker returns `list[str]` — a collection of strings. The FFI
-> overhead of boxing each string element from Mojo back to Python
-> (`PythonObject`) exceeds the savings from native computation. `mojo-hotloop`
-> correctly detects this via its performance qualification heuristic and
-> **falls back to Python automatically**, preserving correctness and
-> avoiding a slowdown.
->
-> This is **correct behavior**, not a bug.
+## Results — Transpiler Generalization Audit (`audit/bench_generalization.py`)
+
+Five previously unseen general-purpose functions (no application tuning):
+
+| Workload | Size | Python p50 | Mojo `@hotloop` p50 | Speedup |
+|----------|------|------------|----------------------|---------|
+| `trapezoidal_integration` | 100,000 steps | 14,031.2 µs | 1,117.5 µs | **12.56x** |
+| `chebyshev_path_distance` | 10,000 waypoints | 6,411.3 µs | 112.1 µs | **57.17x** |
+| `exponential_moving_average` | 50,000 values | 14,616.2 µs | 220.2 µs | **66.39x** |
+| `mask_digits` | 50,000 chars | 10,532.3 µs | 1,230.5 µs | **8.56x** (up from `0.18x` baseline) |
+| `hamming_distance` | 50,000 chars | 6,305.7 µs | 490.2 µs | **12.86x** |
 
 ---
 
@@ -221,9 +218,7 @@ print(f'p50: {times[50]*1000:.3f} ms, backend: {stateful_trailing_backtest._last
    may differ slightly (typically ±5–10% for CPU-bound workloads).
 2. **Single-threaded**: All measurements are single-threaded. The `@hotloop`
    decorator does not automatically parallelize.
-3. **No SIMD**: The AST transpiler does not emit SIMD intrinsics. The 66x
-   quant_backtest speedup comes from eliminating Python interpreter overhead,
-   not vectorization.
+3. **Compiler flags**: AST-generated Mojo modules are compiled with `mojo build --emit shared-lib -O3`; the transpiler relies on LLVM `-O3` optimizations rather than emitting manual SIMD intrinsics. The speedups come from native compilation, zero-copy `ndarray` pointer dispatch, and `_PyStr` ASCII/codepoint optimizations.
 4. **Cold start**: `.so` loading at import time is not benchmarked. It is a
    one-time cost (typically 5–50 ms depending on disk speed).
 5. **Numba comparison**: Numba warm-up time is not included in the Numba p50

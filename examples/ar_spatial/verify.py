@@ -58,7 +58,20 @@ def run_tests():
     for xs, ys, zs, ox, oy, oz, dx, dy, dz in deterministic_cases:
         py_res = find_closest_point_to_ray._original(xs, ys, zs, ox, oy, oz, dx, dy, dz)
         np_res = numpy_closest_point_to_ray(xs, ys, zs, ox, oy, oz, dx, dy, dz)
-        mojo_res = find_closest_point_to_ray._compiled(xs, ys, zs, ox, oy, oz, dx, dy, dz)
+        np_xs = np.array(xs, dtype=np.float64)
+        np_ys = np.array(ys, dtype=np.float64)
+        np_zs = np.array(zs, dtype=np.float64)
+        mojo_res = find_closest_point_to_ray(np_xs, np_ys, np_zs, ox, oy, oz, dx, dy, dz)
+
+        if find_closest_point_to_ray._last_backend != "native":
+            print(f"[FAIL] Expected native backend for NumPy array, got {find_closest_point_to_ray._last_backend}")
+            sys.exit(1)
+
+        # Also check Python list auto-fallback safety
+        fb_res = find_closest_point_to_ray(xs, ys, zs, ox, oy, oz, dx, dy, dz)
+        if fb_res != py_res or find_closest_point_to_ray._last_backend != "python_fallback_slower":
+            print(f"[FAIL] List fallback parity/backend check failed: {find_closest_point_to_ray._last_backend}")
+            sys.exit(1)
 
         if py_res != mojo_res:
             print(f"[FAIL] Deterministic mismatch: py={py_res}, mojo={mojo_res}")
@@ -72,16 +85,20 @@ def run_tests():
 
     print(f"  [✓] Deterministic cases passed ({deterministic_passed} tests)")
 
-    # 2. Randomized 3D point cloud stress testing (1,000 cases)
+    # 2. Randomized 3D point cloud stress testing (1,000 cases via public @hotloop + NumPy ndarray)
     rng = random.Random(42)
     random_passed = 0
     total_3d_points = 0
+    native_before = find_closest_point_to_ray._call_count_native
 
     for test_idx in range(1000):
         n_points = rng.randint(2, 200)
         xs = [rng.uniform(-50.0, 50.0) for _ in range(n_points)]
         ys = [rng.uniform(-50.0, 50.0) for _ in range(n_points)]
         zs = [rng.uniform(-50.0, 50.0) for _ in range(n_points)]
+        np_xs = np.array(xs, dtype=np.float64)
+        np_ys = np.array(ys, dtype=np.float64)
+        np_zs = np.array(zs, dtype=np.float64)
 
         ox = rng.uniform(-10.0, 10.0)
         oy = rng.uniform(-10.0, 10.0)
@@ -93,7 +110,11 @@ def run_tests():
 
         py_res = find_closest_point_to_ray._original(xs, ys, zs, ox, oy, oz, dx, dy, dz)
         np_res = numpy_closest_point_to_ray(xs, ys, zs, ox, oy, oz, dx, dy, dz)
-        mojo_res = find_closest_point_to_ray._compiled(xs, ys, zs, ox, oy, oz, dx, dy, dz)
+        mojo_res = find_closest_point_to_ray(np_xs, np_ys, np_zs, ox, oy, oz, dx, dy, dz)
+
+        if find_closest_point_to_ray._last_backend != "native":
+            print(f"[FAIL] Expected native backend at #{test_idx}, got {find_closest_point_to_ray._last_backend}")
+            sys.exit(1)
 
         if py_res != mojo_res:
             print(f"[FAIL] Random 3D test #{test_idx} mismatch:")
@@ -111,7 +132,8 @@ def run_tests():
         total_3d_points += n_points
 
     total_tests = deterministic_passed + random_passed
-    print(f"[✓] Stage D7: AR Spatial 3D PASSED: {total_tests} tests verified ({total_3d_points} 3D vertices, 100% matched against NumPy & Py, 100% native execution, 0 mismatches, 0 fallbacks). Zero errors.")
+    native_runs = find_closest_point_to_ray._call_count_native
+    print(f"[✓] Stage D7: AR Spatial 3D PASSED: {total_tests} tests verified ({total_3d_points} 3D vertices, 100% matched against NumPy & Py, {native_runs} native @hotloop ndarray executions, 0 mismatches). Zero errors.")
 
 if __name__ == "__main__":
     run_tests()

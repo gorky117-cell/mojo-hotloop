@@ -2,31 +2,31 @@
   "small": {
     "desc": "Small corpus (20 candidates)",
     "candidates": 20,
-    "py_ms": 0.0990523028,
-    "rapidfuzz_ms": 0.004734521199999999,
-    "mojo_direct_ms": 0.028000326399999997,
-    "mojo_wrapped_ms": 0.030032886800000002,
-    "speedup_vs_py": 3.298127930878759,
-    "speedup_vs_rf": 0.1576445591637231
+    "py_ms": 0.1916080296,
+    "rapidfuzz_ms": 0.0095301996,
+    "mojo_direct_ms": 0.029749917999999997,
+    "mojo_wrapped_ms": 0.035438718,
+    "speedup_vs_py": 5.406742693118865,
+    "speedup_vs_rf": 0.26892055181002883
   },
   "medium": {
     "desc": "Medium corpus (200 candidates)",
     "candidates": 200,
-    "py_ms": 1.025043836,
-    "rapidfuzz_ms": 0.040324804000000006,
-    "mojo_direct_ms": 0.292468876,
-    "mojo_wrapped_ms": 0.294526864,
-    "speedup_vs_py": 3.4803067607442424,
-    "speedup_vs_rf": 0.136913840226133
+    "py_ms": 1.910384696,
+    "rapidfuzz_ms": 0.068857196,
+    "mojo_direct_ms": 0.305301984,
+    "mojo_wrapped_ms": 0.301285984,
+    "speedup_vs_py": 6.340768563598365,
+    "speedup_vs_rf": 0.22854430559902844
   },
   "large": {
     "desc": "Large corpus (2,000 candidates)",
     "candidates": 2000,
-    "py_ms": 1.7044204,
-    "rapidfuzz_ms": 0.3797161,
-    "mojo_direct_ms": 0.9010241999999999,
-    "mojo_wrapped_ms": 0.9068961999999999,
-    "speedup_vs_py": 1.8793996490447311,
-    "speedup_vs_rf": 0.4186985236017088
+    "py_ms": 4.32732374,
+    "rapidfuzz_ms": 0.93401996,
+    "mojo_direct_ms": 1.0487138999999999,
+    "mojo_wrapped_ms": 1.19579798,
+    "speedup_vs_py": 3.6187749204928408,
+    "speedup_vs_rf": 0.7810850792706641
   }
 }

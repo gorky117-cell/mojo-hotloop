@@ -17,9 +17,9 @@ def main():
     build_parser.add_argument("file", help="Python source file containing the @hotloop function")
     build_parser.add_argument(
         "--engine",
-        choices=["ast", "gemini", "auto"],
-        default="auto",
-        help="Transpilation engine: 'ast' (deterministic offline), 'gemini' (LLM compiler-in-the-loop), or 'auto' (AST first, fallback to Gemini)"
+        choices=["ast", "auto"],
+        default="ast",
+        help="Transpilation engine: 'ast' (deterministic offline Python AST-to-Mojo compiler, default; 'auto' aliases 'ast')"
     )
     build_parser.add_argument(
         "--backend",

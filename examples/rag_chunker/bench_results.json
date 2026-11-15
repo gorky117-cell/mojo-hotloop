@@ -2,25 +2,25 @@
   "small": {
     "desc": "Small document (1024 chars, size=250, ovlp=50)",
     "len": 1024,
-    "py_ms": 0.003805642,
-    "mojo_direct_ms": 0.0309082964,
-    "mojo_wrapped_ms": 0.0348075584,
-    "speedup_vs_py": 0.10933378194087869
+    "py_ms": 0.0069264999999999995,
+    "mojo_direct_ms": 0.06272685959999999,
+    "mojo_wrapped_ms": 0.0178869998,
+    "speedup_vs_py": 0.38723654483408665
   },
   "medium": {
     "desc": "Medium document (10240 chars, size=500, ovlp=100)",
     "len": 10240,
-    "py_ms": 0.02132891,
-    "mojo_direct_ms": 0.310682024,
-    "mojo_wrapped_ms": 0.312527699,
-    "speedup_vs_py": 0.06824646285192149
+    "py_ms": 0.055508100000000005,
+    "mojo_direct_ms": 0.552725095,
+    "mojo_wrapped_ms": 0.0536115,
+    "speedup_vs_py": 1.0353767381998267
   },
   "large": {
     "desc": "Large corpus (100000 chars, size=1000, ovlp=200)",
     "len": 100000,
-    "py_ms": 0.17131534666666667,
-    "mojo_direct_ms": 3.4803715266666666,
-    "mojo_wrapped_ms": 3.664124913333333,
-    "speedup_vs_py": 0.046754777939821225
+    "py_ms": 0.28385390666666666,
+    "mojo_direct_ms": 6.0351928,
+    "mojo_wrapped_ms": 0.3653652133333333,
+    "speedup_vs_py": 0.7769045774144308
   }
 }

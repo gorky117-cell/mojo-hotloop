@@ -508,14 +508,7 @@ def test_04_nan_inf():
 
 
 def test_05_neg_index():
-    # Negative indexing is a known unsupported/partially-supported feature
-    ok, out, err = run_transpile(T05)
-    if not ok:
-        record("T05_neg_index", "EXPECTED_FAIL",
-               f"Correctly rejected negative index: {err[:100]}")
-    else:
-        record("T05_neg_index", "EXPECTED_FAIL",
-               "Transpiler accepted negative index (known limitation - may produce wrong code)")
+    expect_transpile_ok("T05_neg_index", T05)
 
 
 def test_06_long_loop():
@@ -674,14 +667,7 @@ def test_33_augmented_assign():
 
 
 def test_34_chained_cmp():
-    # Chained comparisons (a < b < c) are a known unsupported syntax
-    ok, out, err = run_transpile(T34)
-    if not ok:
-        record("T34_chained_cmp", "EXPECTED_FAIL",
-               f"Correctly rejected chained compare: {err[:100]}")
-    else:
-        record("T34_chained_cmp", "EXPECTED_FAIL",
-               "Transpiler accepted chained compare (known limitation)")
+    expect_transpile_ok("T34_chained_cmp", T34)
 
 
 def test_35_return_str():
