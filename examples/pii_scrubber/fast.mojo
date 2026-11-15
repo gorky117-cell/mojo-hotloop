@@ -23,15 +23,15 @@ def _checked_add(a: Int, b: Int) raises -> Int:
     return a + b
 
 @always_inline
-def _checked_add(a: Float64, b: Float64) raises -> Float64:
+def _checked_add(a: Float64, b: Float64) -> Float64:
     return a + b
 
 @always_inline
-def _checked_add(a: Float64, b: Int) raises -> Float64:
+def _checked_add(a: Float64, b: Int) -> Float64:
     return a + Float64(b)
 
 @always_inline
-def _checked_add(a: Int, b: Float64) raises -> Float64:
+def _checked_add(a: Int, b: Float64) -> Float64:
     return Float64(a) + b
 
 @always_inline
@@ -45,15 +45,15 @@ def _checked_sub(a: Int, b: Int) raises -> Int:
     return a - b
 
 @always_inline
-def _checked_sub(a: Float64, b: Float64) raises -> Float64:
+def _checked_sub(a: Float64, b: Float64) -> Float64:
     return a - b
 
 @always_inline
-def _checked_sub(a: Float64, b: Int) raises -> Float64:
+def _checked_sub(a: Float64, b: Int) -> Float64:
     return a - Float64(b)
 
 @always_inline
-def _checked_sub(a: Int, b: Float64) raises -> Float64:
+def _checked_sub(a: Int, b: Float64) -> Float64:
     return Float64(a) - b
 
 @always_inline
@@ -83,15 +83,15 @@ def _checked_mul(a: Int, b: Int) raises -> Int:
     return a * b
 
 @always_inline
-def _checked_mul(a: Float64, b: Float64) raises -> Float64:
+def _checked_mul(a: Float64, b: Float64) -> Float64:
     return a * b
 
 @always_inline
-def _checked_mul(a: Float64, b: Int) raises -> Float64:
+def _checked_mul(a: Float64, b: Int) -> Float64:
     return a * Float64(b)
 
 @always_inline
-def _checked_mul(a: Int, b: Float64) raises -> Float64:
+def _checked_mul(a: Int, b: Float64) -> Float64:
     return Float64(a) * b
 
 @always_inline
@@ -101,7 +101,7 @@ def _checked_neg(a: Int) raises -> Int:
     return -a
 
 @always_inline
-def _checked_neg(a: Float64) raises -> Float64:
+def _checked_neg(a: Float64) -> Float64:
     return -a
 
 @always_inline
@@ -529,7 +529,7 @@ def _ptr_check_luhn(digits_ptr: OpaquePointer[MutUntrackedOrigin], _n_digits: In
     var total: Int = 0
     var parity: Int = _checked_mod(n, 2)
     for i in range(n):
-        var d: Int = digits[unsafe_offset=_checked_index(i, _n_digits)]
+        var d: Int = digits[unsafe_offset=i]
         if (_checked_mod(i, 2) == parity):
             d = _checked_mul(d, 2)
             if (d > 9):
@@ -544,7 +544,7 @@ def _native_check_luhn(digits: List[Int]) raises -> Bool:
     var total: Int = 0
     var parity: Int = _checked_mod(n, 2)
     for i in range(n):
-        var d: Int = digits[_checked_index(i, len(digits))]
+        var d: Int = digits[i]
         if (_checked_mod(i, 2) == parity):
             d = _checked_mul(d, 2)
             if (d > 9):
@@ -630,13 +630,13 @@ def _native_scrub_pii(_arg_text: String) raises -> String:
             if (_checked_add(i, 10) <= n):
                 var candidate: String = text[i:_checked_add(i, 10)]
                 var boundary_after: Bool = ((_checked_add(i, 10) == n) or (not (((text.get_ord(_checked_add(i, 10)) >= 65) and (text.get_ord(_checked_add(i, 10)) <= 90)) or ((text.get_ord(_checked_add(i, 10)) >= 48) and (text.get_ord(_checked_add(i, 10)) <= 57)))))
-                if (_py_bool(boundary_after) and _py_bool(_native_check_pan(candidate))):
+                if (boundary_after and _py_bool(_native_check_pan(candidate))):
                     result.write('[REDACTED_PAN]')
                     i = _checked_add(i, 10)
                     continue
         var is_num_start: Bool = (((Int(ch) >= 48) and (Int(ch) <= 57)) or ((Int(ch) == 43) and (_checked_add(i, 1) < n) and (text.get_ord(_checked_add(i, 1)) >= 48) and (text.get_ord(_checked_add(i, 1)) <= 57)))
         var boundary_before: Bool = ((i == 0) or (not (((text.get_ord(_checked_sub(i, 1)) >= 65) and (text.get_ord(_checked_sub(i, 1)) <= 90)) or ((text.get_ord(_checked_sub(i, 1)) >= 97) and (text.get_ord(_checked_sub(i, 1)) <= 122)) or ((text.get_ord(_checked_sub(i, 1)) >= 48) and (text.get_ord(_checked_sub(i, 1)) <= 57)))))
-        if (_py_bool(is_num_start) and _py_bool(boundary_before)):
+        if (is_num_start and boundary_before):
             var start_idx: Int = i
             var digits: List[Int] = List[Int]()
             while (i < n):
@@ -652,11 +652,11 @@ def _native_scrub_pii(_arg_text: String) raises -> String:
                     break
             var candidate_num: String = text[start_idx:i]
             var boundary_after_num: Bool = ((i == n) or (not (((text.get_ord(i) >= 65) and (text.get_ord(i) <= 90)) or ((text.get_ord(i) >= 97) and (text.get_ord(i) <= 122)) or ((text.get_ord(i) >= 48) and (text.get_ord(i) <= 57)))))
-            if (_py_bool(boundary_after_num) and _py_bool(_native_check_luhn(digits))):
+            if (boundary_after_num and _py_bool(_native_check_luhn(digits))):
                 result.write('[REDACTED_CC]')
-            elif (_py_bool(boundary_after_num) and _py_bool(_native_check_verhoeff(digits))):
+            elif (boundary_after_num and _py_bool(_native_check_verhoeff(digits))):
                 result.write('[REDACTED_AADHAAR]')
-            elif (_py_bool(boundary_after_num) and _py_bool(_native_check_phone(digits))):
+            elif (boundary_after_num and _py_bool(_native_check_phone(digits))):
                 result.write('[REDACTED_PHONE]')
             else:
                 result.write(candidate_num)

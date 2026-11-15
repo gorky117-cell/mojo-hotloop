@@ -96,15 +96,15 @@ def _checked_add(a: Int, b: Int) raises -> Int:
     return a + b
 
 @always_inline
-def _checked_add(a: Float64, b: Float64) raises -> Float64:
+def _checked_add(a: Float64, b: Float64) -> Float64:
     return a + b
 
 @always_inline
-def _checked_add(a: Float64, b: Int) raises -> Float64:
+def _checked_add(a: Float64, b: Int) -> Float64:
     return a + Float64(b)
 
 @always_inline
-def _checked_add(a: Int, b: Float64) raises -> Float64:
+def _checked_add(a: Int, b: Float64) -> Float64:
     return Float64(a) + b
 
 @always_inline
@@ -118,15 +118,15 @@ def _checked_sub(a: Int, b: Int) raises -> Int:
     return a - b
 
 @always_inline
-def _checked_sub(a: Float64, b: Float64) raises -> Float64:
+def _checked_sub(a: Float64, b: Float64) -> Float64:
     return a - b
 
 @always_inline
-def _checked_sub(a: Float64, b: Int) raises -> Float64:
+def _checked_sub(a: Float64, b: Int) -> Float64:
     return a - Float64(b)
 
 @always_inline
-def _checked_sub(a: Int, b: Float64) raises -> Float64:
+def _checked_sub(a: Int, b: Float64) -> Float64:
     return Float64(a) - b
 
 @always_inline
@@ -156,15 +156,15 @@ def _checked_mul(a: Int, b: Int) raises -> Int:
     return a * b
 
 @always_inline
-def _checked_mul(a: Float64, b: Float64) raises -> Float64:
+def _checked_mul(a: Float64, b: Float64) -> Float64:
     return a * b
 
 @always_inline
-def _checked_mul(a: Float64, b: Int) raises -> Float64:
+def _checked_mul(a: Float64, b: Int) -> Float64:
     return a * Float64(b)
 
 @always_inline
-def _checked_mul(a: Int, b: Float64) raises -> Float64:
+def _checked_mul(a: Int, b: Float64) -> Float64:
     return Float64(a) * b
 
 @always_inline
@@ -174,7 +174,7 @@ def _checked_neg(a: Int) raises -> Int:
     return -a
 
 @always_inline
-def _checked_neg(a: Float64) raises -> Float64:
+def _checked_neg(a: Float64) -> Float64:
     return -a
 
 @always_inline
@@ -785,6 +785,8 @@ class MojoASTTranspiler:
         self.ret_elem_type: Optional[str] = None
         self.active_ptr_lens: Dict[str, str] = {}
         self.codepoint_vars: Set[str] = set()
+        self.loop_inbounds: List[Dict[str, dict]] = []
+        self.length_aliases: Dict[str, Set[str]] = {}
         self._tmp_counter: int = 0
 
     def indent(self) -> str:
@@ -803,6 +805,8 @@ class MojoASTTranspiler:
         if isinstance(node, ast.Constant) and isinstance(node.value, bool):
             return expr_code
         if isinstance(node, ast.Call) and isinstance(node.func, ast.Name) and node.func.id == "bool":
+            return expr_code
+        if isinstance(node, ast.Name) and self.var_types.get(node.id) == "Bool":
             return expr_code
         return f"_py_bool({expr_code})"
 
@@ -847,6 +851,36 @@ class MojoASTTranspiler:
         self.scopes = [set()]
         self.var_types.clear()
         self.active_ptr_lens = dict(ptr_coll_names)
+        self.loop_inbounds = []
+        self.length_aliases = {}
+        for name in ptr_coll_names:
+            self.length_aliases.setdefault(f"_n_{name}", set()).add(name)
+
+        for stmt in ast.walk(func_def):
+            if isinstance(stmt, ast.Assign) and len(stmt.targets) == 1 and isinstance(stmt.targets[0], ast.Name):
+                t_name = stmt.targets[0].id
+                if isinstance(stmt.value, ast.Call) and isinstance(stmt.value.func, ast.Name) and stmt.value.func.id == "len":
+                    if len(stmt.value.args) == 1 and isinstance(stmt.value.args[0], ast.Name):
+                        self.length_aliases.setdefault(t_name, set()).add(stmt.value.args[0].id)
+                elif isinstance(stmt.value, ast.Name) and stmt.value.id in self.length_aliases:
+                    self.length_aliases.setdefault(t_name, set()).update(self.length_aliases[stmt.value.id])
+            elif isinstance(stmt, ast.AnnAssign) and isinstance(stmt.target, ast.Name):
+                t_name = stmt.target.id
+                if stmt.value and isinstance(stmt.value, ast.Call) and isinstance(stmt.value.func, ast.Name) and stmt.value.func.id == "len":
+                    if len(stmt.value.args) == 1 and isinstance(stmt.value.args[0], ast.Name):
+                        self.length_aliases.setdefault(t_name, set()).add(stmt.value.args[0].id)
+                elif stmt.value and isinstance(stmt.value, ast.Name) and stmt.value.id in self.length_aliases:
+                    self.length_aliases.setdefault(t_name, set()).update(self.length_aliases[stmt.value.id])
+
+        for node in ast.walk(func_def):
+            if isinstance(node, ast.Compare):
+                for op, comp in zip(node.ops, node.comparators):
+                    if isinstance(op, (ast.Eq, ast.NotEq)):
+                        for a, b in [(node.left, comp), (comp, node.left)]:
+                            if isinstance(a, ast.Call) and isinstance(a.func, ast.Name) and a.func.id == "len":
+                                if len(a.args) == 1 and isinstance(a.args[0], ast.Name) and isinstance(b, ast.Name):
+                                    if b.id in self.length_aliases:
+                                        self.length_aliases[b.id].add(a.args[0].id)
         pystr_arg_names = {
             name for name, _, mojo_type, _ in args
             if name in subscripted_args and mojo_type == "String"
@@ -1213,10 +1247,34 @@ class MojoASTTranspiler:
                 raise ASTTranspileError("Only simple variable loop targets are supported")
             var_name = node.target.id
 
+            inbounds_entry = None
             if isinstance(node.iter, ast.Call) and isinstance(node.iter.func, ast.Name) and node.iter.func.id == "range":
                 range_args = [self.visit_expr(a) for a in node.iter.args]
                 iter_code = f"range({', '.join(range_args)})"
                 loop_var_type = "Int"
+
+                lower = 0
+                upper_node = None
+                if len(node.iter.args) == 1:
+                    lower = 0
+                    upper_node = node.iter.args[0]
+                elif len(node.iter.args) == 2:
+                    if isinstance(node.iter.args[0], ast.Constant) and isinstance(node.iter.args[0].value, int):
+                        lower = node.iter.args[0].value
+                        upper_node = node.iter.args[1]
+
+                if upper_node is not None:
+                    upper_arrays = set()
+                    if isinstance(upper_node, ast.Call) and isinstance(upper_node.func, ast.Name) and upper_node.func.id == "len":
+                        if len(upper_node.args) == 1 and isinstance(upper_node.args[0], ast.Name):
+                            upper_arrays.add(upper_node.args[0].id)
+                    elif isinstance(upper_node, ast.Name):
+                        if upper_node.id in self.length_aliases:
+                            upper_arrays.update(self.length_aliases[upper_node.id])
+                        if upper_node.id.startswith("_n_") and upper_node.id[3:] in self.active_ptr_lens:
+                            upper_arrays.add(upper_node.id[3:])
+                    if upper_arrays:
+                        inbounds_entry = (var_name, {"arrays": upper_arrays, "lower": lower})
             else:
                 iter_expr = self.visit_expr(node.iter)
                 iter_t = self.var_types.get(iter_expr)
@@ -1239,8 +1297,12 @@ class MojoASTTranspiler:
             prev_t = self.var_types.get(var_name)
             if loop_var_type:
                 self.var_types[var_name] = loop_var_type
+            if inbounds_entry:
+                self.loop_inbounds.append({inbounds_entry[0]: inbounds_entry[1]})
             for s in node.body:
                 lines.append(self.visit_stmt(s))
+            if inbounds_entry:
+                self.loop_inbounds.pop()
             if prev_t is not None:
                 self.var_types[var_name] = prev_t
             else:
@@ -1307,6 +1369,36 @@ class MojoASTTranspiler:
                 if isinstance(node.slice, ast.Slice):
                     raise ASTTranspileError("List slicing is not supported in native AST compilation")
                 idx = self.visit_expr(node.slice)
+
+                # Check for proven inbounds loop variable access
+                is_proven = False
+                if isinstance(node.value, ast.Name):
+                    arr_name = node.value.id
+                    for frame in reversed(self.loop_inbounds):
+                        for lvar, info in frame.items():
+                            if arr_name in info["arrays"]:
+                                if isinstance(node.slice, ast.Name) and node.slice.id == lvar and info["lower"] >= 0:
+                                    is_proven = True
+                                    break
+                                elif (
+                                    isinstance(node.slice, ast.BinOp)
+                                    and isinstance(node.slice.op, ast.Sub)
+                                    and isinstance(node.slice.left, ast.Name)
+                                    and node.slice.left.id == lvar
+                                    and isinstance(node.slice.right, ast.Constant)
+                                    and node.slice.right.value == 1
+                                    and info["lower"] >= 1
+                                ):
+                                    is_proven = True
+                                    break
+                        if is_proven:
+                            break
+
+                if is_proven:
+                    if isinstance(node.value, ast.Name) and node.value.id in self.active_ptr_lens:
+                        return f"{val}[unsafe_offset={idx}]"
+                    return f"{val}[{idx}]"
+
                 if isinstance(node.value, ast.Name) and node.value.id in self.active_ptr_lens:
                     return f"{val}[unsafe_offset=_checked_index({idx}, {self.active_ptr_lens[node.value.id]})]"
                 return f"{val}[_checked_index({idx}, len({val}))]"
@@ -1327,6 +1419,11 @@ class MojoASTTranspiler:
             elif isinstance(node.op, ast.Mult):
                 return f"_checked_mul({left}, {right})"
             elif isinstance(node.op, ast.Div):
+                if isinstance(node.right, ast.Constant) and isinstance(node.right.value, (int, float)) and node.right.value != 0:
+                    left_type = self.var_types.get(node.left.id) if isinstance(node.left, ast.Name) else None
+                    if left_type == "Float64":
+                        return f"({left} / {right})"
+                    return f"(Float64({left}) / Float64({right}))"
                 return f"_checked_div({left}, {right})"
             elif isinstance(node.op, ast.FloorDiv):
                 return f"_checked_floordiv({left}, {right})"

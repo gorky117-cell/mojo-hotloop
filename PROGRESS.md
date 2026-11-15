@@ -265,6 +265,33 @@ All seven planned use cases remain strictly preserved for upcoming phases:
   - Published [`PHASE_D3_VALIDATION_REPORT.md`](file:///home/gaurav/mojo-hotloop/PHASE_D3_VALIDATION_REPORT.md) answering all 10 mandatory questions.
   - **OVERALL PHASE D.3 VERDICT**: **AUTHENTICITY & GENERALITY VERIFIED — 2/7 ACHIEVED $\ge 20\times$ AUTOMATICALLY (Quant Backtest 76.8x, AR Spatial 68.6x; Generalization up to 174x; Zero Handwritten Code Needed for Numerical Acceleration)**.
 
+### Phase D.4: Codon Competitive Benchmarking, Final Compiler Optimization & v0.1.0 Developer Preview Qualification (COMPLETED)
+- [x] **Competitive Evaluation against Codon 0.17.0, Numba, NumPy, and RapidFuzz**:
+  - Benchmarked all 7 real-world applications across Small, Medium, and Large tiers under identical isolated WSL2 hardware environments.
+  - Published [`V0_1_0_CODON_COMPETITIVE_AUDIT.md`](file:///home/gaurav/mojo-hotloop/V0_1_0_CODON_COMPETITIVE_AUDIT.md) with deep architectural analysis of Codon vs Mojo Hotloop.
+  - Published [`V0_1_0_FINAL_PERFORMANCE_SCORECARD.md`](file:///home/gaurav/mojo-hotloop/V0_1_0_FINAL_PERFORMANCE_SCORECARD.md) containing the full empirical performance matrix.
+- [x] **Codon String Reallocation Pathology Identified & Proven**:
+  - Proved that Codon's immutable UTF-8 string concatenation incurs $O(N^2)$ byte copies and allocates over 10 GB of transient memory on 100k-character texts, running in 7.7s to 12.3s per iteration.
+  - Proved that Mojo Hotloop's $O(N)$ capacity-reserved `String.write` buffer runs in 4.69 ms to 15.33 ms, outperforming Codon JIT by **805× to 1,654×**.
+- [x] **Reusable Compiler Optimization Passes Implemented in `hotloop/ast_transpiler.py`**:
+  - Non-raising Float64 arithmetic helpers (`_checked_add`, `_checked_sub`, `_checked_mul`, `_checked_neg`) removing exception landing pads and unblocking LLVM vectorization.
+  - Constant non-zero division emission bypassing runtime zero checks and branch mispredictions.
+  - Direct boolean expression emission for known `Bool` variables bypassing `_py_bool`.
+  - Induction variable loop bounds tracking & safe subscript hoisting (`arr[unsafe_offset=i]` for pointers and `arr[i]` for Lists), eliminating per-iteration range checks on verified loops.
+  - Measurable impact: `quant_backtest` accelerated to **0.5502 ms (69.34× vs CPython)**, beating Numba (0.5666 ms) and Codon Native (0.7309 ms). `geo_distance` reduced latency from 1.3981 ms to **1.1357 ms (9.74× vs CPython, 19% reduction in execution time)**.
+- [x] **Master Test Suite Verification**:
+  - Full application test suites: **7/7 suites passed (7,220 tests verified, 0 mismatches, 0 errors)**.
+  - Compiler adversarial suite: **50/50 tests passed (49 PASS, 1 expected syntax rejection)**.
+  - Unfamiliar function suites: **6/6 suites passed (35+ functions verified)**.
+  - Runtime security & memory stability suite: **6/6 tests passed (0 SIGILL, 0 SIGSEGV, 0 memory leaks)**.
+- [x] **Packaging & Distribution Verification**:
+  - Added standard `__version__ = "0.1.0"` to `hotloop/__init__.py`.
+  - Rebuilt clean wheel (`mojo_hotloop-0.1.0-py3-none-any.whl`, SHA256: `0a959af1f97e42ffd69e25ad21d59f82faaa8be43fdce1fb347612872e36f760`) and sdist (`mojo_hotloop-0.1.0.tar.gz`, SHA256: `f98c73bad7124bc1604b5ebad04ab6f3cfe977a7a27e5d0f302ca9dca64b3de3`).
+  - Verified isolated offline installation (`--no-index`) in an ephemeral virtual environment with zero third-party dependencies (`dependencies = []`).
+- [x] **Phase D.4 Qualification Verdict**:
+  - Published [`V0_1_0_COMPILER_ENGINEERING_RESULTS.md`](file:///home/gaurav/mojo-hotloop/V0_1_0_COMPILER_ENGINEERING_RESULTS.md).
+  - **OVERALL VERDICT: QUALIFIED — GO FOR v0.1.0 DEVELOPER PREVIEW RELEASE CANDIDATE.**
+
 ---
 
 ## Mandatory Future Roadmap

@@ -1,13 +1,13 @@
 # MOJO-HOTLOOP — v0.1.0 RELEASE READINESS REPORT
 **Comprehensive Technical Product Audit, Independent Verification & Open-Source Launch Assessment**
 
-**Date of Audit**: November 15, 2026  
-**Auditor**: Lead Compiler Engineer, Open-Source Release Architect & Independent Quality Engineer  
+**Date of Audit**: November 16, 2026  
+**Auditor**: Lead Compiler Architect, Mojo/LLVM Optimization Specialist & Independent Auditor  
 **Workspace**: `/home/gaurav/mojo-hotloop` (WSL2 Ubuntu 24.04 LTS)  
-**Toolchain**: Python 3.12.16 | Mojo 1.2.0 (`2016d0cd`) | Clang / LLVM Backend  
+**Toolchain**: Python 3.12.16 | Mojo 1.2.0 (`2016d0cd`) | Codon 0.17.0 | Clang / LLVM Backend  
 **Hardware Baseline**: Intel(R) Core(TM) i5-8265U CPU @ 1.60GHz (8 cores) | 7.6 GB RAM  
 **Target Release**: `v0.1.0 — Open-Source Developer Preview`  
-**Base Commit**: `d417567` (Release Candidate)  
+**Base Commit**: `6b64ff0` (Research Branch: `v0.1.0-codon-competitive`)  
 
 ---
 
@@ -101,27 +101,36 @@ The software, documentation, test suites, packaging, security posture, legal com
 | **PII Scrubber (`examples/pii_scrubber/verify.py`)** | 1,019 | **PASS** | 0 |
 | **Quant Backtest (`examples/quant_backtest/verify.py`)** | 1,117 | **PASS** | 0 |
 | **RAG Document Chunker (`examples/rag_chunker/verify.py`)** | 1,020 | **PASS** | 0 |
-| **Adversarial Compiler Suite (`tests/test_compiler_adversarial.py`)** | 50 | **PASS** (47 PASS, 3 documented syntax bounds) | 0 unexpected |
-| **Clean Install & Quickstart Test (`/tmp/verify_external_quickstart.py`)** | 6 | **PASS** | 0 |
-| **TOTAL VERIFIED CHECKS** | **7,276** | **100% PASS** | **0** |
+| **Adversarial Compiler Suite (`tests/test_compiler_adversarial.py`)** | 50 | **PASS** (49 PASS, 1 expected syntax rejection) | 0 unexpected |
+| **Unfamiliar Functions Suite (`tests/test_unfamiliar_functions.py`)** | 35+ | **PASS** (6/6 test suites passed) | 0 |
+| **Runtime Security & Stability Suite (`tests/test_runtime_security.py`)** | 6 | **PASS** (6/6 test suites passed) | 0 |
+| **Clean Install & Quickstart Test (Isolated Pip Install)** | 6 | **PASS** | 0 |
+| **TOTAL VERIFIED CHECKS** | **7,317+** | **100% PASS** | **0** |
 
 ---
 
-## 5. Benchmark Performance Baseline (Reproducible)
+## 5. Benchmark Performance Baseline & Codon Multi-Competitor Matrix
 
-| Workload | Pure Python 3.12 ($p50$) | Best Competitor ($p50$) | AST-Generated Mojo ($p50$) | Measured Speedup vs Python | Compiler Provenance |
-|---|---:|---:|---:|---:|---|
-| **Quant Backtest** | 26.38 ms | 0.377 ms *(Numba)* | **0.344 ms** | **76.75×** *(1.10× vs Numba)* | 100% Automatic AST Lowering |
-| **AR Spatial 3D** *(Pointer)* | 3.91 ms | 0.065 ms *(Numba)* | **0.057 ms** | **68.60×** *(1.14× vs Numba)* | 100% Automatic Contiguous Pointer |
-| **AR Spatial 3D** *(List)* | 3.91 ms | 0.065 ms *(Numba)* | 2.75 ms | 1.42× | FFI list unboxing overhead |
-| **Geo Distance** *(Pointer)* | 6.24 ms | 0.604 ms *(Numba)* | 0.89 ms | **7.01×** | 100% Automatic Contiguous Pointer |
-| **Geo Distance** *(List)* | 6.24 ms | 0.604 ms *(Numba)* | 2.08 ms | 3.03× | FFI list unboxing overhead |
-| **PII Scrubber** | 55.52 ms | 19.17 ms *(Regex)* | **9.39 ms** | **5.91×** *(2.04× vs Regex)* | 100% Automatic AST Lowering |
-| **PDF Cleaner** | 19.48 ms | 8.60 ms *(Regex)* | **4.15 ms** | **4.69×** *(2.07× vs Regex)* | 100% Automatic AST Lowering |
-| **OCR Matcher** | 1.71 ms | 0.380 ms *(RapidFuzz)*| 0.90 ms | 1.88× | 100% Automatic AST Lowering |
-| **RAG Chunker** *(list[str])* | 155.4 µs | 155.4 µs *(Python)* | 3,804.6 µs | 0.05× | CPython allocation floor |
-| **Chebyshev Dist** *(Unseen)* | 4.90 ms | N/A | **0.028 ms** | **174.14×** | 100% Generalization Test |
-| **Exp. Moving Avg** *(Unseen)*| 13.78 ms | N/A | **0.081 ms** | **171.14×** | 100% Generalization Test |
+Full empirical details and methodology published in [`V0_1_0_CODON_COMPETITIVE_AUDIT.md`](file:///home/gaurav/mojo-hotloop/V0_1_0_CODON_COMPETITIVE_AUDIT.md) and [`V0_1_0_FINAL_PERFORMANCE_SCORECARD.md`](file:///home/gaurav/mojo-hotloop/V0_1_0_FINAL_PERFORMANCE_SCORECARD.md).
+
+| Workload | Scale / Tier | CPython 3.12 ($p50$) | Mojo Baseline ($p50$) | **Mojo Optimized ($p50$)** | **Mojo Speedup vs Py** | Codon JIT ($p50$) | Codon Native ($p50$) | Strongest Alternative |
+|---|---|---:|---:|---:|---:|---:|---:|---|
+| **Quant Backtest** | 100k ticks | 38.15 ms | 0.607 ms | **0.550 ms** | **69.34×** | 0.464 ms | 0.731 ms | Numba: 0.567 ms (67.3×) |
+| **AR Spatial 3D** | Large (10k pts) | 3.795 ms | 0.091 ms | **0.114 ms** | **33.36×** | 0.150 ms | 0.051 ms | Numba: 0.071 ms (53.4×) |
+| **Geo Distance** | Large (10k pts) | 11.059 ms | 1.398 ms | **1.136 ms** | **9.74×** | 1.040 ms | 0.874 ms | NumPy: 0.900 ms (12.3×) |
+| **PDF Cleaner** | Large (100k ch) | 29.09 ms | 3.973 ms | **4.691 ms** | **6.20×** | 7,757.7 ms *(0.004×)* | 4,136.8 ms *(0.007×)* | Regex: 11.93 ms (2.44×) |
+| **PII Scrubber** | Large (100k ch) | 76.07 ms | 10.41 ms | **15.33 ms** | **4.96×** | 12,351.3 ms *(0.006×)* | 5,666.9 ms *(0.013×)* | Regex: 26.69 ms (2.85×) |
+| **OCR Matcher** | Large (1k words) | 2.331 ms | Fallback | **Fallback (2.38 ms)** | **0.98×** | 0.324 ms | 0.289 ms | RapidFuzz: 0.514 ms (4.54×) |
+| *(Forced Native)* | Large (1k words) | 2.331 ms | 0.654 ms | **0.653 ms** | **3.57×** | 0.324 ms | 0.289 ms | RapidFuzz: 0.514 ms (4.54×) |
+| **RAG Chunker** | Large (100k ch) | 0.193 ms | Fallback | **Fallback (0.191 ms)** | **1.01×** | 0.996 ms | 0.024 ms | Pure Python: 0.193 ms |
+| *(Forced Native)* | Large (100k ch) | 0.193 ms | 4.112 ms | **4.009 ms** | **0.05×** | 0.996 ms | 0.024 ms | Pure Python: 0.193 ms |
+| **Chebyshev Dist** | 10k pts (Unseen) | 4.90 ms | N/A | **0.028 ms** | **174.14×** | N/A | N/A | Pure AST Lowering |
+| **Exp Moving Avg** | 50k pts (Unseen) | 13.78 ms | N/A | **0.081 ms** | **171.14×** | N/A | N/A | Pure AST Lowering |
+
+### Distribution Artifacts & SHA-256 Checksums
+- `dist/mojo_hotloop-0.1.0-py3-none-any.whl`: `0a959af1f97e42ffd69e25ad21d59f82faaa8be43fdce1fb347612872e36f760`
+- `dist/mojo_hotloop-0.1.0.tar.gz`: `f98c73bad7124bc1604b5ebad04ab6f3cfe977a7a27e5d0f302ca9dca64b3de3`
+
 
 ---
 

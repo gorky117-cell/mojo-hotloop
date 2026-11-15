@@ -23,15 +23,15 @@ def _checked_add(a: Int, b: Int) raises -> Int:
     return a + b
 
 @always_inline
-def _checked_add(a: Float64, b: Float64) raises -> Float64:
+def _checked_add(a: Float64, b: Float64) -> Float64:
     return a + b
 
 @always_inline
-def _checked_add(a: Float64, b: Int) raises -> Float64:
+def _checked_add(a: Float64, b: Int) -> Float64:
     return a + Float64(b)
 
 @always_inline
-def _checked_add(a: Int, b: Float64) raises -> Float64:
+def _checked_add(a: Int, b: Float64) -> Float64:
     return Float64(a) + b
 
 @always_inline
@@ -45,15 +45,15 @@ def _checked_sub(a: Int, b: Int) raises -> Int:
     return a - b
 
 @always_inline
-def _checked_sub(a: Float64, b: Float64) raises -> Float64:
+def _checked_sub(a: Float64, b: Float64) -> Float64:
     return a - b
 
 @always_inline
-def _checked_sub(a: Float64, b: Int) raises -> Float64:
+def _checked_sub(a: Float64, b: Int) -> Float64:
     return a - Float64(b)
 
 @always_inline
-def _checked_sub(a: Int, b: Float64) raises -> Float64:
+def _checked_sub(a: Int, b: Float64) -> Float64:
     return Float64(a) - b
 
 @always_inline
@@ -83,15 +83,15 @@ def _checked_mul(a: Int, b: Int) raises -> Int:
     return a * b
 
 @always_inline
-def _checked_mul(a: Float64, b: Float64) raises -> Float64:
+def _checked_mul(a: Float64, b: Float64) -> Float64:
     return a * b
 
 @always_inline
-def _checked_mul(a: Float64, b: Int) raises -> Float64:
+def _checked_mul(a: Float64, b: Int) -> Float64:
     return a * Float64(b)
 
 @always_inline
-def _checked_mul(a: Int, b: Float64) raises -> Float64:
+def _checked_mul(a: Int, b: Float64) -> Float64:
     return Float64(a) * b
 
 @always_inline
@@ -101,7 +101,7 @@ def _checked_neg(a: Int) raises -> Int:
     return -a
 
 @always_inline
-def _checked_neg(a: Float64) raises -> Float64:
+def _checked_neg(a: Float64) -> Float64:
     return -a
 
 @always_inline

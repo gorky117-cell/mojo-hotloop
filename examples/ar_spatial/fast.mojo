@@ -23,15 +23,15 @@ def _checked_add(a: Int, b: Int) raises -> Int:
     return a + b
 
 @always_inline
-def _checked_add(a: Float64, b: Float64) raises -> Float64:
+def _checked_add(a: Float64, b: Float64) -> Float64:
     return a + b
 
 @always_inline
-def _checked_add(a: Float64, b: Int) raises -> Float64:
+def _checked_add(a: Float64, b: Int) -> Float64:
     return a + Float64(b)
 
 @always_inline
-def _checked_add(a: Int, b: Float64) raises -> Float64:
+def _checked_add(a: Int, b: Float64) -> Float64:
     return Float64(a) + b
 
 @always_inline
@@ -45,15 +45,15 @@ def _checked_sub(a: Int, b: Int) raises -> Int:
     return a - b
 
 @always_inline
-def _checked_sub(a: Float64, b: Float64) raises -> Float64:
+def _checked_sub(a: Float64, b: Float64) -> Float64:
     return a - b
 
 @always_inline
-def _checked_sub(a: Float64, b: Int) raises -> Float64:
+def _checked_sub(a: Float64, b: Int) -> Float64:
     return a - Float64(b)
 
 @always_inline
-def _checked_sub(a: Int, b: Float64) raises -> Float64:
+def _checked_sub(a: Int, b: Float64) -> Float64:
     return Float64(a) - b
 
 @always_inline
@@ -83,15 +83,15 @@ def _checked_mul(a: Int, b: Int) raises -> Int:
     return a * b
 
 @always_inline
-def _checked_mul(a: Float64, b: Float64) raises -> Float64:
+def _checked_mul(a: Float64, b: Float64) -> Float64:
     return a * b
 
 @always_inline
-def _checked_mul(a: Float64, b: Int) raises -> Float64:
+def _checked_mul(a: Float64, b: Int) -> Float64:
     return a * Float64(b)
 
 @always_inline
-def _checked_mul(a: Int, b: Float64) raises -> Float64:
+def _checked_mul(a: Int, b: Float64) -> Float64:
     return Float64(a) * b
 
 @always_inline
@@ -101,7 +101,7 @@ def _checked_neg(a: Int) raises -> Int:
     return -a
 
 @always_inline
-def _checked_neg(a: Float64) raises -> Float64:
+def _checked_neg(a: Float64) -> Float64:
     return -a
 
 @always_inline
@@ -585,9 +585,9 @@ def _ptr_find_closest_point_to_ray(xs_ptr: OpaquePointer[MutUntrackedOrigin], _n
     var best_idx: Int = _checked_neg(1)
     var min_dist_sq: Float64 = 1e+30
     for i in range(n):
-        var vx: Float64 = _checked_sub(xs[unsafe_offset=_checked_index(i, _n_xs)], ray_ox)
-        var vy: Float64 = _checked_sub(ys[unsafe_offset=_checked_index(i, _n_ys)], ray_oy)
-        var vz: Float64 = _checked_sub(zs[unsafe_offset=_checked_index(i, _n_zs)], ray_oz)
+        var vx: Float64 = _checked_sub(xs[unsafe_offset=i], ray_ox)
+        var vy: Float64 = _checked_sub(ys[unsafe_offset=i], ray_oy)
+        var vz: Float64 = _checked_sub(zs[unsafe_offset=i], ray_oz)
         var t: Float64 = _checked_add(_checked_add(_checked_mul(vx, dx), _checked_mul(vy, dy)), _checked_mul(vz, dz))
         if (t < 0.0):
             t = 0.0
@@ -614,9 +614,9 @@ def _native_find_closest_point_to_ray(xs: List[Float64], ys: List[Float64], zs: 
     var best_idx: Int = _checked_neg(1)
     var min_dist_sq: Float64 = 1e+30
     for i in range(n):
-        var vx: Float64 = _checked_sub(xs[_checked_index(i, len(xs))], ray_ox)
-        var vy: Float64 = _checked_sub(ys[_checked_index(i, len(ys))], ray_oy)
-        var vz: Float64 = _checked_sub(zs[_checked_index(i, len(zs))], ray_oz)
+        var vx: Float64 = _checked_sub(xs[i], ray_ox)
+        var vy: Float64 = _checked_sub(ys[i], ray_oy)
+        var vz: Float64 = _checked_sub(zs[i], ray_oz)
         var t: Float64 = _checked_add(_checked_add(_checked_mul(vx, dx), _checked_mul(vy, dy)), _checked_mul(vz, dz))
         if (t < 0.0):
             t = 0.0

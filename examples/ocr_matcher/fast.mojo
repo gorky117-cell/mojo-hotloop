@@ -23,15 +23,15 @@ def _checked_add(a: Int, b: Int) raises -> Int:
     return a + b
 
 @always_inline
-def _checked_add(a: Float64, b: Float64) raises -> Float64:
+def _checked_add(a: Float64, b: Float64) -> Float64:
     return a + b
 
 @always_inline
-def _checked_add(a: Float64, b: Int) raises -> Float64:
+def _checked_add(a: Float64, b: Int) -> Float64:
     return a + Float64(b)
 
 @always_inline
-def _checked_add(a: Int, b: Float64) raises -> Float64:
+def _checked_add(a: Int, b: Float64) -> Float64:
     return Float64(a) + b
 
 @always_inline
@@ -45,15 +45,15 @@ def _checked_sub(a: Int, b: Int) raises -> Int:
     return a - b
 
 @always_inline
-def _checked_sub(a: Float64, b: Float64) raises -> Float64:
+def _checked_sub(a: Float64, b: Float64) -> Float64:
     return a - b
 
 @always_inline
-def _checked_sub(a: Float64, b: Int) raises -> Float64:
+def _checked_sub(a: Float64, b: Int) -> Float64:
     return a - Float64(b)
 
 @always_inline
-def _checked_sub(a: Int, b: Float64) raises -> Float64:
+def _checked_sub(a: Int, b: Float64) -> Float64:
     return Float64(a) - b
 
 @always_inline
@@ -83,15 +83,15 @@ def _checked_mul(a: Int, b: Int) raises -> Int:
     return a * b
 
 @always_inline
-def _checked_mul(a: Float64, b: Float64) raises -> Float64:
+def _checked_mul(a: Float64, b: Float64) -> Float64:
     return a * b
 
 @always_inline
-def _checked_mul(a: Float64, b: Int) raises -> Float64:
+def _checked_mul(a: Float64, b: Int) -> Float64:
     return a * Float64(b)
 
 @always_inline
-def _checked_mul(a: Int, b: Float64) raises -> Float64:
+def _checked_mul(a: Int, b: Float64) -> Float64:
     return Float64(a) * b
 
 @always_inline
@@ -101,7 +101,7 @@ def _checked_neg(a: Int) raises -> Int:
     return -a
 
 @always_inline
-def _checked_neg(a: Float64) raises -> Float64:
+def _checked_neg(a: Float64) -> Float64:
     return -a
 
 @always_inline
@@ -570,7 +570,7 @@ def _native_find_closest_match(query: String, candidates: List[String], max_dist
     var best_dist: Int = _checked_add(max_distance, 1)
     var num_candidates: Int = _len(candidates)
     for i in range(num_candidates):
-        var cand: String = candidates[_checked_index(i, len(candidates))]
+        var cand: String = candidates[i]
         var dist: Int = _native_levenshtein_distance(query, cand, _checked_sub(best_dist, 1))
         if (dist < best_dist):
             best_dist = dist

@@ -23,15 +23,15 @@ def _checked_add(a: Int, b: Int) raises -> Int:
     return a + b
 
 @always_inline
-def _checked_add(a: Float64, b: Float64) raises -> Float64:
+def _checked_add(a: Float64, b: Float64) -> Float64:
     return a + b
 
 @always_inline
-def _checked_add(a: Float64, b: Int) raises -> Float64:
+def _checked_add(a: Float64, b: Int) -> Float64:
     return a + Float64(b)
 
 @always_inline
-def _checked_add(a: Int, b: Float64) raises -> Float64:
+def _checked_add(a: Int, b: Float64) -> Float64:
     return Float64(a) + b
 
 @always_inline
@@ -45,15 +45,15 @@ def _checked_sub(a: Int, b: Int) raises -> Int:
     return a - b
 
 @always_inline
-def _checked_sub(a: Float64, b: Float64) raises -> Float64:
+def _checked_sub(a: Float64, b: Float64) -> Float64:
     return a - b
 
 @always_inline
-def _checked_sub(a: Float64, b: Int) raises -> Float64:
+def _checked_sub(a: Float64, b: Int) -> Float64:
     return a - Float64(b)
 
 @always_inline
-def _checked_sub(a: Int, b: Float64) raises -> Float64:
+def _checked_sub(a: Int, b: Float64) -> Float64:
     return Float64(a) - b
 
 @always_inline
@@ -83,15 +83,15 @@ def _checked_mul(a: Int, b: Int) raises -> Int:
     return a * b
 
 @always_inline
-def _checked_mul(a: Float64, b: Float64) raises -> Float64:
+def _checked_mul(a: Float64, b: Float64) -> Float64:
     return a * b
 
 @always_inline
-def _checked_mul(a: Float64, b: Int) raises -> Float64:
+def _checked_mul(a: Float64, b: Int) -> Float64:
     return a * Float64(b)
 
 @always_inline
-def _checked_mul(a: Int, b: Float64) raises -> Float64:
+def _checked_mul(a: Int, b: Float64) -> Float64:
     return Float64(a) * b
 
 @always_inline
@@ -101,7 +101,7 @@ def _checked_neg(a: Int) raises -> Int:
     return -a
 
 @always_inline
-def _checked_neg(a: Float64) raises -> Float64:
+def _checked_neg(a: Float64) -> Float64:
     return -a
 
 @always_inline
@@ -558,11 +558,11 @@ def _ptr_accumulate_haversine_distance(lats_ptr: OpaquePointer[MutUntrackedOrigi
         return 0.0
     var total_dist: Float64 = 0.0
     var r: Float64 = 6371.0
-    var rad_factor: Float64 = _checked_div(3.141592653589793, 180.0)
+    var rad_factor: Float64 = (Float64(3.141592653589793) / Float64(180.0))
     for i in range(1, n):
-        var lat1: Float64 = _checked_mul(lats[unsafe_offset=_checked_index(_checked_sub(i, 1), _n_lats)], rad_factor)
+        var lat1: Float64 = _checked_mul(lats[unsafe_offset=_checked_sub(i, 1)], rad_factor)
         var lon1: Float64 = _checked_mul(lons[unsafe_offset=_checked_index(_checked_sub(i, 1), _n_lons)], rad_factor)
-        var lat2: Float64 = _checked_mul(lats[unsafe_offset=_checked_index(i, _n_lats)], rad_factor)
+        var lat2: Float64 = _checked_mul(lats[unsafe_offset=i], rad_factor)
         var lon2: Float64 = _checked_mul(lons[unsafe_offset=_checked_index(i, _n_lons)], rad_factor)
         var dlat: Float64 = _checked_sub(lat2, lat1)
         var dlon: Float64 = _checked_sub(lon2, lon1)
@@ -585,11 +585,11 @@ def _native_accumulate_haversine_distance(lats: List[Float64], lons: List[Float6
         return 0.0
     var total_dist: Float64 = 0.0
     var r: Float64 = 6371.0
-    var rad_factor: Float64 = _checked_div(3.141592653589793, 180.0)
+    var rad_factor: Float64 = (Float64(3.141592653589793) / Float64(180.0))
     for i in range(1, n):
-        var lat1: Float64 = _checked_mul(lats[_checked_index(_checked_sub(i, 1), len(lats))], rad_factor)
+        var lat1: Float64 = _checked_mul(lats[_checked_sub(i, 1)], rad_factor)
         var lon1: Float64 = _checked_mul(lons[_checked_index(_checked_sub(i, 1), len(lons))], rad_factor)
-        var lat2: Float64 = _checked_mul(lats[_checked_index(i, len(lats))], rad_factor)
+        var lat2: Float64 = _checked_mul(lats[i], rad_factor)
         var lon2: Float64 = _checked_mul(lons[_checked_index(i, len(lons))], rad_factor)
         var dlat: Float64 = _checked_sub(lat2, lat1)
         var dlon: Float64 = _checked_sub(lon2, lon1)

@@ -23,15 +23,15 @@ def _checked_add(a: Int, b: Int) raises -> Int:
     return a + b
 
 @always_inline
-def _checked_add(a: Float64, b: Float64) raises -> Float64:
+def _checked_add(a: Float64, b: Float64) -> Float64:
     return a + b
 
 @always_inline
-def _checked_add(a: Float64, b: Int) raises -> Float64:
+def _checked_add(a: Float64, b: Int) -> Float64:
     return a + Float64(b)
 
 @always_inline
-def _checked_add(a: Int, b: Float64) raises -> Float64:
+def _checked_add(a: Int, b: Float64) -> Float64:
     return Float64(a) + b
 
 @always_inline
@@ -45,15 +45,15 @@ def _checked_sub(a: Int, b: Int) raises -> Int:
     return a - b
 
 @always_inline
-def _checked_sub(a: Float64, b: Float64) raises -> Float64:
+def _checked_sub(a: Float64, b: Float64) -> Float64:
     return a - b
 
 @always_inline
-def _checked_sub(a: Float64, b: Int) raises -> Float64:
+def _checked_sub(a: Float64, b: Int) -> Float64:
     return a - Float64(b)
 
 @always_inline
-def _checked_sub(a: Int, b: Float64) raises -> Float64:
+def _checked_sub(a: Int, b: Float64) -> Float64:
     return Float64(a) - b
 
 @always_inline
@@ -83,15 +83,15 @@ def _checked_mul(a: Int, b: Int) raises -> Int:
     return a * b
 
 @always_inline
-def _checked_mul(a: Float64, b: Float64) raises -> Float64:
+def _checked_mul(a: Float64, b: Float64) -> Float64:
     return a * b
 
 @always_inline
-def _checked_mul(a: Float64, b: Int) raises -> Float64:
+def _checked_mul(a: Float64, b: Int) -> Float64:
     return a * Float64(b)
 
 @always_inline
-def _checked_mul(a: Int, b: Float64) raises -> Float64:
+def _checked_mul(a: Int, b: Float64) -> Float64:
     return Float64(a) * b
 
 @always_inline
@@ -101,7 +101,7 @@ def _checked_neg(a: Int) raises -> Int:
     return -a
 
 @always_inline
-def _checked_neg(a: Float64) raises -> Float64:
+def _checked_neg(a: Float64) -> Float64:
     return -a
 
 @always_inline
@@ -535,9 +535,9 @@ def _native_stateful_trailing_backtest(ticks: Int, start_price: Float64, stop_pc
     var lcg_state = 42
     for _ in range(ticks):
         lcg_state = (_checked_add(_checked_mul(1664525, lcg_state), 1013904223) & 4294967295)
-        var rand_val = _checked_div(lcg_state, 4294967296.0)
+        var rand_val = (Float64(lcg_state) / Float64(4294967296.0))
         price = _checked_mul(price, _checked_add(1.0, _checked_mul(_checked_sub(rand_val, 0.5), 0.02)))
-        if _py_bool(in_position):
+        if in_position:
             if (price > peak_price):
                 peak_price = price
             elif ((stop_pct > 0.0) and (price <= _checked_mul(peak_price, _checked_sub(1.0, stop_pct)))):
@@ -553,7 +553,7 @@ def _native_stateful_trailing_backtest(ticks: Int, start_price: Float64, stop_pc
                 cash = 0.0
                 in_position = True
                 peak_price = price
-    if _py_bool(in_position):
+    if in_position:
         return _checked_mul(units, price)
     else:
         return cash
