@@ -16,13 +16,13 @@ Phase D.3 was initiated to resolve a central question of compiler engineering:
 > **Are the reported performance gains in `mojo-hotloop` produced by automatic, general-purpose compiler transformations applied to unmodified Python source code, or do they rely on handwritten specialized kernels tailored to specific benchmark scripts?**
 
 Across this phase:
-1. **Line-by-line provenance was audited and documented** in [`BENCHMARK_PROVENANCE.md`](file:///home/gaurav/mojo-hotloop/BENCHMARK_PROVENANCE.md), reconciling all 8 historical inconsistencies from Phase D.2.
-2. **General-purpose compiler upgrades were implemented** in [`hotloop/ast_transpiler.py`](file:///home/gaurav/mojo-hotloop/hotloop/ast_transpiler.py), specifically:
+1. **Line-by-line provenance was audited and documented** in [`BENCHMARK_PROVENANCE.md`](BENCHMARK_PROVENANCE.md), reconciling all 8 historical inconsistencies from Phase D.2.
+2. **General-purpose compiler upgrades were implemented** in [`hotloop/ast_transpiler.py`](../../hotloop/ast_transpiler.py), specifically:
    - Automatic contiguous pointer specialization (`_ptr_` kernel + `OpaquePointer` dual dispatch) for typed numerical collections.
    - String buffer capacity pre-reservation and in-place `res.write()` transformations.
    - Inlined codepoint ordinal comparison lowering.
 3. **All 7 real-world use cases were compiled via `hotloop build --engine=ast`** with return code 0 and verified across 7,220 tests (100% matched against Python and reference implementations, 0 mismatches, 0 silent fallbacks).
-4. **Generalization was proven on 5 previously unseen Python functions** in [`TRANSPILER_GENERALIZATION_AUDIT.md`](file:///home/gaurav/mojo-hotloop/TRANSPILER_GENERALIZATION_AUDIT.md), demonstrating **174× and 171× automatic speedups** on coordinate distance and stateful reduction.
+4. **Generalization was proven on 5 previously unseen Python functions** in [`TRANSPILER_GENERALIZATION_AUDIT.md`](TRANSPILER_GENERALIZATION_AUDIT.md), demonstrating **174× and 171× automatic speedups** on coordinate distance and stateful reduction.
 5. **The empirical physical limit of RAG Chunker returning `list[str]` was proven**, demonstrating that CPython string allocation overhead alone (24.40 µs) physically exceeds the 9.10 µs 20× budget by 2.7×.
 
 ---
@@ -61,7 +61,7 @@ Across this phase:
 
 ### Question 3: Did the transpiler generalize to unseen functions? Which patterns succeeded, which failed?
 
-As documented in [`TRANSPILER_GENERALIZATION_AUDIT.md`](file:///home/gaurav/mojo-hotloop/TRANSPILER_GENERALIZATION_AUDIT.md):
+As documented in [`TRANSPILER_GENERALIZATION_AUDIT.md`](TRANSPILER_GENERALIZATION_AUDIT.md):
 
 1. **Patterns that Succeeded Emphatically**:
    - **Coordinate Distance (`chebyshev_path_distance`)**: **174.14× Speedup** (4,895 µs $\to$ 28.1 µs).

@@ -4,7 +4,12 @@ import subprocess
 import sys
 
 def main():
-    verify_scripts = sorted(glob.glob("examples/*/verify.py"))
+    repo_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+    env = os.environ.copy()
+    cur_pypath = env.get("PYTHONPATH", "")
+    env["PYTHONPATH"] = f"{repo_root}:{cur_pypath}" if cur_pypath else repo_root
+
+    verify_scripts = sorted(glob.glob(os.path.join(repo_root, "examples/*/verify.py")))
     total_passed = 0
     total_failed = 0
     failures = []
@@ -12,7 +17,7 @@ def main():
     print(f"Discovered {len(verify_scripts)} verification suites.")
     for script in verify_scripts:
         print(f"\n--- Running {script} ---")
-        proc = subprocess.run([sys.executable, script], capture_output=True, text=True)
+        proc = subprocess.run([sys.executable, script], capture_output=True, text=True, env=env, cwd=repo_root)
         if proc.returncode != 0:
             print(f"FAILED (code {proc.returncode}):")
             print(proc.stderr or proc.stdout)

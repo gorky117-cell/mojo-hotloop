@@ -6,8 +6,12 @@ This product includes software developed by Gaurav Kumar Singh and contributors
 
 Disclaimer:
 Mojo Hotloop is an independent open-source project developed and maintained by
-Gaurav Kumar Singh. It is not affiliated with, operated by, sponsored by, or
-endorsed by Modular, Inc.
+Gaurav Kumar Singh and contributors. It is not affiliated with, operated by,
+sponsored by, or endorsed by Modular, Inc.
 
 Trademark Notices:
 MAX® and Mojo® are trademarks of Modular, Inc. used under license.
+(Attribution provided in accordance with Modular, Inc.'s published Trademark Policy
+at https://www.modular.com/legal/trademark for developers referencing the MAX® and
+Mojo® toolchains. Mojo Hotloop does not claim an exclusive license, direct
+commercial partnership, or endorsement from Modular, Inc.)
