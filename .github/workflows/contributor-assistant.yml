@@ -1,80 +1,106 @@
-name: Contributor Assistant
+name: "Contributor Checks"
 
 permissions:
   contents: read
-  pull-requests: write
 
 on:
-  pull_request_target:
-    types: [opened]
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  welcome-and-guide:
-    name: Contributor Guidance & DCO Verification
+  dco-check:
+    name: "DCO Sign-off Verification"
     runs-on: ubuntu-latest
-    if: github.repository == 'gorky117-cell/mojo-hotloop'
     steps:
-      - name: Inspect PR Commits for DCO Sign-off
-        id: check_dco
+      - name: "Verify DCO on all PR commits"
         uses: actions/github-script@v7
         with:
           script: |
-            const commits = await github.rest.pulls.listCommits({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              pull_number: context.payload.pull_request.number
-            });
-            const missingDco = commits.data.filter(c => !c.commit.message.includes('Signed-off-by:'));
-            return {
-              totalCommits: commits.data.length,
-              missingCount: missingDco.length,
-              hasDco: missingDco.length === 0
-            };
+            const prNumber = context.payload.pull_request.number;
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
 
-      - name: Post Deterministic Contributor Welcome
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const dcoResult = ${{ steps.check_dco.outputs.result }};
-            const prAuthor = context.payload.pull_request.user.login;
-            const isOwner = prAuthor === 'gorky117-cell';
+            core.info(`Fetching commits for PR #${prNumber} in ${owner}/${repo}...`);
 
-            if (isOwner) {
-              console.log('Skipping welcome comment for repository maintainer.');
-              return;
+            let page = 1;
+            let commits = [];
+            while (true) {
+              const res = await github.rest.pulls.listCommits({
+                owner,
+                repo,
+                pull_number: prNumber,
+                per_page: 100,
+                page
+              });
+              if (!res.data || res.data.length === 0) break;
+              commits = commits.concat(res.data);
+              if (res.data.length < 100) break;
+              page++;
             }
 
-            let dcoNote = "";
-            if (dcoResult.hasDco) {
-              dcoNote = "✅ **DCO Sign-off Verified:** All commits contain a valid \`Signed-off-by:\` line.";
+            core.info(`Found ${commits.length} commit(s) in PR #${prNumber}.`);
+
+            // Regex for standard DCO format: Signed-off-by: Full Name <email@example.com>
+            const dcoRegex = /^Signed-off-by:\s+([^\n<]+)\s+<([^@>\n\s]+@[^@>\n\s]+)>/m;
+
+            const missing = [];
+            const passed = [];
+
+            for (const c of commits) {
+              const sha = c.sha.substring(0, 8);
+              const message = c.commit.message;
+              const title = message.split('\n')[0].substring(0, 60);
+
+              if (dcoRegex.test(message)) {
+                passed.push({ sha, title });
+              } else {
+                missing.push({ sha, title });
+              }
+            }
+
+            core.info(`DCO Summary: ${passed.length} passed, ${missing.length} missing.`);
+
+            let summary = core.summary
+              .addHeading('Developer Certificate of Origin (DCO) Verification', 2)
+              .addRaw(`PR **#${prNumber}** evaluated across **${commits.length}** commit(s).\n\n`);
+
+            if (missing.length === 0) {
+              summary = summary
+                .addRaw('✅ **All commits include a valid Developer Certificate of Origin (DCO) sign-off line.**\n\n')
+                .addHeading('Verified Commits', 3);
+
+              const rows = passed.map(c => [c.sha, c.title, '✅ Valid DCO']);
+              summary = summary.addTable([
+                [{ data: 'Commit', header: true }, { data: 'Title', header: true }, { data: 'Status', header: true }],
+                ...rows
+              ]);
+              await summary.write();
+              core.info('DCO check passed successfully.');
             } else {
-              dcoNote = "⚠️ **Action Required: DCO Sign-off Missing:** One or more commits lack a \`Signed-off-by:\` line. Please amend your commits with \`git commit --amend -s\` and force-push to your branch to satisfy our [DCO policy](https://github.com/gorky117-cell/mojo-hotloop/blob/main/CONTRIBUTING.md#developer-certificate-of-origin-dco).";
+              summary = summary
+                .addRaw(`❌ **DCO Verification Failed:** ${missing.length} commit(s) are missing a valid \`Signed-off-by:\` line.\n\n`)
+                .addHeading('Failing Commits', 3);
+
+              const rows = missing.map(c => [c.sha, c.title, '❌ Missing Sign-off']);
+              summary = summary.addTable([
+                [{ data: 'Commit', header: true }, { data: 'Title', header: true }, { data: 'Status', header: true }],
+                ...rows
+              ]);
+
+              summary = summary
+                .addHeading('How to Fix', 3)
+                .addRaw(`Every commit must certify that you wrote or have the right to contribute the code under Apache-2.0.\n\n`)
+                .addRaw(`To sign off your commits, run locally:\n`)
+                .addCode(`git rebase HEAD~${commits.length} --signoff\ngit push --force-with-lease origin ${context.payload.pull_request.head.ref}`, 'bash');
+
+              await summary.write();
+
+              const errorMsg = `DCO check failed: ${missing.length} commit(s) lack a valid 'Signed-off-by: Full Name <email>' line:\n` +
+                missing.map(c => `  - ${c.sha}: ${c.title}`).join('\n') +
+                `\nPlease sign off all commits using 'git commit --amend -s' or 'git rebase --signoff'.`;
+              core.setFailed(errorMsg);
             }
-
-            const commentBody = `> [!NOTE]
-            > **Automated Contributor Assistant**
-            > *(This is a deterministic automated message to assist contributors. It does not replace technical review by the maintainer.)*
-
-            Welcome @\${prAuthor}! Thank you for contributing to **mojo-hotloop**.
-
-            To ensure a smooth review process, please verify the following:
-
-            \${dcoNote}
-
-            ### Quick Checklist for Contributors
-            1. **Correctness First**: Ensure offline tests pass with zero errors:
-               \`\`\`bash
-               python tests/test_compiler_adversarial.py
-               \`\`\`
-            2. **Syntax Reference**: Check that any new syntax conforms to [\`docs/SUPPORTED_SYNTAX.md\`](https://github.com/gorky117-cell/mojo-hotloop/blob/main/docs/SUPPORTED_SYNTAX.md).
-            3. **Benchmark Evidence**: If this PR introduces a performance optimization, please include median $p_{50}$ numbers across $\\ge 100$ trials along with hardware and toolchain specifications (see [\`docs/BENCHMARKS.md\`](https://github.com/gorky117-cell/mojo-hotloop/blob/main/docs/BENCHMARKS.md)).
-            4. **Code Ownership & Review**: Review has automatically been requested from @gorky117-cell via [CODEOWNERS](https://github.com/gorky117-cell/mojo-hotloop/blob/main/.github/CODEOWNERS).
-
-            See our full [Contributing Guidelines](https://github.com/gorky117-cell/mojo-hotloop/blob/main/CONTRIBUTING.md) for details.`;
-
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.payload.pull_request.number,
-              body: commentBody
-            });
