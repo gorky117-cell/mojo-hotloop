@@ -1,64 +1,40 @@
 ---
-name: Native Crash
-about: The compiled Mojo shared library causes a segfault, abort, or other native crash
-labels: native-crash, critical
+name: Native Crash Report
+about: Report a segfault (SIGSEGV), abort (SIGABRT), or memory corruption in native execution
+labels: security, bug
 ---
 
 ## Native Crash Report
 
 > [!CAUTION]
-> Native crashes (SIGSEGV, abort) are **critical bugs**. Please provide as
-> much detail as possible.
+> If this crash involves a potentially exploitable security vulnerability, please report it privately via [GitHub Security Advisories](https://github.com/gorky117-cell/mojo-hotloop/security/advisories/new) rather than opening a public issue.
+
+### Summary
+<!-- 1-sentence description of the crash -->
 
 ### Environment
-
-- **mojo-hotloop version**: <!-- git rev-parse HEAD -->
+- **Operating System**: <!-- e.g., Ubuntu 24.04 LTS (x86_64) -->
 - **Python version**: <!-- python3 --version -->
 - **Mojo version**: <!-- mojo --version -->
-- **OS / kernel**: <!-- uname -a -->
+- **mojo-hotloop commit**: <!-- git rev-parse HEAD -->
 
-### Crash Description
-
-```
-# Paste the crash output / traceback:
-```
+### Crash Signal / Exit Code
+- [ ] SIGSEGV (Segmentation Fault - signal 11)
+- [ ] SIGABRT (Abort / Assertion failure - signal 6)
+- [ ] SIGBUS (Bus error - signal 7)
+- [ ] Other: <!-- specify -->
 
 ### Minimal Reproducer
-
 ```python
-from hotloop import hotloop, HotloopNativeExecutionError
+from hotloop import hotloop
 
 @hotloop
-def crashing_function(...) -> ...:
-    # Minimal function that triggers the crash
-    ...
-
-crashing_function(...)
+def crash_repro(arr: list[int]) -> int:
+    # Minimal code triggering the crash
+    return 0
 ```
 
-### Input Values
-
-```python
-# Paste the exact arguments that caused the crash
-args = (...)
+### Traceback / Core Dump / ASan Output
+```text
+<!-- Paste stack trace or debug output here -->
 ```
-
-### Steps to Reproduce
-
-```bash
-1. hotloop build myfile.py --engine=ast
-2. python myfile.py
-# Crash occurs on call to crashing_function(...)
-```
-
-### Core Dump / Stack Trace
-
-```
-# If available, paste gdb bt output or Python traceback
-```
-
-### Additional Notes
-
-- Does the crash happen on every call, or only specific inputs?
-- Can you reproduce it with `HOTLOOP_FORCE_NATIVE=1` or different array dtypes/shapes?
-- Does the Python fallback (remove `.so` / `__mojocache__/`) work correctly?

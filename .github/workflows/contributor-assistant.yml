@@ -1,0 +1,80 @@
+name: Contributor Assistant
+
+permissions:
+  contents: read
+  pull-requests: write
+
+on:
+  pull_request_target:
+    types: [opened]
+
+jobs:
+  welcome-and-guide:
+    name: Contributor Guidance & DCO Verification
+    runs-on: ubuntu-latest
+    if: github.repository == 'gorky117-cell/mojo-hotloop'
+    steps:
+      - name: Inspect PR Commits for DCO Sign-off
+        id: check_dco
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const commits = await github.rest.pulls.listCommits({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.payload.pull_request.number
+            });
+            const missingDco = commits.data.filter(c => !c.commit.message.includes('Signed-off-by:'));
+            return {
+              totalCommits: commits.data.length,
+              missingCount: missingDco.length,
+              hasDco: missingDco.length === 0
+            };
+
+      - name: Post Deterministic Contributor Welcome
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const dcoResult = ${{ steps.check_dco.outputs.result }};
+            const prAuthor = context.payload.pull_request.user.login;
+            const isOwner = prAuthor === 'gorky117-cell';
+
+            if (isOwner) {
+              console.log('Skipping welcome comment for repository maintainer.');
+              return;
+            }
+
+            let dcoNote = "";
+            if (dcoResult.hasDco) {
+              dcoNote = "✅ **DCO Sign-off Verified:** All commits contain a valid \`Signed-off-by:\` line.";
+            } else {
+              dcoNote = "⚠️ **Action Required: DCO Sign-off Missing:** One or more commits lack a \`Signed-off-by:\` line. Please amend your commits with \`git commit --amend -s\` and force-push to your branch to satisfy our [DCO policy](https://github.com/gorky117-cell/mojo-hotloop/blob/main/CONTRIBUTING.md#developer-certificate-of-origin-dco).";
+            }
+
+            const commentBody = `> [!NOTE]
+            > **Automated Contributor Assistant**
+            > *(This is a deterministic automated message to assist contributors. It does not replace technical review by the maintainer.)*
+
+            Welcome @\${prAuthor}! Thank you for contributing to **mojo-hotloop**.
+
+            To ensure a smooth review process, please verify the following:
+
+            \${dcoNote}
+
+            ### Quick Checklist for Contributors
+            1. **Correctness First**: Ensure offline tests pass with zero errors:
+               \`\`\`bash
+               python tests/test_compiler_adversarial.py
+               \`\`\`
+            2. **Syntax Reference**: Check that any new syntax conforms to [\`docs/SUPPORTED_SYNTAX.md\`](https://github.com/gorky117-cell/mojo-hotloop/blob/main/docs/SUPPORTED_SYNTAX.md).
+            3. **Benchmark Evidence**: If this PR introduces a performance optimization, please include median $p_{50}$ numbers across $\\ge 100$ trials along with hardware and toolchain specifications (see [\`docs/BENCHMARKS.md\`](https://github.com/gorky117-cell/mojo-hotloop/blob/main/docs/BENCHMARKS.md)).
+            4. **Code Ownership & Review**: Review has automatically been requested from @gorky117-cell via [CODEOWNERS](https://github.com/gorky117-cell/mojo-hotloop/blob/main/.github/CODEOWNERS).
+
+            See our full [Contributing Guidelines](https://github.com/gorky117-cell/mojo-hotloop/blob/main/CONTRIBUTING.md) for details.`;
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.pull_request.number,
+              body: commentBody
+            });

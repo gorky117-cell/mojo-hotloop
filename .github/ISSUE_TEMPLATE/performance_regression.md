@@ -1,64 +1,41 @@
 ---
-name: Performance Regression
-about: A function is slower than expected, or slower than a previous version
-labels: performance
+name: Performance Regression Report
+about: Report a function running slower than expected, or a regression versus earlier versions
+labels: performance, bug
 ---
 
 ## Performance Regression Report
 
 ### Summary
+<!-- 1-sentence description of the workload and observed slowdown -->
 
-<!-- One-line description: "haversine_km is 3x slower than v0.0.9" -->
+### Benchmark Environment
+- **CPU / Hardware**: <!-- e.g., Intel Core i5-8265U, 4 cores / 8 threads -->
+- **RAM**: <!-- e.g., 16 GB -->
+- **Operating System**: <!-- e.g., Ubuntu 24.04 LTS / WSL2 -->
+- **Python Version**: <!-- python3 --version -->
+- **Mojo Version**: <!-- mojo --version -->
+- **mojo-hotloop Version / Commit**: <!-- git rev-parse HEAD -->
 
-### Environment
+### Workload & Data Scale
+- **Function under test**: <!-- e.g., quantitative moving average, ray caster -->
+- **Input scale & data type**: <!-- e.g., 10,000 float64 numpy array, 100k char string -->
+- **Number of trials**: <!-- minimum 100 trials recommended -->
 
-- **mojo-hotloop version** (current): <!-- git rev-parse HEAD -->
-- **mojo-hotloop version** (last known good): <!-- if known -->
-- **Python version**: <!-- python3 --version -->
-- **Mojo version**: <!-- mojo --version -->
-- **Hardware**: <!-- CPU model, RAM, OS -->
+### Measured Timings (Median $p_{50}$)
+| Implementation | Median ($p_{50}$) | Min ($p_5$) | Max ($p_{95}$) |
+| :--- | :--- | :--- | :--- |
+| Pure CPython 3.12 | | | |
+| mojo-hotloop (Current) | | | |
+| mojo-hotloop (Prior / Expected) | | | |
+| Alternative (e.g. Numba/Codon/NumPy) | | | |
 
-### Function
+### Execution Mode
+- [ ] Verified native execution (`fn._last_backend == 'native'`)
+- [ ] Fallback execution occurred (`fn._last_backend == 'python_fallback'`)
+- [ ] Tested with `HOTLOOP_STRICT_NATIVE=1`
 
+### Minimal Benchmark Script
 ```python
-from hotloop import hotloop
-
-@hotloop
-def affected_function(...) -> ...:
-    # Paste the function here
-    ...
+# Provide a minimal reproduction script using time.perf_counter()
 ```
-
-### Benchmark Results
-
-| Version | p50 (ms) | p5 (ms) | p95 (ms) | Backend |
-|---------|----------|---------|----------|---------|
-| Previous (working) | | | | native |
-| Current (regressed) | | | | |
-
-**How you measured**:
-```python
-import time
-times = []
-for _ in range(100):
-    t0 = time.perf_counter()
-    affected_function(...)
-    times.append(time.perf_counter() - t0)
-times.sort()
-print(f"p50: {times[50]*1000:.3f} ms")
-print(f"backend: {affected_function._last_backend}")
-```
-
-### Expected Performance
-
-<!-- e.g., "Should be ~0.5 ms (66x over Python baseline of 32 ms)" -->
-
-### Actual Performance
-
-<!-- e.g., "Currently 5 ms (6x over Python)" -->
-
-### Notes
-
-- Is `_last_backend == "native"` confirmed?
-- Has the input data size changed?
-- Did you rebuild after source changes? (`hotloop build myfile.py --engine=ast`)
