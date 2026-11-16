@@ -68,10 +68,10 @@ The Mojo Hotloop codebase, packaging, documentation, legal licensing notices, th
 Established `NOTICE` at the repository root:
 ```
 Mojo Hotloop
-Copyright 2026 mojo-hotloop Contributors
+Copyright 2026 Gaurav Kumar Singh and mojo-hotloop contributors
 
-This product includes software developed at mojo-hotloop
-(https://github.com/gauravatwork117/mojo-hotloop).
+This product includes software developed by Gaurav Kumar Singh and contributors
+(https://github.com/gorky117-cell/mojo-hotloop).
 
 Trademark Notices:
 MAX® and Mojo® are trademarks of Modular, Inc. used under license.
@@ -132,8 +132,8 @@ Before running the publication commands, the owner must provide authorization on
    - Option B: Update to `Copyright 2026 Gaurav and mojo-hotloop Contributors`.  
    - Option C: Specify a personal legal name or organization name.
 2. **GitHub Account & Repository Target**:  
-   - Confirmed repository destination: `https://github.com/gauravatwork117/mojo-hotloop`.  
-   - Credentials verified via local git store (`gauravatwork117`).
+   - Confirmed repository destination: `https://github.com/gorky117-cell/mojo-hotloop`.  
+   - Verified authorized account: `gorky117-cell` (authenticated via GitHub CLI).
 3. **Public GitHub Actions Runner Strategy**:  
    - Acknowledge that public GitHub-hosted runners (`ubuntu-latest`) do not provide Mojo 1.2.0. The CI workflow is configured to run Python tests on public runners and reserves native Mojo builds for self-hosted runners.
 
@@ -145,7 +145,7 @@ Once explicit owner authorization is provided, the following precise commands sh
 
 ```bash
 # 1. Add confirmed GitHub remote
-git remote add origin https://github.com/gauravatwork117/mojo-hotloop.git
+git remote add origin https://github.com/gorky117-cell/mojo-hotloop.git
 
 # 2. Push the verified release branch to GitHub
 git push -u origin v0.1.0-codon-competitive:main
@@ -155,7 +155,7 @@ git tag -a v0.1.0 -m "mojo-hotloop v0.1.0: Open-Source Developer Preview"
 git push origin v0.1.0
 
 # 4. Verify GitHub Actions CI triggers on push
-# Navigate to: https://github.com/gauravatwork117/mojo-hotloop/actions
+# Navigate to: https://github.com/gorky117-cell/mojo-hotloop/actions
 
 # 5. (Optional) Publish built distribution artifacts to PyPI
 # python -m twine upload dist/mojo_hotloop-0.1.0*

@@ -1,4 +1,5 @@
-# Copyright 2026 mojo-hotloop Contributors
+# Copyright 2026 Gaurav Kumar Singh
+# SPDX-License-Identifier: Apache-2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,12 +18,19 @@ import os
 import sys
 import subprocess
 
+from . import __version__
 from .backends.mojo import MojoBackend
 
 def main():
     parser = argparse.ArgumentParser(
         prog="hotloop",
         description="mojo-hotloop: Accelerate Python hot loops with compiled Mojo shared libraries"
+    )
+    parser.add_argument(
+        "-v", "--version",
+        action="version",
+        version=f"%(prog)s {__version__}",
+        help="Show program's version number and exit"
     )
     subparsers = parser.add_subparsers(dest="command", required=True)
 

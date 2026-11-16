@@ -46,13 +46,18 @@ including OS scheduler jitter on a typical developer machine.
 
 ### Comparison Baselines
 
-| Baseline | Description |
-|----------|-------------|
-| **CPython 3.12** | The undecorated Python function in the same process |
-| **Numba (JIT)** | `@numba.jit(nopython=True)` on a compatible equivalent |
-| **Regex** | `re`-compiled pattern on the same workload |
-| **RapidFuzz** | C-accelerated Levenshtein library |
-| **NumPy** | Vectorized NumPy on equivalent arrays |
+| Baseline | Toolchain Version / Implementation | Description |
+|----------|------------------------------------|-------------|
+| **CPython 3.12** | CPython 3.12.16 (main, Nov 11 2026) | The unmodified Python reference implementation |
+| **Codon JIT** | Codon v0.17.0 (`@codon.jit`) | LLVM-based Python-to-native JIT compiler |
+| **Codon Native** | Codon v0.17.0 (`codon build -release`) | Standalone native ahead-of-time executable |
+| **Numba** | Numba 0.68.1 (`@njit(nopython=True)`) | LLVM-based JIT compiler for numerical code |
+| **NumPy** | NumPy 2.5.4 (C-BLAS SIMD) | Vectorized array operations |
+| **RapidFuzz** | RapidFuzz 3.14.6 | C++ Levenshtein / Myers difference library |
+| **Regex** | CPython standard library `re` | Compiled regular expressions in C |
+
+> [!NOTE]
+> **Codon Version Notice**: Competitive Codon measurements were performed with **Codon v0.17.0** on Linux x86-64. Results reflect this specific release and should not be extrapolated to past or future Codon versions.
 
 ### Source Distinction
 
@@ -67,7 +72,32 @@ including OS scheduler jitter on a typical developer machine.
 
 ---
 
-## Results — 7 Real-World Use Cases
+## Master Competitive Benchmark Matrix (Seven Real-World Applications)
+
+The table below presents the primary scorecard across all seven real-world business use cases, measured under identical hardware conditions (Intel Core i5-8265U, WSL2 Ubuntu 24.04 LTS, 100 trials, median $p_{50}$):
+
+| Workload | Input Scale & Type | Output Contract | Execution Mode | CPython 3.12 $p_{50}$ | Auto Mojo Kernel $p_{50}$ | **Mojo `@hotloop` $p_{50}$** | Codon JIT 0.17.0 $p_{50}$ | Codon Native 0.17.0 $p_{50}$ | Best Alternative $p_{50}$ | **Mojo Speedup vs Py** | Correctness Verified |
+| :--- | :--- | :--- | :---: | :--- | :--- | :--- | :--- | :--- | :--- | :---: | :---: |
+| **Quant Backtest** | 100k ticks (scalars) | `float` | **Native** | 38.152 ms | 0.5284 ms | **0.5502 ms** | 0.4642 ms | 0.7309 ms | Numba: 0.5666 ms | **69.34×** | ✅ 0 mismatches |
+| **AR Spatial 3D** | 10k vertices (`ndarray[float64]`) | `float` | **Native** | 3.7947 ms | 0.0969 ms | **0.1137 ms** | 0.1500 ms | 0.0511 ms | Numba: 0.0711 ms | **33.36×** | ✅ 0 mismatches |
+| **Geo Distance** | 10k waypoints (`ndarray[float64]`) | `float` | **Native** | 11.0586 ms | 1.1012 ms | **1.1357 ms** | 1.0396 ms | 0.8736 ms | NumPy: 0.9004 ms | **9.74×** | ✅ 0 mismatches |
+| **PDF Cleaner** | 100k chars (`str`) | `str` | **Native** | 29.0944 ms | 4.6210 ms | **4.6911 ms** | 7,757.75 ms | 4,136.78 ms | Regex: 11.9306 ms | **6.20×** | ✅ 0 mismatches |
+| **PII Scrubber** | 100k chars (`str`) | `str` | **Native** | 76.0653 ms | 15.1120 ms | **15.3276 ms** | 12,351.30 ms | 5,666.94 ms | Regex: 26.6853 ms | **4.96×** | ✅ 0 mismatches |
+| **OCR Matcher** | 1k words (`list[str]`) | `str` | **Fallback** | 2.3310 ms | 0.6120 ms | **2.3824 ms** | 0.3242 ms | 0.2887 ms | RapidFuzz: 0.5137 ms | **0.98× (Fallback)** | ✅ 0 mismatches |
+| *(Forced Native)* | 1k words (`list[str]`) | `str` | *Native* | 2.3310 ms | 0.6120 ms | *0.6526 ms* | 0.3242 ms | 0.2887 ms | RapidFuzz: 0.5137 ms | *3.57×* | ✅ 0 mismatches |
+| **RAG Chunker** | 100k chars (`str`) | `list[str]` | **Fallback** | 0.1927 ms | 3.9850 ms | **0.1911 ms** | 0.9958 ms | 0.0243 ms* | Pure Py: 0.1927 ms | **1.01× (Fallback)** | ✅ 0 mismatches |
+| *(Forced Native)* | 100k chars (`str`) | `list[str]` | *Native* | 0.1927 ms | 3.9850 ms | *4.0088 ms* | 0.9958 ms | 0.0243 ms* | Pure Py: 0.1927 ms | *0.05×* | ✅ 0 mismatches |
+
+> [!WARNING]
+> **Important Technical Distinctions**:
+> 1. **Codon Native vs Python Interface in RAG Chunker**: Codon Native's 0.0243 ms is a standalone native binary operating entirely on internal typed strings. When invoked from Python via `@codon.jit`, Codon takes **0.9958 ms** (5.2× slower than CPython) due to Python string translation across the C-API.
+> 2. **Codon String Concatenation Bottleneck**: On 100k character text processing (PDF Cleaner and PII Scrubber), Codon 0.17.0 encounters an $O(N^2)$ reallocation behavior taking 7.7s to 12.3s. Mojo Hotloop's `_PyStr` linear ASCII buffer completes in 4.7 ms and 15.3 ms (up to **1,654× faster than Codon JIT**).
+> 3. **Automatic Fallback Protection**: In OCR Matcher and RAG Chunker, converting Python collections of strings (`list[str]`) across the C-ABI creates an allocation overhead floor. Mojo Hotloop **automatically detects this and routes execution to pure Python**, preventing slowdowns in production. Users can force native execution via `force_native=True`.
+> 4. **No Universal Superiority Claimed**: Mojo Hotloop does not beat all tools on all workloads. Specialized C libraries (RapidFuzz for Myers bit-vectors, NumPy/Numba for vectorized SIMD transcendentals) can be faster than generalized compiler output on specific kernels.
+
+---
+
+## Detailed Results — 7 Real-World Use Cases
 
 All benchmarks run with `--engine=ast` (deterministic, offline transpilation, compiled with `mojo build --emit shared-lib -O3`). Both `@hotloop` (full Python wrapper + dispatch) and Direct Mojo module calls are shown alongside the best semantically equivalent baseline (`Numba`, `NumPy`, `Compiled Regex`, `RapidFuzz`).
 
@@ -177,7 +207,7 @@ Five previously unseen general-purpose functions (no application tuning):
 
 ```bash
 # Clone and set up
-git clone https://github.com/gauravatwork117/mojo-hotloop
+git clone https://github.com/gorky117-cell/mojo-hotloop
 cd mojo-hotloop
 python3 -m venv .venv
 .venv/bin/pip install -e .

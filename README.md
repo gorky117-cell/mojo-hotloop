@@ -133,18 +133,18 @@ an Intel i5-8265U running Ubuntu 24.04 (WSL2).
 
 | Use Case | Domain | Speedup vs Python | Tests |
 |----------|--------|-------------------|-------|
-| Quantitative Backtest | Financial simulation | **82.39x** (p50: 0.531 ms vs 43.780 ms; 1.14x vs Numba) | 1,117 |
-| AR Spatial 3D Ray (`ndarray`) | Graphics/AR | **40.60x** at 10k vertices (0.73x at 100v; 16.81x vs NumPy) | 1,010 |
-| Geo Distance (`ndarray`) | Geospatial | **8.56x** at 10k waypoints (1.72x at 100w) | 1,014 |
-| PDF Text Cleaner | Document processing | **6.16x–7.32x** (2.94x–3.08x vs Regex) | 1,020 |
-| PII Scrubber | Text security | **3.22x–7.49x** (1.27x–2.51x vs Regex) | 1,019 |
-| OCR Fuzzy Matcher | String search | **3.62x–6.34x** (0.23x–0.78x vs RapidFuzz C) | 1,020 |
-| RAG Document Chunker | LLM ingestion | Python fallback¹ | 1,020 |
+| Quantitative Backtest | Financial simulation | **69.34x** (p50: 0.550 ms vs 38.152 ms; beats Numba 0.567 ms & Codon 0.731 ms) | 1,117 |
+| AR Spatial 3D Ray (`ndarray`) | Graphics/AR | **33.36x** at 10k vertices (0.82x at 100v; beats Codon JIT 25.30x) | 1,010 |
+| Geo Distance (`ndarray`) | Geospatial | **9.74x** at 10k waypoints (2.35x at 100w; 1.136 ms) | 1,014 |
+| PDF Text Cleaner | Document processing | **5.39x–6.20x** (beats Regex 2.44x; beats Codon JIT 7,758 ms) | 1,020 |
+| PII Scrubber | Text security | **3.67x–4.96x** (beats Regex 2.85x; beats Codon JIT 12,351 ms) | 1,019 |
+| OCR Fuzzy Matcher | String search | **Python fallback** (0.98x) / Forced Native **3.57x** (0.653 ms) | 1,020 |
+| RAG Document Chunker | LLM ingestion | **Python fallback**¹ (1.01x) / Forced Native **0.05x** (4.009 ms) | 1,020 |
 
 ¹ The RAG chunker returns `list[str]`. The FFI overhead of boxing each string
 element exceeds native computation savings (direct forced native is ~21x slower
 at 100k chars). `mojo-hotloop` detects this automatically and falls back to Python
-(`0.39x–1.04x` with Python fallback path).
+(`0.52x–1.01x` with Python fallback path).
 
 > [!IMPORTANT]
 > These benchmarks reflect **this specific hardware and workload**. Speedups are
@@ -218,7 +218,7 @@ Contributions welcome! See [`CONTRIBUTING.md`](CONTRIBUTING.md).
 
 Apache License 2.0. See [`LICENSE`](LICENSE) and [`NOTICE`](NOTICE).
 
-Copyright 2026 mojo-hotloop Contributors.
+Copyright 2026 Gaurav Kumar Singh and mojo-hotloop contributors.
 
 ---
 

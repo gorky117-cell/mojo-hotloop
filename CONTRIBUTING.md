@@ -5,10 +5,11 @@ project and welcomes contributions from everyone.
 
 ---
 
-## Code of Conduct
+## Code of Conduct & Engineering Ethics
 
-This project follows the [Contributor Covenant Code of Conduct](CODE_OF_CONDUCT.md).
-By participating you agree to abide by its terms.
+This project follows the [Contributor Covenant Code of Conduct](CODE_OF_CONDUCT.md) and voluntarily aligns with the [Engineering Ethics & Professional Practice Guidelines](docs/ENGINEERING_ETHICS.md) (adapted from the ACM Code of Ethics and ACM/IEEE-CS Software Engineering Code of Ethics).
+
+By participating, you agree to uphold these standards, conduct constructive code reviews, report benchmarks honestly, and respect fellow contributors.
 
 ---
 
@@ -54,7 +55,7 @@ Open a GitHub Discussion or issue describing:
 ```bash
 # Requires WSL2 Ubuntu 24.04 or native Linux
 # Requires Mojo 1.2.0 (via `modular install mojo`)
-git clone https://github.com/gauravatwork117/mojo-hotloop
+git clone https://github.com/gorky117-cell/mojo-hotloop
 cd mojo-hotloop
 python3 -m venv .venv
 .venv/bin/pip install -e .
@@ -85,11 +86,11 @@ a new Python construct:
 
 #### Pull Request Requirements
 
-- All existing tests must pass
-- New features must include at least one test
-- Benchmark evidence required for performance claims (see `docs/BENCHMARKS.md`)
-- DCO sign-off on every commit (`git commit -s`)
-- Use the PR template
+- **Correctness First**: All existing tests must pass with 0 unexpected failures; performance optimizations must demonstrate zero numerical regressions.
+- **Test Coverage**: New compiler features or transformations must include unit tests in `tests/test_compiler_adversarial.py`.
+- **Reproducible Benchmark Evidence**: Required for any performance claim. Submit p50 medians across $\ge 100$ trials, stating exact hardware, Python version, and Mojo version (see `docs/BENCHMARKS.md`).
+- **Intellectual Property & DCO**: Every commit must carry a `Signed-off-by:` line (`git commit -s`). Contributors retain copyright in their submissions under Apache-2.0. No plagiarized code or uncredited third-party inclusions are permitted.
+- **PR Template**: Use the standard pull request template and link any relevant GitHub issue.
 
 ### 4. Documentation
 

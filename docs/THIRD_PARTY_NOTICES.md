@@ -37,13 +37,22 @@ and notes on algorithmic provenance.
 
 ## External Prerequisite Compiler (Not Bundled or Distributed)
 
-### Mojo Compiler & Modular Toolchain
+### Mojo Compiler & Modular Toolchain Compliance Review
 
-- **Provider**: Modular, Inc.
-- **License**: Mojo standard library and core components are licensed under the Apache License v2.0 with LLVM Exceptions (https://github.com/modular/modular/blob/main/Licenses/APACHE_LICENSE). Portions of the Modular MAX platform are subject to separate proprietary terms.
+- **Provider**: Modular, Inc. ([modular.com](https://www.modular.com))
+- **Licensing Overview**: The Mojo standard library and core components are licensed under the Apache License v2.0 with LLVM Exceptions ([Modular Apache License](https://github.com/modular/modular/blob/main/Licenses/APACHE_LICENSE)). Portions of the Modular MAX platform are subject to separate proprietary terms.
 - **Redistribution Status**: **NOT BUNDLED OR REDISTRIBUTED**. Mojo Hotloop contains zero copied Modular source code, zero embedded Mojo runtime libraries, and zero Modular binary executables. The Mojo compiler CLI (`mojo`) is an external build-time and runtime prerequisite that developers install independently via Modular's official distribution channels.
-- **Trademark Notice**: MAX® and Mojo® are trademarks of Modular, Inc. used under license. Mojo Hotloop is an independent open-source project and is not affiliated with, sponsored by, or endorsed by Modular, Inc.
-- **Source**: https://github.com/modular/modular and https://www.modular.com/mojo
+- **Trademark Acknowledgement**: MAX® and Mojo® are trademarks of Modular, Inc. used under license.
+- **Independent Project Disclaimer**: Mojo Hotloop is an independent open-source project and is not affiliated with, sponsored by, or endorsed by Modular, Inc.
+
+#### Modular Trademark & Licensing Compliance Verification:
+1. **Independent Development**: Mojo Hotloop is an original Python-to-Mojo AST transpiler developed independently from scratch.
+2. **No Affiliation Claim**: The project makes no claim of official affiliation with Modular, Inc.
+3. **No Endorsement/Certification Claim**: The project clearly states that Modular, Inc. has not endorsed, reviewed, or certified Mojo Hotloop.
+4. **No Branding Misuse**: No Modular logos, graphics, or commercial trade dress are reproduced or embedded.
+5. **No Binary Redistribution**: Zero Modular or Mojo binaries are distributed in either the wheel package or source distribution (`mojo_hotloop-0.1.0-py3-none-any.whl`, `mojo_hotloop-0.1.0.tar.gz`).
+6. **Invocation Mechanism**: Mojo Hotloop only invokes the user's externally installed `mojo` compiler CLI via standard subprocess mechanisms (`mojo build --emit shared-lib`).
+- **Upstream Sources**: [https://github.com/modular/modular](https://github.com/modular/modular) and [https://www.modular.com/mojo](https://www.modular.com/mojo)
 
 ---
 

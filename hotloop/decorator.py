@@ -1,4 +1,5 @@
-# Copyright 2026 mojo-hotloop Contributors
+# Copyright 2026 Gaurav Kumar Singh
+# SPDX-License-Identifier: Apache-2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -143,7 +144,7 @@ def _find_and_load_native_fn(fn: Callable) -> Tuple[Optional[Callable], Optional
     """
     fn_name = fn.__name__
     mod_name = getattr(fn, "__module__", None)
-    mod_file = sys.modules[mod_name].__file__ if mod_name in sys.modules else None
+    mod_file = getattr(sys.modules[mod_name], "__file__", None) if mod_name in sys.modules else None
 
     if not mod_file:
         return None, None, f"Cannot determine defining source file for function '{fn_name}'", None, None, 0.0

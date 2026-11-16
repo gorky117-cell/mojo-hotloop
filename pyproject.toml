@@ -11,7 +11,7 @@ license = "Apache-2.0"
 license-files = ["LICENSE", "NOTICE"]
 requires-python = ">=3.12"
 authors = [
-    { name = "mojo-hotloop Contributors" }
+    { name = "Gaurav Kumar Singh" }
 ]
 keywords = [
     "mojo",
@@ -47,10 +47,10 @@ dev = [
 ]
 
 [project.urls]
-"Homepage" = "https://github.com/gauravatwork117/mojo-hotloop"
-"Bug Tracker" = "https://github.com/gauravatwork117/mojo-hotloop/issues"
-"Changelog" = "https://github.com/gauravatwork117/mojo-hotloop/blob/main/CHANGELOG.md"
-"Documentation" = "https://github.com/gauravatwork117/mojo-hotloop/tree/main/docs"
+"Homepage" = "https://github.com/gorky117-cell/mojo-hotloop"
+"Bug Tracker" = "https://github.com/gorky117-cell/mojo-hotloop/issues"
+"Changelog" = "https://github.com/gorky117-cell/mojo-hotloop/blob/main/CHANGELOG.md"
+"Documentation" = "https://github.com/gorky117-cell/mojo-hotloop/tree/main/docs"
 
 [project.scripts]
 hotloop = "hotloop.cli:main"

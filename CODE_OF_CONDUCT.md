@@ -18,23 +18,23 @@ Examples of behavior that contributes to a positive environment for our
 community include:
 
 * Demonstrating empathy and kindness toward other people
-* Being respectful of differing opinions, viewpoints, and experiences
-* Giving and gracefully accepting constructive feedback
-* Accepting responsibility and apologizing to those affected by our mistakes,
-  and learning from the experience
-* Focusing on what is best not just for us as individuals, but for the overall
-  community
+* Being respectful of differing opinions, viewpoints, and technical approaches
+* Giving and gracefully accepting constructive code review feedback
+* Accepting responsibility, apologizing to those affected by mistakes, and learning from the experience
+* Focusing on what is best not just for us as individuals, but for the overall community
+* Reporting benchmark measurements and technical claims honestly, with complete reproduction details
+* Respecting copyright, intellectual property, and proper attribution for all contributions
+* Protecting confidential information and reporting security vulnerabilities responsibly
 
 Examples of unacceptable behavior include:
 
-* The use of sexualized language or imagery, and sexual attention or advances of
-  any kind
+* The use of sexualized language or imagery, and sexual attention or advances of any kind
 * Trolling, insulting or derogatory comments, and personal or political attacks
 * Public or private harassment
-* Publishing others' private information, such as a physical or electronic
-  address, without their explicit permission
-* Other conduct which could reasonably be considered inappropriate in a
-  professional setting
+* Publishing others' private information, such as a physical or electronic address, without explicit permission
+* Plagiarism, wholesale copying of uncredited third-party code, or fabricating benchmark data
+* Dismissive or hostile conduct during code review or technical disagreement
+* Other conduct which could reasonably be considered inappropriate in a professional open-source setting
 
 ## Enforcement Responsibilities
 
@@ -56,16 +56,17 @@ Examples of representing our community include using an official email address,
 posting via an official social media account, or acting as an appointed
 representative at an online or offline event.
 
-## Enforcement
+## Enforcement & Reporting
 
-Instances of abusive, harassing, or otherwise unacceptable behavior may be
-reported to the community leaders responsible for enforcement via a private
-GitHub Security Advisory or by opening a confidential GitHub issue.
+Instances of abusive, harassing, unacceptable behavior, or ethical violations may be reported directly to project maintainer Gaurav Kumar Singh (`gorky117-cell`) through either of the following confidential channels:
 
-All complaints will be reviewed and investigated promptly and fairly.
+1. **Private GitHub Security Advisory**: Open a confidential report via [GitHub Security Advisories](https://github.com/gorky117-cell/mojo-hotloop/security/advisories/new). This channel encrypts communication and ensures reports are visible only to authorized repository maintainers without exposing personal email addresses publicly.
+2. **Confidential Issue Escalation**: Request a confidential review directly through GitHub issue triage or maintainer discussion.
 
-All community leaders are obligated to respect the privacy and security of the
-reporter of any incident.
+All complaints will be reviewed and investigated promptly, impartially, and fairly. Community leaders are obligated to respect the privacy and security of the reporter of any incident, and retaliatory behavior of any kind is strictly prohibited.
+
+### Appeals Process
+If an individual believes a moderation decision or enforcement action was made in error, they may submit an appeal via private security advisory detailing the grounds for reconsideration. Appeals will be reviewed objectively based on factual documentation and community guidelines.
 
 ## Enforcement Guidelines
 
