@@ -216,6 +216,15 @@ Contributions welcome! See [`CONTRIBUTING.md`](CONTRIBUTING.md).
 
 ## License
 
-Apache License 2.0. See [`LICENSE`](LICENSE).
+Apache License 2.0. See [`LICENSE`](LICENSE) and [`NOTICE`](NOTICE).
 
 Copyright 2026 mojo-hotloop Contributors.
+
+---
+
+## Trademark Notice
+
+MAX® and Mojo® are trademarks of Modular, Inc. used under license.
+
+Mojo Hotloop is an independent open-source project and is not affiliated with, sponsored by, or endorsed by Modular, Inc.
+

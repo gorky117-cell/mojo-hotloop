@@ -35,17 +35,15 @@ and notes on algorithmic provenance.
 
 ---
 
-## Compiler / Runtime (Not Python Packages)
+## External Prerequisite Compiler (Not Bundled or Distributed)
 
-### Mojo 1.2.0
+### Mojo Compiler & Modular Toolchain
 
 - **Provider**: Modular, Inc.
-- **License**: Modular Community License (not open source)
-- **Usage**: Compiles generated `.mojo` source to shared libraries (`.so`)
-- **Source**: https://www.modular.com/mojo
-
-Mojo is a **build-time and runtime dependency** but is NOT bundled with
-the mojo-hotloop distribution. Users must install it separately.
+- **License**: Mojo standard library and core components are licensed under the Apache License v2.0 with LLVM Exceptions (https://github.com/modular/modular/blob/main/Licenses/APACHE_LICENSE). Portions of the Modular MAX platform are subject to separate proprietary terms.
+- **Redistribution Status**: **NOT BUNDLED OR REDISTRIBUTED**. Mojo Hotloop contains zero copied Modular source code, zero embedded Mojo runtime libraries, and zero Modular binary executables. The Mojo compiler CLI (`mojo`) is an external build-time and runtime prerequisite that developers install independently via Modular's official distribution channels.
+- **Trademark Notice**: MAX® and Mojo® are trademarks of Modular, Inc. used under license. Mojo Hotloop is an independent open-source project and is not affiliated with, sponsored by, or endorsed by Modular, Inc.
+- **Source**: https://github.com/modular/modular and https://www.modular.com/mojo
 
 ---
 
