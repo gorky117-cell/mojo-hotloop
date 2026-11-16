@@ -6,7 +6,7 @@ The Mojo Hotloop project voluntarily aligns its engineering standards, contribut
 2. The **ACM/IEEE-CS Software Engineering Code of Ethics and Professional Practice** ([computer.org/education/code-of-ethics](https://www.computer.org/education/code-of-ethics))
 
 > [!NOTE]
-> **Voluntary Professional Alignment**: This document reflects a voluntary commitment to ethical, rigorous, and transparent software engineering. It does **not** claim formal certification, accreditation, sponsorship, or organizational endorsement by ACM or IEEE. These ethical guidelines guide contributor conduct and project governance without altering or restricting the rights granted under the [Apache License 2.0](file:///home/gaurav/mojo-hotloop/LICENSE).
+> **Voluntary Professional Alignment**: This document reflects a voluntary commitment to ethical, rigorous, and transparent software engineering. It does **not** claim formal certification, accreditation, sponsorship, or organizational endorsement by ACM or IEEE. These ethical guidelines guide contributor conduct and project governance without altering or restricting the rights granted under the [Apache License 2.0](../LICENSE).
 
 ---
 
@@ -21,13 +21,13 @@ The Mojo Hotloop project voluntarily aligns its engineering standards, contribut
 3. **Be Honest and Trustworthy (ACM 1.3)**:
    - Report benchmark timings, memory characteristics, and compiler limitations with scientific rigor. Never fabricate performance numbers, suppress unfavorable benchmark outcomes, or present micro-benchmarks as universal speedups.
 4. **Be Fair and Take Action Not to Discriminate (ACM 1.4)**:
-   - Welcome contributors across all backgrounds, identities, skill levels, and affiliations under our [Contributor Covenant Code of Conduct](file:///home/gaurav/mojo-hotloop/CODE_OF_CONDUCT.md).
+   - Welcome contributors across all backgrounds, identities, skill levels, and affiliations under our [Contributor Covenant Code of Conduct](../CODE_OF_CONDUCT.md).
 5. **Respect the Work Required to Produce New Ideas, Inventions, Creative Works, and Computing Artifacts (ACM 1.5)**:
    - Honor copyright, licenses, and patent limitations. Attribute algorithmic provenance meticulously (e.g. Myers, Luhn, Verhoeff, Haversine, Knuth LCG, Möller–Trumbore) and respect third-party intellectual property and Modular trademark policies.
 6. **Respect Privacy (ACM 1.6)**:
    - The transpiler operates strictly offline (`dependencies = []`). It transfers zero user source code, runtime arguments, telemetry, or system information over the network.
 7. **Honor Confidentiality (ACM 1.7)**:
-   - Treat private vulnerability reports, security disclosures, and reporter identities with strict confidentiality in accordance with [SECURITY.md](file:///home/gaurav/mojo-hotloop/SECURITY.md).
+   - Treat private vulnerability reports, security disclosures, and reporter identities with strict confidentiality in accordance with [SECURITY.md](../SECURITY.md).
 
 ---
 
@@ -42,7 +42,7 @@ The Mojo Hotloop project voluntarily aligns its engineering standards, contribut
 4. **Accept and Provide Appropriate Professional Review (ACM 2.4)**:
    - All code contributions undergo constructive, transparent peer review. Maintainers and contributors welcome critique and reproducible counter-evidence.
 5. **Give Comprehensive and Thorough Evaluations of Computer Systems and Their Impacts, Including Analysis of Possible Risks (ACM 2.5)**:
-   - Disclose compiler boundaries, unsupported syntax, FFI allocation bottlenecks, and edge cases in public documentation ([docs/SUPPORTED_SYNTAX.md](file:///home/gaurav/mojo-hotloop/docs/SUPPORTED_SYNTAX.md) and [docs/BENCHMARKS.md](file:///home/gaurav/mojo-hotloop/docs/BENCHMARKS.md)).
+   - Disclose compiler boundaries, unsupported syntax, FFI allocation bottlenecks, and edge cases in public documentation ([docs/SUPPORTED_SYNTAX.md](SUPPORTED_SYNTAX.md) and [docs/BENCHMARKS.md](BENCHMARKS.md)).
 6. **Perform Work Only in Areas of Competence (ACM 2.6)**:
    - Maintain focus on Python-to-Mojo AST compilation for numerical and text hot loops. Do not claim universal general-purpose Python language compilation.
 7. **Foster Public Awareness and Understanding of Computing, Its Technologies, and Their Consequences (ACM 2.7)**:
@@ -105,4 +105,4 @@ Mojo Hotloop adopts the **Eight Principles** of the ACM/IEEE-CS Software Enginee
 ## Part 3: Relationship to Apache-2.0 License
 
 - These engineering ethics guidelines represent a **voluntary professional covenant** governing project governance, contributor review, and scientific integrity.
-- They **do not modify, restrict, or condition** the legal permissions granted by the [Apache License 2.0](file:///home/gaurav/mojo-hotloop/LICENSE). Downstream users, commercial entities, academics, and community forks retain the full legal rights granted by the Apache-2.0 license.
+- They **do not modify, restrict, or condition** the legal permissions granted by the [Apache License 2.0](../LICENSE). Downstream users, commercial entities, academics, and community forks retain the full legal rights granted by the Apache-2.0 license.

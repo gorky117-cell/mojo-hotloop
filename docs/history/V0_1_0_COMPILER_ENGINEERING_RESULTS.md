@@ -23,7 +23,7 @@ The offline packaging was rebuilt and verified via isolated installation, confir
 
 ## 2. Compiler Optimization Passes Implemented
 
-All compiler improvements were implemented surgically in [`hotloop/ast_transpiler.py`](file:///home/gaurav/mojo-hotloop/hotloop/ast_transpiler.py):
+All compiler improvements were implemented surgically in [`hotloop/ast_transpiler.py`](../../hotloop/ast_transpiler.py):
 
 ### 2.1 Non-Raising IEEE 754 Floating-Point Operations
 - **Problem**: In baseline transpilation, all numeric arithmetic helper functions (`_checked_add`, `_checked_sub`, `_checked_mul`, `_checked_neg`) were declared with `raises -> Float64`. In Mojo 1.2.0 and LLVM, functions marked with `raises` generate C++ exception landing pads and unwind frames. For IEEE 754 floating-point operations, overflow produces `inf` or `nan` rather than throwing an exception.

@@ -42,8 +42,9 @@ and notes on algorithmic provenance.
 - **Provider**: Modular, Inc. ([modular.com](https://www.modular.com))
 - **Licensing Overview**: The Mojo standard library and core components are licensed under the Apache License v2.0 with LLVM Exceptions ([Modular Apache License](https://github.com/modular/modular/blob/main/Licenses/APACHE_LICENSE)). Portions of the Modular MAX platform are subject to separate proprietary terms.
 - **Redistribution Status**: **NOT BUNDLED OR REDISTRIBUTED**. Mojo Hotloop contains zero copied Modular source code, zero embedded Mojo runtime libraries, and zero Modular binary executables. The Mojo compiler CLI (`mojo`) is an external build-time and runtime prerequisite that developers install independently via Modular's official distribution channels.
-- **Independent Project Disclaimer**: Mojo Hotloop is an independent open-source project developed and maintained by Gaurav Kumar Singh. It is not affiliated with, operated by, sponsored by, or endorsed by Modular, Inc.
+- **Independent Project Disclaimer**: Mojo Hotloop is an independent open-source project developed and maintained by Gaurav Kumar Singh and contributors. It is not affiliated with, operated by, sponsored by, or endorsed by Modular, Inc.
 - **Trademark Acknowledgement**: MAX® and Mojo® are trademarks of Modular, Inc. used under license.
+  - *Attribution Note & Legal Context*: This trademark notice is included in accordance with Modular, Inc.'s published Trademark Policy ([modular.com/legal/trademark](https://www.modular.com/legal/trademark)) for developers referencing the MAX® and Mojo® toolchains. Mojo Hotloop is an independently developed open-source tool and does not claim an exclusive commercial license or direct endorsement from Modular, Inc. Maintainers recommend periodic review of upstream trademark policies.
 
 #### Modular Trademark & Licensing Compliance Verification:
 1. **Independent Development**: Mojo Hotloop is an original Python-to-Mojo AST transpiler developed independently from scratch.
@@ -130,4 +131,4 @@ into the mojo-hotloop distribution.
 
 ---
 
-*Last updated: 2026-11-15*
+*Last updated: 2026-11-16*

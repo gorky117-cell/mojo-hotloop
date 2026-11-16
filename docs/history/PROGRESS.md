@@ -223,7 +223,7 @@ All seven planned use cases remain strictly preserved for upcoming phases:
   - Executed all 7 verification suites: **7,220 tests verified, 0 mismatches, 0 failures**.
   - Executed full audit regression suite (D8 package integration, Unicode boundary memory, collections memory leak, zero-copy buffer interop, safe dispatch qualification, process RSS): **7/7 suites passed with zero errors**.
 - [x] **Step 7 — Comprehensive Reporting**:
-  - Published [`PHASE_D1_VALIDATION_REPORT.md`](file:///home/gaurav/mojo-hotloop/PHASE_D1_VALIDATION_REPORT.md) with master comparison table, per-application deep dives, and answers to mandatory questions.
+  - Published [`PHASE_D1_VALIDATION_REPORT.md`](PHASE_D1_VALIDATION_REPORT.md) with master comparison table, per-application deep dives, and answers to mandatory questions.
   - **OVERALL PHASE D.1 VERDICT**: **PASS — 4/7 OUTPERFORM BEST ALTERNATIVES, 0 REGRESSIONS, PRODUCTION-CERTIFIED**.
 
 ### Phase D.2: Offline 20× Performance Engineering & Competitive Scorecard (COMPLETED)
@@ -239,13 +239,13 @@ All seven planned use cases remain strictly preserved for upcoming phases:
   - `audit/run_all_verifications.py`: **7/7 suites passed (7,220 tests verified, 0 mismatches, 0 failures)**.
   - `audit/run_all_regressions.py`: **7/7 suites passed (Zero memory leaks, 0 RSS growth, clean package integration)**.
 - [x] **Phase D.2 Deliverables & Scorecard**:
-  - Published [`20X_OFFLINE_SCORECARD.md`](file:///home/gaurav/mojo-hotloop/20X_OFFLINE_SCORECARD.md) with comprehensive multi-trial results across all 7 applications.
-  - Published [`PHASE_D2_20X_VALIDATION_REPORT.md`](file:///home/gaurav/mojo-hotloop/PHASE_D2_20X_VALIDATION_REPORT.md) detailing all optimizations, failed experiments, memory safety invariants, and commercial viability assessment.
+  - Published [`20X_OFFLINE_SCORECARD.md`](20X_OFFLINE_SCORECARD.md) with comprehensive multi-trial results across all 7 applications.
+  - Published [`PHASE_D2_20X_VALIDATION_REPORT.md`](PHASE_D2_20X_VALIDATION_REPORT.md) detailing all optimizations, failed experiments, memory safety invariants, and commercial viability assessment.
   - **OVERALL PHASE D.2 VERDICT**: **PARTIAL PERFORMANCE SUCCESS — 3/7 ACHIEVED $\ge 20\times$ (Up to 69x, 4/7 beat best C/C++/Numba alternatives, 100% Correctness Guaranteed)**.
 
 ### Phase D.3: 20× Performance Recovery & Automatic Transpiler Verification (COMPLETED)
 - [x] **Full Line-by-Line Benchmark Provenance Audit**:
-  - Published [`BENCHMARK_PROVENANCE.md`](file:///home/gaurav/mojo-hotloop/BENCHMARK_PROVENANCE.md) auditing all 7 applications.
+  - Published [`BENCHMARK_PROVENANCE.md`](BENCHMARK_PROVENANCE.md) auditing all 7 applications.
   - Reconciled historical Phase D.2 inconsistencies (Geo 7.13 vs 8.51 ms, AR Spatial Numba vs Mojo, RAG forced-native vs fallback dispatch, PII kernel vs wrapped timings).
   - Confirmed empirical physical limit of RAG Chunker: Allocating 100 Python strings in pure CPython takes 24.40 µs, which is 2.7x larger than the entire 9.10 µs 20x budget. Returning `list[str]` cannot physically achieve $\le 9.10$ µs.
 - [x] **Compiler Upgrades in `hotloop/ast_transpiler.py`**:
@@ -256,20 +256,20 @@ All seven planned use cases remain strictly preserved for upcoming phases:
   - Rebuilt all 7 applications via `hotloop build --engine=ast`: 7/7 exited with Return Code 0.
   - Executed master verification suite: **7/7 suites passed (7,220 tests verified, 0 mismatches, 0 fallbacks, 100% native execution)**.
 - [x] **Transpiler Generalization Verification on 5 Unseen Functions**:
-  - Authored and published [`TRANSPILER_GENERALIZATION_AUDIT.md`](file:///home/gaurav/mojo-hotloop/TRANSPILER_GENERALIZATION_AUDIT.md).
+  - Authored and published [`TRANSPILER_GENERALIZATION_AUDIT.md`](TRANSPILER_GENERALIZATION_AUDIT.md).
   - Evaluated 5 completely unseen functions (Numerical Loop, Coordinate Distance, Stateful Reduction, Text Scanning, String Similarity).
   - Demonstrated **174.14x speedup** on Chebyshev distance and **171.14x speedup** on Exponential Moving Average automatically generated from Python AST.
   - Verified 100% mathematical and string parity across thousands of edge cases.
 - [x] **Phase D.3 Deliverables & Scorecard**:
-  - Published [`PHASE_D3_20X_SCORECARD.md`](file:///home/gaurav/mojo-hotloop/PHASE_D3_20X_SCORECARD.md) with comprehensive multi-metric comparisons.
-  - Published [`PHASE_D3_VALIDATION_REPORT.md`](file:///home/gaurav/mojo-hotloop/PHASE_D3_VALIDATION_REPORT.md) answering all 10 mandatory questions.
+  - Published [`PHASE_D3_20X_SCORECARD.md`](PHASE_D3_20X_SCORECARD.md) with comprehensive multi-metric comparisons.
+  - Published [`PHASE_D3_VALIDATION_REPORT.md`](PHASE_D3_VALIDATION_REPORT.md) answering all 10 mandatory questions.
   - **OVERALL PHASE D.3 VERDICT**: **AUTHENTICITY & GENERALITY VERIFIED — 2/7 ACHIEVED $\ge 20\times$ AUTOMATICALLY (Quant Backtest 76.8x, AR Spatial 68.6x; Generalization up to 174x; Zero Handwritten Code Needed for Numerical Acceleration)**.
 
 ### Phase D.4: Codon Competitive Benchmarking, Final Compiler Optimization & v0.1.0 Developer Preview Qualification (COMPLETED)
 - [x] **Competitive Evaluation against Codon 0.17.0, Numba, NumPy, and RapidFuzz**:
   - Benchmarked all 7 real-world applications across Small, Medium, and Large tiers under identical isolated WSL2 hardware environments.
-  - Published [`V0_1_0_CODON_COMPETITIVE_AUDIT.md`](file:///home/gaurav/mojo-hotloop/V0_1_0_CODON_COMPETITIVE_AUDIT.md) with deep architectural analysis of Codon vs Mojo Hotloop.
-  - Published [`V0_1_0_FINAL_PERFORMANCE_SCORECARD.md`](file:///home/gaurav/mojo-hotloop/V0_1_0_FINAL_PERFORMANCE_SCORECARD.md) containing the full empirical performance matrix.
+  - Published [`V0_1_0_CODON_COMPETITIVE_AUDIT.md`](V0_1_0_CODON_COMPETITIVE_AUDIT.md) with deep architectural analysis of Codon vs Mojo Hotloop.
+  - Published [`V0_1_0_FINAL_PERFORMANCE_SCORECARD.md`](V0_1_0_FINAL_PERFORMANCE_SCORECARD.md) containing the full empirical performance matrix.
 - [x] **Codon String Reallocation Pathology Identified & Proven**:
   - Proved that Codon's immutable UTF-8 string concatenation incurs $O(N^2)$ byte copies and allocates over 10 GB of transient memory on 100k-character texts, running in 7.7s to 12.3s per iteration.
   - Proved that Mojo Hotloop's $O(N)$ capacity-reserved `String.write` buffer runs in 4.69 ms to 15.33 ms, outperforming Codon JIT by **805× to 1,654×**.
@@ -289,7 +289,7 @@ All seven planned use cases remain strictly preserved for upcoming phases:
   - Rebuilt clean wheel (`mojo_hotloop-0.1.0-py3-none-any.whl`, SHA256: `0a959af1f97e42ffd69e25ad21d59f82faaa8be43fdce1fb347612872e36f760`) and sdist (`mojo_hotloop-0.1.0.tar.gz`, SHA256: `f98c73bad7124bc1604b5ebad04ab6f3cfe977a7a27e5d0f302ca9dca64b3de3`).
   - Verified isolated offline installation (`--no-index`) in an ephemeral virtual environment with zero third-party dependencies (`dependencies = []`).
 - [x] **Phase D.4 Qualification Verdict**:
-  - Published [`V0_1_0_COMPILER_ENGINEERING_RESULTS.md`](file:///home/gaurav/mojo-hotloop/V0_1_0_COMPILER_ENGINEERING_RESULTS.md).
+  - Published [`V0_1_0_COMPILER_ENGINEERING_RESULTS.md`](V0_1_0_COMPILER_ENGINEERING_RESULTS.md).
   - **OVERALL VERDICT: QUALIFIED — GO FOR v0.1.0 DEVELOPER PREVIEW RELEASE CANDIDATE.**
 
 ---

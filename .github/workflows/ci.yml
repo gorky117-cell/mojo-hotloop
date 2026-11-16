@@ -55,8 +55,7 @@ jobs:
           data = [1.0, 2.0, 3.0, 4.0, 5.0]
           result = sum_squares(data)
           assert abs(result - 55.0) < 1e-9, f"Mismatch: {result}"
-          # Must fall back cleanly (no Mojo on GitHub runner)
-          assert sum_squares._last_backend in ("python_fallback", "native"), \
+          assert sum_squares._last_backend in ("python_fallback", "python_fallback_slower"), \
               f"Unexpected backend: {sum_squares._last_backend}"
           print(f"Smoke test PASS — backend: {sum_squares._last_backend}")
           EOF
@@ -81,18 +80,88 @@ jobs:
           print(f'Package metadata & offline AST check OK: {meta["Name"]} {meta["Version"]}')
           EOF
 
-  # MOJO_REQUIRED: The following job requires Mojo 1.2.0 which is not available
-  # on GitHub Actions runners. It is documented here for reference and must be
-  # run manually on a machine with Mojo installed.
-  #
-  # native-build-test:
-  #   name: "Native Build & Verification (Mojo Required)"
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #     - name: Install Mojo 1.2.0
-  #       run: pip install modular && modular install mojo  # MOJO_REQUIRED: skip on GitHub Actions runner
-  #     - name: Build all use cases
-  #       run: .venv/bin/python audit/test_ast_provenance.py  # MOJO_REQUIRED
-  #     - name: Run verification suites
-  #       run: .venv/bin/python audit/run_all_verifications.py  # MOJO_REQUIRED
+      - name: Verify canonical benchmark tables consistency
+        run: |
+          python benchmarks/generate_benchmark_reports.py --check
+
+  native-verification:
+    name: "Native Verification (Mojo 1.2.0, Python 3.12)"
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies & Mojo 1.2.0
+        run: |
+          python -m pip install --upgrade pip
+          pip install mojo==1.2.0 numpy rapidfuzz numba
+          pip install -e .
+
+      - name: Verify toolchain versions
+        run: |
+          echo "=== Python ==="
+          python --version
+          echo "=== Mojo ==="
+          mojo --version
+
+      - name: Native compilation smoke test & execution
+        run: |
+          cat << 'EOF' > /tmp/smoke_test.py
+          from hotloop import hotloop
+
+          @hotloop
+          def sum_squares(n: int) -> int:
+              total: int = 0
+              for i in range(n):
+                  total += i * i
+              return total
+          EOF
+          hotloop build /tmp/smoke_test.py --engine=ast
+          python -c '
+          import sys
+          sys.path.insert(0, "/tmp")
+          import smoke_test
+          res = smoke_test.sum_squares(100_000)
+          print(f"Result: {res}")
+          print(f"Backend: {smoke_test.sum_squares._last_backend}")
+          assert res == 333328333350000, f"Expected 333328333350000, got {res}"
+          assert smoke_test.sum_squares._last_backend == "native", f"Expected native, got {smoke_test.sum_squares._last_backend}"
+          print("Native Smoke Test: PASSED")
+          '
+
+      - name: Explicit fallback behavior test
+        run: |
+          python -c '
+          import warnings
+          warnings.simplefilter("always")
+          from hotloop import hotloop
+
+          @hotloop
+          def uncompiled_func(x: float) -> float:
+              return x * 2.0
+
+          res = uncompiled_func(5.0)
+          assert res == 10.0
+          assert uncompiled_func._last_backend in ("python_fallback", "python_fallback_slower"), f"Expected fallback, got {uncompiled_func._last_backend}"
+          print("Fallback Verification: PASSED")
+          '
+
+      - name: Build all seven domain use cases
+        run: |
+          python audit/test_ast_provenance.py
+
+      - name: Run all seven domain verification suites (7,220 checks)
+        run: |
+          python audit/run_all_verifications.py
+
+      - name: Run unfamiliar functions test suite (35+ functions)
+        run: |
+          python tests/test_unfamiliar_functions.py
+
+      - name: Run runtime security and stability suite
+        run: |
+          python tests/test_runtime_security.py

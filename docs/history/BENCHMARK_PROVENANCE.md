@@ -32,7 +32,7 @@ Each application's `fast.mojo` and `fast.so` implementation is classified into o
 ---
 
 ### Workload 1: Quantitative Backtest (`examples/quant_backtest`)
-- **Python Reference**: [`examples/quant_backtest/original.py`](file:///home/gaurav/mojo-hotloop/examples/quant_backtest/original.py)
+- **Python Reference**: [`examples/quant_backtest/original.py`](../../examples/quant_backtest/original.py)
   - Signature: `stateful_trailing_backtest(ticks: int, start_price: float, stop_pct: float, fee_rate: float) -> float`
   - Argument Types: All scalar (`int`, `float`). Return Type: Scalar `float`.
 - **Transpiler Behavior**: `hotloop.ast_transpiler.transpile_python_to_mojo()` parses the Python AST directly, mapping scalar types to native `Int` and `Float64`, unrolling the `for _ in range(ticks)` loop, and generating a standard C-ABI wrapper function.
@@ -48,7 +48,7 @@ Each application's `fast.mojo` and `fast.so` implementation is classified into o
 ---
 
 ### Workload 2: AR Spatial 3D (`examples/ar_spatial`)
-- **Python Reference**: [`examples/ar_spatial/original.py`](file:///home/gaurav/mojo-hotloop/examples/ar_spatial/original.py)
+- **Python Reference**: [`examples/ar_spatial/original.py`](../../examples/ar_spatial/original.py)
   - Signature: `find_closest_point_to_ray(xs: list[float], ys: list[float], zs: list[float], ...) -> int`
 - **Code Provenance Audit**:
   - The AST transpiler in `hotloop/ast_transpiler.py` automatically generates list unboxing using:
@@ -64,7 +64,7 @@ Each application's `fast.mojo` and `fast.so` implementation is classified into o
 ---
 
 ### Workload 3: OCR Fuzzy Matcher (`examples/ocr_matcher`)
-- **Python Reference**: [`examples/ocr_matcher/original.py`](file:///home/gaurav/mojo-hotloop/examples/ocr_matcher/original.py)
+- **Python Reference**: [`examples/ocr_matcher/original.py`](../../examples/ocr_matcher/original.py)
   - Signature: `find_closest_match(query: str, candidates: list[str], max_distance: int) -> int`
   - Helper: `levenshtein_distance(s1: str, s2: str, max_dist: int) -> int` (Dynamic programming matrix)
 - **Code Provenance Audit**:
@@ -84,7 +84,7 @@ Each application's `fast.mojo` and `fast.so` implementation is classified into o
 ---
 
 ### Workload 4: Geo Distance Haversine (`examples/geo_distance`)
-- **Python Reference**: [`examples/geo_distance/original.py`](file:///home/gaurav/mojo-hotloop/examples/geo_distance/original.py)
+- **Python Reference**: [`examples/geo_distance/original.py`](../../examples/geo_distance/original.py)
   - Signature: `accumulate_haversine_distance(lats: list[float], lons: list[float]) -> float`
 - **Code Provenance Audit**:
   - The AST transpiler automatically compiles the Haversine mathematical loop, yielding a latency of **2.57 ms** on Python lists (**3.17× speedup vs Python 8.03 ms**).
@@ -98,7 +98,7 @@ Each application's `fast.mojo` and `fast.so` implementation is classified into o
 ---
 
 ### Workload 5: PII Scrubber (`examples/pii_scrubber`)
-- **Python Reference**: [`examples/pii_scrubber/original.py`](file:///home/gaurav/mojo-hotloop/examples/pii_scrubber/original.py)
+- **Python Reference**: [`examples/pii_scrubber/original.py`](../../examples/pii_scrubber/original.py)
   - Signature: `scrub_pii(text: str) -> str`
 - **Code Provenance Audit**:
   - The AST transpiler compiles the multi-pass text scanning and Luhn/Verhoeff validation routines, yielding **26.70 ms** on 100k characters (**2.57× speedup vs Python 67.19 ms**).
@@ -112,7 +112,7 @@ Each application's `fast.mojo` and `fast.so` implementation is classified into o
 ---
 
 ### Workload 6: PDF Text Cleaner (`examples/pdf_cleaner`)
-- **Python Reference**: [`examples/pdf_cleaner/original.py`](file:///home/gaurav/mojo-hotloop/examples/pdf_cleaner/original.py)
+- **Python Reference**: [`examples/pdf_cleaner/original.py`](../../examples/pdf_cleaner/original.py)
   - Signature: `clean_pdf_text(raw_text: str) -> str`
 - **Code Provenance Audit**:
   - The AST transpiler compiles character inspection loops into Mojo, yielding **8.06 ms** on 100k characters (**3.15× speedup vs Python 24.78 ms, 1.34× faster than compiled C regex**).
@@ -125,7 +125,7 @@ Each application's `fast.mojo` and `fast.so` implementation is classified into o
 ---
 
 ### Workload 7: RAG Document Chunker (`examples/rag_chunker`)
-- **Python Reference**: [`examples/rag_chunker/original.py`](file:///home/gaurav/mojo-hotloop/examples/rag_chunker/original.py)
+- **Python Reference**: [`examples/rag_chunker/original.py`](../../examples/rag_chunker/original.py)
   - Signature: `chunk_document(text: str, chunk_size: int, overlap: int) -> list[str]`
 - **Code Provenance Audit**:
   - The AST transpiler automatically compiles the boundary scanning and chunk extraction loops into Mojo.

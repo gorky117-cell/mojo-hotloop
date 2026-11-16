@@ -39,11 +39,11 @@ The software, documentation, test suites, packaging, security posture, legal com
 ## 3. Final Release Gate Verification
 
 ### Check 1: License and Copyright
-- **License Text**: The complete, official Apache License 2.0 text has been verified and committed in [`LICENSE`](file:///home/gaurav/mojo-hotloop/LICENSE).
+- **License Text**: The complete, official Apache License 2.0 text has been verified and committed in [`LICENSE`](../../LICENSE).
 - **Copyright Notice**: Explicit copyright attribution is recorded as `Copyright 2026 mojo-hotloop Contributors`.
-- **Contributor Policy**: The Developer Certificate of Origin (DCO) 1.1 sign-off (`git commit -s`) requirement is documented in [`CONTRIBUTING.md`](file:///home/gaurav/mojo-hotloop/CONTRIBUTING.md). No CLA or copyright assignment is imposed.
+- **Contributor Policy**: The Developer Certificate of Origin (DCO) 1.1 sign-off (`git commit -s`) requirement is documented in [`CONTRIBUTING.md`](../../CONTRIBUTING.md). No CLA or copyright assignment is imposed.
 - **Distribution Packaging**: Both `dist/mojo_hotloop-0.1.0.tar.gz` and `dist/mojo_hotloop-0.1.0-py3-none-any.whl` package the official `LICENSE` file under `mojo_hotloop-0.1.0.dist-info/licenses/LICENSE` and root tarball.
-- **Third-Party Notices**: Documented in [`docs/THIRD_PARTY_NOTICES.md`](file:///home/gaurav/mojo-hotloop/docs/THIRD_PARTY_NOTICES.md):
+- **Third-Party Notices**: Documented in [`docs/THIRD_PARTY_NOTICES.md`](../THIRD_PARTY_NOTICES.md):
   - `python-dotenv`: BSD-3-Clause (runtime dependency).
   - `numpy`: BSD-3-Clause (optional dependency).
   - `google-genai`: Apache-2.0 (optional dependency).
@@ -51,7 +51,7 @@ The software, documentation, test suites, packaging, security posture, legal com
 - **Owner Action**: Final approval of the Apache-2.0 license activation is required before public launch.
 
 ### Check 2: Actual GitHub CI
-- **Workflow File**: Validated at [`.github/workflows/ci.yml`](file:///home/gaurav/mojo-hotloop/.github/workflows/ci.yml).
+- **Workflow File**: Validated at [`.github/workflows/ci.yml`](../../.github/workflows/ci.yml).
 - **CI Execution Status**: **NOT VERIFIED (PRE-PUBLICATION)**.
   - *Integrity Note*: In accordance with compiler validation standards, local workstation test runs are **not** represented as successful GitHub Actions runs.
   - Because public GitHub runners (`ubuntu-latest`) do not include Mojo 1.2.0, the workflow executes the Python-side installation, package metadata inspection, adversarial AST transpilation tests, and fallback smoke tests.
@@ -86,7 +86,7 @@ The software, documentation, test suites, packaging, security posture, legal com
   | **`mojo_hotloop-0.1.0-py3-none-any.whl`** | 27 KiB | `d692b05e9e67b87a40dc17cd808adf24f91274f8a405c936443499b142b7e6b3` |
   | **`mojo_hotloop-0.1.0.tar.gz`** | 33 KiB | `42744c7ba613a65ac4feb3d2cb844563a32a45003cba520cfccd09250fcc4f05` |
 - **External Directory Execution**: Verified by installing the wheel into an isolated venv outside the repository (`/tmp/hl_quickstart_env`), authoring `app.py`, compiling with `hotloop build`, executing natively, and verifying cache staleness invalidation when source code was edited.
-- **README Parity**: Every command and code sample in [`README.md`](file:///home/gaurav/mojo-hotloop/README.md) matches the actual CLI syntax and runtime behavior.
+- **README Parity**: Every command and code sample in [`README.md`](../../README.md) matches the actual CLI syntax and runtime behavior.
 
 ---
 
@@ -111,7 +111,7 @@ The software, documentation, test suites, packaging, security posture, legal com
 
 ## 5. Benchmark Performance Baseline & Codon Multi-Competitor Matrix
 
-Full empirical details and methodology published in [`V0_1_0_CODON_COMPETITIVE_AUDIT.md`](file:///home/gaurav/mojo-hotloop/V0_1_0_CODON_COMPETITIVE_AUDIT.md) and [`V0_1_0_FINAL_PERFORMANCE_SCORECARD.md`](file:///home/gaurav/mojo-hotloop/V0_1_0_FINAL_PERFORMANCE_SCORECARD.md).
+Full empirical details and methodology published in [`V0_1_0_CODON_COMPETITIVE_AUDIT.md`](V0_1_0_CODON_COMPETITIVE_AUDIT.md) and [`V0_1_0_FINAL_PERFORMANCE_SCORECARD.md`](V0_1_0_FINAL_PERFORMANCE_SCORECARD.md).
 
 | Workload | Scale / Tier | CPython 3.12 ($p50$) | Mojo Baseline ($p50$) | **Mojo Optimized ($p50$)** | **Mojo Speedup vs Py** | Codon JIT ($p50$) | Codon Native ($p50$) | Strongest Alternative |
 |---|---|---:|---:|---:|---:|---:|---:|---|
