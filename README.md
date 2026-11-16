@@ -222,9 +222,9 @@ Copyright 2026 Gaurav Kumar Singh and mojo-hotloop contributors.
 
 ---
 
-## Trademark Notice
+## Disclaimer & Trademark Notice
+
+**Disclaimer:** Mojo Hotloop is an independent open-source project developed and maintained by Gaurav Kumar Singh. It is not affiliated with, operated by, sponsored by, or endorsed by Modular, Inc.
 
 MAX® and Mojo® are trademarks of Modular, Inc. used under license.
-
-Mojo Hotloop is an independent open-source project and is not affiliated with, sponsored by, or endorsed by Modular, Inc.
 
