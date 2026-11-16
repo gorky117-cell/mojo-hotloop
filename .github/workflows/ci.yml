@@ -100,7 +100,7 @@ jobs:
       - name: Install dependencies & Mojo 1.2.0
         run: |
           python -m pip install --upgrade pip
-          pip install mojo==1.2.0 numpy rapidfuzz numba
+          pip install mojo==1.2.0 numpy rapidfuzz numba hypothesis
           pip install -e .
 
       - name: Verify toolchain versions
