@@ -177,7 +177,7 @@ Five previously unseen general-purpose functions (no application tuning):
 
 ```bash
 # Clone and set up
-git clone https://github.com/mojo-hotloop/mojo-hotloop
+git clone https://github.com/gauravatwork117/mojo-hotloop
 cd mojo-hotloop
 python3 -m venv .venv
 .venv/bin/pip install -e .

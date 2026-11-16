@@ -71,7 +71,7 @@ Mojo Hotloop
 Copyright 2026 mojo-hotloop Contributors
 
 This product includes software developed at mojo-hotloop
-(https://github.com/mojo-hotloop/mojo-hotloop).
+(https://github.com/gauravatwork117/mojo-hotloop).
 
 Trademark Notices:
 MAX® and Mojo® are trademarks of Modular, Inc. used under license.
@@ -115,8 +115,8 @@ Rebuilt cleanly using `python -m build`:
 
 | Artifact | Type | File Size | SHA-256 Checksum |
 | :--- | :--- | ---:| :--- |
-| `dist/mojo_hotloop-0.1.0-py3-none-any.whl` | Wheel Package | 31.4 KB | `7b18264e89977229c35014ce8271becb4d7246d1e35211337e5efc7dd1b81b86` |
-| `dist/mojo_hotloop-0.1.0.tar.gz` | Source Distribution | 45.5 KB | `b65cb1fc1ef4029f278cbb99b1e5624bd1d74ec43eeec4b564bdd10c42359bf3` |
+| `dist/mojo_hotloop-0.1.0-py3-none-any.whl` | Wheel Package | 34.9 KB (35,702 bytes) | `be4f913eecfdcb0c602f82ac9df3ecdb0dd950ad792b251f2e98072cfa8948f9` |
+| `dist/mojo_hotloop-0.1.0.tar.gz` | Source Distribution | 46.7 KB (47,829 bytes) | `dc37ca9540280e7783e26b1a434a98ad536bb0ab562571496c0d255ee058a942` |
 
 Both packages have been verified via `unzip -l`, `tar -ztvf`, and `twine check`. Both bundle `LICENSE` and `NOTICE`.
 
@@ -132,8 +132,8 @@ Before running the publication commands, the owner must provide authorization on
    - Option B: Update to `Copyright 2026 Gaurav and mojo-hotloop Contributors`.  
    - Option C: Specify a personal legal name or organization name.
 2. **GitHub Account & Repository Target**:  
-   - Currently configured placeholder: `https://github.com/mojo-hotloop/mojo-hotloop`.  
-   - Please confirm the target GitHub username/organization before pushing.
+   - Confirmed repository destination: `https://github.com/gauravatwork117/mojo-hotloop`.  
+   - Credentials verified via local git store (`gauravatwork117`).
 3. **Public GitHub Actions Runner Strategy**:  
    - Acknowledge that public GitHub-hosted runners (`ubuntu-latest`) do not provide Mojo 1.2.0. The CI workflow is configured to run Python tests on public runners and reserves native Mojo builds for self-hosted runners.
 
@@ -144,18 +144,18 @@ Before running the publication commands, the owner must provide authorization on
 Once explicit owner authorization is provided, the following precise commands should be executed to publish the release:
 
 ```bash
-# 1. Add your confirmed GitHub remote
-git remote add origin https://github.com/<your-username>/mojo-hotloop.git
+# 1. Add confirmed GitHub remote
+git remote add origin https://github.com/gauravatwork117/mojo-hotloop.git
 
 # 2. Push the verified release branch to GitHub
 git push -u origin v0.1.0-codon-competitive:main
 
-# 3. Create and push the official release tag
-git tag -s v0.1.0 -m "mojo-hotloop v0.1.0: Open-Source Developer Preview"
+# 3. Create and push the official release tag (annotated tag fallback if GPG key is unconfigured)
+git tag -a v0.1.0 -m "mojo-hotloop v0.1.0: Open-Source Developer Preview"
 git push origin v0.1.0
 
 # 4. Verify GitHub Actions CI triggers on push
-# Navigate to: https://github.com/<your-username>/mojo-hotloop/actions
+# Navigate to: https://github.com/gauravatwork117/mojo-hotloop/actions
 
 # 5. (Optional) Publish built distribution artifacts to PyPI
 # python -m twine upload dist/mojo_hotloop-0.1.0*

@@ -54,7 +54,7 @@ Open a GitHub Discussion or issue describing:
 ```bash
 # Requires WSL2 Ubuntu 24.04 or native Linux
 # Requires Mojo 1.2.0 (via `modular install mojo`)
-git clone https://github.com/mojo-hotloop/mojo-hotloop
+git clone https://github.com/gauravatwork117/mojo-hotloop
 cd mojo-hotloop
 python3 -m venv .venv
 .venv/bin/pip install -e .

@@ -29,7 +29,7 @@ and notes on algorithmic provenance.
 
 ### setuptools
 
-- **Package**: `setuptools >= 61.0`
+- **Package**: `setuptools >= 77.0.3`
 - **License**: MIT
 - **Usage**: Package build backend (`pyproject.toml`)
 

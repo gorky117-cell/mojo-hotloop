@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=61.0"]
+requires = ["setuptools>=77.0.3"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -47,10 +47,10 @@ dev = [
 ]
 
 [project.urls]
-"Homepage" = "https://github.com/mojo-hotloop/mojo-hotloop"
-"Bug Tracker" = "https://github.com/mojo-hotloop/mojo-hotloop/issues"
-"Changelog" = "https://github.com/mojo-hotloop/mojo-hotloop/blob/main/CHANGELOG.md"
-"Documentation" = "https://github.com/mojo-hotloop/mojo-hotloop/tree/main/docs"
+"Homepage" = "https://github.com/gauravatwork117/mojo-hotloop"
+"Bug Tracker" = "https://github.com/gauravatwork117/mojo-hotloop/issues"
+"Changelog" = "https://github.com/gauravatwork117/mojo-hotloop/blob/main/CHANGELOG.md"
+"Documentation" = "https://github.com/gauravatwork117/mojo-hotloop/tree/main/docs"
 
 [project.scripts]
 hotloop = "hotloop.cli:main"

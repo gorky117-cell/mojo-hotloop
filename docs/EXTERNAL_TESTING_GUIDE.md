@@ -33,7 +33,7 @@ from scratch on your own machine.
 ## Step 1 — Clone and Install
 
 ```bash
-git clone https://github.com/mojo-hotloop/mojo-hotloop
+git clone https://github.com/gauravatwork117/mojo-hotloop
 cd mojo-hotloop
 
 # Verify git HEAD / branch
