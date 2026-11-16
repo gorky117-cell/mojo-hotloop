@@ -155,10 +155,10 @@ Use `git commit -s` to automatically append this line. This certifies that you h
    git push origin feat/your-feature-name
    ```
 8. **Open a Pull Request**:
-   - Fill out the pull request template completely.
+   - Fill out the pull request template completely (which provides built-in contributor guidance).
    - Link any related issues (`Fixes #12`).
-   - The Automated Contributor Assistant will verify your DCO sign-off and provide guidance.
-   - Review will automatically be requested from `@gorky117-cell` via CODEOWNERS.
+   - The unprivileged **DCO Sign-off Verification** check will automatically validate that every commit contains a valid `Signed-off-by:` line, reporting status directly in the PR checks list.
+   - Review will automatically be requested from `@gorky117-cell` via [CODEOWNERS](.github/CODEOWNERS).
 
 ---
 

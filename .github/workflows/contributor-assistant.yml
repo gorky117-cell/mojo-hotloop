@@ -45,7 +45,7 @@ jobs:
             core.info(`Found ${commits.length} commit(s) in PR #${prNumber}.`);
 
             // Regex for standard DCO format: Signed-off-by: Full Name <email@example.com>
-            const dcoRegex = /^Signed-off-by:\s+([^\n<]+)\s+<([^@>\n\s]+@[^@>\n\s]+)>/m;
+            const dcoRegex = /^Signed-off-by:\s+([^\n<]+)\s+<([^@>\n\s]+@[^@>\n\s]+)>/mi;
 
             const missing = [];
             const passed = [];
