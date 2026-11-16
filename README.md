@@ -39,28 +39,36 @@ The AST transpiler supports a **strict subset** of annotated Python. See
 
 ---
 
-## Installation
+## Installation & Environment
 
-Requires **Linux** (or WSL2 on Windows 10/11) and **Python 3.12+**.
+> [!IMPORTANT]
+> **Verified Environment:** Linux x86-64 (or Ubuntu 24.04 LTS on WSL2), CPython 3.12, Mojo 1.2.0.
+> Compatibility with other Python or Mojo versions is untested.
 
-### 1. Set up a Python 3.12+ environment
+### 1. Set up a Python 3.12 virtual environment
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
-pip install mojo-hotloop
 ```
 
 ### 2. Install the Mojo compiler (for native acceleration)
+Install Modular's standalone Mojo 1.2.0 compiler directly into your virtual environment:
 ```bash
-pip install modular
-modular install mojo
-mojo --version   # Verify installation: Mojo 1.2.0
+pip install mojo==1.2.0
+mojo --version   # Verify output: Mojo 1.2.0 (2016d0cd)
 ```
 
 > [!NOTE]
-> Ensure your virtual environment is activated (`source .venv/bin/activate`) so that `mojo` and `hotloop` CLI tools are present in your `PATH`.
->
-> **Without Mojo**, `@hotloop` automatically executes pure Python as a safe fallback. The package is fully usable offline without Mojo for development, linting, and AST testing.
+> Always ensure your virtual environment is active (`source .venv/bin/activate`) so that `mojo` and `hotloop` CLI executables are available on your `PATH`.
+
+### 3. Install mojo-hotloop v0.1.0
+Install the official pre-release wheel directly from the GitHub v0.1.0 release:
+```bash
+pip install https://github.com/gorky117-cell/mojo-hotloop/releases/download/v0.1.0/mojo_hotloop-0.1.0-py3-none-any.whl
+```
+*(Or if developing from a local git repository: `pip install -e .`)*
+
+> **Without Mojo:** All `@hotloop` functions automatically execute pure Python as a transparent fallback. The package is fully functional offline without Mojo for development, linting, and AST validation.
 
 ---
 
