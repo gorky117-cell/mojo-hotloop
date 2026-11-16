@@ -41,23 +41,26 @@ The AST transpiler supports a **strict subset** of annotated Python. See
 
 ## Installation
 
-Requires **Linux** (or WSL2 on Windows 11) and **Python 3.12+**.
+Requires **Linux** (or WSL2 on Windows 10/11) and **Python 3.12+**.
 
+### 1. Set up a Python 3.12+ environment
 ```bash
+python3 -m venv .venv
+source .venv/bin/activate
 pip install mojo-hotloop
 ```
 
-For native acceleration, also install **Mojo 1.2.0**:
-
+### 2. Install the Mojo compiler (for native acceleration)
 ```bash
 pip install modular
 modular install mojo
-mojo --version   # Should show: mojo 1.2.0
+mojo --version   # Verify installation: Mojo 1.2.0
 ```
 
-> **Without Mojo**, all `@hotloop` functions fall back to Python automatically.
-> This is correct behavior — the package is fully usable without Mojo for
-> development and testing.
+> [!NOTE]
+> Ensure your virtual environment is activated (`source .venv/bin/activate`) so that `mojo` and `hotloop` CLI tools are present in your `PATH`.
+>
+> **Without Mojo**, `@hotloop` automatically executes pure Python as a safe fallback. The package is fully usable offline without Mojo for development, linting, and AST testing.
 
 ---
 
@@ -70,33 +73,36 @@ mojo --version   # Should show: mojo 1.2.0
 from hotloop import hotloop
 
 @hotloop
-def running_sum(values: list[float]) -> float:
-    total: float = 0.0
-    for i in range(len(values)):
-        total += values[i]
+def sum_squares(n: int) -> int:
+    total: int = 0
+    for i in range(n):
+        total += i * i
     return total
 ```
 
-**All arguments and the return type must be annotated.** Local variables must
-also be annotated on first assignment (`total: float = 0.0`).
+**All parameters and return types must be type-annotated.** Local variables must
+also include explicit type annotations on first assignment (`total: int = 0`).
 
-### Step 2 — Build the native library
+### Step 2 — Build the native shared library
 
 ```bash
 hotloop build myapp.py --engine=ast
 ```
 
-This creates `fast.so` and `fast.hotloop_manifest.json` alongside `myapp.py`.
+This creates `fast.so` and `fast.hotloop_manifest.json` directly alongside `myapp.py`.
 
 ### Step 3 — Run at native speed
 
 ```python
 import myapp
 
-result = myapp.running_sum([1.0, 2.0, 3.0, 4.0, 5.0])
-print(result)  # 15.0
-print(myapp.running_sum._last_backend)  # "native"
+result = myapp.sum_squares(100_000)
+print("Result:", result)                                  # 333328333350000
+print("Execution backend:", myapp.sum_squares._last_backend)  # "native"
 ```
+
+> [!TIP]
+> **Arrays and NumPy:** For array processing, pass a 1-D C-contiguous `numpy.ndarray` (`float64` or `int64`) to activate zero-copy native memory pointers. Plain Python `list[...]` inputs with small element counts automatically fall back to Python because per-element FFI conversion overhead exceeds computation time.
 
 ---
 
@@ -204,13 +210,14 @@ hardware specs, and measurement scripts.
 
 ---
 
-## Contributing
+## Contributing & Community
 
-Contributions welcome! See [`CONTRIBUTING.md`](CONTRIBUTING.md).
-
-- DCO sign-off required (`git commit -s`) — no CLA
-- All new transpiler features need a test in `tests/test_compiler_adversarial.py`
-- Performance claims need benchmark evidence (see `docs/BENCHMARKS.md`)
+Contributions are welcome from developers worldwide! Please review:
+- **[Contribution Guide](CONTRIBUTING.md)** — Workflow, testing, and DCO sign-off policy (`git commit -s`)
+- **[Code of Conduct](CODE_OF_CONDUCT.md)** — Contributor Covenant 2.1 standards
+- **[Security Policy](SECURITY.md)** — Responsible private vulnerability reporting
+- **[Supported Syntax Guide](docs/SUPPORTED_SYNTAX.md)** — Comprehensive language construct reference
+- **[Benchmark Methodology](docs/BENCHMARKS.md)** — Transparent 100-trial p50 performance protocols
 
 ---
 
