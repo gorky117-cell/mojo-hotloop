@@ -1,63 +1,43 @@
 ---
-name: Compiler Bug
-about: The AST transpiler produces incorrect Mojo code, or the native result differs from Python
-labels: compiler-bug, correctness
+name: Compiler Bug Report
+about: Report incorrect transpiler output, failed code generation, or semantic divergence from Python
+labels: compiler correctness, bug
 ---
 
 ## Compiler Bug Report
 
 ### Summary
-
-<!-- One-line description of the bug -->
+<!-- A clear, concise 1-sentence summary of the incorrect compiler behavior -->
 
 ### Environment
-
 - **mojo-hotloop version**: <!-- git rev-parse HEAD or pip show mojo-hotloop -->
-- **Python version**: <!-- python3 --version -->
-- **Mojo version**: <!-- mojo --version -->
+- **Python version**: <!-- python3 --version (e.g., 3.12.16) -->
+- **Mojo version**: <!-- mojo --version (e.g., 1.2.0) -->
+- **Operating System**: <!-- e.g., Ubuntu 24.04 LTS native / WSL2 -->
 
-### Minimal Reproducer
-
+### Minimal Python Reproducer
+<!-- Provide the smallest reproducible Python code snippet decorated with @hotloop -->
 ```python
 from hotloop import hotloop
 
 @hotloop
-def my_function(x: int) -> int:
-    # Paste the minimal failing function here
+def repro(x: int) -> int:
+    # Minimal code triggering the issue
     return x
 ```
 
-### Expected Result
+### Expected Behavior
+<!-- What Python produces, or what the transpiled Mojo code should have done -->
 
-```
-# What Python produces:
-result = my_function(...)
-# Expected: ...
-```
-
-### Actual Result
-
-```
-# What mojo-hotloop produces:
-# Actual: ...
-# Backend: ...  (sum_squares._last_backend)
+### Actual Behavior
+<!-- Error traceback, compiler rejection message, or incorrect numeric output -->
+```text
+<!-- Paste traceback or output here -->
 ```
 
-### How to Trigger
-
-```bash
-# Paste the exact command(s) to reproduce
-hotloop build myfile.py --engine=ast
-```
-
-### Generated Mojo Code (if available)
-
-```mojo
-# Paste the content of fast.mojo (generated alongside fast.so) if relevant
-```
-
-### Notes
-
-- Is the error in transpilation (ASTTranspileError raised)?
-- Or is the error a numerical mismatch at runtime?
-- Does it only happen with specific input values?
+### Transpilation Stage
+Does the error happen during AST transpilation, native Mojo compilation, or runtime execution?
+- [ ] Fails during AST transpilation (offline in `transpile_python_to_mojo`)
+- [ ] AST succeeds, but `mojo build` fails on the generated `.mojo` file
+- [ ] Both compile, but native C-ABI execution produces incorrect output
+- [ ] Unexpected Python fallback occurred without warning

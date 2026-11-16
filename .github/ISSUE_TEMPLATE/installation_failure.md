@@ -1,40 +1,33 @@
 ---
-name: Installation Failure
-about: Report a failure to install mojo-hotloop or build a native shared library
-labels: installation, bug
+name: Installation Failure Report
+about: Report an issue installing mojo-hotloop from wheel/sdist or setting up the local development environment
+labels: bug
 ---
 
 ## Installation Failure Report
 
+### Summary
+<!-- 1-sentence description of what failed -->
+
 ### Environment
-
-- **OS**: <!-- e.g., Ubuntu 24.04, macOS 14, WSL2 on Windows 11 -->
-- **Python version**: <!-- python3 --version -->
-- **Mojo version**: <!-- mojo --version (if installed) -->
+- **Operating System**: <!-- e.g., Ubuntu 24.04 LTS / WSL2 / Debian 12 -->
+- **Architecture**: <!-- e.g., x86_64, aarch64 -->
+- **Python version**: <!-- python3 --version (must be >= 3.12) -->
 - **pip version**: <!-- pip --version -->
-- **Install method**: <!-- pip install mojo-hotloop / pip install -e . / other -->
+- **Mojo CLI**: <!-- is mojo installed? mojo --version or 'not installed' -->
 
-### Steps to Reproduce
-
+### Installation Command Used
 ```bash
-# Paste the exact commands you ran, e.g.:
-python3 -m venv .venv
-.venv/bin/pip install mojo-hotloop
+# e.g., pip install mojo_hotloop-0.1.0-py3-none-any.whl
+# or: pip install -e .
 ```
 
-### Expected Behavior
-
-<!-- What did you expect to happen? -->
-
-### Actual Behavior
-
-```
-# Paste the full error output here
+### Full Output / Error Log
+```text
+<!-- Paste terminal output here -->
 ```
 
-### Additional Context
-
-- Did `pip install` succeed but the import fail?
-- Did `hotloop build` fail? If so, paste the full CLI output.
-- Is Mojo installed? (`which mojo`)
-- Is `.venv/bin/mojo` present? (`ls -la .venv/bin/mojo`)
+### Prerequisites Checklist
+- [ ] Linux x86-64 or WSL2 (Ubuntu 24.04 LTS recommended)
+- [ ] Python 3.12 or newer
+- [ ] Verified pip version is up to date (`pip install --upgrade pip`)

@@ -1,0 +1,106 @@
+name: "Contributor Checks"
+
+permissions:
+  contents: read
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  dco-check:
+    name: "DCO Sign-off Verification"
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Verify DCO on all PR commits"
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const prNumber = context.payload.pull_request.number;
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+
+            core.info(`Fetching commits for PR #${prNumber} in ${owner}/${repo}...`);
+
+            let page = 1;
+            let commits = [];
+            while (true) {
+              const res = await github.rest.pulls.listCommits({
+                owner,
+                repo,
+                pull_number: prNumber,
+                per_page: 100,
+                page
+              });
+              if (!res.data || res.data.length === 0) break;
+              commits = commits.concat(res.data);
+              if (res.data.length < 100) break;
+              page++;
+            }
+
+            core.info(`Found ${commits.length} commit(s) in PR #${prNumber}.`);
+
+            // Regex for standard DCO format: Signed-off-by: Full Name <email@example.com>
+            const dcoRegex = /^Signed-off-by:\s+([^\n<]+)\s+<([^@>\n\s]+@[^@>\n\s]+)>/mi;
+
+            const missing = [];
+            const passed = [];
+
+            for (const c of commits) {
+              const sha = c.sha.substring(0, 8);
+              const message = c.commit.message;
+              const title = message.split('\n')[0].substring(0, 60);
+
+              if (dcoRegex.test(message)) {
+                passed.push({ sha, title });
+              } else {
+                missing.push({ sha, title });
+              }
+            }
+
+            core.info(`DCO Summary: ${passed.length} passed, ${missing.length} missing.`);
+
+            let summary = core.summary
+              .addHeading('Developer Certificate of Origin (DCO) Verification', 2)
+              .addRaw(`PR **#${prNumber}** evaluated across **${commits.length}** commit(s).\n\n`);
+
+            if (missing.length === 0) {
+              summary = summary
+                .addRaw('✅ **All commits include a valid Developer Certificate of Origin (DCO) sign-off line.**\n\n')
+                .addHeading('Verified Commits', 3);
+
+              const rows = passed.map(c => [c.sha, c.title, '✅ Valid DCO']);
+              summary = summary.addTable([
+                [{ data: 'Commit', header: true }, { data: 'Title', header: true }, { data: 'Status', header: true }],
+                ...rows
+              ]);
+              await summary.write();
+              core.info('DCO check passed successfully.');
+            } else {
+              summary = summary
+                .addRaw(`❌ **DCO Verification Failed:** ${missing.length} commit(s) are missing a valid \`Signed-off-by:\` line.\n\n`)
+                .addHeading('Failing Commits', 3);
+
+              const rows = missing.map(c => [c.sha, c.title, '❌ Missing Sign-off']);
+              summary = summary.addTable([
+                [{ data: 'Commit', header: true }, { data: 'Title', header: true }, { data: 'Status', header: true }],
+                ...rows
+              ]);
+
+              summary = summary
+                .addHeading('How to Fix', 3)
+                .addRaw(`Every commit must certify that you wrote or have the right to contribute the code under Apache-2.0.\n\n`)
+                .addRaw(`To sign off your commits, run locally:\n`)
+                .addCode(`git rebase HEAD~${commits.length} --signoff\ngit push --force-with-lease origin ${context.payload.pull_request.head.ref}`, 'bash');
+
+              await summary.write();
+
+              const errorMsg = `DCO check failed: ${missing.length} commit(s) lack a valid 'Signed-off-by: Full Name <email>' line:\n` +
+                missing.map(c => `  - ${c.sha}: ${c.title}`).join('\n') +
+                `\nPlease sign off all commits using 'git commit --amend -s' or 'git rebase --signoff'.`;
+              core.setFailed(errorMsg);
+            }
