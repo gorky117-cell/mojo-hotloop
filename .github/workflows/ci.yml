@@ -87,6 +87,8 @@ jobs:
   native-verification:
     name: "Native Verification (Mojo 1.2.0, Python 3.12)"
     runs-on: ubuntu-24.04
+    env:
+      PYTHONPATH: .
     steps:
       - uses: actions/checkout@v4
 
