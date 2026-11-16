@@ -27,7 +27,7 @@ To help developers contribute smoothly, the project provides automated checks an
 ### System & Environment Requirements
 - **OS**: Linux x86-64 (Ubuntu 24.04 LTS recommended, native or WSL2).
 - **Python**: CPython 3.12+ (tested with 3.12.16).
-- **Mojo Compiler**: Mojo 1.2.0 CLI (`modular install mojo`) required for building native libraries. (The AST transpiler and adversarial test suite run 100% offline without Mojo installed).
+- **Mojo Compiler**: Mojo 1.2.0 CLI (`pip install mojo==1.2.0`) required for building native libraries. (The AST transpiler and adversarial test suite run 100% offline without Mojo installed).
 
 ### Supported Python Syntax
 Mojo Hotloop currently transpiles a deterministic subset of Python 3.12 into idiomatic Mojo:

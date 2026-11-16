@@ -17,10 +17,9 @@ from scratch on your own machine.
 
 - **Mojo 1.2.0** via Modular toolchain:
   ```bash
-  pip install modular
-  modular install mojo
+  pip install mojo==1.2.0
   # Verify:
-  mojo --version  # Should print: mojo 1.2.0 (2016d0cd ...)
+  mojo --version  # Should print: Mojo 1.2.0 (2016d0cd)
   ```
 
 > [!NOTE]
