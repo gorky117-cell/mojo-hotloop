@@ -67,7 +67,7 @@ jobs:
           import importlib.metadata
           from hotloop.ast_transpiler import transpile_python_to_mojo
           meta = importlib.metadata.metadata('mojo-hotloop')
-          assert meta['Version'] == '0.1.0', f'Wrong version: {meta["Version"]}'
+          assert meta['Version'] == '0.2.0', f'Wrong version: {meta["Version"]}'
           lic = meta.get('License-Expression') or meta.get('License')
           assert lic == 'Apache-2.0', f'Wrong license: {lic}'
           reqs = [r for r in (importlib.metadata.requires('mojo-hotloop') or []) if '; extra ==' not in r]
@@ -167,3 +167,15 @@ jobs:
       - name: Run runtime security and stability suite
         run: |
           python tests/test_runtime_security.py
+
+      - name: Run Phase E generalization suite (52 functions)
+        run: |
+          python tests/test_generalization_e6.py
+
+      - name: Run Phase E.8 optimization safety suite (10 stress tests)
+        run: |
+          python tests/test_optimization_safety_e8.py
+
+      - name: Run Phase E.8 holdout generalization suite (25 holdout functions)
+        run: |
+          python tests/test_generalization_holdout_e8.py

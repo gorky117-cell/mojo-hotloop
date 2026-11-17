@@ -50,10 +50,21 @@ class MojoBackend(BaseBackend):
         self.mojo_bin = mojo_bin or self._find_mojo()
         self._compiler_version: Optional[str] = None
 
+    def _get_subprocess_env(self) -> dict:
+        env = os.environ.copy()
+        venv_dir = os.path.dirname(os.path.dirname(os.path.abspath(sys.executable)))
+        if os.path.isfile(os.path.join(venv_dir, "pyvenv.cfg")):
+            env["VIRTUAL_ENV"] = venv_dir
+        # Sanitize PYTHONEXECUTABLE: Mojo C-runtime initialization can set PYTHONEXECUTABLE
+        # to system python (e.g. /usr/bin/python3), which breaks virtualenv Python scripts like .venv/bin/mojo.
+        if "PYTHONEXECUTABLE" in env and env["PYTHONEXECUTABLE"] != sys.executable:
+            env["PYTHONEXECUTABLE"] = sys.executable
+        return env
+
     def get_compiler_version(self) -> str:
         if self._compiler_version is None:
             try:
-                proc = subprocess.run([self.mojo_bin, "--version"], capture_output=True, text=True)
+                proc = subprocess.run([self.mojo_bin, "--version"], capture_output=True, text=True, env=self._get_subprocess_env())
                 self._compiler_version = proc.stdout.strip() or "mojo unknown"
             except Exception:
                 self._compiler_version = "mojo unknown"
@@ -124,7 +135,7 @@ class MojoBackend(BaseBackend):
         os.close(fd)
         cmd = [self.mojo_bin, "build", "-O3", mojo_path, "--emit", "shared-lib", "-o", tmp_so]
         try:
-            proc = subprocess.run(cmd, capture_output=True, text=True)
+            proc = subprocess.run(cmd, capture_output=True, text=True, env=self._get_subprocess_env())
             if proc.returncode == 0:
                 os.replace(tmp_so, so_path)
                 return True, proc.stdout

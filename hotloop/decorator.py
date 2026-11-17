@@ -96,10 +96,23 @@ def _load_native_module(so_path: str, export_symbol: Optional[str] = None) -> Tu
             if spec is None or spec.loader is None:
                 return None, f"Failed to create module spec for {real_path}"
 
-            mod = importlib.util.module_from_spec(spec)
-            spec.loader.exec_module(mod)
-            _LOADED_MODULES[real_path] = mod
-            return mod, None
+            orig_py_exec = os.environ.get("PYTHONEXECUTABLE")
+            orig_py_path = os.environ.get("PYTHONPATH")
+            try:
+                mod = importlib.util.module_from_spec(spec)
+                spec.loader.exec_module(mod)
+                _LOADED_MODULES[real_path] = mod
+                return mod, None
+            finally:
+                # Sanitize corrupted environment variables introduced by Mojo runtime C initialization
+                if orig_py_exec is None:
+                    os.environ.pop("PYTHONEXECUTABLE", None)
+                else:
+                    os.environ["PYTHONEXECUTABLE"] = orig_py_exec
+                if orig_py_path is None:
+                    os.environ.pop("PYTHONPATH", None)
+                else:
+                    os.environ["PYTHONPATH"] = orig_py_path
         except Exception as e:
             return None, f"Dynamic load error ({type(e).__name__}): {e}"
 
