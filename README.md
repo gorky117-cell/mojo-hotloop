@@ -5,7 +5,7 @@ Automatic native acceleration for a supported, typed subset of Python using dete
 [![Python CI](https://github.com/gorky117-cell/mojo-hotloop/actions/workflows/ci.yml/badge.svg?branch=main&job=Python%20Tests%20(Python%203.12))](https://github.com/gorky117-cell/mojo-hotloop/actions/workflows/ci.yml)
 [![Native CI](https://github.com/gorky117-cell/mojo-hotloop/actions/workflows/ci.yml/badge.svg?branch=main&job=Native%20Verification%20(Mojo%201.2.0,%20Python%203.12))](https://github.com/gorky117-cell/mojo-hotloop/actions/workflows/ci.yml)
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](LICENSE)
-[![Classification](https://img.shields.io/badge/Release-Developer%20Preview%20(v0.1.0)-orange.svg)](https://github.com/gorky117-cell/mojo-hotloop/releases/tag/v0.1.0)
+[![Classification](https://img.shields.io/badge/Release-Developer%20Preview%20(v0.2.0)-orange.svg)](https://github.com/gorky117-cell/mojo-hotloop/releases/tag/v0.2.0)
 
 ---
 
@@ -63,10 +63,10 @@ The AST transpiler supports a **strict, statically typed subset** of Python 3.12
 
 ### Present Restrictions & Limitations
 - **Type Annotations**: All function parameters, return types, and **local variables on first assignment** must have explicit type annotations (e.g. `total: int = 0`). Untyped variables or dynamic duck typing are not supported.
-- **Loop Control**: `break` and `continue` statements inside loop bodies are currently unsupported in v0.1.0; use early `return` or boolean condition flags.
-- **Negative Indexing**: Direct negative indexing (`xs[-1]`) is unsupported in v0.1.0; use `xs[len(xs) - 1]`.
+- **Loop Control**: `break` statements inside loop bodies are supported in v0.2.0; `continue` statements are currently unsupported (use early `return` or boolean condition flags).
+- **Negative Indexing**: Direct negative indexing on strings (`s[-i]`) is supported in v0.2.0; negative list indexing (`xs[-1]`) should use `xs[len(xs) - 1]`.
 - **Unsupported Structures**: `dict`, `set`, `tuple`, list comprehensions, `lambda`, generator expressions, `*args`/`**kwargs`, and `try`/`except` blocks trigger clean, automatic Python fallback.
-- **Platform Scope**: Linux x86-64 only (including Ubuntu 24.04 on WSL2). macOS and native Windows execution are not supported in v0.1.0.
+- **Platform Scope**: Linux x86-64 only (including Ubuntu 24.04 on WSL2). macOS and native Windows execution are not supported in v0.2.0.
 
 ---
 
@@ -92,10 +92,10 @@ mojo --version   # Verify output: Mojo 1.2.0 (2016d0cd)
 > [!NOTE]
 > Always ensure your virtual environment is active (`source .venv/bin/activate`) so that `mojo` and `hotloop` CLI executables are available on your `PATH`.
 
-### 3. Install mojo-hotloop v0.1.0
-Install the official pre-release wheel directly from the GitHub v0.1.0 release:
+### 3. Install mojo-hotloop v0.2.0
+Install the official pre-release wheel directly from the GitHub v0.2.0 release:
 ```bash
-pip install https://github.com/gorky117-cell/mojo-hotloop/releases/download/v0.1.0/mojo_hotloop-0.1.0-py3-none-any.whl
+pip install https://github.com/gorky117-cell/mojo-hotloop/releases/download/v0.2.0/mojo_hotloop-0.2.0-py3-none-any.whl
 ```
 *(Or if developing from a local git repository: `pip install -e .`)*
 
@@ -133,10 +133,16 @@ This creates `fast.so` and `fast.hotloop_manifest.json` directly alongside `myap
 
 ```python
 import myapp
+from hotloop import inspect_dispatch
 
 result = myapp.sum_squares(100_000)
-print("Result:", result)                                  # 333328333350000
+print("Result:", result)                                      # 333328333350000
 print("Execution backend:", myapp.sum_squares._last_backend)  # "native"
+
+# Inspect runtime dispatch telemetry
+info = inspect_dispatch(myapp.sum_squares)
+print("Native calls:", info["call_count_native"])             # 1
+print("Fallback calls:", info["call_count_fallback"])         # 0
 ```
 
 > [!TIP]

@@ -24,7 +24,7 @@ All 52 functions demonstrated **100% mathematical and string equivalence**. Comp
 
 ## 2. Complete Generalization Benchmark Table (52 Functions)
 
-All latencies represent $p50$ median over 25 trials on the benchmark platform (WSL2 Ubuntu 24.04 LTS, AMD Ryzen 7).
+All latencies represent $p50$ median over 25 trials on the benchmark platform (WSL2 Ubuntu 24.04 LTS, Intel(R) Core(TM) i5-8265U CPU @ 1.60GHz).
 
 | # | Function Name | Category | CPython ($p50$ ms) | Mojo Hotloop ($p50$ ms) | Speedup | Correctness Status |
 | :- | :--- | :--- | :--- | :--- | :--- | :--- |

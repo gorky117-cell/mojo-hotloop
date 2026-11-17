@@ -4,7 +4,8 @@
 
 | Version | Supported |
 |---------|-----------|
-| 0.1.x (Developer Preview) | ✅ Security fixes accepted |
+| 0.2.x (Developer Preview) | ✅ Active security support |
+| 0.1.x (Developer Preview) | ⚠️ Maintenance only |
 
 ## Reporting a Vulnerability
 
@@ -38,7 +39,7 @@ Security issues we care about:
 
 ## Security Design Notes
 
-- Offline-by-design: v0.1.0 compiles and runs completely offline with zero network calls or AI API keys; `.gitignore` excludes local `.env` files
+- Offline-by-design: v0.2.0 compiles and runs completely offline with zero network calls or AI API keys; `.gitignore` excludes local `.env` files
 - All `subprocess` calls use list-form arguments, never `shell=True`
 - No `eval()` or `exec()` on user inputs; AST transpiler uses Python's `ast.parse()` on source text
 - The `mojo` compiler binary path (`MOJO_BIN` / venv / `PATH`) is validated to exist before invocation

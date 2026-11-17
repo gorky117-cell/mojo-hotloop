@@ -182,6 +182,6 @@ class MojoBackend(BaseBackend):
                 return True, f"[Engine: AST] {msg}", so_path
             return False, f"[Engine: AST] {msg}", None
         elif engine == "gemini":
-            return False, "The 'gemini' engine is not supported in v0.1.0; mojo-hotloop compiles strictly offline using engine='ast'.", None
+            return False, "The 'gemini' engine is not supported; mojo-hotloop compiles strictly offline using engine='ast'.", None
         else:
             return False, f"Unknown engine '{engine}'. Choose 'ast'.", None

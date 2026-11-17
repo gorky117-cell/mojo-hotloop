@@ -2,7 +2,7 @@
 
 **Document Version:** 2.0.0 (Hardened Release Audit)  
 **Transpiler Engine:** AST Transpiler v0.2.0 (`hotloop 0.2.0`)  
-**Hardware & Environment:** WSL2 Ubuntu 24.04 LTS (x86_64), AMD Ryzen 7, Python 3.12.16, Mojo 1.2.0, NumPy 2.2.6, Numba 0.62.1  
+**Hardware & Environment:** WSL2 Ubuntu 24.04 LTS (x86_64), Intel(R) Core(TM) i5-8265U CPU @ 1.60GHz (8 vCPUs), Python 3.12.3, Mojo 1.2.0, NumPy 2.2.6, Numba 0.62.1  
 **Measurement Methodology:** 30+ trials, p50 median execution latency recorded, verified with exact output parity against pure Python and reference libraries (NumPy, RapidFuzz).
 
 ---
