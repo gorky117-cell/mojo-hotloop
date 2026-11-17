@@ -43,7 +43,8 @@ All function parameters and return types **must** be annotated.
 > or `list[int]` (when only read via `len(xs)` and `xs[i]`) automatically receive a
 > zero-copy C-pointer dispatch fast-path when passed a 1-D, C-contiguous `float64`
 > or `int64` `numpy.ndarray`. Multi-dimensional, strided, or wrong-dtype arrays are
-> safely routed away from raw pointer dereferencing.
+> safely routed away from raw pointer dereferencing. See [`examples/numpy_vector/`](../examples/numpy_vector/README.md)
+> for a runnable end-to-end benchmark and verification suite demonstrating 40× speedup over pure Python.
 
 **Keyword & default arguments**: Functions compiled by `@hotloop` support default
 parameter values and keyword call-site arguments (bound via `inspect.signature`
@@ -205,6 +206,10 @@ ord(s[i])                       # ✅ Character access + codepoint
 s[i]                            # ✅ Positive & negative indexing (IndexError on OOB)
 s[start:stop]                   # ✅ String slicing
 s[start:stop:step]              # ✅ Stepped slicing (ValueError if step == 0)
+s.startswith(prefix)            # ✅ Prefix check (str, literal, or tuple of prefixes)
+s.endswith(suffix)              # ✅ Suffix check (str, literal, or tuple of suffixes)
+s.startswith(prefix, start, stop) # ✅ Bounded prefix check (ASCII & Unicode codepoints)
+s.endswith(suffix, start, stop)   # ✅ Bounded suffix check (ASCII & Unicode codepoints)
 ```
 
 ---

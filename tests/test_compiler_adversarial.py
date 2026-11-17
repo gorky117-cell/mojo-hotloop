@@ -30,6 +30,7 @@ import hashlib
 import json
 import math
 import os
+import subprocess
 import sys
 import tempfile
 import threading
@@ -888,6 +889,54 @@ def circle_area(r: float) -> float:
                f"math.pi not supported (known limitation): {err[:80]}")
 
 
+def test_51_cli_check_syntax():
+    """Verify CLI --check-syntax runs deterministic offline validation."""
+    source = """
+from hotloop import hotloop
+
+@hotloop
+def add_nums(a: int, b: int) -> int:
+    return a + b
+"""
+    with tempfile.NamedTemporaryFile("w", suffix=".py", delete=False) as f:
+        f.write(source)
+        tmp_name = f.name
+    try:
+        proc = subprocess.run(
+            [sys.executable, "-m", "hotloop.cli", "build", tmp_name, "--check-syntax"],
+            capture_output=True,
+            text=True
+        )
+        if proc.returncode == 0 and "[+] Syntax check PASSED" in proc.stdout:
+            record("T51_cli_check_syntax", "PASS", "hotloop build --check-syntax passed offline validation")
+        else:
+            record("T51_cli_check_syntax", "FAIL", f"CLI exited with {proc.returncode}: {proc.stderr or proc.stdout}")
+    finally:
+        if os.path.exists(tmp_name):
+            os.remove(tmp_name)
+
+
+def test_52_startswith_endswith():
+    """Verify str.startswith() and str.endswith() transpilation."""
+    source = """
+from hotloop import hotloop
+
+@hotloop
+def check_prefix_suffix(line: str, prefix: str, suffix: str) -> bool:
+    b1: bool = line.startswith(prefix)
+    b2: bool = line.endswith(suffix)
+    b3: bool = line.startswith("http://")
+    b4: bool = line.endswith(".json")
+    b5: bool = line.startswith(("a", "b"))
+    return b1 and b2 and b3 and b4 and b5
+"""
+    ok, out, err = run_transpile(source)
+    if ok:
+        record("T52_startswith_endswith", "PASS", "startswith and endswith transpiled cleanly")
+    else:
+        record("T52_startswith_endswith", "FAIL", f"Transpilation failed: {err}")
+
+
 # ---------------------------------------------------------------------------
 # Run all tests
 # ---------------------------------------------------------------------------
@@ -943,6 +992,8 @@ ALL_TESTS = [
     test_48_break_in_loop,
     test_49_bool_return_from_comparison,
     test_50_math_pi_e,
+    test_51_cli_check_syntax,
+    test_52_startswith_endswith,
 ]
 
 

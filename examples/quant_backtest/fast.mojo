@@ -486,6 +486,46 @@ struct _PyStr(Sized):
             return out^
         return self._cps.copy()
 
+    @always_inline
+    def startswith(self, prefix: String) -> Bool:
+        return self._s.startswith(prefix)
+
+    @always_inline
+    def startswith(self, prefix: _PyStr) -> Bool:
+        return self._s.startswith(prefix._s)
+
+    @always_inline
+    def startswith(self, prefix: String, start: Int) -> Bool:
+        if self._is_ascii:
+            return self._s.startswith(prefix, start)
+        return self[start:].startswith(prefix)
+
+    @always_inline
+    def startswith(self, prefix: String, start: Int, end: Int) -> Bool:
+        if self._is_ascii:
+            return self._s.startswith(prefix, start, end)
+        return self[start:end].startswith(prefix)
+
+    @always_inline
+    def endswith(self, suffix: String) -> Bool:
+        return self._s.endswith(suffix)
+
+    @always_inline
+    def endswith(self, suffix: _PyStr) -> Bool:
+        return self._s.endswith(suffix._s)
+
+    @always_inline
+    def endswith(self, suffix: String, start: Int) -> Bool:
+        if self._is_ascii:
+            return self._s.endswith(suffix, start)
+        return self[start:].endswith(suffix)
+
+    @always_inline
+    def endswith(self, suffix: String, start: Int, end: Int) -> Bool:
+        if self._is_ascii:
+            return self._s.endswith(suffix, start, end)
+        return self[start:end].endswith(suffix)
+
 @always_inline
 def _len(s: _PyStr) -> Int:
     return len(s)

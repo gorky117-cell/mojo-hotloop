@@ -590,6 +590,46 @@ struct _PyStr(Sized):
             return out^
         return self._cps.copy()
 
+    @always_inline
+    def startswith(self, prefix: String) -> Bool:
+        return self._s.startswith(prefix)
+
+    @always_inline
+    def startswith(self, prefix: _PyStr) -> Bool:
+        return self._s.startswith(prefix._s)
+
+    @always_inline
+    def startswith(self, prefix: String, start: Int) -> Bool:
+        if self._is_ascii:
+            return self._s.startswith(prefix, start)
+        return self[start:].startswith(prefix)
+
+    @always_inline
+    def startswith(self, prefix: String, start: Int, end: Int) -> Bool:
+        if self._is_ascii:
+            return self._s.startswith(prefix, start, end)
+        return self[start:end].startswith(prefix)
+
+    @always_inline
+    def endswith(self, suffix: String) -> Bool:
+        return self._s.endswith(suffix)
+
+    @always_inline
+    def endswith(self, suffix: _PyStr) -> Bool:
+        return self._s.endswith(suffix._s)
+
+    @always_inline
+    def endswith(self, suffix: String, start: Int) -> Bool:
+        if self._is_ascii:
+            return self._s.endswith(suffix, start)
+        return self[start:].endswith(suffix)
+
+    @always_inline
+    def endswith(self, suffix: String, start: Int, end: Int) -> Bool:
+        if self._is_ascii:
+            return self._s.endswith(suffix, start, end)
+        return self[start:end].endswith(suffix)
+
 @always_inline
 def _len(s: _PyStr) -> Int:
     return len(s)
@@ -1796,6 +1836,34 @@ class MojoASTTranspiler:
                     obj = self.visit_expr(node.func.value)
                     arg = self.visit_expr(node.args[0])
                     return f"{obj}.write({arg})"
+                elif node.func.attr in ("startswith", "endswith"):
+                    if len(node.args) < 1 or len(node.args) > 3:
+                        raise ASTTranspileError(f"{node.func.attr}() expects 1 to 3 arguments")
+                    obj = self.visit_expr(node.func.value)
+                    # Support tuple of prefixes/suffixes: line.startswith(('a', 'b'))
+                    if isinstance(node.args[0], ast.Tuple):
+                        tuple_elts = node.args[0].elts
+                        if not tuple_elts:
+                            return "False"
+                        rest_args = [self.visit_expr(a) for a in node.args[1:]]
+                        rest_suffix = (", " + ", ".join(rest_args)) if rest_args else ""
+                        disjuncts = []
+                        for elt in tuple_elts:
+                            elt_expr = self.visit_expr(elt)
+                            elt_type = self.var_types.get(elt.id) if isinstance(elt, ast.Name) else None
+                            if elt_type == "_PyStr":
+                                elt_expr = f"{elt_expr}.to_string()"
+                            disjuncts.append(f"{obj}.{node.func.attr}({elt_expr}{rest_suffix})")
+                        return f"({' or '.join(disjuncts)})"
+
+                    arg_strs = []
+                    for a in node.args:
+                        a_expr = self.visit_expr(a)
+                        a_type = self.var_types.get(a.id) if isinstance(a, ast.Name) else None
+                        if a_type == "_PyStr":
+                            a_expr = f"{a_expr}.to_string()"
+                        arg_strs.append(a_expr)
+                    return f"{obj}.{node.func.attr}({', '.join(arg_strs)})"
                 elif isinstance(node.func.value, ast.Name) and node.func.value.id == "math":
                     fn_name = node.func.attr
                     args = [self.visit_expr(a) for a in node.args]
