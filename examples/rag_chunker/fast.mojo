@@ -366,15 +366,21 @@ struct _PyStr(Sized):
 
     @always_inline
     def get_cp_fast(self, idx: Int) -> Codepoint:
+        var i = idx
+        if i < 0:
+            i += len(self)
         if self._is_ascii:
-            return Codepoint(self._s.as_bytes()[_safe_array_index(idx)])
-        return self._cps[_safe_array_index(idx)]
+            return Codepoint(self._s.as_bytes()[i])
+        return self._cps[i]
 
     @always_inline
     def get_ord_fast(self, idx: Int) -> Int:
+        var i = idx
+        if i < 0:
+            i += len(self)
         if self._is_ascii:
-            return Int(self._s.as_bytes()[_safe_array_index(idx)])
-        return Int(self._cps[_safe_array_index(idx)])
+            return Int(self._s.as_bytes()[i])
+        return Int(self._cps[i])
 
     @always_inline
     def __getitem__(self, s: Slice) -> String:
@@ -527,6 +533,7 @@ def PyInit_fast() abi("C") -> PythonObject:
     try:
         var m = PythonModuleBuilder("fast")
         m.def_function[_pywrap_chunk_document]("chunk_document")
+        m.def_function[_pywrap_chunk_document_offsets]("chunk_document_offsets")
         return m.finalize()
     except e:
         abort(String("error creating Python Mojo module: ", e))
@@ -536,6 +543,17 @@ def _pywrap_chunk_document(arg0: PythonObject, arg1: PythonObject, arg2: PythonO
     var chunk_size = Int(py=arg1)
     var chunk_overlap = Int(py=arg2)
     var _res = _native_chunk_document(text, chunk_size, chunk_overlap)
+    var _builtins = Python.import_module("builtins")
+    var _py_res = _builtins.list()
+    for _i in range(len(_res)):
+        _py_res.append(_res[_i])
+    return _py_res
+
+def _pywrap_chunk_document_offsets(arg0: PythonObject, arg1: PythonObject, arg2: PythonObject) raises -> PythonObject:
+    var text = String(py=arg0)
+    var chunk_size = Int(py=arg1)
+    var chunk_overlap = Int(py=arg2)
+    var _res = _native_chunk_document_offsets(text, chunk_size, chunk_overlap)
     var _builtins = Python.import_module("builtins")
     var _py_res = _builtins.list()
     for _i in range(len(_res)):
@@ -579,3 +597,44 @@ def _native_chunk_document(_arg_text: String, chunk_size: Int, chunk_overlap: In
                 next_start = _checked_add(start, 1)
         start = next_start
     return chunks^
+
+def _native_chunk_document_offsets(_arg_text: String, chunk_size: Int, chunk_overlap: Int) raises -> List[Int]:
+    var text: _PyStr = _PyStr(_arg_text)
+    '\n    Computes [start_0, end_0, start_1, end_1, ...] offsets.\n    Returning paired integer offsets eliminates the per-chunk string object allocation\n    across the FFI boundary. Slices can be viewed or materialized in Python as text[s:e].\n    '
+    var offsets: List[Int] = List[Int]()
+    var n: Int = _len(text)
+    if ((n == 0) or (chunk_size <= 0)):
+        return offsets^
+    var step: Int = _checked_sub(chunk_size, chunk_overlap)
+    if (step <= 0):
+        step = 1
+    var start: Int = 0
+    while (start < n):
+        var ideal_end: Int = _checked_add(start, chunk_size)
+        if (ideal_end >= n):
+            offsets.append(start)
+            offsets.append(n)
+            break
+        var lookback_limit: Int = _checked_sub(ideal_end, chunk_overlap)
+        if (lookback_limit < start):
+            lookback_limit = start
+        var boundary: Int = -1
+        var idx: Int = ideal_end
+        while (idx > lookback_limit):
+            var ch: Codepoint = text.get_cp_fast(idx)
+            if ((Int(ch) == 32) or (Int(ch) == 10) or (Int(ch) == 9)):
+                boundary = idx
+                break
+            idx = _checked_sub(idx, 1)
+        var end: Int = ideal_end
+        if (boundary > start):
+            end = boundary
+        offsets.append(start)
+        offsets.append(end)
+        var next_start: Int = _checked_sub(end, chunk_overlap)
+        if (next_start <= start):
+            next_start = _checked_add(start, step)
+            if (next_start <= start):
+                next_start = _checked_add(start, 1)
+        start = next_start
+    return offsets^

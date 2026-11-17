@@ -4,7 +4,7 @@ import sys
 
 sys.path.insert(0, "/home/gaurav/mojo-hotloop")
 
-from examples.rag_chunker.original import chunk_document
+from examples.rag_chunker.original import chunk_document, chunk_document_offsets
 
 def run_tests():
     print("[*] Starting Stage D2: RAG Document Chunker Verification Suite...")
@@ -56,6 +56,21 @@ def run_tests():
                 print(f"  Py:   {py_res}")
                 print(f"  Mojo: {mojo_res}")
                 sys.exit(1)
+
+            # Also verify chunk_document_offsets parity and chunk reconstruction
+            chunk_document_offsets._force_native = True
+            offs_mojo = chunk_document_offsets(text, c_size, c_overlap)
+            offs_py = chunk_document_offsets._original(text, c_size, c_overlap)
+            if offs_mojo != offs_py:
+                print(f"[FAIL] Mismatch in chunk_document_offsets: text={text!r}")
+                print(f"  Py:   {offs_py}")
+                print(f"  Mojo: {offs_mojo}")
+                sys.exit(1)
+            reconstructed = [text[offs_mojo[i]:offs_mojo[i+1]] for i in range(0, len(offs_mojo), 2)]
+            if reconstructed != py_res:
+                print(f"[FAIL] Reconstructed chunks mismatch in deterministic case: text={text!r}")
+                sys.exit(1)
+
             deterministic_passed += 1
 
         print(f"  [✓] Deterministic cases passed ({deterministic_passed} tests)")
