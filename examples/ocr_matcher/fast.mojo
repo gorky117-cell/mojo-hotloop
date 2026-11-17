@@ -240,6 +240,10 @@ def _checked_index(idx: Int, n: Int) raises -> Int:
     raise Error("HOTLOOP_INDEX_ERROR: index out of range")
 
 @always_inline
+def _safe_array_index(idx: Int) -> Int:
+    return idx
+
+@always_inline
 def _py_bool(x: Bool) -> Bool:
     return x
 
@@ -356,6 +360,24 @@ struct _PyStr(Sized):
     @always_inline
     def get_ord(self, idx: Int) raises -> Int:
         var i = _checked_index(idx, len(self))
+        if self._is_ascii:
+            return Int(self._s.as_bytes()[i])
+        return Int(self._cps[i])
+
+    @always_inline
+    def get_cp_fast(self, idx: Int) -> Codepoint:
+        var i = idx
+        if i < 0:
+            i += len(self)
+        if self._is_ascii:
+            return Codepoint(self._s.as_bytes()[i])
+        return self._cps[i]
+
+    @always_inline
+    def get_ord_fast(self, idx: Int) -> Int:
+        var i = idx
+        if i < 0:
+            i += len(self)
         if self._is_ascii:
             return Int(self._s.as_bytes()[i])
         return Int(self._cps[i])
@@ -540,13 +562,15 @@ def _native_levenshtein_distance(_arg_s1: String, _arg_s2: String, max_dist: Int
     for j in range(_checked_add(n, 1)):
         prev.append(j)
         curr.append(0)
+    var _inv_1 = _checked_add(n, 1)
+    var _inv_2 = _checked_add(max_dist, 1)
     for i in range(1, _checked_add(m, 1)):
         curr[_checked_index(0, len(curr))] = i
         var min_row: Int = i
-        var ch1: Codepoint = s1.get_cp(_checked_sub(i, 1))
-        for j in range(1, _checked_add(n, 1)):
+        var ch1: Codepoint = s1.get_cp_fast(_checked_sub(i, 1))
+        for j in range(1, _inv_1):
             var cost: Int = 1
-            if (Int(ch1) == s2.get_ord(_checked_sub(j, 1))):
+            if (Int(ch1) == s2.get_ord_fast(_checked_sub(j, 1))):
                 cost = 0
             var del_cost: Int = _checked_add(prev[_checked_index(j, len(prev))], 1)
             var ins_cost: Int = _checked_add(curr[_checked_index(_checked_sub(j, 1), len(curr))], 1)
@@ -560,17 +584,17 @@ def _native_levenshtein_distance(_arg_s1: String, _arg_s2: String, max_dist: Int
             if (val < min_row):
                 min_row = val
         if (min_row > max_dist):
-            return _checked_add(max_dist, 1)
-        for j in range(_checked_add(n, 1)):
+            return _inv_2
+        for j in range(_inv_1):
             prev[_checked_index(j, len(prev))] = curr[_checked_index(j, len(curr))]
     return prev[_checked_index(n, len(prev))]
 
 def _native_find_closest_match(query: String, candidates: List[String], max_distance: Int) raises -> Int:
-    var best_idx: Int = _checked_neg(1)
+    var best_idx: Int = -1
     var best_dist: Int = _checked_add(max_distance, 1)
     var num_candidates: Int = _len(candidates)
     for i in range(num_candidates):
-        var cand: String = candidates[i]
+        var cand: String = candidates[_safe_array_index(i)]
         var dist: Int = _native_levenshtein_distance(query, cand, _checked_sub(best_dist, 1))
         if (dist < best_dist):
             best_dist = dist

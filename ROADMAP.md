@@ -2,7 +2,7 @@
 
 This document describes the planned milestones for mojo-hotloop.
 
-> **Status as of v0.1.0**: Developer Preview — API and binary format may change.
+> **Status as of v0.2.0**: Developer Preview — API and binary format may change.
 
 ---
 
@@ -14,7 +14,7 @@ This document describes the planned milestones for mojo-hotloop.
 - [x] Deterministic AST transpiler (Mojo 1.2.0)
 - [x] 7 real-world use cases verified (7,220 total tests, 0 mismatches)
 - [x] Content-addressed SHA-256 manifest cache with stale-binary detection
-- [x] CLI: `hotloop build <file.py> --engine=ast|gemini|auto`
+- [x] CLI: `hotloop build <file.py> --engine=ast|auto`
 - [x] 50-test adversarial compiler test suite (47 PASS, 3 expected limitations)
 - [x] Apache 2.0 license, CHANGELOG, CONTRIBUTING, CODE_OF_CONDUCT, SECURITY
 - [x] GitHub CI workflow (Python correctness tests, packaging checks)
@@ -22,19 +22,37 @@ This document describes the planned milestones for mojo-hotloop.
 
 ---
 
-## v0.2.0 — Syntax Expansion (Target: Q1 2027)
+## v0.2.0 — Optimization Passes & Generalization (Released 2026-11-17)
 
-**Goal**: Expand the set of Python programs the AST transpiler can handle.
+**Goal**: Deliver five general compiler optimization passes and expand syntax without benchmark heuristics.
 
-- [ ] Chained comparisons (`a < b < c` → expand to `a < b and b < c`)
+- [x] Redundant bounds-check elimination & in-bounds loop hoisting
+- [x] Loop-invariant expression hoisting (`_collect_and_hoist_invariants`)
+- [x] String buffer pre-allocation (`reserve_bytes`)
+- [x] Fast codepoint & ordinal access (`_PyStr`, `get_cp_fast`, `get_ord_fast`)
+- [x] Dispatch qualifier caching & smart fallback (`_DISPATCH_QUALIFIER_CACHE`)
+- [x] `break` statements inside loops with proper invariant scoping
+- [x] String negative indexing (`s[-i]`)
+- [x] Runtime dispatch telemetry and introspection (`inspect_dispatch`)
+- [x] Zero-copy integer offset API for RAG (`chunk_document_offsets`)
+- [x] Subprocess environment isolation (Mojo runtime `PYTHONEXECUTABLE` fix)
+- [x] 77-function generalization testing suite (100% parity across DSP, crypto, text, geometry)
+- [x] 10-test optimization safety stress suite (0 regressions, 0 crashes)
+- [x] Re-verified all 7 canonical application domains (7,220 checks, 0 mismatches)
+
+---
+
+## v0.3.0 — Syntax & Vectorization Expansion (Target: Q1 2027)
+
+**Goal**: Expand Python syntax and SIMD vectorization paths.
+
+- [ ] `continue` statements in loop bodies
+- [ ] Chained comparisons (`a < b < c` → `a < b and b < c`)
 - [ ] Negative list indexing (`xs[-1]` → `xs[len(xs)-1]`)
-- [ ] `break` and `continue` statements in loops
 - [ ] Tuple return type (`-> tuple[int, float]`)
-- [ ] `dict[str, float]` read-only access
-- [ ] String slice (`s[i:j]`)
-- [ ] `enumerate()` and `zip()` in for loops
-- [ ] `assert` statement (compiled as runtime check)
-- [ ] Support `# noqa: hotloop-skip` annotation to exclude functions
+- [ ] Explicit SIMD vectorization pragmas for math loops
+- [ ] Multi-dimensional array access patterns
+
 
 ---
 

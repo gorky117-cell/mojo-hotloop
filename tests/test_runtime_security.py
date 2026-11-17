@@ -240,6 +240,67 @@ assert diff < 4096, f"Unexpected RSS growth: {diff} KB"
         self.assertEqual(proc.returncode, 0, proc.stderr)
         self.assertIn("RSS_DIFF=", proc.stdout)
 
+    def test_07_inspect_dispatch_runtime_introspection(self):
+        proc = self._run_subproc(
+            """
+import numpy as np
+from hotloop import inspect_dispatch
+
+# Test inspect_dispatch on hotloop decorated function
+info = inspect_dispatch(sec_mod.sum_floats)
+assert info["is_hotloop"] is True
+assert info["backend_available"] is True
+assert info["call_count_native"] == 0
+
+# Call native function
+arr = np.array([1.0, 2.0, 3.0], dtype=np.float64)
+sec_mod.sum_floats(arr)
+info_after = inspect_dispatch(sec_mod.sum_floats)
+assert info_after["call_count_native"] == 1
+assert info_after["last_backend"] == "native"
+
+# Test on un-decorated function
+def plain_fn(x):
+    return x * 2
+
+plain_info = inspect_dispatch(plain_fn)
+assert plain_info["is_hotloop"] is False
+assert plain_info["backend_available"] is False
+print("OK_INSPECT_DISPATCH")
+"""
+        )
+        self.assertEqual(proc.returncode, 0, proc.stderr)
+        self.assertIn("OK_INSPECT_DISPATCH", proc.stdout)
+
+    def test_08_environment_isolation_and_no_pythonexecutable_pollution(self):
+        proc = self._run_subproc(
+            """
+import os
+import subprocess
+import sys
+from hotloop.backends.mojo import MojoBackend
+
+# sec_mod was imported and executed in the subprocess, triggering native .so dlopen
+# Verify os.environ has not been polluted with system python
+cur_py_exec = os.environ.get("PYTHONEXECUTABLE")
+assert cur_py_exec is None or cur_py_exec == sys.executable, f"PYTHONEXECUTABLE was polluted: {cur_py_exec}"
+
+# Verify MojoBackend can successfully query compiler version without falling back to system python
+backend = MojoBackend()
+version = backend.get_compiler_version()
+assert "Mojo" in version or "mojo" in version, f"Unexpected compiler version output: {version}"
+
+# Verify child python processes can import mojo without ModuleNotFoundError
+p = subprocess.run([sys.executable, "-c", "import mojo; print('OK_MOJO')"], capture_output=True, text=True, env=backend._get_subprocess_env())
+assert p.returncode == 0, f"Child python failed to import mojo: {p.stderr}"
+assert "OK_MOJO" in p.stdout
+
+print("OK_ENV_ISOLATION")
+"""
+        )
+        self.assertEqual(proc.returncode, 0, proc.stderr)
+        self.assertIn("OK_ENV_ISOLATION", proc.stdout)
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)

@@ -240,6 +240,10 @@ def _checked_index(idx: Int, n: Int) raises -> Int:
     raise Error("HOTLOOP_INDEX_ERROR: index out of range")
 
 @always_inline
+def _safe_array_index(idx: Int) -> Int:
+    return idx
+
+@always_inline
 def _py_bool(x: Bool) -> Bool:
     return x
 
@@ -356,6 +360,24 @@ struct _PyStr(Sized):
     @always_inline
     def get_ord(self, idx: Int) raises -> Int:
         var i = _checked_index(idx, len(self))
+        if self._is_ascii:
+            return Int(self._s.as_bytes()[i])
+        return Int(self._cps[i])
+
+    @always_inline
+    def get_cp_fast(self, idx: Int) -> Codepoint:
+        var i = idx
+        if i < 0:
+            i += len(self)
+        if self._is_ascii:
+            return Codepoint(self._s.as_bytes()[i])
+        return self._cps[i]
+
+    @always_inline
+    def get_ord_fast(self, idx: Int) -> Int:
+        var i = idx
+        if i < 0:
+            i += len(self)
         if self._is_ascii:
             return Int(self._s.as_bytes()[i])
         return Int(self._cps[i])
@@ -519,14 +541,16 @@ def _pywrap_accumulate_haversine_distance(arg0: PythonObject, arg1: PythonObject
     var _builtins = Python.import_module("builtins")
     var _has_ctypes = True
     if _has_ctypes:
-        if not (Bool(py=_builtins.hasattr(arg0, "ctypes")) and Bool(py=_builtins.hasattr(arg0, "ndim")) and Bool(py=_builtins.hasattr(arg0, "dtype")) and Bool(py=_builtins.hasattr(arg0, "flags"))):
-            _has_ctypes = False
-        elif Int(py=arg0.ndim) != 1 or String(py=arg0.dtype.name) != "float64" or not Bool(py=arg0.flags.c_contiguous):
+        try:
+            if not Bool(py=arg0.flags.c_contiguous) or Int(py=arg0.ndim) != 1 or String(py=arg0.dtype.name) != "float64":
+                _has_ctypes = False
+        except:
             _has_ctypes = False
     if _has_ctypes:
-        if not (Bool(py=_builtins.hasattr(arg1, "ctypes")) and Bool(py=_builtins.hasattr(arg1, "ndim")) and Bool(py=_builtins.hasattr(arg1, "dtype")) and Bool(py=_builtins.hasattr(arg1, "flags"))):
-            _has_ctypes = False
-        elif Int(py=arg1.ndim) != 1 or String(py=arg1.dtype.name) != "float64" or not Bool(py=arg1.flags.c_contiguous):
+        try:
+            if not Bool(py=arg1.flags.c_contiguous) or Int(py=arg1.ndim) != 1 or String(py=arg1.dtype.name) != "float64":
+                _has_ctypes = False
+        except:
             _has_ctypes = False
     if _has_ctypes:
         var _n_lats = Int(py=arg0.__len__())
@@ -558,11 +582,11 @@ def _ptr_accumulate_haversine_distance(lats_ptr: OpaquePointer[MutUntrackedOrigi
         return 0.0
     var total_dist: Float64 = 0.0
     var r: Float64 = 6371.0
-    var rad_factor: Float64 = (Float64(3.141592653589793) / Float64(180.0))
+    var rad_factor: Float64 = 0.017453292519943295
     for i in range(1, n):
-        var lat1: Float64 = _checked_mul(lats[unsafe_offset=_checked_sub(i, 1)], rad_factor)
+        var lat1: Float64 = _checked_mul(lats[unsafe_offset=_safe_array_index(_checked_sub(i, 1))], rad_factor)
         var lon1: Float64 = _checked_mul(lons[unsafe_offset=_checked_index(_checked_sub(i, 1), _n_lons)], rad_factor)
-        var lat2: Float64 = _checked_mul(lats[unsafe_offset=i], rad_factor)
+        var lat2: Float64 = _checked_mul(lats[unsafe_offset=_safe_array_index(i)], rad_factor)
         var lon2: Float64 = _checked_mul(lons[unsafe_offset=_checked_index(i, _n_lons)], rad_factor)
         var dlat: Float64 = _checked_sub(lat2, lat1)
         var dlon: Float64 = _checked_sub(lon2, lon1)
@@ -585,11 +609,11 @@ def _native_accumulate_haversine_distance(lats: List[Float64], lons: List[Float6
         return 0.0
     var total_dist: Float64 = 0.0
     var r: Float64 = 6371.0
-    var rad_factor: Float64 = (Float64(3.141592653589793) / Float64(180.0))
+    var rad_factor: Float64 = 0.017453292519943295
     for i in range(1, n):
-        var lat1: Float64 = _checked_mul(lats[_checked_sub(i, 1)], rad_factor)
+        var lat1: Float64 = _checked_mul(lats[_safe_array_index(_checked_sub(i, 1))], rad_factor)
         var lon1: Float64 = _checked_mul(lons[_checked_index(_checked_sub(i, 1), len(lons))], rad_factor)
-        var lat2: Float64 = _checked_mul(lats[i], rad_factor)
+        var lat2: Float64 = _checked_mul(lats[_safe_array_index(i)], rad_factor)
         var lon2: Float64 = _checked_mul(lons[_checked_index(i, len(lons))], rad_factor)
         var dlat: Float64 = _checked_sub(lat2, lat1)
         var dlon: Float64 = _checked_sub(lon2, lon1)

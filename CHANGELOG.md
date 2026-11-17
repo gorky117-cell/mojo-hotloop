@@ -7,6 +7,41 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [0.2.0] — 2026-11-17 — Developer Preview
+
+### Summary
+
+Second developer preview release introducing five general AST-level optimization passes, syntax expansions, sub-process environment isolation, diagnostic introspection, and expanded generalization testing across 77 unseen functions.
+
+### Added
+
+**Compiler Optimization Passes**
+- **Bounds-Check Elimination**: Proven in-bounds loop index operations skip redundant runtime range assertions.
+- **Loop-Invariant Expression Hoisting**: Automatically identifies and hoists loop-invariant subexpressions outside critical loops (`_collect_and_hoist_invariants`).
+- **String Buffer Pre-allocation**: Pre-allocates native string capacity (`reserve_bytes`) to prevent geometric reallocations during string building.
+- **Fast Codepoint & Ordinal Access**: Direct byte indexing for ASCII strings and cached codepoints for multi-byte Unicode via `_PyStr`.
+- **Dispatch Qualifier Caching & Smart Fallback**: Input types and shapes are cached in `_DISPATCH_QUALIFIER_CACHE` to eliminate per-call qualification overhead. Automatically routes Python collection returns to fallback to avoid FFI object-boxing slowdowns.
+
+**Syntax & Language Support**
+- Supported `break` statements inside loops with proper scope and invariant preservation.
+- Supported negative indexing on string operations (`s[-i]`).
+- Added zero-copy integer offset API for document chunking (`chunk_document_offsets`).
+
+**Diagnostics & Observability**
+- Added public `inspect_dispatch(fn)` API exposing backend selection, native call counts, fallback call counts, and qualification telemetry.
+
+**Testing & Verification**
+- Added 10-test optimization safety stress suite (`tests/test_optimization_safety_e8.py`).
+- Added 77 unseen-function generalization suite (52 in Phase E.6 + 25 in Phase E.8 holdout) with 100% mathematical parity.
+- Reproduced 7,220 checks across all 7 canonical business domains with zero mismatches.
+
+### Fixed
+
+- **Subprocess Environment Isolation**: Prevented Mojo 1.2.0 C-runtime initialization from contaminating `PYTHONEXECUTABLE` during `dlopen`, ensuring child processes and virtualenv tools execute cleanly without `ModuleNotFoundError`.
+- **Pytest Isolation**: All 86 project tests now run together reliably in a single standard `pytest` invocation.
+
+---
+
 ## [0.1.0] — 2026-11-15 — Developer Preview
 
 ### Summary

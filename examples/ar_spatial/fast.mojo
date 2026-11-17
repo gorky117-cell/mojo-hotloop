@@ -240,6 +240,10 @@ def _checked_index(idx: Int, n: Int) raises -> Int:
     raise Error("HOTLOOP_INDEX_ERROR: index out of range")
 
 @always_inline
+def _safe_array_index(idx: Int) -> Int:
+    return idx
+
+@always_inline
 def _py_bool(x: Bool) -> Bool:
     return x
 
@@ -356,6 +360,24 @@ struct _PyStr(Sized):
     @always_inline
     def get_ord(self, idx: Int) raises -> Int:
         var i = _checked_index(idx, len(self))
+        if self._is_ascii:
+            return Int(self._s.as_bytes()[i])
+        return Int(self._cps[i])
+
+    @always_inline
+    def get_cp_fast(self, idx: Int) -> Codepoint:
+        var i = idx
+        if i < 0:
+            i += len(self)
+        if self._is_ascii:
+            return Codepoint(self._s.as_bytes()[i])
+        return self._cps[i]
+
+    @always_inline
+    def get_ord_fast(self, idx: Int) -> Int:
+        var i = idx
+        if i < 0:
+            i += len(self)
         if self._is_ascii:
             return Int(self._s.as_bytes()[i])
         return Int(self._cps[i])
@@ -519,19 +541,22 @@ def _pywrap_find_closest_point_to_ray(arg0: PythonObject, arg1: PythonObject, ar
     var _builtins = Python.import_module("builtins")
     var _has_ctypes = True
     if _has_ctypes:
-        if not (Bool(py=_builtins.hasattr(arg0, "ctypes")) and Bool(py=_builtins.hasattr(arg0, "ndim")) and Bool(py=_builtins.hasattr(arg0, "dtype")) and Bool(py=_builtins.hasattr(arg0, "flags"))):
-            _has_ctypes = False
-        elif Int(py=arg0.ndim) != 1 or String(py=arg0.dtype.name) != "float64" or not Bool(py=arg0.flags.c_contiguous):
-            _has_ctypes = False
-    if _has_ctypes:
-        if not (Bool(py=_builtins.hasattr(arg1, "ctypes")) and Bool(py=_builtins.hasattr(arg1, "ndim")) and Bool(py=_builtins.hasattr(arg1, "dtype")) and Bool(py=_builtins.hasattr(arg1, "flags"))):
-            _has_ctypes = False
-        elif Int(py=arg1.ndim) != 1 or String(py=arg1.dtype.name) != "float64" or not Bool(py=arg1.flags.c_contiguous):
+        try:
+            if not Bool(py=arg0.flags.c_contiguous) or Int(py=arg0.ndim) != 1 or String(py=arg0.dtype.name) != "float64":
+                _has_ctypes = False
+        except:
             _has_ctypes = False
     if _has_ctypes:
-        if not (Bool(py=_builtins.hasattr(arg2, "ctypes")) and Bool(py=_builtins.hasattr(arg2, "ndim")) and Bool(py=_builtins.hasattr(arg2, "dtype")) and Bool(py=_builtins.hasattr(arg2, "flags"))):
+        try:
+            if not Bool(py=arg1.flags.c_contiguous) or Int(py=arg1.ndim) != 1 or String(py=arg1.dtype.name) != "float64":
+                _has_ctypes = False
+        except:
             _has_ctypes = False
-        elif Int(py=arg2.ndim) != 1 or String(py=arg2.dtype.name) != "float64" or not Bool(py=arg2.flags.c_contiguous):
+    if _has_ctypes:
+        try:
+            if not Bool(py=arg2.flags.c_contiguous) or Int(py=arg2.ndim) != 1 or String(py=arg2.dtype.name) != "float64":
+                _has_ctypes = False
+        except:
             _has_ctypes = False
     if _has_ctypes:
         var _n_xs = Int(py=arg0.__len__())
@@ -574,20 +599,20 @@ def _ptr_find_closest_point_to_ray(xs_ptr: OpaquePointer[MutUntrackedOrigin], _n
     var zs = zs_ptr.unsafe_bitcast[Float64]()
     var n: Int = _n_xs
     if ((n == 0) or (_n_ys != n) or (_n_zs != n)):
-        return _checked_neg(1)
+        return -1
     var dir_len_sq: Float64 = _checked_add(_checked_add(_checked_mul(ray_dx, ray_dx), _checked_mul(ray_dy, ray_dy)), _checked_mul(ray_dz, ray_dz))
     if (dir_len_sq <= 0.0):
-        return _checked_neg(1)
+        return -1
     var inv_len: Float64 = _checked_div(1.0, math.sqrt(dir_len_sq))
     var dx: Float64 = _checked_mul(ray_dx, inv_len)
     var dy: Float64 = _checked_mul(ray_dy, inv_len)
     var dz: Float64 = _checked_mul(ray_dz, inv_len)
-    var best_idx: Int = _checked_neg(1)
+    var best_idx: Int = -1
     var min_dist_sq: Float64 = 1e+30
     for i in range(n):
-        var vx: Float64 = _checked_sub(xs[unsafe_offset=i], ray_ox)
-        var vy: Float64 = _checked_sub(ys[unsafe_offset=i], ray_oy)
-        var vz: Float64 = _checked_sub(zs[unsafe_offset=i], ray_oz)
+        var vx: Float64 = _checked_sub(xs[unsafe_offset=_safe_array_index(i)], ray_ox)
+        var vy: Float64 = _checked_sub(ys[unsafe_offset=_safe_array_index(i)], ray_oy)
+        var vz: Float64 = _checked_sub(zs[unsafe_offset=_safe_array_index(i)], ray_oz)
         var t: Float64 = _checked_add(_checked_add(_checked_mul(vx, dx), _checked_mul(vy, dy)), _checked_mul(vz, dz))
         if (t < 0.0):
             t = 0.0
@@ -603,20 +628,20 @@ def _ptr_find_closest_point_to_ray(xs_ptr: OpaquePointer[MutUntrackedOrigin], _n
 def _native_find_closest_point_to_ray(xs: List[Float64], ys: List[Float64], zs: List[Float64], ray_ox: Float64, ray_oy: Float64, ray_oz: Float64, ray_dx: Float64, ray_dy: Float64, ray_dz: Float64) raises -> Int:
     var n: Int = _len(xs)
     if ((n == 0) or (_len(ys) != n) or (_len(zs) != n)):
-        return _checked_neg(1)
+        return -1
     var dir_len_sq: Float64 = _checked_add(_checked_add(_checked_mul(ray_dx, ray_dx), _checked_mul(ray_dy, ray_dy)), _checked_mul(ray_dz, ray_dz))
     if (dir_len_sq <= 0.0):
-        return _checked_neg(1)
+        return -1
     var inv_len: Float64 = _checked_div(1.0, math.sqrt(dir_len_sq))
     var dx: Float64 = _checked_mul(ray_dx, inv_len)
     var dy: Float64 = _checked_mul(ray_dy, inv_len)
     var dz: Float64 = _checked_mul(ray_dz, inv_len)
-    var best_idx: Int = _checked_neg(1)
+    var best_idx: Int = -1
     var min_dist_sq: Float64 = 1e+30
     for i in range(n):
-        var vx: Float64 = _checked_sub(xs[i], ray_ox)
-        var vy: Float64 = _checked_sub(ys[i], ray_oy)
-        var vz: Float64 = _checked_sub(zs[i], ray_oz)
+        var vx: Float64 = _checked_sub(xs[_safe_array_index(i)], ray_ox)
+        var vy: Float64 = _checked_sub(ys[_safe_array_index(i)], ray_oy)
+        var vz: Float64 = _checked_sub(zs[_safe_array_index(i)], ray_oz)
         var t: Float64 = _checked_add(_checked_add(_checked_mul(vx, dx), _checked_mul(vy, dy)), _checked_mul(vz, dz))
         if (t < 0.0):
             t = 0.0

@@ -1,0 +1,366 @@
+{
+  "fib_loop": {
+    "category": "Numerical Loops",
+    "py_ms": 0.001799999836293864,
+    "native_ms": 0.004699999863078119,
+    "speedup": 0.3829786997302187,
+    "verified": true
+  },
+  "collatz_steps": {
+    "category": "Numerical Loops",
+    "py_ms": 0.10459999998602143,
+    "native_ms": 0.004800000169780105,
+    "speedup": 21.791665892964605,
+    "verified": true
+  },
+  "leibniz_pi_est": {
+    "category": "Numerical Loops",
+    "py_ms": 0.8040000000164582,
+    "native_ms": 0.013699999954042141,
+    "speedup": 58.68613158493045,
+    "verified": true
+  },
+  "newton_sqrt_est": {
+    "category": "Numerical Loops",
+    "py_ms": 0.0009000000318337698,
+    "native_ms": 0.003299999889350147,
+    "speedup": 0.2727272915184862,
+    "verified": true
+  },
+  "geo_series_sum": {
+    "category": "Numerical Loops",
+    "py_ms": 0.03599999990910874,
+    "native_ms": 0.004400000079840538,
+    "speedup": 8.181818012697269,
+    "verified": true
+  },
+  "harmonic_mean_loop": {
+    "category": "Numerical Loops",
+    "py_ms": 0.3024000000095839,
+    "native_ms": 0.008299999990413198,
+    "speedup": 36.43373498299601,
+    "verified": true
+  },
+  "chebyshev_t_eval": {
+    "category": "Numerical Loops",
+    "py_ms": 0.0009000000318337698,
+    "native_ms": 0.003099999958067201,
+    "speedup": 0.29032259484122863,
+    "verified": true
+  },
+  "lucas_number": {
+    "category": "Numerical Loops",
+    "py_ms": 0.0016000001323845936,
+    "native_ms": 0.002900000026784255,
+    "speedup": 0.5517241784851974,
+    "verified": true
+  },
+  "bessel_j0_approx": {
+    "category": "Numerical Loops",
+    "py_ms": 0.002300000005561742,
+    "native_ms": 0.0031000001854408765,
+    "speedup": 0.7419354412827689,
+    "verified": true
+  },
+  "logistic_map_orbit": {
+    "category": "Numerical Loops",
+    "py_ms": 0.20429999995030812,
+    "native_ms": 0.013900000112698763,
+    "speedup": 14.697841603876228,
+    "verified": true
+  },
+  "euclidean_dist_3d": {
+    "category": "Distance & Geometry",
+    "py_ms": 0.0003000000106112566,
+    "native_ms": 0.00389999991057266,
+    "speedup": 0.07692308140776491,
+    "verified": true
+  },
+  "manhattan_dist_arr": {
+    "category": "Distance & Geometry",
+    "py_ms": 0.6357999998272135,
+    "native_ms": 0.021900000092500704,
+    "speedup": 29.031963339805316,
+    "verified": true
+  },
+  "chebyshev_dist_arr": {
+    "category": "Distance & Geometry",
+    "py_ms": 0.5549999998493149,
+    "native_ms": 0.023199999986900366,
+    "speedup": 23.92241380011594,
+    "verified": true
+  },
+  "canberra_dist_arr": {
+    "category": "Distance & Geometry",
+    "py_ms": 1.2540999998691404,
+    "native_ms": 0.02220000010311196,
+    "speedup": 56.490990722713676,
+    "verified": true
+  },
+  "minkowski_dist_p3": {
+    "category": "Distance & Geometry",
+    "py_ms": 0.7358000000294851,
+    "native_ms": 0.018500000123822247,
+    "speedup": 39.7729727083625,
+    "verified": true
+  },
+  "point_seg_dist_sq": {
+    "category": "Distance & Geometry",
+    "py_ms": 0.00040000008993956726,
+    "native_ms": 0.0036999999792897142,
+    "speedup": 0.10810813302122096,
+    "verified": true
+  },
+  "shoelace_polygon_area": {
+    "category": "Distance & Geometry",
+    "py_ms": 0.002499999936844688,
+    "native_ms": 0.01550000001770968,
+    "speedup": 0.16129031832182503,
+    "verified": true
+  },
+  "triangle_circumradius": {
+    "category": "Distance & Geometry",
+    "py_ms": 0.0003000000106112566,
+    "native_ms": 0.003299999889350147,
+    "speedup": 0.09090909717282873,
+    "verified": true
+  },
+  "cosine_sim_arr": {
+    "category": "Distance & Geometry",
+    "py_ms": 1.479799999970055,
+    "native_ms": 0.018199999885837315,
+    "speedup": 81.30769281606372,
+    "verified": true
+  },
+  "haversine_single_pair": {
+    "category": "Distance & Geometry",
+    "py_ms": 0.0007000001005508238,
+    "native_ms": 0.0033999999686784577,
+    "speedup": 0.20588238441158166,
+    "verified": true
+  },
+  "running_prod_mod": {
+    "category": "Array Transforms & Reductions",
+    "py_ms": 0.24149999990186188,
+    "native_ms": 0.02880000010918593,
+    "speedup": 8.385416631468486,
+    "verified": true
+  },
+  "exp_weighted_average": {
+    "category": "Array Transforms & Reductions",
+    "py_ms": 0.45189999991634977,
+    "native_ms": 0.012799999922208372,
+    "speedup": 35.30468770802804,
+    "verified": true
+  },
+  "dot_prod_fast": {
+    "category": "Array Transforms & Reductions",
+    "py_ms": 0.5227999999988242,
+    "native_ms": 0.02029999996011611,
+    "speedup": 25.75369463182176,
+    "verified": true
+  },
+  "l2_norm_scaled": {
+    "category": "Array Transforms & Reductions",
+    "py_ms": 0.49660000013318495,
+    "native_ms": 0.012199999900985858,
+    "speedup": 40.70491837406127,
+    "verified": true
+  },
+  "count_above_threshold": {
+    "category": "Array Transforms & Reductions",
+    "py_ms": 0.23740000006000628,
+    "native_ms": 0.011200000017197453,
+    "speedup": 21.196428544239435,
+    "verified": true
+  },
+  "find_local_min_idx": {
+    "category": "Array Transforms & Reductions",
+    "py_ms": 0.01330000009147625,
+    "native_ms": 0.010100000054080738,
+    "speedup": 1.3168316851743584,
+    "verified": true
+  },
+  "kurtosis_excess_eval": {
+    "category": "Array Transforms & Reductions",
+    "py_ms": 0.7533999998940999,
+    "native_ms": 0.013100000160193304,
+    "speedup": 57.51144967031685,
+    "verified": true
+  },
+  "sparse_dot_gather": {
+    "category": "Array Transforms & Reductions",
+    "py_ms": 0.0024000000848900527,
+    "native_ms": 0.019300000076327706,
+    "speedup": 0.1243523355128769,
+    "verified": true
+  },
+  "matrix_diagonal_trace": {
+    "category": "Array Transforms & Reductions",
+    "py_ms": 0.0012000000424450263,
+    "native_ms": 0.009200000022246968,
+    "speedup": 0.13043478690687477,
+    "verified": true
+  },
+  "spread_min_max": {
+    "category": "Array Transforms & Reductions",
+    "py_ms": 0.27060000002165907,
+    "native_ms": 0.012100000049031223,
+    "speedup": 22.363636274805177,
+    "verified": true
+  },
+  "count_digits_in_str": {
+    "category": "String Scanning & Text",
+    "py_ms": 0.2973000000565662,
+    "native_ms": 0.01240000005964248,
+    "speedup": 23.975806340854003,
+    "verified": true
+  },
+  "count_tokens_by_space": {
+    "category": "String Scanning & Text",
+    "py_ms": 0.3211000000646891,
+    "native_ms": 0.014400000054592965,
+    "speedup": 22.298611031065402,
+    "verified": true
+  },
+  "first_adjacent_pair_idx": {
+    "category": "String Scanning & Text",
+    "py_ms": 0.0024000000848900527,
+    "native_ms": 0.005200000032345997,
+    "speedup": 0.4615384749925251,
+    "verified": true
+  },
+  "sum_ord_codepoints": {
+    "category": "String Scanning & Text",
+    "py_ms": 0.2732999998897867,
+    "native_ms": 0.015000000075815478,
+    "speedup": 18.219999900561913,
+    "verified": true
+  },
+  "check_brackets_depth": {
+    "category": "String Scanning & Text",
+    "py_ms": 0.11489999997138511,
+    "native_ms": 0.007900000127847306,
+    "speedup": 14.544303558472794,
+    "verified": true
+  },
+  "longest_char_streak": {
+    "category": "String Scanning & Text",
+    "py_ms": 0.0016999999843392288,
+    "native_ms": 0.003099999958067201,
+    "speedup": 0.5483870991402048,
+    "verified": true
+  },
+  "djb2_str_hash": {
+    "category": "String Scanning & Text",
+    "py_ms": 0.5791999999473774,
+    "native_ms": 0.012799999922208372,
+    "speedup": 45.25000027089442,
+    "verified": true
+  },
+  "fnv1a_str_hash": {
+    "category": "String Scanning & Text",
+    "py_ms": 0.6227000001217675,
+    "native_ms": 0.012599999990925426,
+    "speedup": 49.42063496589196,
+    "verified": true
+  },
+  "count_uppercase_chars": {
+    "category": "String Scanning & Text",
+    "py_ms": 0.27359999990039796,
+    "native_ms": 0.013099999932819628,
+    "speedup": 20.88549628270942,
+    "verified": true
+  },
+  "is_hex_color_literal": {
+    "category": "String Scanning & Text",
+    "py_ms": 0.0007999999525054591,
+    "native_ms": 0.003000000106112566,
+    "speedup": 0.26666664140292584,
+    "verified": true
+  },
+  "binary_search_arr": {
+    "category": "Validation, Search & Bitwise",
+    "py_ms": 0.0019000001429958502,
+    "native_ms": 0.009899999895424116,
+    "speedup": 0.1919192083905021,
+    "verified": true
+  },
+  "popcount_64": {
+    "category": "Validation, Search & Bitwise",
+    "py_ms": 0.004600000011123484,
+    "native_ms": 0.002900000026784255,
+    "speedup": 1.5862068857372806,
+    "verified": true
+  },
+  "parity_of_int": {
+    "category": "Validation, Search & Bitwise",
+    "py_ms": 0.004600000011123484,
+    "native_ms": 0.0027999999474559445,
+    "speedup": 1.6428571776592367,
+    "verified": true
+  },
+  "is_prime_check": {
+    "category": "Validation, Search & Bitwise",
+    "py_ms": 1.310200000034456,
+    "native_ms": 0.04459999991013319,
+    "speedup": 29.376681674314902,
+    "verified": true
+  },
+  "gcd_scalar": {
+    "category": "Validation, Search & Bitwise",
+    "py_ms": 0.0003000000106112566,
+    "native_ms": 0.0032000000373955118,
+    "speedup": 0.09375000222044602,
+    "verified": true
+  },
+  "lcm_scalar": {
+    "category": "Validation, Search & Bitwise",
+    "py_ms": 0.0003999998625658918,
+    "native_ms": 0.0031999998100218363,
+    "speedup": 0.1249999644728611,
+    "verified": true
+  },
+  "lcg_next_n": {
+    "category": "Validation, Search & Bitwise",
+    "py_ms": 5.563200000096913,
+    "native_ms": 0.18209999984719616,
+    "speedup": 30.550247143136232,
+    "verified": true
+  },
+  "gray_code_encode": {
+    "category": "Validation, Search & Bitwise",
+    "py_ms": 0.0003000000106112566,
+    "native_ms": 0.0050999999530176865,
+    "speedup": 0.05882353203429847,
+    "verified": true
+  },
+  "count_trailing_zeros_64": {
+    "category": "Validation, Search & Bitwise",
+    "py_ms": 0.003800000058618025,
+    "native_ms": 0.005200000032345997,
+    "speedup": 0.7307692374962625,
+    "verified": true
+  },
+  "mod_exp_scalar": {
+    "category": "Validation, Search & Bitwise",
+    "py_ms": 0.0012999998943996616,
+    "native_ms": 0.003400000196052133,
+    "speedup": 0.3823528880701654,
+    "verified": true
+  },
+  "integer_sqrt_binsearch": {
+    "category": "Validation, Search & Bitwise",
+    "py_ms": 0.00389999991057266,
+    "native_ms": 0.0032000000373955118,
+    "speedup": 1.2187499578115255,
+    "verified": true
+  },
+  "catalan_num_iter": {
+    "category": "Validation, Search & Bitwise",
+    "py_ms": 0.0012000000424450263,
+    "native_ms": 0.0029999998787388904,
+    "speedup": 0.4000000303164913,
+    "verified": true
+  }
+}

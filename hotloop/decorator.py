@@ -25,7 +25,7 @@ import threading
 import time
 import types
 import warnings
-from typing import Callable, Dict, Optional, Set, Tuple
+from typing import Any, Callable, Dict, Optional, Set, Tuple
 
 class HotloopError(Exception):
     """Base exception for all hotloop runtime errors."""
@@ -46,6 +46,9 @@ _LOADED_MODULES: Dict[str, types.ModuleType] = {}
 
 # Set of (function_qualname, reason_key) to prevent warning spam
 _WARNED_FALLBACKS: Set[Tuple[str, str]] = set()
+
+# Cache of dispatch qualification decisions keyed by (function_qualname, tuple(arg_types))
+_DISPATCH_QUALIFIER_CACHE: Dict[Tuple[str, Tuple[type, ...]], Tuple[str, str]] = {}
 
 
 def _warn_once(warn_key: Tuple[str, str], message: str) -> None:
@@ -93,10 +96,23 @@ def _load_native_module(so_path: str, export_symbol: Optional[str] = None) -> Tu
             if spec is None or spec.loader is None:
                 return None, f"Failed to create module spec for {real_path}"
 
-            mod = importlib.util.module_from_spec(spec)
-            spec.loader.exec_module(mod)
-            _LOADED_MODULES[real_path] = mod
-            return mod, None
+            orig_py_exec = os.environ.get("PYTHONEXECUTABLE")
+            orig_py_path = os.environ.get("PYTHONPATH")
+            try:
+                mod = importlib.util.module_from_spec(spec)
+                spec.loader.exec_module(mod)
+                _LOADED_MODULES[real_path] = mod
+                return mod, None
+            finally:
+                # Sanitize corrupted environment variables introduced by Mojo runtime C initialization
+                if orig_py_exec is None:
+                    os.environ.pop("PYTHONEXECUTABLE", None)
+                else:
+                    os.environ["PYTHONEXECUTABLE"] = orig_py_exec
+                if orig_py_path is None:
+                    os.environ.pop("PYTHONPATH", None)
+                else:
+                    os.environ["PYTHONPATH"] = orig_py_path
         except Exception as e:
             return None, f"Dynamic load error ({type(e).__name__}): {e}"
 
@@ -310,6 +326,8 @@ def _create_hotloop_wrapper(fn: Callable, strict: bool = False, force_native: bo
 
             wrapper._last_backend = "python_fallback_slower"
             wrapper._call_count_fallback += 1
+            cache_sig = (f"{fn.__module__}.{fn.__qualname__}", tuple(type(a) for a in call_args))
+            _DISPATCH_QUALIFIER_CACHE[cache_sig] = ("fallback", "python_fallback_slower")
             _warn_once(
                 (f"{fn.__module__}.{fn.__qualname__}", "slower_than_python"),
                 f"[mojo-hotloop] Python collection input/output detected for '{fn.__name__}'; "
@@ -347,6 +365,8 @@ def _create_hotloop_wrapper(fn: Callable, strict: bool = False, force_native: bo
                 )
             wrapper._last_backend = "python_fallback_surrogate"
             wrapper._call_count_fallback += 1
+            cache_sig = (f"{fn.__module__}.{fn.__qualname__}", tuple(type(a) for a in call_args))
+            _DISPATCH_QUALIFIER_CACHE[cache_sig] = ("fallback", "python_fallback_surrogate")
             _warn_once(
                 (f"{fn.__module__}.{fn.__qualname__}", "surrogate_fallback"),
                 f"[mojo-hotloop] Input contains lone surrogate codepoints for '{fn.__name__}'; "
@@ -356,6 +376,8 @@ def _create_hotloop_wrapper(fn: Callable, strict: bool = False, force_native: bo
 
         if wrapper._compiled is not None:
             wrapper._last_backend = "native"
+            cache_sig = (f"{fn.__module__}.{fn.__qualname__}", tuple(type(a) for a in call_args))
+            _DISPATCH_QUALIFIER_CACHE[cache_sig] = ("native", "qualified_faster")
             try:
                 res = wrapper._compiled(*call_args, **call_kwargs)
                 wrapper._call_count_native += 1
@@ -363,7 +385,7 @@ def _create_hotloop_wrapper(fn: Callable, strict: bool = False, force_native: bo
             except Exception as e:
                 is_strict = _is_strict_active(strict)
                 err_str = str(e)
-                # Check for integer overflow (either at C-ABI conversion or inside intermediate calculations)
+                # Check for integer overflow (either at C-ABI conversion or intermediate calculations)
                 if ("HOTLOOP_INTEGER_OVERFLOW" in err_str or
                     "Python int too large to convert to C ssize_t" in err_str):
                     if is_strict:
@@ -375,6 +397,8 @@ def _create_hotloop_wrapper(fn: Callable, strict: bool = False, force_native: bo
                     # Pure scalar function fallback: safe to re-execute in arbitrary-precision Python
                     wrapper._last_backend = "python_fallback_overflow"
                     wrapper._call_count_fallback += 1
+                    cache_sig = (f"{fn.__module__}.{fn.__qualname__}", tuple(type(a) for a in call_args))
+                    _DISPATCH_QUALIFIER_CACHE[cache_sig] = ("fallback", "python_fallback_overflow")
                     _warn_once(
                         (f"{fn.__module__}.{fn.__qualname__}", "integer_overflow"),
                         f"[mojo-hotloop] Integer overflow in native execution for '{fn.__name__}'; "
@@ -414,6 +438,8 @@ def _create_hotloop_wrapper(fn: Callable, strict: bool = False, force_native: bo
 
         wrapper._last_backend = "python_fallback_stale_cache" if is_stale else "python_fallback"
         wrapper._call_count_fallback += 1
+        cache_sig = (f"{fn.__module__}.{fn.__qualname__}", tuple(type(a) for a in call_args))
+        _DISPATCH_QUALIFIER_CACHE[cache_sig] = ("fallback", wrapper._last_backend)
 
         _warn_once(
             (f"{fn.__module__}.{fn.__qualname__}", reason),
@@ -449,3 +475,53 @@ def hotloop(fn: Optional[Callable] = None, *, strict: bool = False, force_native
     if fn is None:
         return lambda f: _create_hotloop_wrapper(f, strict=strict, force_native=force_native, cache_check=cache_check)
     return _create_hotloop_wrapper(fn, strict=strict, force_native=force_native, cache_check=cache_check)
+
+
+def inspect_dispatch(fn: Callable) -> Dict[str, Any]:
+    """
+    Inspect the runtime dispatch state and configuration of a @hotloop-decorated function.
+    Returns a dictionary detailing:
+    - is_hotloop: bool (whether fn is a hotloop wrapper)
+    - backend_available: bool (whether compiled native shared library is available)
+    - last_backend: str (last backend used: 'native', 'python_fallback', 'python_fallback_slower', etc.)
+    - call_count_native: int (number of native invocations)
+    - call_count_fallback: int (number of Python fallback invocations)
+    - fallback_reason: Optional[str] (reason native compilation/loading failed or fell back)
+    - strict: bool (whether strict native execution is enforced)
+    - force_native: bool (whether native execution is forced)
+    - cache_check: Optional[str] (cache check mode: None, 'call', 'import')
+    - binary_path: Optional[str] (path to loaded shared object, if any)
+    - source_hash: Optional[str] (source code hash used for cache invalidation)
+    - module_loaded: bool (whether the Mojo shared object module is currently loaded)
+    """
+    if not hasattr(fn, "_original") or not hasattr(fn, "_compiled"):
+        return {
+            "is_hotloop": False,
+            "backend_available": False,
+            "last_backend": "none",
+            "call_count_native": 0,
+            "call_count_fallback": 0,
+            "fallback_reason": "Not a hotloop-decorated function",
+            "strict": False,
+            "force_native": False,
+            "cache_check": None,
+            "binary_path": None,
+            "source_hash": None,
+            "module_loaded": False,
+        }
+
+    return {
+        "is_hotloop": True,
+        "backend_available": getattr(fn, "_compiled", None) is not None,
+        "last_backend": getattr(fn, "_last_backend", "none"),
+        "call_count_native": getattr(fn, "_call_count_native", 0),
+        "call_count_fallback": getattr(fn, "_call_count_fallback", 0),
+        "fallback_reason": getattr(fn, "_fallback_reason", None),
+        "strict": getattr(fn, "_is_strict", False),
+        "force_native": getattr(fn, "_force_native", False),
+        "cache_check": getattr(fn, "_cache_check", None),
+        "binary_path": getattr(fn, "_mod_file", None),
+        "source_hash": getattr(fn, "_source_hash", None),
+        "module_loaded": getattr(fn, "_module", None) is not None,
+    }
+
