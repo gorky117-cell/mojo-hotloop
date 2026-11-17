@@ -6,7 +6,7 @@
 **Repository Path:** `/home/gaurav/mojo-hotloop`  
 **Current Branch:** `feat/phase-e-v0.2.0`  
 **Release Target:** **Mojo Hotloop v0.2.0 — Open-Source Developer Preview**  
-**Final Git Commit:** `07e3189` (`docs(release): update documentation, roadmap, security policy, and release notes for v0.2.0`)  
+**Final Git Commit:** `89dae84` (`ci: enable feat/** triggers and add full pytest suite to native CI`)  
 **Release Readiness Verdict:** **READY FOR OWNER APPROVAL — MOJO HOTLOOP v0.2.0**
 
 ---
@@ -178,12 +178,12 @@ The five compiler passes were audited in `hotloop/ast_transpiler.py` and `hotloo
 
 ## 7. Final Release Packaging & SHA-256 Checksums
 
-Fresh distribution packages were built from final candidate commit `9d07d5b` via `python3 -m build`:
+Fresh distribution packages were built from final candidate commit `89dae84` via `python3 -m build`:
 
 | Distribution File | Size (Bytes) | SHA-256 Checksum |
 |---|---|---|
-| `mojo_hotloop-0.2.0-py3-none-any.whl` | 41,371 | `1564934f7ac9da6a2f9975cb1ad897568a6abad882f5a67edd083f7c08d4f0a0` |
-| `mojo_hotloop-0.2.0.tar.gz` | 68,155 | `9c38934762f6bc8bd8b1d133b0d2708cd45a97cd3ab55485d096c2bba7e954da` |
+| `mojo_hotloop-0.2.0-py3-none-any.whl` | 41,371 | `bf5b0c764dbaa869a88a97a043a968e4ebe731ef4d87e3328bf16a8d441e3f42` |
+| `mojo_hotloop-0.2.0.tar.gz` | 68,155 | `8cfc9e0cc0cc88a9d6bf4ebcd130e72134a32e3ec554a99226260185ceb4a544` |
 
 ### Clean Virtual Environment 8-Point Audit
 Installed built wheel in clean isolated `/tmp/clean_audit_venv` outside the repository:
