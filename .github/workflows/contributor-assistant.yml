@@ -95,7 +95,7 @@ jobs:
                 .addHeading('How to Fix', 3)
                 .addRaw(`Every commit must certify that you wrote or have the right to contribute the code under Apache-2.0.\n\n`)
                 .addRaw(`To sign off your commits, run locally:\n`)
-                .addCode(`git rebase HEAD~${commits.length} --signoff\ngit push --force-with-lease origin ${context.payload.pull_request.head.ref}`, 'bash');
+                .addCodeBlock(`git rebase HEAD~${commits.length} --signoff\ngit push --force-with-lease origin ${context.payload.pull_request.head.ref}`, 'bash');
 
               await summary.write();
 
