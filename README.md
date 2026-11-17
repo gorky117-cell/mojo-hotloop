@@ -129,6 +129,19 @@ hotloop build myapp.py --engine=ast
 
 This creates `fast.so` and `fast.hotloop_manifest.json` directly alongside `myapp.py`.
 
+#### Offline AST Validation (No Mojo Compiler Required)
+
+If you are developing on a platform without the Mojo toolchain or validating compatibility in a lightweight CI environment, you can run offline AST syntax checks without building:
+
+```bash
+# Using the check subcommand:
+hotloop check myapp.py
+
+# Or via the --check-syntax / --dry-run flags:
+hotloop build myapp.py --check-syntax
+hotloop build myapp.py --dry-run
+```
+
 ### Step 3 — Run at native speed
 
 ```python
@@ -146,7 +159,7 @@ print("Fallback calls:", info["call_count_fallback"])         # 0
 ```
 
 > [!TIP]
-> **Arrays and NumPy:** For array processing, pass a 1-D C-contiguous `numpy.ndarray` (`float64` or `int64`) to activate zero-copy native memory pointers. Plain Python `list[...]` inputs with small element counts automatically fall back to Python because per-element FFI conversion overhead exceeds computation time.
+> **Arrays and NumPy:** For array processing, pass a 1-D C-contiguous `numpy.ndarray` (`float64` or `int64`) to activate zero-copy native memory pointers. See [`examples/numpy_vector/`](examples/numpy_vector/README.md) for a complete runnable guide and benchmark demonstrating 40× acceleration. Plain Python `list[...]` inputs with small element counts automatically fall back to Python because per-element FFI conversion overhead exceeds computation time.
 
 ---
 
