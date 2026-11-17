@@ -366,15 +366,21 @@ struct _PyStr(Sized):
 
     @always_inline
     def get_cp_fast(self, idx: Int) -> Codepoint:
+        var i = idx
+        if i < 0:
+            i += len(self)
         if self._is_ascii:
-            return Codepoint(self._s.as_bytes()[_safe_array_index(idx)])
-        return self._cps[_safe_array_index(idx)]
+            return Codepoint(self._s.as_bytes()[i])
+        return self._cps[i]
 
     @always_inline
     def get_ord_fast(self, idx: Int) -> Int:
+        var i = idx
+        if i < 0:
+            i += len(self)
         if self._is_ascii:
-            return Int(self._s.as_bytes()[_safe_array_index(idx)])
-        return Int(self._cps[_safe_array_index(idx)])
+            return Int(self._s.as_bytes()[i])
+        return Int(self._cps[i])
 
     @always_inline
     def __getitem__(self, s: Slice) -> String:

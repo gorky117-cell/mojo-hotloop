@@ -1,0 +1,100 @@
+[
+  {
+    "name": "quant_backtest",
+    "total_wrapper_us": 573.2779,
+    "native_kernel_us": 467.47792,
+    "pure_python_us": 37004.912899999996,
+    "dispatch_overhead_us": 105.79998000000003,
+    "dispatch_overhead_pct": 18.4552692507421,
+    "components_ns": {
+      "arg_bind_ns": 30.82,
+      "qualification_ns": 1421.9397,
+      "surrogate_check_ns": 586.9999,
+      "cache_check_ns": 3130.9094
+    }
+  },
+  {
+    "name": "ar_spatial_large",
+    "total_wrapper_us": 163.43552,
+    "native_kernel_us": 120.054515,
+    "pure_python_us": 21193.052925,
+    "dispatch_overhead_us": 43.38100499999999,
+    "dispatch_overhead_pct": 26.543192691527516,
+    "components_ns": {
+      "arg_bind_ns": 27.19,
+      "qualification_ns": 1785.9404,
+      "surrogate_check_ns": 927.5602,
+      "cache_check_ns": 2790.0706
+    }
+  },
+  {
+    "name": "geo_distance_large",
+    "total_wrapper_us": 906.5261999999999,
+    "native_kernel_us": 898.51686,
+    "pure_python_us": 14682.8977,
+    "dispatch_overhead_us": 8.009339999999968,
+    "dispatch_overhead_pct": 0.8835199688657612,
+    "components_ns": {
+      "arg_bind_ns": 29.33,
+      "qualification_ns": 914.8898,
+      "surrogate_check_ns": 362.48,
+      "cache_check_ns": 2752.5296
+    }
+  },
+  {
+    "name": "pdf_cleaner_large",
+    "total_wrapper_us": 3636.9094,
+    "native_kernel_us": 3230.94945,
+    "pure_python_us": 28646.8662,
+    "dispatch_overhead_us": 405.9599499999997,
+    "dispatch_overhead_pct": 11.162223342709602,
+    "components_ns": {
+      "arg_bind_ns": 26.34,
+      "qualification_ns": 876.5202,
+      "surrogate_check_ns": 5019.6911,
+      "cache_check_ns": 2753.6006
+    }
+  },
+  {
+    "name": "pii_scrubber_large",
+    "total_wrapper_us": 10388.1222,
+    "native_kernel_us": 9051.0719,
+    "pure_python_us": 57742.6884,
+    "dispatch_overhead_us": 1337.050299999999,
+    "dispatch_overhead_pct": 12.870952750247769,
+    "components_ns": {
+      "arg_bind_ns": 21.31,
+      "qualification_ns": 600.6801,
+      "surrogate_check_ns": 3527.7305,
+      "cache_check_ns": 2279.6303
+    }
+  },
+  {
+    "name": "ocr_matcher_large_forced",
+    "total_wrapper_us": 683.2201,
+    "native_kernel_us": 635.3734333333333,
+    "pure_python_us": 2151.467,
+    "dispatch_overhead_us": 47.84666666666663,
+    "dispatch_overhead_pct": 7.003111686360901,
+    "components_ns": {
+      "arg_bind_ns": 31.09,
+      "qualification_ns": 711.5701,
+      "surrogate_check_ns": 398.48,
+      "cache_check_ns": 2707.4204
+    }
+  },
+  {
+    "name": "rag_chunker_large_forced",
+    "total_wrapper_us": 4476.445650000001,
+    "native_kernel_us": 3517.9755,
+    "pure_python_us": 156.19,
+    "dispatch_overhead_us": 958.4701500000003,
+    "dispatch_overhead_pct": 21.411410412187184,
+    "components_ns": {
+      "arg_bind_ns": 26.16,
+      "qualification_ns": 398.47,
+      "surrogate_check_ns": 4281.6307,
+      "cache_check_ns": 2330.7603
+    }
+  }
+]
