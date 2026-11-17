@@ -240,6 +240,38 @@ assert diff < 4096, f"Unexpected RSS growth: {diff} KB"
         self.assertEqual(proc.returncode, 0, proc.stderr)
         self.assertIn("RSS_DIFF=", proc.stdout)
 
+    def test_07_inspect_dispatch_runtime_introspection(self):
+        proc = self._run_subproc(
+            """
+import numpy as np
+from hotloop import inspect_dispatch
+
+# Test inspect_dispatch on hotloop decorated function
+info = inspect_dispatch(sec_mod.sum_floats)
+assert info["is_hotloop"] is True
+assert info["backend_available"] is True
+assert info["call_count_native"] == 0
+
+# Call native function
+arr = np.array([1.0, 2.0, 3.0], dtype=np.float64)
+sec_mod.sum_floats(arr)
+info_after = inspect_dispatch(sec_mod.sum_floats)
+assert info_after["call_count_native"] == 1
+assert info_after["last_backend"] == "native"
+
+# Test on un-decorated function
+def plain_fn(x):
+    return x * 2
+
+plain_info = inspect_dispatch(plain_fn)
+assert plain_info["is_hotloop"] is False
+assert plain_info["backend_available"] is False
+print("OK_INSPECT_DISPATCH")
+"""
+        )
+        self.assertEqual(proc.returncode, 0, proc.stderr)
+        self.assertIn("OK_INSPECT_DISPATCH", proc.stdout)
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)

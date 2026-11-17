@@ -14,6 +14,7 @@
 # limitations under the License.
 
 import ast
+import copy
 import inspect
 from typing import Dict, List, Optional, Set, Tuple
 
@@ -463,6 +464,24 @@ struct _PyStr(Sized):
     @always_inline
     def get_ord(self, idx: Int) raises -> Int:
         var i = _checked_index(idx, len(self))
+        if self._is_ascii:
+            return Int(self._s.as_bytes()[i])
+        return Int(self._cps[i])
+
+    @always_inline
+    def get_cp_fast(self, idx: Int) -> Codepoint:
+        var i = idx
+        if i < 0:
+            i += len(self)
+        if self._is_ascii:
+            return Codepoint(self._s.as_bytes()[i])
+        return self._cps[i]
+
+    @always_inline
+    def get_ord_fast(self, idx: Int) -> Int:
+        var i = idx
+        if i < 0:
+            i += len(self)
         if self._is_ascii:
             return Int(self._s.as_bytes()[i])
         return Int(self._cps[i])
@@ -956,7 +975,7 @@ class MojoASTTranspiler:
             return [], body
 
         hoisted_lines: List[str] = []
-        transformed_body = list(body)
+        transformed_body = [copy.deepcopy(s) for s in body]
 
         for sub_node in candidate_subexprs:
             inv_name = self._next_tmp("_inv")
@@ -1027,6 +1046,7 @@ class MojoASTTranspiler:
         self.active_ptr_lens = dict(ptr_coll_names)
         self.loop_inbounds = []
         self.length_aliases = {}
+        self.primary_str_arg = next((name for name, py_t, _, _ in args if py_t == "str"), None)
         for name in ptr_coll_names:
             self.length_aliases.setdefault(f"_n_{name}", set()).add(name)
 
@@ -1130,7 +1150,7 @@ class MojoASTTranspiler:
         reassigned_vars = _collect_reassigned_vars(func_def)
 
         # 3. Transpile standard native implementation
-        native_args, body_code = self._transpile_body(func_def, args, subscripted_args, reassigned_vars, {})
+        native_args, body_code = self._transpile_body(copy.deepcopy(func_def), args, subscripted_args, reassigned_vars, {})
 
         # 4. Identify pointer-eligible read-only numeric array arguments
         safe_coll_args = [
@@ -1143,7 +1163,7 @@ class MojoASTTranspiler:
         safe_ptr_names = {name: f"_n_{name}" for name, _, _, _, _ in safe_coll_args}
         if safe_coll_args:
             ptr_args_def, ptr_body_code = self._transpile_body(
-                func_def, args, subscripted_args, reassigned_vars, safe_ptr_names
+                copy.deepcopy(func_def), args, subscripted_args, reassigned_vars, safe_ptr_names
             )
             ptr_native_code = f"""@always_inline\ndef _ptr_{func_def.name}({", ".join(ptr_args_def)}) raises -> {ret_mojo_type}:\n{ptr_body_code}"""
 
@@ -1259,11 +1279,12 @@ class MojoASTTranspiler:
                 idx_code = self.visit_expr(node.value.slice)
                 mojo_type = "Codepoint"
                 self.var_types[var_name] = "Codepoint"
-                expr_code = f"{src_name}.get_cp({idx_code})"
+                expr_code = f"{src_name}.get_cp_fast({idx_code})"
             elif isinstance(node.value, ast.List) and len(node.value.elts) == 0:
                 expr_code = f"{mojo_type}()"
             elif mojo_type == "String" and isinstance(node.value, ast.Constant) and node.value.value == "":
-                expr_code = "String()"
+                reserve_call = f"\n{self.indent()}{var_name}.reserve_bytes(_len({self.primary_str_arg}))" if self.primary_str_arg else ""
+                expr_code = f"String(){reserve_call}"
             elif mojo_type == "String" and isinstance(node.value, ast.Name) and self.var_types.get(node.value.id) == "_PyStr":
                 expr_code = f"{node.value.id}.to_string()"
             else:
@@ -1293,7 +1314,7 @@ class MojoASTTranspiler:
                     idx_code = self.visit_expr(node.value.slice)
                     self.var_types[var_name] = "Codepoint"
                     inferred_annot = ": Codepoint"
-                    expr_code = f"{src_name}.get_cp({idx_code})"
+                    expr_code = f"{src_name}.get_cp_fast({idx_code})"
                 elif isinstance(node.value, ast.List) and len(node.value.elts) == 0:
                     inferred_type = self.var_types.get(var_name, self.ret_mojo_type)
                     self.var_types.setdefault(var_name, inferred_type)
@@ -1307,7 +1328,8 @@ class MojoASTTranspiler:
                 elif isinstance(node.value, ast.Constant) and isinstance(node.value.value, str):
                     self.var_types.setdefault(var_name, "String")
                     if node.value.value == "":
-                        expr_code = "String()"
+                        reserve_call = f"\n{self.indent()}{var_name}.reserve_bytes(_len({self.primary_str_arg}))" if self.primary_str_arg and not is_declared else ""
+                        expr_code = f"String(){reserve_call}"
                     else:
                         expr_code = f"String({repr(node.value.value)})"
                 elif isinstance(node.value, ast.Name) and self.var_types.get(node.value.id) == "_PyStr":
@@ -1374,7 +1396,7 @@ class MojoASTTranspiler:
                 ):
                     src_name = node.value.value.id
                     idx_expr = self.visit_expr(node.value.slice)
-                    return f"{self.indent()}{var_name}.write({src_name}.get_cp({idx_expr}))"
+                    return f"{self.indent()}{var_name}.write({src_name}.get_cp_fast({idx_expr}))"
                 expr_code = self.visit_expr(node.value)
                 return f"{self.indent()}{var_name}.write({expr_code})"
 
@@ -1661,7 +1683,7 @@ class MojoASTTranspiler:
                 def _as_ord(n: ast.expr) -> str:
                     if _is_pystr_sub(n):
                         vname = n.value.id  # type: ignore[attr-defined]
-                        return f"{vname}.get_ord({self.visit_expr(n.slice)})"  # type: ignore[attr-defined]
+                        return f"{vname}.get_ord_fast({self.visit_expr(n.slice)})"  # type: ignore[attr-defined]
                     if _is_cp_var(n):
                         return f"Int({self.visit_expr(n)})"
                     return str(ord(n.value))  # type: ignore[attr-defined]

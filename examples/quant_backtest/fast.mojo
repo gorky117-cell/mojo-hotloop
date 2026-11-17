@@ -240,6 +240,10 @@ def _checked_index(idx: Int, n: Int) raises -> Int:
     raise Error("HOTLOOP_INDEX_ERROR: index out of range")
 
 @always_inline
+def _safe_array_index(idx: Int) -> Int:
+    return idx
+
+@always_inline
 def _py_bool(x: Bool) -> Bool:
     return x
 
@@ -359,6 +363,18 @@ struct _PyStr(Sized):
         if self._is_ascii:
             return Int(self._s.as_bytes()[i])
         return Int(self._cps[i])
+
+    @always_inline
+    def get_cp_fast(self, idx: Int) -> Codepoint:
+        if self._is_ascii:
+            return Codepoint(self._s.as_bytes()[_safe_array_index(idx)])
+        return self._cps[_safe_array_index(idx)]
+
+    @always_inline
+    def get_ord_fast(self, idx: Int) -> Int:
+        if self._is_ascii:
+            return Int(self._s.as_bytes()[_safe_array_index(idx)])
+        return Int(self._cps[_safe_array_index(idx)])
 
     @always_inline
     def __getitem__(self, s: Slice) -> String:
@@ -533,6 +549,8 @@ def _native_stateful_trailing_backtest(ticks: Int, start_price: Float64, stop_pc
     var in_position = True
     var cooldown = 0
     var lcg_state = 42
+    var _inv_1 = _checked_sub(1.0, fee_rate)
+    var _inv_2 = _checked_sub(1.0, stop_pct)
     for _ in range(ticks):
         lcg_state = (_checked_add(_checked_mul(1664525, lcg_state), 1013904223) & 4294967295)
         var rand_val = (Float64(lcg_state) / Float64(4294967296.0))
@@ -540,8 +558,8 @@ def _native_stateful_trailing_backtest(ticks: Int, start_price: Float64, stop_pc
         if in_position:
             if (price > peak_price):
                 peak_price = price
-            elif ((stop_pct > 0.0) and (price <= _checked_mul(peak_price, _checked_sub(1.0, stop_pct)))):
-                cash = _checked_mul(_checked_mul(units, price), _checked_sub(1.0, fee_rate))
+            elif ((stop_pct > 0.0) and (price <= _checked_mul(peak_price, _inv_2))):
+                cash = _checked_mul(_checked_mul(units, price), _inv_1)
                 units = 0.0
                 in_position = False
                 cooldown = 5
@@ -549,7 +567,7 @@ def _native_stateful_trailing_backtest(ticks: Int, start_price: Float64, stop_pc
             if (cooldown > 0):
                 cooldown = _checked_sub(cooldown, 1)
             if (cooldown == 0):
-                units = _checked_div(_checked_mul(cash, _checked_sub(1.0, fee_rate)), price)
+                units = _checked_div(_checked_mul(cash, _inv_1), price)
                 cash = 0.0
                 in_position = True
                 peak_price = price

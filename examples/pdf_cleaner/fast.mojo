@@ -240,6 +240,10 @@ def _checked_index(idx: Int, n: Int) raises -> Int:
     raise Error("HOTLOOP_INDEX_ERROR: index out of range")
 
 @always_inline
+def _safe_array_index(idx: Int) -> Int:
+    return idx
+
+@always_inline
 def _py_bool(x: Bool) -> Bool:
     return x
 
@@ -359,6 +363,18 @@ struct _PyStr(Sized):
         if self._is_ascii:
             return Int(self._s.as_bytes()[i])
         return Int(self._cps[i])
+
+    @always_inline
+    def get_cp_fast(self, idx: Int) -> Codepoint:
+        if self._is_ascii:
+            return Codepoint(self._s.as_bytes()[_safe_array_index(idx)])
+        return self._cps[_safe_array_index(idx)]
+
+    @always_inline
+    def get_ord_fast(self, idx: Int) -> Int:
+        if self._is_ascii:
+            return Int(self._s.as_bytes()[_safe_array_index(idx)])
+        return Int(self._cps[_safe_array_index(idx)])
 
     @always_inline
     def __getitem__(self, s: Slice) -> String:
@@ -526,39 +542,40 @@ def _native_clean_pdf_text(_arg_text: String) raises -> String:
     if (n == 0):
         return ''
     var result: String = String()
+    result.reserve_bytes(_len(text))
     var i: Int = 0
     while (i < n):
-        var ch: Codepoint = text.get_cp(i)
-        if ((Int(ch) == 45) and (_checked_add(i, 1) < n) and ((text.get_ord(_checked_add(i, 1)) == 10) or (text.get_ord(_checked_add(i, 1)) == 13))):
-            if ((i > 0) and (((text.get_ord(_checked_sub(i, 1)) >= 97) and (text.get_ord(_checked_sub(i, 1)) <= 122)) or ((text.get_ord(_checked_sub(i, 1)) >= 65) and (text.get_ord(_checked_sub(i, 1)) <= 90)))):
+        var ch: Codepoint = text.get_cp_fast(i)
+        if ((Int(ch) == 45) and (_checked_add(i, 1) < n) and ((text.get_ord_fast(_checked_add(i, 1)) == 10) or (text.get_ord_fast(_checked_add(i, 1)) == 13))):
+            if ((i > 0) and (((text.get_ord_fast(_checked_sub(i, 1)) >= 97) and (text.get_ord_fast(_checked_sub(i, 1)) <= 122)) or ((text.get_ord_fast(_checked_sub(i, 1)) >= 65) and (text.get_ord_fast(_checked_sub(i, 1)) <= 90)))):
                 i = _checked_add(i, 1)
-                while ((i < n) and ((text.get_ord(i) == 10) or (text.get_ord(i) == 13) or (text.get_ord(i) == 32) or (text.get_ord(i) == 9))):
+                while ((i < n) and ((text.get_ord_fast(i) == 10) or (text.get_ord_fast(i) == 13) or (text.get_ord_fast(i) == 32) or (text.get_ord_fast(i) == 9))):
                     i = _checked_add(i, 1)
                 continue
         if (Int(ch) == 12):
             result.write('\n\n')
             i = _checked_add(i, 1)
-            while ((i < n) and ((text.get_ord(i) == 32) or (text.get_ord(i) == 9) or (text.get_ord(i) == 10) or (text.get_ord(i) == 13))):
+            while ((i < n) and ((text.get_ord_fast(i) == 32) or (text.get_ord_fast(i) == 9) or (text.get_ord_fast(i) == 10) or (text.get_ord_fast(i) == 13))):
                 i = _checked_add(i, 1)
             continue
         if ((Int(ch) == 10) and (_checked_add(i, 1) < n)):
             if ((_checked_add(i, 6) <= n) and text.eq_slice(_checked_add(i, 1), _checked_add(i, 6), String('Page '))):
                 var j: Int = _checked_add(i, 6)
-                while ((j < n) and (text.get_ord(j) >= 48) and (text.get_ord(j) <= 57)):
+                while ((j < n) and (text.get_ord_fast(j) >= 48) and (text.get_ord_fast(j) <= 57)):
                     j = _checked_add(j, 1)
-                if ((j == n) or (text.get_ord(j) == 10) or (text.get_ord(j) == 13)):
+                if ((j == n) or (text.get_ord_fast(j) == 10) or (text.get_ord_fast(j) == 13)):
                     i = j
                     continue
         if ((Int(ch) == 32) or (Int(ch) == 9)):
             result.write(' ')
             i = _checked_add(i, 1)
-            while ((i < n) and ((text.get_ord(i) == 32) or (text.get_ord(i) == 9))):
+            while ((i < n) and ((text.get_ord_fast(i) == 32) or (text.get_ord_fast(i) == 9))):
                 i = _checked_add(i, 1)
             continue
         if (Int(ch) == 10):
             var nl_count: Int = 0
-            while ((i < n) and ((text.get_ord(i) == 10) or (text.get_ord(i) == 13))):
-                if (text.get_ord(i) == 10):
+            while ((i < n) and ((text.get_ord_fast(i) == 10) or (text.get_ord_fast(i) == 13))):
+                if (text.get_ord_fast(i) == 10):
                     nl_count = _checked_add(nl_count, 1)
                 i = _checked_add(i, 1)
             if (nl_count >= 2):

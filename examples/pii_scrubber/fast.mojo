@@ -240,6 +240,10 @@ def _checked_index(idx: Int, n: Int) raises -> Int:
     raise Error("HOTLOOP_INDEX_ERROR: index out of range")
 
 @always_inline
+def _safe_array_index(idx: Int) -> Int:
+    return idx
+
+@always_inline
 def _py_bool(x: Bool) -> Bool:
     return x
 
@@ -359,6 +363,18 @@ struct _PyStr(Sized):
         if self._is_ascii:
             return Int(self._s.as_bytes()[i])
         return Int(self._cps[i])
+
+    @always_inline
+    def get_cp_fast(self, idx: Int) -> Codepoint:
+        if self._is_ascii:
+            return Codepoint(self._s.as_bytes()[_safe_array_index(idx)])
+        return self._cps[_safe_array_index(idx)]
+
+    @always_inline
+    def get_ord_fast(self, idx: Int) -> Int:
+        if self._is_ascii:
+            return Int(self._s.as_bytes()[_safe_array_index(idx)])
+        return Int(self._cps[_safe_array_index(idx)])
 
     @always_inline
     def __getitem__(self, s: Slice) -> String:
@@ -529,7 +545,7 @@ def _ptr_check_luhn(digits_ptr: OpaquePointer[MutUntrackedOrigin], _n_digits: In
     var total: Int = 0
     var parity: Int = _checked_mod(n, 2)
     for i in range(n):
-        var d: Int = digits[unsafe_offset=i]
+        var d: Int = digits[unsafe_offset=_safe_array_index(i)]
         if (_checked_mod(i, 2) == parity):
             d = _checked_mul(d, 2)
             if (d > 9):
@@ -544,7 +560,7 @@ def _native_check_luhn(digits: List[Int]) raises -> Bool:
     var total: Int = 0
     var parity: Int = _checked_mod(n, 2)
     for i in range(n):
-        var d: Int = digits[i]
+        var d: Int = digits[_safe_array_index(i)]
         if (_checked_mod(i, 2) == parity):
             d = _checked_mul(d, 2)
             if (d > 9):
@@ -563,8 +579,9 @@ def _ptr_check_verhoeff(digits_ptr: OpaquePointer[MutUntrackedOrigin], _n_digits
     var d_table: List[Int] = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4, 0, 6, 7, 8, 9, 5, 2, 3, 4, 0, 1, 7, 8, 9, 5, 6, 3, 4, 0, 1, 2, 8, 9, 5, 6, 7, 4, 0, 1, 2, 3, 9, 5, 6, 7, 8, 5, 9, 8, 7, 6, 0, 4, 3, 2, 1, 6, 5, 9, 8, 7, 1, 0, 4, 3, 2, 7, 6, 5, 9, 8, 2, 1, 0, 4, 3, 8, 7, 6, 5, 9, 3, 2, 1, 0, 4, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
     var p_table: List[Int] = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 5, 7, 6, 2, 8, 3, 0, 9, 4, 5, 8, 0, 3, 7, 9, 6, 1, 4, 2, 8, 9, 1, 6, 0, 4, 3, 5, 2, 7, 9, 4, 5, 3, 1, 2, 6, 8, 7, 0, 4, 2, 8, 6, 5, 7, 3, 9, 0, 1, 2, 7, 9, 3, 8, 0, 6, 4, 1, 5, 7, 0, 4, 6, 9, 1, 3, 2, 5, 8]
     var c: Int = 0
+    var _inv_1 = _checked_sub(n, 1)
     for i in range(n):
-        var val: Int = digits[unsafe_offset=_checked_index(_checked_sub(_checked_sub(n, 1), i), _n_digits)]
+        var val: Int = digits[unsafe_offset=_checked_index(_checked_sub(_inv_1, i), _n_digits)]
         c = d_table[_checked_index(_checked_add(_checked_mul(c, 10), p_table[_checked_index(_checked_add(_checked_mul(_checked_mod(i, 8), 10), val), len(p_table))]), len(d_table))]
     return (c == 0)
 
@@ -577,8 +594,9 @@ def _native_check_verhoeff(digits: List[Int]) raises -> Bool:
     var d_table: List[Int] = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4, 0, 6, 7, 8, 9, 5, 2, 3, 4, 0, 1, 7, 8, 9, 5, 6, 3, 4, 0, 1, 2, 8, 9, 5, 6, 7, 4, 0, 1, 2, 3, 9, 5, 6, 7, 8, 5, 9, 8, 7, 6, 0, 4, 3, 2, 1, 6, 5, 9, 8, 7, 1, 0, 4, 3, 2, 7, 6, 5, 9, 8, 2, 1, 0, 4, 3, 8, 7, 6, 5, 9, 3, 2, 1, 0, 4, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
     var p_table: List[Int] = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 5, 7, 6, 2, 8, 3, 0, 9, 4, 5, 8, 0, 3, 7, 9, 6, 1, 4, 2, 8, 9, 1, 6, 0, 4, 3, 5, 2, 7, 9, 4, 5, 3, 1, 2, 6, 8, 7, 0, 4, 2, 8, 6, 5, 7, 3, 9, 0, 1, 2, 7, 9, 3, 8, 0, 6, 4, 1, 5, 7, 0, 4, 6, 9, 1, 3, 2, 5, 8]
     var c: Int = 0
+    var _inv_1 = _checked_sub(n, 1)
     for i in range(n):
-        var val: Int = digits[_checked_index(_checked_sub(_checked_sub(n, 1), i), len(digits))]
+        var val: Int = digits[_checked_index(_checked_sub(_inv_1, i), len(digits))]
         c = d_table[_checked_index(_checked_add(_checked_mul(c, 10), p_table[_checked_index(_checked_add(_checked_mul(_checked_mod(i, 8), 10), val), len(p_table))]), len(d_table))]
     return (c == 0)
 
@@ -609,33 +627,34 @@ def _native_check_pan(_arg_s: String) raises -> Bool:
     if (_len(s) != 10):
         return False
     for i in range(5):
-        var ch: Codepoint = s.get_cp(i)
+        var ch: Codepoint = s.get_cp_fast(i)
         if ((Int(ch) < 65) or (Int(ch) > 90)):
             return False
     for i in range(5, 9):
-        var ch: Codepoint = s.get_cp(i)
+        var ch: Codepoint = s.get_cp_fast(i)
         if ((Int(ch) < 48) or (Int(ch) > 57)):
             return False
-    var ch_last: Codepoint = s.get_cp(9)
+    var ch_last: Codepoint = s.get_cp_fast(9)
     return ((Int(ch_last) >= 65) and (Int(ch_last) <= 90))
 
 def _native_scrub_pii(_arg_text: String) raises -> String:
     var text: _PyStr = _PyStr(_arg_text)
     var result: String = String()
+    result.reserve_bytes(_len(text))
     var n: Int = _len(text)
     var i: Int = 0
     while (i < n):
-        var ch: Codepoint = text.get_cp(i)
-        if ((Int(ch) >= 65) and (Int(ch) <= 90) and ((i == 0) or (not (((text.get_ord(_checked_sub(i, 1)) >= 65) and (text.get_ord(_checked_sub(i, 1)) <= 90)) or ((text.get_ord(_checked_sub(i, 1)) >= 48) and (text.get_ord(_checked_sub(i, 1)) <= 57)))))):
+        var ch: Codepoint = text.get_cp_fast(i)
+        if ((Int(ch) >= 65) and (Int(ch) <= 90) and ((i == 0) or (not (((text.get_ord_fast(_checked_sub(i, 1)) >= 65) and (text.get_ord_fast(_checked_sub(i, 1)) <= 90)) or ((text.get_ord_fast(_checked_sub(i, 1)) >= 48) and (text.get_ord_fast(_checked_sub(i, 1)) <= 57)))))):
             if (_checked_add(i, 10) <= n):
                 var candidate: String = text[i:_checked_add(i, 10)]
-                var boundary_after: Bool = ((_checked_add(i, 10) == n) or (not (((text.get_ord(_checked_add(i, 10)) >= 65) and (text.get_ord(_checked_add(i, 10)) <= 90)) or ((text.get_ord(_checked_add(i, 10)) >= 48) and (text.get_ord(_checked_add(i, 10)) <= 57)))))
+                var boundary_after: Bool = ((_checked_add(i, 10) == n) or (not (((text.get_ord_fast(_checked_add(i, 10)) >= 65) and (text.get_ord_fast(_checked_add(i, 10)) <= 90)) or ((text.get_ord_fast(_checked_add(i, 10)) >= 48) and (text.get_ord_fast(_checked_add(i, 10)) <= 57)))))
                 if (boundary_after and _py_bool(_native_check_pan(candidate))):
                     result.write('[REDACTED_PAN]')
                     i = _checked_add(i, 10)
                     continue
-        var is_num_start: Bool = (((Int(ch) >= 48) and (Int(ch) <= 57)) or ((Int(ch) == 43) and (_checked_add(i, 1) < n) and (text.get_ord(_checked_add(i, 1)) >= 48) and (text.get_ord(_checked_add(i, 1)) <= 57)))
-        var boundary_before: Bool = ((i == 0) or (not (((text.get_ord(_checked_sub(i, 1)) >= 65) and (text.get_ord(_checked_sub(i, 1)) <= 90)) or ((text.get_ord(_checked_sub(i, 1)) >= 97) and (text.get_ord(_checked_sub(i, 1)) <= 122)) or ((text.get_ord(_checked_sub(i, 1)) >= 48) and (text.get_ord(_checked_sub(i, 1)) <= 57)))))
+        var is_num_start: Bool = (((Int(ch) >= 48) and (Int(ch) <= 57)) or ((Int(ch) == 43) and (_checked_add(i, 1) < n) and (text.get_ord_fast(_checked_add(i, 1)) >= 48) and (text.get_ord_fast(_checked_add(i, 1)) <= 57)))
+        var boundary_before: Bool = ((i == 0) or (not (((text.get_ord_fast(_checked_sub(i, 1)) >= 65) and (text.get_ord_fast(_checked_sub(i, 1)) <= 90)) or ((text.get_ord_fast(_checked_sub(i, 1)) >= 97) and (text.get_ord_fast(_checked_sub(i, 1)) <= 122)) or ((text.get_ord_fast(_checked_sub(i, 1)) >= 48) and (text.get_ord_fast(_checked_sub(i, 1)) <= 57)))))
         if (is_num_start and boundary_before):
             var start_idx: Int = i
             var digits: List[Int] = List[Int]()
@@ -646,12 +665,12 @@ def _native_scrub_pii(_arg_text: String) raises -> String:
                     i = _checked_add(i, 1)
                 elif ((curr == '+') and (i == start_idx)):
                     i = _checked_add(i, 1)
-                elif (((curr == ' ') or (curr == '-')) and ((_checked_add(i, 1) < n) and (text.get_ord(_checked_add(i, 1)) >= 48) and (text.get_ord(_checked_add(i, 1)) <= 57))):
+                elif (((curr == ' ') or (curr == '-')) and ((_checked_add(i, 1) < n) and (text.get_ord_fast(_checked_add(i, 1)) >= 48) and (text.get_ord_fast(_checked_add(i, 1)) <= 57))):
                     i = _checked_add(i, 1)
                 else:
                     break
             var candidate_num: String = text[start_idx:i]
-            var boundary_after_num: Bool = ((i == n) or (not (((text.get_ord(i) >= 65) and (text.get_ord(i) <= 90)) or ((text.get_ord(i) >= 97) and (text.get_ord(i) <= 122)) or ((text.get_ord(i) >= 48) and (text.get_ord(i) <= 57)))))
+            var boundary_after_num: Bool = ((i == n) or (not (((text.get_ord_fast(i) >= 65) and (text.get_ord_fast(i) <= 90)) or ((text.get_ord_fast(i) >= 97) and (text.get_ord_fast(i) <= 122)) or ((text.get_ord_fast(i) >= 48) and (text.get_ord_fast(i) <= 57)))))
             if (boundary_after_num and _py_bool(_native_check_luhn(digits))):
                 result.write('[REDACTED_CC]')
             elif (boundary_after_num and _py_bool(_native_check_verhoeff(digits))):

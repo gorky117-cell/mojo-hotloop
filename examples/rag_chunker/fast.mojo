@@ -240,6 +240,10 @@ def _checked_index(idx: Int, n: Int) raises -> Int:
     raise Error("HOTLOOP_INDEX_ERROR: index out of range")
 
 @always_inline
+def _safe_array_index(idx: Int) -> Int:
+    return idx
+
+@always_inline
 def _py_bool(x: Bool) -> Bool:
     return x
 
@@ -359,6 +363,18 @@ struct _PyStr(Sized):
         if self._is_ascii:
             return Int(self._s.as_bytes()[i])
         return Int(self._cps[i])
+
+    @always_inline
+    def get_cp_fast(self, idx: Int) -> Codepoint:
+        if self._is_ascii:
+            return Codepoint(self._s.as_bytes()[_safe_array_index(idx)])
+        return self._cps[_safe_array_index(idx)]
+
+    @always_inline
+    def get_ord_fast(self, idx: Int) -> Int:
+        if self._is_ascii:
+            return Int(self._s.as_bytes()[_safe_array_index(idx)])
+        return Int(self._cps[_safe_array_index(idx)])
 
     @always_inline
     def __getitem__(self, s: Slice) -> String:
@@ -544,10 +560,10 @@ def _native_chunk_document(_arg_text: String, chunk_size: Int, chunk_overlap: In
         var lookback_limit: Int = _checked_sub(ideal_end, chunk_overlap)
         if (lookback_limit < start):
             lookback_limit = start
-        var boundary: Int = _checked_neg(1)
+        var boundary: Int = -1
         var idx: Int = ideal_end
         while (idx > lookback_limit):
-            var ch: Codepoint = text.get_cp(idx)
+            var ch: Codepoint = text.get_cp_fast(idx)
             if ((Int(ch) == 32) or (Int(ch) == 10) or (Int(ch) == 9)):
                 boundary = idx
                 break

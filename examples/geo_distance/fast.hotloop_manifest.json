@@ -1,8 +1,8 @@
 {
   "source_file": "original.py",
   "source_sha256": "a17b2d51fc164261a3104d4174992db49d9f6d939eca0bb850e85018ad2f4c70",
-  "so_sha256": "dae3844d038c898bc02b0d9e7e176017c0a89b76f49d367ac074f3985bc4eef5",
+  "so_sha256": "9fa36e3c343e09e1cf560bb0d765ac3810b67971cdc9abaf736a9f1a246a4066",
   "compiler_version": "Mojo 1.2.0 (2016d0cd)",
-  "transpiler_version": "0.1.0-ast",
-  "build_timestamp": 1794782892.5183334
+  "transpiler_version": "0.2.0-ast",
+  "build_timestamp": 1794915779.850549
 }

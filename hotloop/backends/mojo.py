@@ -26,7 +26,7 @@ from typing import Optional, Tuple
 from .base import BaseBackend
 from ..ast_transpiler import transpile_python_to_mojo, ASTTranspileError
 
-TRANSPILER_VERSION = "0.1.0-ast"
+TRANSPILER_VERSION = "0.2.0-ast"
 
 
 def _atomic_write_text(target_path: str, content: str) -> None:
