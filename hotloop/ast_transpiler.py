@@ -62,28 +62,43 @@ def parse_type_annotation(node: Optional[ast.AST]) -> Tuple[str, str, Optional[s
             return "bool", "Bool", None
         elif t_id == "str":
             return "str", "String", None
+        elif t_id in ("ndarray", "NDArray"):
+            return "list[float]", "List[Float64]", "float"
         elif t_id in ("list", "List"):
             raise ASTTranspileError("Generic list must have element type, e.g. list[float] or list[int]")
         else:
             raise ASTTranspileError(f"Unsupported type '{t_id}'. Supported: int, float, bool, str, list[int], list[float]")
 
+    elif isinstance(node, ast.Attribute):
+        if node.attr in ("ndarray", "NDArray") or (isinstance(node.value, ast.Name) and node.value.id in ("np", "numpy")):
+            return "list[float]", "List[Float64]", "float"
+        raise ASTTranspileError(f"Unsupported type annotation attribute: {ast.dump(node)}")
+
     elif isinstance(node, ast.Subscript):
-        if isinstance(node.value, ast.Name) and node.value.id in ("list", "List"):
+        is_list = isinstance(node.value, ast.Name) and node.value.id in ("list", "List")
+        is_ndarray = (
+            (isinstance(node.value, ast.Name) and node.value.id in ("ndarray", "NDArray"))
+            or (isinstance(node.value, ast.Attribute) and node.value.attr in ("ndarray", "NDArray"))
+        )
+        if is_list or is_ndarray:
             elem_node = node.slice
+            elem_id = ""
             if isinstance(elem_node, ast.Name):
                 elem_id = elem_node.id
-                if elem_id == "int":
-                    return "list[int]", "List[Int]", "int"
-                elif elem_id == "float":
-                    return "list[float]", "List[Float64]", "float"
-                elif elem_id == "bool":
-                    return "list[bool]", "List[Bool]", "bool"
-                elif elem_id == "str":
-                    return "list[str]", "List[String]", "str"
-                else:
-                    raise ASTTranspileError(f"Unsupported list element type '{elem_id}'. Supported: int, float, bool, str")
+            elif isinstance(elem_node, ast.Attribute):
+                elem_id = elem_node.attr
+            if elem_id in ("int", "int64", "Int64", "int32"):
+                return "list[int]", "List[Int]", "int"
+            elif elem_id in ("float", "float64", "Float64", "float32"):
+                return "list[float]", "List[Float64]", "float"
+            elif elem_id == "bool":
+                return "list[bool]", "List[Bool]", "bool"
+            elif elem_id == "str":
+                return "list[str]", "List[String]", "str"
             else:
-                raise ASTTranspileError(f"Unsupported complex list element type: {ast.dump(elem_node)}")
+                if is_ndarray:
+                    return "list[float]", "List[Float64]", "float"
+                raise ASTTranspileError(f"Unsupported list element type '{elem_id}'. Supported: int, float, bool, str")
         else:
             raise ASTTranspileError(f"Unsupported subscripted type annotation: {ast.dump(node)}")
 
@@ -326,6 +341,10 @@ def _checked_index(idx: Int, n: Int) raises -> Int:
     if UInt(j) < UInt(n):
         return j
     raise Error("HOTLOOP_INDEX_ERROR: index out of range")
+
+@always_inline
+def _safe_array_index(idx: Int) -> Int:
+    return idx
 
 @always_inline
 def _py_bool(x: Bool) -> Bool:
@@ -788,6 +807,91 @@ def _collect_codepoint_vars(func_def: ast.FunctionDef, pystr_vars: Set[str]) -> 
     return candidates
 
 
+def _eval_constant_expr(node: ast.expr) -> Optional[object]:
+    """
+    Evaluates constant math and literals at transpile time.
+    Returns Python scalar value or None if not statically evaluable.
+    """
+    if isinstance(node, ast.Constant):
+        if isinstance(node.value, (int, float, bool)):
+            return node.value
+        return None
+    elif isinstance(node, ast.Attribute):
+        if isinstance(node.value, ast.Name) and node.value.id == "math":
+            if node.attr == "pi":
+                return 3.141592653589793
+            elif node.attr == "e":
+                return 2.718281828459045
+            elif node.attr == "tau":
+                return 6.283185307179586
+        return None
+    elif isinstance(node, ast.UnaryOp):
+        val = _eval_constant_expr(node.operand)
+        if val is not None and isinstance(val, (int, float, bool)):
+            if isinstance(node.op, ast.USub):
+                return -val
+            elif isinstance(node.op, ast.UAdd):
+                return +val
+            elif isinstance(node.op, ast.Not):
+                return not val
+            elif isinstance(node.op, ast.Invert) and isinstance(val, int):
+                return ~val
+        return None
+    elif isinstance(node, ast.BinOp):
+        left = _eval_constant_expr(node.left)
+        right = _eval_constant_expr(node.right)
+        if left is not None and right is not None and isinstance(left, (int, float, bool)) and isinstance(right, (int, float, bool)):
+            try:
+                if isinstance(node.op, ast.Add):
+                    return left + right
+                elif isinstance(node.op, ast.Sub):
+                    return left - right
+                elif isinstance(node.op, ast.Mult):
+                    return left * right
+                elif isinstance(node.op, ast.Div):
+                    return left / right if right != 0 else None
+                elif isinstance(node.op, ast.FloorDiv):
+                    return left // right if right != 0 else None
+                elif isinstance(node.op, ast.Mod):
+                    return left % right if right != 0 else None
+                elif isinstance(node.op, ast.Pow):
+                    if -100 < right < 100:
+                        return left ** right
+            except (ArithmeticError, ValueError):
+                return None
+        return None
+    elif isinstance(node, ast.Call):
+        if (
+            isinstance(node.func, ast.Attribute)
+            and isinstance(node.func.value, ast.Name)
+            and node.func.value.id == "math"
+        ):
+            fn_name = node.func.attr
+            c_args = [_eval_constant_expr(a) for a in node.args]
+            if all(a is not None and isinstance(a, (int, float)) for a in c_args):
+                try:
+                    import math as _py_math
+                    fn = getattr(_py_math, fn_name, None)
+                    if fn and callable(fn):
+                        return fn(*c_args)
+                except Exception:
+                    return None
+    return None
+
+
+class _SubexprReplacer(ast.NodeTransformer):
+    """Replaces occurrences of target AST subexpression with a hoisted variable reference."""
+    def __init__(self, target_dump: str, replacement_name: str):
+        self.target_dump = target_dump
+        self.replacement_name = replacement_name
+
+    def visit_BinOp(self, node: ast.BinOp) -> ast.AST:
+        self.generic_visit(node)
+        if ast.dump(node) == self.target_dump:
+            return ast.copy_location(ast.Name(id=self.replacement_name, ctx=ast.Load()), node)
+        return node
+
+
 class MojoASTTranspiler:
     def __init__(self, mod_name: str, known_funcs: Optional[Set[str]] = None):
         self.mod_name = mod_name
@@ -810,6 +914,61 @@ class MojoASTTranspiler:
     def _next_tmp(self, prefix: str = "_hot_tmp") -> str:
         self._tmp_counter += 1
         return f"{prefix}_{self._tmp_counter}"
+
+    def _collect_and_hoist_invariants(
+        self, body: List[ast.stmt], loop_var: Optional[str] = None
+    ) -> Tuple[List[str], List[ast.stmt]]:
+        """
+        Detects subexpressions in loop body that depend exclusively on variables
+        unmodified within the loop, emits them before the loop, and substitutes them.
+        """
+        modified_vars: Set[str] = set()
+        if loop_var:
+            modified_vars.add(loop_var)
+
+        for stmt in body:
+            for n in ast.walk(stmt):
+                if isinstance(n, ast.Assign):
+                    for t in n.targets:
+                        if isinstance(t, ast.Name):
+                            modified_vars.add(t.id)
+                elif isinstance(n, (ast.AnnAssign, ast.AugAssign)):
+                    if isinstance(n.target, ast.Name):
+                        modified_vars.add(n.target.id)
+
+        candidate_subexprs: List[ast.BinOp] = []
+        seen_dumps: Set[str] = set()
+
+        for stmt in body:
+            for n in ast.walk(stmt):
+                if isinstance(n, ast.BinOp):
+                    names_in_n = {child.id for child in ast.walk(n) if isinstance(child, ast.Name)}
+                    if names_in_n and names_in_n.isdisjoint(modified_vars):
+                        if all(any(name in s for s in self.scopes) for name in names_in_n):
+                            has_calls_or_subs = any(isinstance(c, (ast.Call, ast.Subscript)) for c in ast.walk(n))
+                            if not has_calls_or_subs:
+                                d = ast.dump(n)
+                                if d not in seen_dumps:
+                                    seen_dumps.add(d)
+                                    candidate_subexprs.append(n)
+
+        if not candidate_subexprs:
+            return [], body
+
+        hoisted_lines: List[str] = []
+        transformed_body = list(body)
+
+        for sub_node in candidate_subexprs:
+            inv_name = self._next_tmp("_inv")
+            expr_code = self.visit_expr(sub_node)
+            self.scopes[-1].add(inv_name)
+            hoisted_lines.append(f"{self.indent()}var {inv_name} = {expr_code}")
+
+            target_dump = ast.dump(sub_node)
+            replacer = _SubexprReplacer(target_dump, inv_name)
+            transformed_body = [replacer.visit(s) for s in transformed_body]
+
+        return hoisted_lines, transformed_body
 
     def _emit_cond_expr(self, node: ast.expr) -> str:
         expr_code = self.visit_expr(node)
@@ -1017,9 +1176,10 @@ class MojoASTTranspiler:
                 expected_dtype = "float64" if elem_type == "float" else "int64"
                 dtype_checks.append(
                     f'    if _has_ctypes:\n'
-                    f'        if not (Bool(py=_builtins.hasattr(arg{i}, "ctypes")) and Bool(py=_builtins.hasattr(arg{i}, "ndim")) and Bool(py=_builtins.hasattr(arg{i}, "dtype")) and Bool(py=_builtins.hasattr(arg{i}, "flags"))):\n'
-                    f'            _has_ctypes = False\n'
-                    f'        elif Int(py=arg{i}.ndim) != 1 or String(py=arg{i}.dtype.name) != "{expected_dtype}" or not Bool(py=arg{i}.flags.c_contiguous):\n'
+                    f'        try:\n'
+                    f'            if not Bool(py=arg{i}.flags.c_contiguous) or Int(py=arg{i}.ndim) != 1 or String(py=arg{i}.dtype.name) != "{expected_dtype}":\n'
+                    f'                _has_ctypes = False\n'
+                    f'        except:\n'
                     f'            _has_ctypes = False'
                 )
             checks_block = "\n".join(dtype_checks)
@@ -1261,6 +1421,7 @@ class MojoASTTranspiler:
             if not isinstance(node.target, ast.Name):
                 raise ASTTranspileError("Only simple variable loop targets are supported")
             var_name = node.target.id
+            hoisted_decls, loop_body = self._collect_and_hoist_invariants(node.body, loop_var=var_name)
 
             inbounds_entry = None
             if isinstance(node.iter, ast.Call) and isinstance(node.iter.func, ast.Name) and node.iter.func.id == "range":
@@ -1306,7 +1467,8 @@ class MojoASTTranspiler:
                     }
                     loop_var_type = elem_t_map.get(iter_t or "", "")
 
-            lines = [f"{self.indent()}for {var_name} in {iter_code}:"]
+            lines = list(hoisted_decls)
+            lines.append(f"{self.indent()}for {var_name} in {iter_code}:")
             self.indent_level += 1
             self.scopes.append({var_name})
             prev_t = self.var_types.get(var_name)
@@ -1314,7 +1476,7 @@ class MojoASTTranspiler:
                 self.var_types[var_name] = loop_var_type
             if inbounds_entry:
                 self.loop_inbounds.append({inbounds_entry[0]: inbounds_entry[1]})
-            for s in node.body:
+            for s in loop_body:
                 lines.append(self.visit_stmt(s))
             if inbounds_entry:
                 self.loop_inbounds.pop()
@@ -1327,11 +1489,13 @@ class MojoASTTranspiler:
             return "\n".join(lines)
 
         elif isinstance(node, ast.While):
+            hoisted_decls, loop_body = self._collect_and_hoist_invariants(node.body)
+            lines = list(hoisted_decls)
             test_code = self._emit_cond_expr(node.test)
-            lines = [f"{self.indent()}while {test_code}:"]
+            lines.append(f"{self.indent()}while {test_code}:")
             self.indent_level += 1
             self.scopes.append(set())
-            for s in node.body:
+            for s in loop_body:
                 lines.append(self.visit_stmt(s))
             self.scopes.pop()
             self.indent_level -= 1
@@ -1354,6 +1518,13 @@ class MojoASTTranspiler:
             raise ASTTranspileError(f"Unsupported statement type: {type(node).__name__}")
 
     def visit_expr(self, node: ast.expr) -> str:
+        if not isinstance(node, ast.Constant):
+            c_val = _eval_constant_expr(node)
+            if c_val is not None:
+                if isinstance(c_val, bool):
+                    return "True" if c_val else "False"
+                return repr(c_val)
+
         if isinstance(node, ast.Constant):
             if isinstance(node.value, bool):
                 return "True" if node.value else "False"
@@ -1401,8 +1572,9 @@ class MojoASTTranspiler:
                                     and isinstance(node.slice.left, ast.Name)
                                     and node.slice.left.id == lvar
                                     and isinstance(node.slice.right, ast.Constant)
-                                    and node.slice.right.value == 1
-                                    and info["lower"] >= 1
+                                    and isinstance(node.slice.right.value, int)
+                                    and node.slice.right.value >= 1
+                                    and info["lower"] >= node.slice.right.value
                                 ):
                                     is_proven = True
                                     break
@@ -1411,8 +1583,8 @@ class MojoASTTranspiler:
 
                 if is_proven:
                     if isinstance(node.value, ast.Name) and node.value.id in self.active_ptr_lens:
-                        return f"{val}[unsafe_offset={idx}]"
-                    return f"{val}[{idx}]"
+                        return f"{val}[unsafe_offset=_safe_array_index({idx})]"
+                    return f"{val}[_safe_array_index({idx})]"
 
                 if isinstance(node.value, ast.Name) and node.value.id in self.active_ptr_lens:
                     return f"{val}[unsafe_offset=_checked_index({idx}, {self.active_ptr_lens[node.value.id]})]"
