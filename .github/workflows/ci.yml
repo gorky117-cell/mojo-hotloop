@@ -5,9 +5,10 @@ permissions:
 
 on:
   push:
-    branches: [main, master]
+    branches: [main, master, "feat/**"]
   pull_request:
     branches: [main, master]
+  workflow_dispatch:
 
 jobs:
   python-tests:
@@ -179,3 +180,7 @@ jobs:
       - name: Run Phase E.8 holdout generalization suite (25 holdout functions)
         run: |
           python tests/test_generalization_holdout_e8.py
+
+      - name: Run full combined pytest suite (86 tests)
+        run: |
+          pytest tests/ -q

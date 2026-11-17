@@ -178,12 +178,12 @@ The five compiler passes were audited in `hotloop/ast_transpiler.py` and `hotloo
 
 ## 7. Final Release Packaging & SHA-256 Checksums
 
-Fresh distribution packages were built from final commit `07e3189` via `python3 -m build`:
+Fresh distribution packages were built from final candidate commit `9d07d5b` via `python3 -m build`:
 
 | Distribution File | Size (Bytes) | SHA-256 Checksum |
 |---|---|---|
-| `mojo_hotloop-0.2.0-py3-none-any.whl` | 41,371 | `212b2961be6660ddb61fc89863ffcd50f42cb617d6b43d4f723603419c6bede7` |
-| `mojo_hotloop-0.2.0.tar.gz` | 68,149 | `985bff5871d2512a5e8719efd980465b758c704e1c90871b80e9b36c2843c8e2` |
+| `mojo_hotloop-0.2.0-py3-none-any.whl` | 41,371 | `1564934f7ac9da6a2f9975cb1ad897568a6abad882f5a67edd083f7c08d4f0a0` |
+| `mojo_hotloop-0.2.0.tar.gz` | 68,155 | `9c38934762f6bc8bd8b1d133b0d2708cd45a97cd3ab55485d096c2bba7e954da` |
 
 ### Clean Virtual Environment 8-Point Audit
 Installed built wheel in clean isolated `/tmp/clean_audit_venv` outside the repository:
