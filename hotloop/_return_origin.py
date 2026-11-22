@@ -305,6 +305,10 @@ class ReturnOrigin:
         for call in ast.walk(self.fn):
             if isinstance(call,ast.Call) and isinstance(call.func,ast.Name) and call.func.id=="print":
                 return "Python stream effects require Python execution"
+            if (isinstance(call,ast.Call) and isinstance(call.func,ast.Attribute)
+                    and call.func.attr in {"startswith","endswith"}
+                    and (len(call.args)>1 or call.keywords)):
+                return "bounded or keyword string-prefix comparisons require Python"
             if isinstance(call,ast.Call) and isinstance(call.func,ast.Name) and call.func.id in INTRINSICS and (call.func.id in bound or call.func.id in self.layout.function_nodes):
                 return "shadowed Python intrinsic requires Python"
             if isinstance(call,ast.Call) and isinstance(call.func,ast.Attribute) and call.func.attr in {"write","clear"} and self.expression_type(call.func.value)=="str":

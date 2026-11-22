@@ -15,7 +15,8 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 - Verify compiler implementation, SDK files, build settings, source and runtime ABI in cache identity; verify full binary contents and pin the checked inode during loading. Rebuild older artifacts.
 - Preserve checked bounds, loop evaluation order, integer overflow handling, separate floating-point rounding and observable fallback/strict behavior.
 - Withdraw native ndarray/typed-buffer borrowing, mutation/shared-container paths and other unproven native cases. Exact builtin lists use validated private copies. Python fallback is correct execution, not native acceleration.
-- Preserve the published offline CLI syntax/dry-run flags and string prefix/suffix support. The historical NumPy example remains available with its old native-route expectations disclosed.
+- Route bounded/keyword prefix-suffix comparisons to Python after Unicode parity failures were independently reproduced; unbounded prefix/suffix native support remains. Reject unsupported variadic signatures through observable semantic fallback before application effects.
+- Preserve the published offline CLI syntax/dry-run flags and unbounded string prefix/suffix support. The historical NumPy example remains available with its old native-route expectations disclosed.
 - Existing matched measurements show useful PII/PDF/positive-tick backtesting acceleration on qualifying sizes; tiny calls and fallback-heavy workloads can lose. Historical maximum speedups are not current claims.
 - The original frozen v0.2.0 suite retains 11 documented failures (native-route withdrawals/obsolete assertions), separately from the current integration suite. See the owner-approval report for fresh counts, exact source and artifacts.
 

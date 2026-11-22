@@ -296,6 +296,8 @@ def _create_hotloop_wrapper(fn: Callable, strict: bool = False, force_native: bo
     def wrapper(*args, **kwargs):
         if wrapper._compiled is not None and provenance_entry is not None and not provenance_entry.root_valid():
             return python_semantics(args,kwargs,"callable code/default ownership changed")
+        if wrapper._compiled is not None and not _can_bind_sig:
+            return python_semantics(args, kwargs, "callable signature requires Python execution")
         if _can_bind_sig and (kwargs or len(args) != _param_count):
             try:
                 bound = _sig.bind(*args, **kwargs)
