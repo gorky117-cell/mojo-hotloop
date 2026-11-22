@@ -3,7 +3,8 @@ import os
 import random
 import sys
 
-sys.path.insert(0, "/home/gaurav/mojo-hotloop")
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
 from examples.geo_distance.original import accumulate_haversine_distance
 
@@ -23,6 +24,8 @@ def numpy_haversine(lats: list[float], lons: list[float]) -> float:
     return float(np.sum(6371.0 * c))
 
 def run_tests():
+    from hotloop import hotloop
+    forced = hotloop(strict=True)(accumulate_haversine_distance._original)
     print("[*] Starting Stage D6: Geo Distance Verification Suite...")
 
     # 1. Deterministic cases
@@ -51,9 +54,13 @@ def run_tests():
         np_lats = np.array(lats, dtype=np.float64)
         np_lons = np.array(lons, dtype=np.float64)
         mojo_res = accumulate_haversine_distance(np_lats, np_lons)
+        assert accumulate_haversine_distance._last_backend == "python_fallback_semantics"
+        assert type(mojo_res) is type(accumulate_haversine_distance._original(np_lats, np_lons))
+        native_res = forced(lats, lons)
+        assert math.isclose(native_res, py_res, rel_tol=1e-8, abs_tol=1e-8)
 
-        if accumulate_haversine_distance._last_backend != "native":
-            print(f"[FAIL] Expected native backend for NumPy trail, got {accumulate_haversine_distance._last_backend}")
+        if forced._last_backend != "native":
+            print(f"[FAIL] Expected native backend for forced list trail, got {accumulate_haversine_distance._last_backend}")
             sys.exit(1)
 
         fb_res = accumulate_haversine_distance(lats, lons)
@@ -98,8 +105,12 @@ def run_tests():
         np_lons = np.array(lons, dtype=np.float64)
         py_res = accumulate_haversine_distance._original(lats, lons)
         mojo_res = accumulate_haversine_distance(np_lats, np_lons)
+        assert accumulate_haversine_distance._last_backend == "python_fallback_semantics"
+        assert type(mojo_res) is type(accumulate_haversine_distance._original(np_lats, np_lons))
+        native_res = forced(lats, lons)
+        assert math.isclose(native_res, py_res, rel_tol=1e-8, abs_tol=1e-8)
 
-        if accumulate_haversine_distance._last_backend != "native":
+        if forced._last_backend != "native":
             print(f"[FAIL] Expected native backend at #{test_idx}, got {accumulate_haversine_distance._last_backend}")
             sys.exit(1)
 
@@ -114,8 +125,8 @@ def run_tests():
         total_points += n_points
 
     total_tests = deterministic_passed + random_passed
-    native_runs = accumulate_haversine_distance._call_count_native
-    print(f"[✓] Stage D6: Geo Distance PASSED: {total_tests} tests verified ({total_points} GPS waypoints, 100% matched against NumPy & Py, {native_runs} native @hotloop ndarray executions, 0 mismatches). Zero errors.")
+    native_runs = forced._call_count_native
+    print(f"[✓] Stage D6: Geo Distance PASSED: {total_tests} tests verified ({total_points} GPS waypoints, 100% matched against NumPy & Py, {native_runs} forced native boxed-list calls and {total_tests} ndarray Python fallback calls, 0 mismatches). Zero errors.")
 
 if __name__ == "__main__":
     run_tests()

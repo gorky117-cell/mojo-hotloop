@@ -7,6 +7,17 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ---
 
+## 0.2.1 — Corrective release candidate (unpublished)
+
+- Repair scalar, constant, argument and list-element return ownership through verified CPython code/default/helper context; reject unproven object sharing and decorated-helper policies.
+- Qualify native execution only on GIL-enabled, 64-bit, little-endian Linux x86-64 CPython 3.12.16 with the reviewed Mojo 1.2.0 toolchain. Other environments use Python where installation/toolchain loading permits; strict calls reject unqualified entries.
+- Verify compiler implementation, SDK files, build settings, source and runtime ABI in cache identity; verify full binary contents and pin the checked inode during loading. Rebuild older artifacts.
+- Preserve checked bounds, loop evaluation order, integer overflow handling, separate floating-point rounding and observable fallback/strict behavior.
+- Withdraw native ndarray/typed-buffer borrowing, mutation/shared-container paths and other unproven native cases. Exact builtin lists use validated private copies. Python fallback is correct execution, not native acceleration.
+- Preserve the published offline CLI syntax/dry-run flags and string prefix/suffix support. The historical NumPy example remains available with its old native-route expectations disclosed.
+- Existing matched measurements show useful PII/PDF/positive-tick backtesting acceleration on qualifying sizes; tiny calls and fallback-heavy workloads can lose. Historical maximum speedups are not current claims.
+- The original frozen v0.2.0 suite retains 11 documented failures (native-route withdrawals/obsolete assertions), separately from the current integration suite. See the owner-approval report for fresh counts, exact source and artifacts.
+
 ## [0.2.0] — 2026-11-17 — Developer Preview
 
 ### Summary

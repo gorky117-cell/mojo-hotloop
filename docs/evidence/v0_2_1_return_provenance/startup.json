@@ -1,0 +1,155 @@
+{
+  "protocol": "5 fresh processes per runtime; launch/load/first call; warm OS caches",
+  "rows": [
+    {
+      "package": "/tmp/mojo-remediation.bGitb68g/candidate/venv/lib/python3.12/site-packages/hotloop/__init__.py",
+      "load_seconds": 0.7300205880001158,
+      "call_seconds": 0.00023569999984829337,
+      "identity": false,
+      "backend": "native",
+      "process_seconds": 0.7832681090001188,
+      "label": "baseline",
+      "trial": 1
+    },
+    {
+      "package": "/tmp/hotloop-return.yUC7GEbn/release-gate/venv/lib/python3.12/site-packages/hotloop/__init__.py",
+      "load_seconds": 0.8067032169999493,
+      "call_seconds": 0.00030940100009502203,
+      "identity": true,
+      "backend": "native",
+      "process_seconds": 0.8624577390000923,
+      "label": "origin",
+      "trial": 1
+    },
+    {
+      "package": "/tmp/hotloop-provenance/final-gate/venv/lib/python3.12/site-packages/hotloop/__init__.py",
+      "load_seconds": 0.798278314000072,
+      "call_seconds": 0.0002857009999388538,
+      "identity": true,
+      "backend": "native",
+      "process_seconds": 0.865434040999844,
+      "label": "candidate",
+      "trial": 1
+    },
+    {
+      "package": "/tmp/mojo-remediation.bGitb68g/candidate/venv/lib/python3.12/site-packages/hotloop/__init__.py",
+      "load_seconds": 0.7120336810000936,
+      "call_seconds": 0.000238500000023123,
+      "identity": false,
+      "backend": "native",
+      "process_seconds": 0.7649755019999702,
+      "label": "baseline",
+      "trial": 2
+    },
+    {
+      "package": "/tmp/hotloop-provenance/final-gate/venv/lib/python3.12/site-packages/hotloop/__init__.py",
+      "load_seconds": 0.715688825999905,
+      "call_seconds": 0.0003050000000257569,
+      "identity": true,
+      "backend": "native",
+      "process_seconds": 0.7676172420001421,
+      "label": "candidate",
+      "trial": 2
+    },
+    {
+      "package": "/tmp/hotloop-return.yUC7GEbn/release-gate/venv/lib/python3.12/site-packages/hotloop/__init__.py",
+      "load_seconds": 0.7283777019999889,
+      "call_seconds": 0.00022979999994277023,
+      "identity": true,
+      "backend": "native",
+      "process_seconds": 0.7812854090000201,
+      "label": "origin",
+      "trial": 2
+    },
+    {
+      "package": "/tmp/hotloop-provenance/final-gate/venv/lib/python3.12/site-packages/hotloop/__init__.py",
+      "load_seconds": 0.729040151000163,
+      "call_seconds": 0.000281200000017634,
+      "identity": true,
+      "backend": "native",
+      "process_seconds": 0.7819156909999947,
+      "label": "candidate",
+      "trial": 3
+    },
+    {
+      "package": "/tmp/mojo-remediation.bGitb68g/candidate/venv/lib/python3.12/site-packages/hotloop/__init__.py",
+      "load_seconds": 0.7249510470001042,
+      "call_seconds": 0.0002318009999271453,
+      "identity": false,
+      "backend": "native",
+      "process_seconds": 0.777366886999971,
+      "label": "baseline",
+      "trial": 3
+    },
+    {
+      "package": "/tmp/hotloop-return.yUC7GEbn/release-gate/venv/lib/python3.12/site-packages/hotloop/__init__.py",
+      "load_seconds": 0.7274585490001755,
+      "call_seconds": 0.0002573009999196074,
+      "identity": true,
+      "backend": "native",
+      "process_seconds": 0.7798826890000328,
+      "label": "origin",
+      "trial": 3
+    },
+    {
+      "package": "/tmp/hotloop-provenance/final-gate/venv/lib/python3.12/site-packages/hotloop/__init__.py",
+      "load_seconds": 0.730300151000165,
+      "call_seconds": 0.0005813010000110808,
+      "identity": true,
+      "backend": "native",
+      "process_seconds": 0.7836888919998728,
+      "label": "candidate",
+      "trial": 4
+    },
+    {
+      "package": "/tmp/hotloop-return.yUC7GEbn/release-gate/venv/lib/python3.12/site-packages/hotloop/__init__.py",
+      "load_seconds": 0.7290021510000315,
+      "call_seconds": 0.00022109999986241746,
+      "identity": true,
+      "backend": "native",
+      "process_seconds": 0.7826800909999747,
+      "label": "origin",
+      "trial": 4
+    },
+    {
+      "package": "/tmp/mojo-remediation.bGitb68g/candidate/venv/lib/python3.12/site-packages/hotloop/__init__.py",
+      "load_seconds": 0.7641850770000929,
+      "call_seconds": 0.00026440000010552467,
+      "identity": false,
+      "backend": "native",
+      "process_seconds": 0.818823618000124,
+      "label": "baseline",
+      "trial": 4
+    },
+    {
+      "package": "/tmp/hotloop-return.yUC7GEbn/release-gate/venv/lib/python3.12/site-packages/hotloop/__init__.py",
+      "load_seconds": 0.7539104720001433,
+      "call_seconds": 0.0002374999999119609,
+      "identity": true,
+      "backend": "native",
+      "process_seconds": 0.80978780800001,
+      "label": "origin",
+      "trial": 5
+    },
+    {
+      "package": "/tmp/hotloop-provenance/final-gate/venv/lib/python3.12/site-packages/hotloop/__init__.py",
+      "load_seconds": 0.7367804450000222,
+      "call_seconds": 0.00044610000009015494,
+      "identity": true,
+      "backend": "native",
+      "process_seconds": 0.793393647999892,
+      "label": "candidate",
+      "trial": 5
+    },
+    {
+      "package": "/tmp/mojo-remediation.bGitb68g/candidate/venv/lib/python3.12/site-packages/hotloop/__init__.py",
+      "load_seconds": 0.8710806530000355,
+      "call_seconds": 0.0002614009999888367,
+      "identity": false,
+      "backend": "native",
+      "process_seconds": 0.9323926570000367,
+      "label": "baseline",
+      "trial": 5
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "application": "quant_backtest",
+  "public_wrappers": [
+    {
+      "function": "stateful_trailing_backtest",
+      "native_calls": 1117,
+      "fallback_calls": 0,
+      "last_backend": "native"
+    }
+  ]
+}

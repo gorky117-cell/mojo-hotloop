@@ -1,0 +1,227 @@
+--- security/pii/fast.mojo
++++ proposed/pii/fast.mojo
+@@ -529,16 +529,28 @@
+     try:
+         var m = PythonModuleBuilder("fast")
+         m.def_function[_pywrap_scrub_pii]("scrub_pii")
++        m.def_function[_hotloop_context_spec_impl]("_hotloop_provenance_v1")
+         return m.finalize()
+     except e:
+         abort(String("error creating Python Mojo module: ", e))
+ 
+-def _pywrap_scrub_pii(arg0: PythonObject) raises -> PythonObject:
++def _pywrap_scrub_pii(_hotloop_origin_context: PythonObject, arg0: PythonObject) raises -> PythonObject:
+     var _guard = Python.import_module("hotloop._arguments")
+     var _input0 = _guard.checked_argument(arg0, "str")
+     var text = String(py=_input0)
+-    var _res = _native_scrub_pii(text)
++    var _hotloop_origin_result = _native_return_origin_scrub_pii(text)
++    if _hotloop_origin_result[1] == -2:
++        return _hotloop_origin_context[_hotloop_origin_result[2]]
++    if _hotloop_origin_result[1] == -3:
++        var _owners = Python.import_module("hotloop._provenance")
++        return _owners.fresh_string(PythonObject(_hotloop_origin_result[0]))
++    if _hotloop_origin_result[1] == 0:
++        return arg0
++    var _res = _hotloop_origin_result[0]
+     return PythonObject(_res)
++
++def _hotloop_context_spec_impl() raises -> PythonObject:
++    return PythonObject(String('{"builtins":{"check_luhn":["len","range"],"check_pan":["len","range"],"check_phone":["len"],"check_verhoeff":["len","range"],"scrub_pii":["int","len"]},"calls":{"check_luhn":[],"check_pan":[],"check_phone":[],"check_verhoeff":[],"scrub_pii":["check_luhn","check_pan","check_phone","check_verhoeff"]},"canonical":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,43,44,45,48,49,53,56,57,59,61,63,65,66,67,68,70,72,74,77,81,82,84,86,87,89,91,93,95,97,101,103,106,107,109,111,121],"codes":{"check_luhn":"b7ddaff453a545c044096974b68576a01f56e957054cf51c61ced1d6b7883ecd","check_pan":"75bab45b808ef52c814a78ffb4de7ec10b0d44fbfe12c20ef1190d507523629f","check_phone":"c84a00dd49aced46f138e8fb0e10f3a373be1a25062c87545318959ed615092c","check_verhoeff":"47102f3abbbe9baac5e5879c8b36ef438deab35bba78e10a30c8c6d5535cab89","scrub_pii":"97aed1cdd5f59be96c6a469431e0ad1b1b06f303a91411d03220f0b459ca3b8b"},"constants":[["check_luhn",1],["check_luhn",2],["check_luhn",3],["check_luhn",4],["check_luhn",5],["check_luhn",5],["check_luhn",5],["check_luhn",6],["check_luhn",6],["check_luhn",7],["check_luhn",4],["check_verhoeff",1],["check_verhoeff",2],["check_verhoeff",3],["check_verhoeff",4],["check_verhoeff",2],["check_verhoeff",3],["check_verhoeff",7],["check_verhoeff",8],["check_verhoeff",9],["check_verhoeff",8],["check_verhoeff",3],["check_phone",1],["check_phone",2],["check_phone",3],["check_phone",4],["check_phone",2],["check_phone",2],["check_phone",5],["check_phone",3],["check_phone",6],["check_phone",2],["check_phone",7],["check_phone",5],["check_phone",5],["check_phone",8],["check_phone",3],["check_phone",9],["check_pan",1],["check_pan",2],["check_pan",3],["check_pan",4],["check_pan",5],["check_pan",2],["check_pan",3],["check_pan",6],["check_pan",7],["check_pan",8],["check_pan",2],["check_pan",6],["check_pan",4],["check_pan",5],["scrub_pii",1],["scrub_pii",2],["scrub_pii",3],["scrub_pii",4],["scrub_pii",2],["scrub_pii",5],["scrub_pii",3],["scrub_pii",5],["scrub_pii",4],["scrub_pii",5],["scrub_pii",6],["scrub_pii",5],["scrub_pii",7],["scrub_pii",8],["scrub_pii",8],["scrub_pii",8],["scrub_pii",8],["scrub_pii",3],["scrub_pii",8],["scrub_pii",4],["scrub_pii",8],["scrub_pii",6],["scrub_pii",8],["scrub_pii",7],["scrub_pii",9],["scrub_pii",8],["scrub_pii",6],["scrub_pii",7],["scrub_pii",10],["scrub_pii",5],["scrub_pii",5],["scrub_pii",6],["scrub_pii",5],["scrub_pii",7],["scrub_pii",2],["scrub_pii",5],["scrub_pii",3],["scrub_pii",5],["scrub_pii",4],["scrub_pii",5],["scrub_pii",11],["scrub_pii",5],["scrub_pii",12],["scrub_pii",5],["scrub_pii",6],["scrub_pii",5],["scrub_pii",7],["scrub_pii",6],["scrub_pii",7],["scrub_pii",5],["scrub_pii",10],["scrub_pii",5],["scrub_pii",13],["scrub_pii",14],["scrub_pii",5],["scrub_pii",5],["scrub_pii",6],["scrub_pii",5],["scrub_pii",7],["scrub_pii",5],["scrub_pii",3],["scrub_pii",4],["scrub_pii",11],["scrub_pii",12],["scrub_pii",6],["scrub_pii",7],["scrub_pii",15],["scrub_pii",16],["scrub_pii",17],["scrub_pii",5]],"math":{"check_luhn":[],"check_pan":[],"check_phone":[],"check_verhoeff":[],"scrub_pii":[]},"profile":"cpython-3.12.16-pylong30","version":1}'))
+ 
+ def _native_check_luhn(digits: List[Int]) raises -> Bool:
+     var n: Int = _len(digits)
+@@ -555,6 +567,21 @@
+         total = _checked_add(total, d)
+     return (_checked_mod(total, 10) == 0)
+ 
++def _native_return_origin_check_luhn(digits: List[Int]) raises -> Tuple[Bool, Int, Int]:
++    var n: Int = _len(digits)
++    if ((n < 13) or (n > 19)):
++        return (False, -2, 2)
++    var total: Int = 0
++    var parity: Int = _checked_mod(n, 2)
++    for i in range(n):
++        var d: Int = digits[_checked_index(i, len(digits))]
++        if (_checked_mod(i, 2) == parity):
++            d = _checked_mul(d, 2)
++            if (d > 9):
++                d = _checked_sub(d, 9)
++        total = _checked_add(total, d)
++    return ((_checked_mod(total, 10) == 0), -1, -1)
++
+ def _native_check_verhoeff(digits: List[Int]) raises -> Bool:
+     var n: Int = _len(digits)
+     if (n != 12):
+@@ -569,6 +596,20 @@
+         c = d_table[_checked_index(_checked_add(_checked_mul(c, 10), p_table[_checked_index(_checked_add(_checked_mul(_checked_mod(i, 8), 10), val), len(p_table))]), len(d_table))]
+     return (c == 0)
+ 
++def _native_return_origin_check_verhoeff(digits: List[Int]) raises -> Tuple[Bool, Int, Int]:
++    var n: Int = _len(digits)
++    if (n != 12):
++        return (False, -2, 12)
++    if (digits[_checked_index(0, len(digits))] < 2):
++        return (False, -2, 15)
++    var d_table: List[Int] = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4, 0, 6, 7, 8, 9, 5, 2, 3, 4, 0, 1, 7, 8, 9, 5, 6, 3, 4, 0, 1, 2, 8, 9, 5, 6, 7, 4, 0, 1, 2, 3, 9, 5, 6, 7, 8, 5, 9, 8, 7, 6, 0, 4, 3, 2, 1, 6, 5, 9, 8, 7, 1, 0, 4, 3, 2, 7, 6, 5, 9, 8, 2, 1, 0, 4, 3, 8, 7, 6, 5, 9, 3, 2, 1, 0, 4, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
++    var p_table: List[Int] = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 5, 7, 6, 2, 8, 3, 0, 9, 4, 5, 8, 0, 3, 7, 9, 6, 1, 4, 2, 8, 9, 1, 6, 0, 4, 3, 5, 2, 7, 9, 4, 5, 3, 1, 2, 6, 8, 7, 0, 4, 2, 8, 6, 5, 7, 3, 9, 0, 1, 2, 7, 9, 3, 8, 0, 6, 4, 1, 5, 7, 0, 4, 6, 9, 1, 3, 2, 5, 8]
++    var c: Int = 0
++    for i in range(n):
++        var val: Int = digits[_checked_index(_checked_sub(_checked_sub(n, 1), i), len(digits))]
++        c = d_table[_checked_index(_checked_add(_checked_mul(c, 10), p_table[_checked_index(_checked_add(_checked_mul(_checked_mod(i, 8), 10), val), len(p_table))]), len(d_table))]
++    return ((c == 0), -1, -1)
++
+ def _native_check_phone(digits: List[Int]) raises -> Bool:
+     var n: Int = _len(digits)
+     if (n == 10):
+@@ -578,6 +619,16 @@
+     elif ((n == 12) and (digits[_checked_index(0, len(digits))] == 9) and (digits[_checked_index(1, len(digits))] == 1)):
+         return (digits[_checked_index(2, len(digits))] >= 6)
+     return False
++
++def _native_return_origin_check_phone(digits: List[Int]) raises -> Tuple[Bool, Int, Int]:
++    var n: Int = _len(digits)
++    if (n == 10):
++        return ((digits[_checked_index(0, len(digits))] >= 6), -1, -1)
++    elif ((n == 11) and (digits[_checked_index(0, len(digits))] == 0)):
++        return ((digits[_checked_index(1, len(digits))] >= 6), -1, -1)
++    elif ((n == 12) and (digits[_checked_index(0, len(digits))] == 9) and (digits[_checked_index(1, len(digits))] == 1)):
++        return ((digits[_checked_index(2, len(digits))] >= 6), -1, -1)
++    return (False, -2, 37)
+ 
+ def _native_check_pan(_arg_s: String) raises -> Bool:
+     var s: _PyStr = _PyStr(_arg_s)
+@@ -593,6 +644,21 @@
+             return False
+     var ch_last: Codepoint = s.get_cp(9)
+     return ((Int(ch_last) >= 65) and (Int(ch_last) <= 90))
++
++def _native_return_origin_check_pan(_arg_s: String) raises -> Tuple[Bool, Int, Int]:
++    var s: _PyStr = _PyStr(_arg_s)
++    if (_len(s) != 10):
++        return (False, -2, 39)
++    for i in range(5):
++        var ch: Codepoint = s.get_cp(i)
++        if ((Int(ch) < 65) or (Int(ch) > 90)):
++            return (False, -2, 43)
++    for i in range(5, 9):
++        var ch: Codepoint = s.get_cp(i)
++        if ((Int(ch) < 48) or (Int(ch) > 57)):
++            return (False, -2, 48)
++    var ch_last: Codepoint = s.get_cp(9)
++    return (((Int(ch_last) >= 65) and (Int(ch_last) <= 90)), -1, -1)
+ 
+ def _native_scrub_pii(_arg_text: String) raises -> String:
+     var text: _PyStr = _PyStr(_arg_text)
+@@ -640,3 +706,111 @@
+         result.write(ch)
+         i = _checked_add(i, 1)
+     return result^
++
++def _native_return_origin_scrub_pii(_arg_text: String) raises -> Tuple[String, Int, Int]:
++    var text: _PyStr = _PyStr(_arg_text)
++    var _hotloop_origin_0: Int = -1
++    var _hotloop_origin_0_item: Int = -1
++    var _hotloop_origin_1: Int = -1
++    var _hotloop_origin_1_item: Int = -1
++    var result: String = String()
++    result.reserve_bytes(_len(text))
++    _hotloop_origin_1 = -2
++    _hotloop_origin_1_item = 52
++    var n: Int = _len(text)
++    var i: Int = 0
++    while (i < n):
++        var ch: Codepoint = text.get_cp(i)
++        if ((Int(ch) >= 65) and (Int(ch) <= 90) and ((i == 0) or (not (((text.get_ord(_checked_sub(i, 1)) >= 65) and (text.get_ord(_checked_sub(i, 1)) <= 90)) or ((text.get_ord(_checked_sub(i, 1)) >= 48) and (text.get_ord(_checked_sub(i, 1)) <= 57)))))):
++            if (_checked_add(i, 10) <= n):
++                var candidate: String = text[i:_checked_add(i, 10)]
++                var boundary_after: Bool = ((_checked_add(i, 10) == n) or (not (((text.get_ord(_checked_add(i, 10)) >= 65) and (text.get_ord(_checked_add(i, 10)) <= 90)) or ((text.get_ord(_checked_add(i, 10)) >= 48) and (text.get_ord(_checked_add(i, 10)) <= 57)))))
++                if (boundary_after and _py_bool(_native_check_pan(candidate))):
++                    if result.byte_length() == 0:
++                        _hotloop_origin_1 = -2
++                        _hotloop_origin_1_item = 76
++                    else:
++                        _hotloop_origin_1 = -1
++                        _hotloop_origin_1_item = -1
++                    var _hotloop_origin_index_1 = '[REDACTED_PAN]'
++                    result.write(_hotloop_origin_index_1)
++                    i = _checked_add(i, 10)
++                    continue
++        var is_num_start: Bool = (((Int(ch) >= 48) and (Int(ch) <= 57)) or ((Int(ch) == 43) and (_checked_add(i, 1) < n) and (text.get_ord(_checked_add(i, 1)) >= 48) and (text.get_ord(_checked_add(i, 1)) <= 57)))
++        var boundary_before: Bool = ((i == 0) or (not (((text.get_ord(_checked_sub(i, 1)) >= 65) and (text.get_ord(_checked_sub(i, 1)) <= 90)) or ((text.get_ord(_checked_sub(i, 1)) >= 97) and (text.get_ord(_checked_sub(i, 1)) <= 122)) or ((text.get_ord(_checked_sub(i, 1)) >= 48) and (text.get_ord(_checked_sub(i, 1)) <= 57)))))
++        if (is_num_start and boundary_before):
++            var start_idx: Int = i
++            var digits: List[Int] = List[Int]()
++            while (i < n):
++                var curr: String = text[i]
++                if ((curr >= '0') and (curr <= '9')):
++                    digits.append(Int(curr))
++                    i = _checked_add(i, 1)
++                elif ((curr == '+') and (i == start_idx)):
++                    i = _checked_add(i, 1)
++                elif (((curr == ' ') or (curr == '-')) and ((_checked_add(i, 1) < n) and (text.get_ord(_checked_add(i, 1)) >= 48) and (text.get_ord(_checked_add(i, 1)) <= 57))):
++                    i = _checked_add(i, 1)
++                else:
++                    break
++            var _hotloop_origin_index_2 = start_idx
++            var _hotloop_origin_index_3 = i
++            var _hotloop_origin_index_4 = 1
++            var _hotloop_origin_index_5 = text[_hotloop_origin_index_2:_hotloop_origin_index_3]
++            var _hotloop_origin_index_6: Int = -3 if _hotloop_origin_index_4 != 1 else -1
++            var _hotloop_origin_index_7: Int = -1
++            if _hotloop_origin_index_4 == 1 and (_hotloop_origin_index_2 == 0 or _hotloop_origin_index_2 <= -_len(text)) and _hotloop_origin_index_3 >= _len(text):
++                _hotloop_origin_index_6 = 0
++                _hotloop_origin_index_7 = -1
++            var _hotloop_origin_index_8 = _hotloop_origin_index_5
++            var candidate_num: String = _hotloop_origin_index_8
++            _hotloop_origin_0 = _hotloop_origin_index_6
++            _hotloop_origin_0_item = _hotloop_origin_index_7
++            var boundary_after_num: Bool = ((i == n) or (not (((text.get_ord(i) >= 65) and (text.get_ord(i) <= 90)) or ((text.get_ord(i) >= 97) and (text.get_ord(i) <= 122)) or ((text.get_ord(i) >= 48) and (text.get_ord(i) <= 57)))))
++            if (boundary_after_num and _py_bool(_native_check_luhn(digits))):
++                if result.byte_length() == 0:
++                    _hotloop_origin_1 = -2
++                    _hotloop_origin_1_item = 118
++                else:
++                    _hotloop_origin_1 = -1
++                    _hotloop_origin_1_item = -1
++                var _hotloop_origin_index_9 = '[REDACTED_CC]'
++                result.write(_hotloop_origin_index_9)
++            elif (boundary_after_num and _py_bool(_native_check_verhoeff(digits))):
++                if result.byte_length() == 0:
++                    _hotloop_origin_1 = -2
++                    _hotloop_origin_1_item = 119
++                else:
++                    _hotloop_origin_1 = -1
++                    _hotloop_origin_1_item = -1
++                var _hotloop_origin_index_10 = '[REDACTED_AADHAAR]'
++                result.write(_hotloop_origin_index_10)
++            elif (boundary_after_num and _py_bool(_native_check_phone(digits))):
++                if result.byte_length() == 0:
++                    _hotloop_origin_1 = -2
++                    _hotloop_origin_1_item = 120
++                else:
++                    _hotloop_origin_1 = -1
++                    _hotloop_origin_1_item = -1
++                var _hotloop_origin_index_11 = '[REDACTED_PHONE]'
++                result.write(_hotloop_origin_index_11)
++            else:
++                if not (not _py_bool(candidate_num)):
++                    if result.byte_length() == 0:
++                        _hotloop_origin_1 = _hotloop_origin_0
++                        _hotloop_origin_1_item = _hotloop_origin_0_item
++                    else:
++                        _hotloop_origin_1 = -1
++                        _hotloop_origin_1_item = -1
++                var _hotloop_origin_index_12 = candidate_num
++                result.write(_hotloop_origin_index_12)
++            continue
++        if result.byte_length() == 0:
++            _hotloop_origin_1 = -1
++            _hotloop_origin_1_item = -1
++        else:
++            _hotloop_origin_1 = -1
++            _hotloop_origin_1_item = -1
++        var _hotloop_origin_index_13 = ch
++        result.write(_hotloop_origin_index_13)
++        i = _checked_add(i, 1)
++    return (result^, _hotloop_origin_1, _hotloop_origin_1_item)

@@ -1,0 +1,13 @@
+{
+  "mojo_version": "1.2.0 (2016d0cd)",
+  "package_license_metadata": {
+    "mojo": "LicenseRef-MAX-Platform-Software-License",
+    "mojo-compiler": "LicenseRef-MAX-Platform-Software-License",
+    "mojo-lldb-libs": "LicenseRef-MAX-Platform-Software-License"
+  },
+  "current_source_license": "https://github.com/modular/modular/blob/main/LICENSE",
+  "trademark_policy": "https://www.modular.com/legal/trademark",
+  "max_terms": "https://www.modular.com/legal/max-license",
+  "sdk_bundled_in_project": false,
+  "legal_approval": false
+}

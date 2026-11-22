@@ -1,0 +1,8 @@
+............................                                             [100%]
+=============================== warnings summary ===============================
+tests/test_runtime_qualification.py::test_unqualified_runtime_refuses_before_native_body[default-architecture]
+  /home/gaurav/mojo-hotloop-r1-platform-qualification/hotloop/decorator.py:390: HotloopFallbackWarning: [mojo-hotloop] identity: native conversion cannot preserve Python semantics
+    return python_semantics(args, kwargs, "native conversion cannot preserve Python semantics")
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+28 passed, 1 warning in 16.02s

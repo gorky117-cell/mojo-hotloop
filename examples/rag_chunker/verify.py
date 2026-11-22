@@ -2,7 +2,8 @@ import os
 import random
 import sys
 
-sys.path.insert(0, "/home/gaurav/mojo-hotloop")
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
 from examples.rag_chunker.original import chunk_document, chunk_document_offsets
 
@@ -39,7 +40,21 @@ def run_tests():
         print(f"[FAIL] Expected python_fallback_slower for list[str] return, got {chunk_document._last_backend}")
         sys.exit(1)
 
-    # 2. Verify forced native execution across all 1020 cases
+    # 2. Forced mode retains safe semantic fallback for potentially aliased
+    # string elements. Integer offsets remain native and all parity checks stay.
+    text = "short non-interned document " * 2
+    chunk_document._force_native = True
+    assert chunk_document(text, len(text) + 1, 0)[0] is text
+    # Strict mode must not enter an unproven native alias path.
+    from hotloop import hotloop, HotloopNativeExecutionError
+    try:
+        hotloop(strict=True)(chunk_document._original)(text, len(text) + 1, 0)
+    except HotloopNativeExecutionError:
+        pass
+    else:
+        raise AssertionError("strict chunk_document must reject unproven provenance")
+
+    # Verify all original 1020 value/reconstruction cases.
     chunk_document._force_native = True
     try:
         deterministic_passed = 0
@@ -47,10 +62,12 @@ def run_tests():
             py_res = chunk_document._original(text, c_size, c_overlap)
             mojo_res = chunk_document(text, c_size, c_overlap)
 
-            if chunk_document._last_backend != "native":
-                print(f"[FAIL] Expected native backend under force_native, got {chunk_document._last_backend}")
+            if chunk_document._last_backend != "python_fallback_semantics":
+                print(f"[FAIL] Expected semantic fallback under force_native, got {chunk_document._last_backend}")
                 sys.exit(1)
 
+            if type(mojo_res) is not list or any(type(item) is not str for item in mojo_res):
+                raise AssertionError("chunk output types changed")
             if py_res != mojo_res:
                 print(f"[FAIL] Mismatch in deterministic case: text={text!r}, size={c_size}, overlap={c_overlap}")
                 print(f"  Py:   {py_res}")
@@ -61,6 +78,8 @@ def run_tests():
             chunk_document_offsets._force_native = True
             offs_mojo = chunk_document_offsets(text, c_size, c_overlap)
             offs_py = chunk_document_offsets._original(text, c_size, c_overlap)
+            if chunk_document_offsets._last_backend != "native":
+                raise AssertionError("integer offsets should remain native")
             if offs_mojo != offs_py:
                 print(f"[FAIL] Mismatch in chunk_document_offsets: text={text!r}")
                 print(f"  Py:   {offs_py}")
@@ -105,10 +124,12 @@ def run_tests():
             py_res = chunk_document._original(text, c_size, c_overlap)
             mojo_res = chunk_document(text, c_size, c_overlap)
 
-            if chunk_document._last_backend != "native":
-                print(f"[FAIL] Expected native backend at #{test_idx}, got {chunk_document._last_backend}")
+            if chunk_document._last_backend != "python_fallback_semantics":
+                print(f"[FAIL] Expected semantic fallback at #{test_idx}, got {chunk_document._last_backend}")
                 sys.exit(1)
 
+            if type(mojo_res) is not list or any(type(item) is not str for item in mojo_res):
+                raise AssertionError("chunk output types changed")
             if py_res != mojo_res:
                 print(f"[FAIL] Mismatch at random test #{test_idx}: size={c_size}, overlap={c_overlap}")
                 print(f"  Text len: {len(text)}")
@@ -129,7 +150,7 @@ def run_tests():
 
     total_tests = deterministic_passed + random_passed
     native_runs = chunk_document._call_count_native
-    print(f"[✓] Stage D2: RAG Document Chunker PASSED: {total_tests} tests verified ({total_chunks_verified} total chunks, {native_runs} forced-native executions + default list[str] fallback verified, 0 mismatches). Zero errors.")
+    print(f"[✓] Stage D2: RAG Document Chunker PASSED: {total_tests} tests verified ({total_chunks_verified} total chunks, {native_runs} native executions; forced semantic fallback + default list[str] fallback verified, 0 mismatches). Zero errors.")
 
 if __name__ == "__main__":
     run_tests()

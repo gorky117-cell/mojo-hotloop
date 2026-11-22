@@ -608,7 +608,9 @@ class TestGeneralizationE6(unittest.TestCase):
         fn = getattr(self.mod, fn_name)
         expected = fn._original(*args, **kwargs)
         actual = fn(*args, **kwargs)
-        self.assertEqual(fn._last_backend, "native", f"{fn_name} expected native, got {fn._last_backend}")
+        route = "python_fallback_semantics" if any(isinstance(x, np.ndarray) for x in args) else "native"
+        self.assertEqual(fn._last_backend, route, fn_name)
+        self.assertIs(type(actual), type(expected))
         if approx:
             self.assertTrue(math.isclose(actual, expected, rel_tol=1e-7, abs_tol=1e-7), f"{fn_name}: {actual} != {expected}")
         else:
@@ -638,6 +640,7 @@ class TestGeneralizationE6(unittest.TestCase):
             "native_ms": p50_native * 1000.0,
             "speedup": speedup,
             "verified": True,
+            "backend": route,
         }
         return actual
 

@@ -15,6 +15,9 @@
 
 import ast
 import copy
+import json
+from . import _provenance
+from . import _return_origin
 import inspect
 from typing import Dict, List, Optional, Set, Tuple
 
@@ -162,29 +165,15 @@ def _checked_sub(a: Int, b: Float64) -> Float64:
 
 @always_inline
 def _checked_mul(a: Int, b: Int) raises -> Int:
-    var abs_a = -a if a < 0 else a
-    var abs_b = -b if b < 0 else b
-    if abs_a <= 3037000499 and abs_b <= 3037000499:
-        return a * b
-    if a == 0 or b == 0:
-        return 0
-    if a == -1 and b == -9223372036854775808:
-        raise Error("HOTLOOP_INTEGER_OVERFLOW: integer multiplication overflow")
-    if b == -1 and a == -9223372036854775808:
-        raise Error("HOTLOOP_INTEGER_OVERFLOW: integer multiplication overflow")
-    if a == -9223372036854775808 or b == -9223372036854775808:
-        raise Error("HOTLOOP_INTEGER_OVERFLOW: integer multiplication overflow")
-    if a > 0:
-        if b > 0 and a > 9223372036854775807 // b:
-            raise Error("HOTLOOP_INTEGER_OVERFLOW: integer multiplication overflow")
-        if b < 0 and b < -9223372036854775808 // a:
+    # A product of two signed 64-bit operands always fits in signed Int128.
+    # Narrow and sign-extend to check whether the result still fits in Int.
+    var wide = Int128(a) * Int128(b)
+    var result = Int(wide)
+    if wide != Int128(result):
+        if wide < Int128(0):
             raise Error("HOTLOOP_INTEGER_OVERFLOW: integer multiplication underflow")
-    else:
-        if b > 0 and a < -9223372036854775808 // b:
-            raise Error("HOTLOOP_INTEGER_OVERFLOW: integer multiplication underflow")
-        if b < 0 and b < 9223372036854775807 // a:
-            raise Error("HOTLOOP_INTEGER_OVERFLOW: integer multiplication overflow")
-    return a * b
+        raise Error("HOTLOOP_INTEGER_OVERFLOW: integer multiplication overflow")
+    return result
 
 @always_inline
 def _checked_mul(a: Float64, b: Float64) -> Float64:
@@ -197,6 +186,26 @@ def _checked_mul(a: Float64, b: Int) -> Float64:
 @always_inline
 def _checked_mul(a: Int, b: Float64) -> Float64:
     return Float64(a) * b
+
+@always_inline
+def _checked_lshift(a: Int, count: Int) raises -> Int:
+    if count < 0:
+        raise Error("HOTLOOP_VALUE_ERROR: negative shift count")
+    if a == 0:
+        return 0
+    if count > 63:
+        raise Error("HOTLOOP_INTEGER_OVERFLOW: left shift overflow")
+    var wide = Int128(a) << Int128(count)
+    var result = Int(wide)
+    if Int128(result) != wide:
+        raise Error("HOTLOOP_INTEGER_OVERFLOW: left shift overflow")
+    return result
+
+@always_inline
+def _checked_rshift(a: Int, count: Int) raises -> Int:
+    if count < 0:
+        raise Error("HOTLOOP_VALUE_ERROR: negative shift count")
+    return a >> min(count, 63)
 
 @always_inline
 def _checked_neg(a: Int) raises -> Int:
@@ -218,6 +227,8 @@ def _checked_div(a: Float64, b: Float64) raises -> Float64:
 def _checked_div(a: Int, b: Int) raises -> Float64:
     if b == 0:
         raise Error("HOTLOOP_ZERO_DIVISION_ERROR: division by zero")
+    if a > 9007199254740992 or a < -9007199254740992 or b > 9007199254740992 or b < -9007199254740992:
+        raise Error("HOTLOOP_PYTHON_SEMANTICS: integer true division requires exact rounding")
     return Float64(a) / Float64(b)
 
 @always_inline
@@ -242,21 +253,15 @@ def _checked_floordiv(a: Int, b: Int) raises -> Int:
 
 @always_inline
 def _checked_floordiv(a: Float64, b: Float64) raises -> Float64:
-    if b == 0.0:
-        raise Error("HOTLOOP_ZERO_DIVISION_ERROR: float division by zero")
-    return math.floor(a / b)
+    raise Error("HOTLOOP_PYTHON_SEMANTICS: floating divmod requires Python rounding")
 
 @always_inline
 def _checked_floordiv(a: Float64, b: Int) raises -> Float64:
-    if b == 0:
-        raise Error("HOTLOOP_ZERO_DIVISION_ERROR: float division by zero")
-    return math.floor(a / Float64(b))
+    raise Error("HOTLOOP_PYTHON_SEMANTICS: floating divmod requires Python rounding")
 
 @always_inline
 def _checked_floordiv(a: Int, b: Float64) raises -> Float64:
-    if b == 0.0:
-        raise Error("HOTLOOP_ZERO_DIVISION_ERROR: float division by zero")
-    return math.floor(Float64(a) / b)
+    raise Error("HOTLOOP_PYTHON_SEMANTICS: floating divmod requires Python rounding")
 
 @always_inline
 def _checked_mod(a: Int, b: Int) raises -> Int:
@@ -268,21 +273,15 @@ def _checked_mod(a: Int, b: Int) raises -> Int:
 
 @always_inline
 def _checked_mod(a: Float64, b: Float64) raises -> Float64:
-    if b == 0.0:
-        raise Error("HOTLOOP_ZERO_DIVISION_ERROR: float modulo by zero")
-    return a % b
+    raise Error("HOTLOOP_PYTHON_SEMANTICS: floating divmod requires Python rounding")
 
 @always_inline
 def _checked_mod(a: Float64, b: Int) raises -> Float64:
-    if b == 0:
-        raise Error("HOTLOOP_ZERO_DIVISION_ERROR: float modulo by zero")
-    return a % Float64(b)
+    raise Error("HOTLOOP_PYTHON_SEMANTICS: floating divmod requires Python rounding")
 
 @always_inline
 def _checked_mod(a: Int, b: Float64) raises -> Float64:
-    if b == 0.0:
-        raise Error("HOTLOOP_ZERO_DIVISION_ERROR: float modulo by zero")
-    return Float64(a) % b
+    raise Error("HOTLOOP_PYTHON_SEMANTICS: floating divmod requires Python rounding")
 
 @always_inline
 def _checked_pow(base: Int, exp: Int) raises -> Int:
@@ -296,7 +295,7 @@ def _checked_pow(base: Int, exp: Int) raises -> Int:
         var b2 = _checked_mul(base, base)
         return _checked_mul(b2, base)
     if exp < 0:
-        raise Error("HOTLOOP_VALUE_ERROR: negative power exponent")
+        raise Error("HOTLOOP_PYTHON_SEMANTICS: negative integer exponent requires Python")
     if base == 0:
         return 0
     if base == 1:
@@ -320,32 +319,34 @@ def _checked_pow(base: Int, exp: Int) raises -> Int:
 def _checked_pow(base: Float64, exp: Float64) raises -> Float64:
     if base == 0.0 and exp < 0.0:
         raise Error("HOTLOOP_ZERO_DIVISION_ERROR: 0.0 cannot be raised to a negative power")
-    return base ** exp
+    if base < 0.0:
+        raise Error("HOTLOOP_PYTHON_SEMANTICS: negative real power")
+    var result = base ** exp
+    if not math.isfinite(result):
+        raise Error("HOTLOOP_PYTHON_SEMANTICS: non-finite real power")
+    return result
 
 @always_inline
 def _checked_pow(base: Float64, exp: Int) raises -> Float64:
     if base == 0.0 and exp < 0:
         raise Error("HOTLOOP_ZERO_DIVISION_ERROR: 0.0 cannot be raised to a negative power")
-    return base ** Float64(exp)
+    if exp > 9007199254740992 or exp < -9007199254740992:
+        raise Error("HOTLOOP_PYTHON_SEMANTICS: exponent exceeds exact float range")
+    return _checked_pow(base, Float64(exp))
 
 @always_inline
 def _checked_pow(base: Int, exp: Float64) raises -> Float64:
     if base == 0 and exp < 0.0:
         raise Error("HOTLOOP_ZERO_DIVISION_ERROR: 0.0 cannot be raised to a negative power")
-    return Float64(base) ** exp
+    return _checked_pow(Float64(base), exp)
 
 @always_inline
 def _checked_index(idx: Int, n: Int) raises -> Int:
     if UInt(idx) < UInt(n):
         return idx
-    var j = idx + n
-    if UInt(j) < UInt(n):
-        return j
+    if idx < 0 and idx >= -n:
+        return idx + n
     raise Error("HOTLOOP_INDEX_ERROR: index out of range")
-
-@always_inline
-def _safe_array_index(idx: Int) -> Int:
-    return idx
 
 @always_inline
 def _py_bool(x: Bool) -> Bool:
@@ -469,24 +470,6 @@ struct _PyStr(Sized):
         return Int(self._cps[i])
 
     @always_inline
-    def get_cp_fast(self, idx: Int) -> Codepoint:
-        var i = idx
-        if i < 0:
-            i += len(self)
-        if self._is_ascii:
-            return Codepoint(self._s.as_bytes()[i])
-        return self._cps[i]
-
-    @always_inline
-    def get_ord_fast(self, idx: Int) -> Int:
-        var i = idx
-        if i < 0:
-            i += len(self)
-        if self._is_ascii:
-            return Int(self._s.as_bytes()[i])
-        return Int(self._cps[i])
-
-    @always_inline
     def __getitem__(self, s: Slice) -> String:
         var n = len(self)
         var start = s.start.or_else(0)
@@ -563,10 +546,14 @@ struct _PyStr(Sized):
             if step_val > 0:
                 while k < e_c:
                     res.write(Codepoint(raw[k]))
+                    if step_val >= e_c - k:
+                        break
                     k += step_val
             else:
                 while k > e_c:
                     res.write(Codepoint(raw[k]))
+                    if step_val <= e_c - k:
+                        break
                     k += step_val
         else:
             res.reserve_bytes(n * 4)
@@ -574,10 +561,14 @@ struct _PyStr(Sized):
             if step_val > 0:
                 while k < e_c:
                     res.write(self._cps[k])
+                    if step_val >= e_c - k:
+                        break
                     k += step_val
             else:
                 while k > e_c:
                     res.write(self._cps[k])
+                    if step_val <= e_c - k:
+                        break
                     k += step_val
         return res^
 
@@ -656,8 +647,16 @@ def _py_ord(s: String) raises -> Int:
     raise Error("HOTLOOP_VALUE_ERROR: ord() expected a character")
 
 @always_inline
+def _checked_sqrt(x: Float64) raises -> Float64:
+    if x < 0.0:
+        raise Error("HOTLOOP_VALUE_ERROR: math domain error")
+    return math.sqrt(x)
+
+@always_inline
 def _py_chr(code: Int) raises -> String:
-    if code < 0 or code > 0x10FFFF or (code >= 0xD800 and code <= 0xDFFF):
+    if code >= 0xD800 and code <= 0xDFFF:
+        raise Error("HOTLOOP_PYTHON_SEMANTICS: surrogate output requires Python")
+    if code < 0 or code > 0x10FFFF:
         raise Error("HOTLOOP_VALUE_ERROR: chr() arg not in Unicode scalar range")
     return String(Codepoint(unsafe_unchecked_codepoint=UInt32(code)))
 
@@ -699,8 +698,8 @@ def _collect_reassigned_vars(func_def: ast.FunctionDef) -> Set[str]:
     return reassigned
 
 
-def _is_ptr_safe_arg(func_def: ast.FunctionDef, arg_name: str) -> bool:
-    """Returns True iff every occurrence of arg_name in func_def.body is len(arg) or read arg[idx]."""
+def _borrowed_list_is_read_only(func_def: ast.FunctionDef, arg_name: str) -> bool:
+    """Only admit uses that cannot mutate, retain, alias or return the input list."""
     parent_map: Dict[int, ast.AST] = {}
     for parent in ast.walk(func_def):
         for child in ast.iter_child_nodes(parent):
@@ -710,6 +709,12 @@ def _is_ptr_safe_arg(func_def: ast.FunctionDef, arg_name: str) -> bool:
     for node in ast.walk(body_nodes):
         if isinstance(node, ast.Name) and node.id == arg_name:
             parent = parent_map.get(id(node))
+            if isinstance(parent, ast.UnaryOp) and isinstance(parent.op, ast.Not):
+                continue
+            if isinstance(parent, (ast.If, ast.While)) and parent.test is node:
+                continue
+            if isinstance(parent, ast.For) and parent.iter is node:
+                continue
             if (
                 isinstance(parent, ast.Call)
                 and isinstance(parent.func, ast.Name)
@@ -938,33 +943,27 @@ def _eval_constant_expr(node: ast.expr) -> Optional[object]:
     return None
 
 
-class _SubexprReplacer(ast.NodeTransformer):
-    """Replaces occurrences of target AST subexpression with a hoisted variable reference."""
-    def __init__(self, target_dump: str, replacement_name: str):
-        self.target_dump = target_dump
-        self.replacement_name = replacement_name
-
-    def visit_BinOp(self, node: ast.BinOp) -> ast.AST:
-        self.generic_visit(node)
-        if ast.dump(node) == self.target_dump:
-            return ast.copy_location(ast.Name(id=self.replacement_name, ctx=ast.Load()), node)
-        return node
-
-
 class MojoASTTranspiler:
-    def __init__(self, mod_name: str, known_funcs: Optional[Set[str]] = None):
+    def __init__(self, mod_name: str, known_funcs: Optional[Set[str]] = None, return_origins=None):
         self.mod_name = mod_name
+        self.return_origins = return_origins or {}
+        self.origin_plan = None
+        self.used_native_names = {"_native_" + name for name in (known_funcs or ())}
         self.known_funcs: Set[str] = known_funcs or set()
+        self.tagged_names = {}
+        for name in sorted(self.known_funcs):
+            tagged = "_native_return_origin_" + name
+            while tagged in self.used_native_names:
+                tagged += "_"
+            self.used_native_names.add(tagged)
+            self.tagged_names[name] = tagged
         self.indent_level = 0
         self.scopes: List[Set[str]] = [set()]
         self.var_types: Dict[str, str] = {}
         self.has_math = False
         self.ret_mojo_type: str = "Int"
         self.ret_elem_type: Optional[str] = None
-        self.active_ptr_lens: Dict[str, str] = {}
         self.codepoint_vars: Set[str] = set()
-        self.loop_inbounds: List[Dict[str, dict]] = []
-        self.length_aliases: Dict[str, Set[str]] = {}
         self._tmp_counter: int = 0
 
     def indent(self) -> str:
@@ -973,61 +972,6 @@ class MojoASTTranspiler:
     def _next_tmp(self, prefix: str = "_hot_tmp") -> str:
         self._tmp_counter += 1
         return f"{prefix}_{self._tmp_counter}"
-
-    def _collect_and_hoist_invariants(
-        self, body: List[ast.stmt], loop_var: Optional[str] = None
-    ) -> Tuple[List[str], List[ast.stmt]]:
-        """
-        Detects subexpressions in loop body that depend exclusively on variables
-        unmodified within the loop, emits them before the loop, and substitutes them.
-        """
-        modified_vars: Set[str] = set()
-        if loop_var:
-            modified_vars.add(loop_var)
-
-        for stmt in body:
-            for n in ast.walk(stmt):
-                if isinstance(n, ast.Assign):
-                    for t in n.targets:
-                        if isinstance(t, ast.Name):
-                            modified_vars.add(t.id)
-                elif isinstance(n, (ast.AnnAssign, ast.AugAssign)):
-                    if isinstance(n.target, ast.Name):
-                        modified_vars.add(n.target.id)
-
-        candidate_subexprs: List[ast.BinOp] = []
-        seen_dumps: Set[str] = set()
-
-        for stmt in body:
-            for n in ast.walk(stmt):
-                if isinstance(n, ast.BinOp):
-                    names_in_n = {child.id for child in ast.walk(n) if isinstance(child, ast.Name)}
-                    if names_in_n and names_in_n.isdisjoint(modified_vars):
-                        if all(any(name in s for s in self.scopes) for name in names_in_n):
-                            has_calls_or_subs = any(isinstance(c, (ast.Call, ast.Subscript)) for c in ast.walk(n))
-                            if not has_calls_or_subs:
-                                d = ast.dump(n)
-                                if d not in seen_dumps:
-                                    seen_dumps.add(d)
-                                    candidate_subexprs.append(n)
-
-        if not candidate_subexprs:
-            return [], body
-
-        hoisted_lines: List[str] = []
-        transformed_body = [copy.deepcopy(s) for s in body]
-
-        for sub_node in candidate_subexprs:
-            inv_name = self._next_tmp("_inv")
-            expr_code = self.visit_expr(sub_node)
-            self.scopes[-1].add(inv_name)
-            hoisted_lines.append(f"{self.indent()}var {inv_name} = {expr_code}")
-
-            target_dump = ast.dump(sub_node)
-            replacer = _SubexprReplacer(target_dump, inv_name)
-            transformed_body = [replacer.visit(s) for s in transformed_body]
-
-        return hoisted_lines, transformed_body
 
     def _emit_cond_expr(self, node: ast.expr) -> str:
         expr_code = self.visit_expr(node)
@@ -1079,48 +1023,17 @@ class MojoASTTranspiler:
         args: List[Tuple[str, str, str, Optional[str]]],
         subscripted_args: Set[str],
         reassigned_vars: Set[str],
-        ptr_coll_names: Dict[str, str],
     ) -> Tuple[List[str], str]:
         self.scopes = [set()]
         self.var_types.clear()
-        self.active_ptr_lens = dict(ptr_coll_names)
-        self.loop_inbounds = []
-        self.length_aliases = {}
         self.primary_str_arg = next((name for name, py_t, _, _ in args if py_t == "str"), None)
-        for name in ptr_coll_names:
-            self.length_aliases.setdefault(f"_n_{name}", set()).add(name)
-
-        for stmt in ast.walk(func_def):
-            if isinstance(stmt, ast.Assign) and len(stmt.targets) == 1 and isinstance(stmt.targets[0], ast.Name):
-                t_name = stmt.targets[0].id
-                if isinstance(stmt.value, ast.Call) and isinstance(stmt.value.func, ast.Name) and stmt.value.func.id == "len":
-                    if len(stmt.value.args) == 1 and isinstance(stmt.value.args[0], ast.Name):
-                        self.length_aliases.setdefault(t_name, set()).add(stmt.value.args[0].id)
-                elif isinstance(stmt.value, ast.Name) and stmt.value.id in self.length_aliases:
-                    self.length_aliases.setdefault(t_name, set()).update(self.length_aliases[stmt.value.id])
-            elif isinstance(stmt, ast.AnnAssign) and isinstance(stmt.target, ast.Name):
-                t_name = stmt.target.id
-                if stmt.value and isinstance(stmt.value, ast.Call) and isinstance(stmt.value.func, ast.Name) and stmt.value.func.id == "len":
-                    if len(stmt.value.args) == 1 and isinstance(stmt.value.args[0], ast.Name):
-                        self.length_aliases.setdefault(t_name, set()).add(stmt.value.args[0].id)
-                elif stmt.value and isinstance(stmt.value, ast.Name) and stmt.value.id in self.length_aliases:
-                    self.length_aliases.setdefault(t_name, set()).update(self.length_aliases[stmt.value.id])
-
-        for node in ast.walk(func_def):
-            if isinstance(node, ast.Compare):
-                for op, comp in zip(node.ops, node.comparators):
-                    if isinstance(op, (ast.Eq, ast.NotEq)):
-                        for a, b in [(node.left, comp), (comp, node.left)]:
-                            if isinstance(a, ast.Call) and isinstance(a.func, ast.Name) and a.func.id == "len":
-                                if len(a.args) == 1 and isinstance(a.args[0], ast.Name) and isinstance(b, ast.Name):
-                                    if b.id in self.length_aliases:
-                                        self.length_aliases[b.id].add(a.args[0].id)
         pystr_arg_names = {
             name for name, _, mojo_type, _ in args
             if name in subscripted_args and mojo_type == "String"
         }
         self.codepoint_vars = _collect_codepoint_vars(func_def, pystr_arg_names)
         self._tmp_counter = 0
+        self.borrowed_names = set()
 
         sig_args: List[str] = []
         body_prep: List[str] = []
@@ -1128,12 +1041,7 @@ class MojoASTTranspiler:
         for name, py_type, mojo_type, elem_type in args:
             self.scopes[0].add(name)
             self.var_types[name] = mojo_type
-            if name in ptr_coll_names:
-                inner_m = "Float64" if elem_type == "float" else "Int"
-                sig_args.append(f"{name}_ptr: OpaquePointer[MutUntrackedOrigin]")
-                sig_args.append(f"_n_{name}: Int")
-                body_prep.append(f"    var {name} = {name}_ptr.unsafe_bitcast[{inner_m}]()")
-            elif name in subscripted_args and mojo_type == "String":
+            if name in subscripted_args and mojo_type == "String":
                 sig_args.append(f"_arg_{name}: String")
                 body_prep.append(f"    var {name}: _PyStr = _PyStr(_arg_{name})")
                 self.var_types[name] = "_PyStr"
@@ -1145,8 +1053,14 @@ class MojoASTTranspiler:
                     body_prep.append(f"    var {name}: {mojo_type} = _arg_{name}")
             else:
                 sig_args.append(f"{name}: {mojo_type}")
+                self.borrowed_names.add(name)
 
         self.indent_level = 1
+        if self.origin_plan is not None:
+            for name, tag in self.origin_plan.tags.items():
+                initial = self.origin_plan.arguments.get(name, -1)
+                body_prep.append(f"    var {tag}: Int = {initial}")
+                body_prep.append(f"    var {self.origin_plan.slots[name]}: Int = -1")
         body_lines = list(body_prep)
         for stmt in func_def.body:
             body_lines.append(self.visit_stmt(stmt))
@@ -1190,107 +1104,259 @@ class MojoASTTranspiler:
         reassigned_vars = _collect_reassigned_vars(func_def)
 
         # 3. Transpile standard native implementation
-        native_args, body_code = self._transpile_body(copy.deepcopy(func_def), args, subscripted_args, reassigned_vars, {})
+        native_args, body_code = self._transpile_body(func_def, args, subscripted_args, reassigned_vars)
 
-        # 4. Identify pointer-eligible read-only numeric array arguments
-        safe_coll_args = [
-            (name, py_type, mojo_type, elem_type, i)
-            for i, (name, py_type, mojo_type, elem_type) in enumerate(args)
-            if elem_type in ("float", "int") and _is_ptr_safe_arg(func_def, name)
-        ]
-
-        ptr_native_code = ""
-        safe_ptr_names = {name: f"_n_{name}" for name, _, _, _, _ in safe_coll_args}
-        if safe_coll_args:
-            ptr_args_def, ptr_body_code = self._transpile_body(
-                copy.deepcopy(func_def), args, subscripted_args, reassigned_vars, safe_ptr_names
-            )
-            ptr_native_code = f"""@always_inline\ndef _ptr_{func_def.name}({", ".join(ptr_args_def)}) raises -> {ret_mojo_type}:\n{ptr_body_code}"""
-
-        # 5. Generate C-ABI wrapper
-        wrapper_args_def = ", ".join([f"arg{i}: PythonObject" for i in range(len(args))])
+        # Copy qualified Python lists through Python indexing. No borrowed addresses.
+        context_name = self.return_origins[func_def.name].prefix + "_context"
+        wrapper_args_def = ", ".join([f"{context_name}: PythonObject", *[f"arg{i}: PythonObject" for i in range(len(args))]])
 
         def _build_list_unbox(idx: int, name: str, mojo_type: str, elem_type: str, indent: str) -> str:
             inner_mojo = "Float64" if elem_type == "float" else ("Int" if elem_type == "int" else ("String" if elem_type == "str" else "Bool"))
             return (
-                f"{indent}var _n_{name} = Int(py=arg{idx}.__len__())\n"
+                f"{indent}var _n_{name} = Int(py=_input{idx}.__len__())\n"
                 f"{indent}var {name} = {mojo_type}(capacity=_n_{name})\n"
                 f"{indent}for _i in range(_n_{name}):\n"
-                f"{indent}    {name}.append({inner_mojo}(py=arg{idx}[_i]))"
+                f"{indent}    {name}.append({inner_mojo}(py=_input{idx}[_i]))"
             )
 
-        wrapper_conversions = []
+        wrapper_conversions = ['    var _guard = Python.import_module("hotloop._arguments")'] if args else []
         call_args = []
         for i, (name, py_type, mojo_type, elem_type) in enumerate(args):
+            wrapper_conversions.append(f'    var _input{i} = _guard.checked_argument(arg{i}, "{py_type}")')
             if elem_type is not None:
                 wrapper_conversions.append(_build_list_unbox(i, name, mojo_type, elem_type, "    "))
             else:
-                wrapper_conversions.append(f"    var {name} = {mojo_type}(py=arg{i})")
+                wrapper_conversions.append(f"    var {name} = {mojo_type}(py=_input{i})")
             call_args.append(name)
 
         call_block = self._box_return_block(f"_native_{func_def.name}({', '.join(call_args)})", "    ", has_builtins=False)
-
-        if safe_coll_args:
-            dtype_checks = []
-            for name, _, _, elem_type, i in safe_coll_args:
-                expected_dtype = "float64" if elem_type == "float" else "int64"
-                dtype_checks.append(
-                    f'    if _has_ctypes:\n'
-                    f'        try:\n'
-                    f'            if not Bool(py=arg{i}.flags.c_contiguous) or Int(py=arg{i}.ndim) != 1 or String(py=arg{i}.dtype.name) != "{expected_dtype}":\n'
-                    f'                _has_ctypes = False\n'
-                    f'        except:\n'
-                    f'            _has_ctypes = False'
-                )
-            checks_block = "\n".join(dtype_checks)
-
-            ptr_prep_lines = []
-            ptr_calls = []
-            for i, (name, py_type, mojo_type, elem_type) in enumerate(args):
-                if name in safe_ptr_names:
-                    ptr_prep_lines.append(f"        var _n_{name} = Int(py=arg{i}.__len__())")
-                    ptr_prep_lines.append(f"        var _{name}_addr = Int(py=arg{i}.ctypes.data)")
-                    ptr_prep_lines.append(f"        var _{name}_op = OpaquePointer[MutUntrackedOrigin](unsafe_from_address=_{name}_addr)")
-                    ptr_calls.append(f"_{name}_op")
-                    ptr_calls.append(f"_n_{name}")
-                elif elem_type is not None:
-                    ptr_prep_lines.append(_build_list_unbox(i, f"_p_{name}", mojo_type, elem_type, "        "))
-                    ptr_calls.append(f"_p_{name}")
-                else:
-                    ptr_calls.append(f"{mojo_type}(py=arg{i})")
-
-            ptr_prep_block = "\n".join(ptr_prep_lines)
-            ptr_call_block = self._box_return_block(f"_ptr_{func_def.name}({', '.join(ptr_calls)})", "        ", has_builtins=True)
-
-            conv_block_8 = "\n".join(["    " + l if l.strip() else "" for l in "\n".join(wrapper_conversions).splitlines()])
-            else_call_block = self._box_return_block(f"_native_{func_def.name}({', '.join(call_args)})", "        ", has_builtins=True)
-
-            wrapper_code = f"""def _pywrap_{func_def.name}({wrapper_args_def}) raises -> PythonObject:
-    var _builtins = Python.import_module("builtins")
-    var _has_ctypes = True
-{checks_block}
-    if _has_ctypes:
-{ptr_prep_block}
-{ptr_call_block}
-    else:
-{conv_block_8}
-{else_call_block}"""
-        else:
-            conv_block_4 = "\n".join(wrapper_conversions)
-            wrapper_code = f"""def _pywrap_{func_def.name}({wrapper_args_def}) raises -> PythonObject:
-{conv_block_4}
-{call_block}"""
-
         native_code = f"""def _native_{func_def.name}({", ".join(native_args)}) raises -> {ret_mojo_type}:
 {body_code}"""
-        if ptr_native_code:
-            native_code = f"{ptr_native_code}\n\n{native_code}"
+        plan = self.return_origins.get(func_def.name)
+        if plan is not None and (plan.scalar and plan.returned or plan.reason):
+            if plan.reason:
+                call_block = '    raise Error("HOTLOOP_PYTHON_SEMANTICS: return-object provenance is unproven")'
+                wrapper_conversions = []
+                # Internal callers are restricted transitively as well. Do not
+                # leave a value-only native path around this semantic gate.
+                native_code = (f"def _native_{func_def.name}({', '.join(native_args)}) raises -> {ret_mojo_type}:\n"
+                               '    raise Error("HOTLOOP_PYTHON_SEMANTICS: return-object provenance is unproven")')
+            else:
+                tagged_name = self.tagged_names[func_def.name]
+                self.origin_plan = plan
+                try:
+                    tagged_args, tagged_body = self._transpile_body(
+                        func_def, args, subscripted_args, reassigned_vars)
+                finally:
+                    self.origin_plan = None
+                native_code += f"""
 
+def {tagged_name}({", ".join(tagged_args)}) raises -> Tuple[{ret_mojo_type}, Int, Int]:
+{tagged_body}"""
+                result = plan.prefix + "_result"
+                lines = [f"    var {result} = {tagged_name}({', '.join(call_args)})"]
+                lines += [f"    if {result}[1] == -2:", f"        return {context_name}[{result}[2]]"]
+                if ret_mojo_type=="String":
+                    lines += [f"    if {result}[1] == -3:",
+                              '        var _owners = Python.import_module("hotloop._provenance")',
+                              f"        return _owners.fresh_string(PythonObject({result}[0]))"]
+                for i, (_, _, _, element) in enumerate(args):
+                    lines.append(f"    if {result}[1] == {i}:")
+                    if element is not None:
+                        lines += [f"        if {result}[2] >= 0:",
+                                  f"            return _input{i}[{result}[2]]"]
+                    lines.append(f"        return arg{i}")
+                lines.append(self._box_return_block(f"{result}[0]", "    ", has_builtins=False))
+                call_block = "\n".join(lines)
+
+        conv_block_4 = "\n".join(wrapper_conversions)
+        wrapper_code = f"""def _pywrap_{func_def.name}({wrapper_args_def}) raises -> PythonObject:
+{conv_block_4}
+{call_block}"""
         export_reg = f'        m.def_function[_pywrap_{func_def.name}]("{func_def.name}")'
 
         return export_reg, wrapper_code, native_code
 
+    def _origin_expr(self, node):
+        """Emit each application expression once, in its original evaluation order."""
+        plan=self.origin_plan
+        kind,source=plan.descriptor(node)
+        emit=lambda code: self.indent()+code
+        if kind=="int_mod":
+            # CPython 3.12.16 l_mod/long_rem: digit-count and top-digit
+            # shortcut, excluding the single-digit allocating fast path.
+            lines,left,lt,ls=self._origin_expr(source.left)
+            lv,rv,value,tag,slot,ua,ub,da,db,ha,hb=(plan.temporary() for _ in range(11))
+            lines += [emit(f"var {lv} = {left}"),emit(f"var {rv} = {self.visit_expr(source.right)}"),
+                emit(f"var {value} = _checked_mod({lv}, {rv})"),
+                emit(f"var {ua} = UInt64({lv}) if {lv} >= 0 else UInt64(-1 - {lv}) + 1"),
+                emit(f"var {ub} = UInt64({rv}) if {rv} >= 0 else UInt64(-1 - {rv}) + 1"),
+                emit(f"var {da} = 0 if {ua} == 0 else (1 if {ua} < 1073741824 else (2 if {ua} < 1152921504606846976 else 3))"),
+                emit(f"var {db} = 0 if {ub} == 0 else (1 if {ub} < 1073741824 else (2 if {ub} < 1152921504606846976 else 3))"),
+                emit(f"var {ha} = {ua} if {da} <= 1 else ({ua} >> 30 if {da} == 2 else {ua} >> 60)"),
+                emit(f"var {hb} = {ub} if {db} <= 1 else ({ub} >> 30 if {db} == 2 else {ub} >> 60)"),
+                emit(f"var {tag}: Int = -1"),emit(f"var {slot}: Int = -1"),
+                emit(f"if not ({da} == 1 and {db} == 1) and ({da} < {db} or ({da} == {db} and {ha} < {hb})) and (({rv} > 0 and {lv} >= 0) or ({rv} < 0 and {lv} <= 0)):"),
+                emit(f"    {tag} = {lt}"),emit(f"    {slot} = {ls}")]
+            return lines,value,tag,slot
+        if kind=="format_int":
+            return [],f"String({self.visit_expr(source)})","-3","-1"
+        if kind=="string_identity":
+            return self._origin_expr(source)
+        if kind=="constant":
+            return [],self.visit_expr(node),"-2",str(source)
+        if kind=="name":
+            tag,slot=plan.reference(source)
+            return [],self.visit_expr(node),tag,slot
+        if kind=="value":
+            return [],self.visit_expr(node),"-1","-1"
+        if kind=="item":
+            index=plan.temporary()
+            container=source.value.id
+            lines=[emit(f"var {index} = _checked_index({self.visit_expr(source.slice)}, len({container}))")]
+            return lines,f"{container}[{index}]",str(plan.arguments[container]),index
+        if kind=="slice":
+            container=node.value.id
+            sl=node.slice
+            names=[]
+            lines=[]
+            for value,default in ((sl.lower,"0"),(sl.upper,f"_len({container})"),(sl.step,"1")):
+                temp=plan.temporary()
+                lines.append(emit(f"var {temp} = {self.visit_expr(value) if value is not None else default}"))
+                names.append(temp)
+            lower,upper,step=names
+            replacement=copy.deepcopy(node)
+            replacement.slice=ast.Slice(
+                lower=ast.Name(id=lower,ctx=ast.Load()) if sl.lower is not None else None,
+                upper=ast.Name(id=upper,ctx=ast.Load()) if sl.upper is not None else None,
+                step=ast.Name(id=step,ctx=ast.Load()) if sl.step is not None else None)
+            result,tag,slot=(plan.temporary() for _ in range(3))
+            original_tag,original_slot=plan.reference(container)
+            lines += [emit(f"var {result} = {self.visit_expr(replacement)}"),
+                      emit(f"var {tag}: Int = -3 if {step} != 1 else -1"),emit(f"var {slot}: Int = -1"),
+                      emit(f"if {step} == 1 and ({lower} == 0 or {lower} <= -_len({container})) and {upper} >= _len({container}):"),
+                      emit(f"    {tag} = {original_tag}"),emit(f"    {slot} = {original_slot}")]
+            self.var_types[result]="String"
+            return lines,result,tag,slot
+        if kind=="concat":
+            left,lval,lt,ls=self._origin_expr(node.left)
+            # Capture the left operand before evaluating the right operand.
+            lv=plan.temporary()
+            ltype=self.var_types.get(lval)
+            left.append(emit(f"var {lv} = {lval}.to_string()" if ltype=="_PyStr" else f"var {lv} = String({lval})"))
+            right,rval,rt,rs=self._origin_expr(node.right)
+            rv=plan.temporary()
+            rtype=self.var_types.get(rval)
+            right.append(emit(f"var {rv} = {rval}.to_string()" if rtype=="_PyStr" else f"var {rv} = String({rval})"))
+            result,tag,slot=(plan.temporary() for _ in range(3))
+            lines=left+right+[emit(f"var {result} = _checked_add({lv}, {rv})"),
+                emit(f"var {tag}: Int = -1"),emit(f"var {slot}: Int = -1"),
+                emit(f"if {lv}.byte_length() == 0:"),emit(f"    {tag} = {rt}"),emit(f"    {slot} = {rs}"),
+                emit(f"elif {rv}.byte_length() == 0:"),emit(f"    {tag} = {lt}"),emit(f"    {slot} = {ls}")]
+            self.var_types[result]="String"
+            return lines,result,tag,slot
+        if kind=="helper":
+            callee=node.func.id
+            callee_plan=self.return_origins[callee]
+            if node.keywords or len(node.args)!=len(callee_plan.arguments) or not callee_plan.scalar or callee_plan.reason:
+                raise ASTTranspileError("Unproven helper return provenance")
+            lines=[]
+            values=[]
+            owners=[]
+            for arg in node.args:
+                prep,value,tag,slot=self._origin_expr(arg)
+                lines.extend(prep)
+                tmp=plan.temporary()
+                value=value+".to_string()" if self.var_types.get(value)=="_PyStr" else value
+                lines.append(emit(f"var {tmp} = {value}"))
+                values.append(tmp)
+                owners.append((tag,slot))
+            result,tag,slot,value=(plan.temporary() for _ in range(4))
+            # A helper with fresh-only returns uses the ordinary native ABI.
+            if not callee_plan.returned:
+                lines.append(emit(f"var {value} = _native_{callee}({', '.join(values)})"))
+                return lines,value,"-1","-1"
+            lines += [emit(f"var {result} = {self.tagged_names[callee]}({', '.join(values)})"),
+                emit(f"var {tag} = {result}[1]"),emit(f"var {slot} = {result}[2]")]
+            for index,(owner,item) in enumerate(owners):
+                lines += [emit(f"if {result}[1] == {index}:"),emit(f"    {tag} = {owner}"),emit(f"    {slot} = {item}")]
+            lines.append(emit(f"var {value} = {result}[0]"))
+            self.var_types[value]=parse_type_annotation(callee_plan.fn.returns)[1]
+            return lines,value,tag,slot
+        raise ASTTranspileError("Unproven return expression")
+
     def visit_stmt(self, node: ast.stmt) -> str:
+        plan=self.origin_plan
+        if plan is None:
+            return self._visit_stmt(node)
+        targets=_return_origin._targets(node)
+        tracked=[name for name in targets if name in plan.tags]
+        if isinstance(node,ast.AugAssign) and tracked and isinstance(node.op,ast.Mod) and self.var_types.get(targets[0])=="Int":
+            expression=ast.copy_location(ast.BinOp(left=copy.deepcopy(node.target),op=ast.Mod(),right=node.value),node)
+            replacement=ast.copy_location(ast.Assign(targets=[node.target],value=expression),node)
+            return self.visit_stmt(replacement)
+        if isinstance(node,ast.AugAssign) and tracked and self.var_types.get(targets[0])=="String" and isinstance(node.op,ast.Add):
+            name=targets[0]
+            lines,value,tag,slot=self._origin_expr(node.value)
+            target_tag,target_slot=plan.reference(name)
+            # Materialize a nontrivial RHS before both its empty test and write.
+            # Otherwise a fresh-return helper or formatting call would run twice.
+            typ=self.var_types.get(value)
+            if not isinstance(node.value,(ast.Name,ast.Constant)) or typ=="_PyStr":
+                temp=plan.temporary()
+                expression=value+".to_string()" if typ=="_PyStr" else value
+                lines.append(self.indent()+f"var {temp} = {expression}")
+                self.var_types[temp]="String" if typ=="_PyStr" or plan.expression_type(node.value)=="str" else (typ or "String")
+                value=temp
+            # Empty concatenation preserves an operand; nonempty construction is fresh.
+            # Byte length is O(1); never scan UTF-8 output on every append.
+            constant=isinstance(node.value,ast.Constant) and type(node.value.value) is str
+            typ=self.var_types.get(value)
+            rhs_empty=("True" if node.value.value=="" else "False") if constant else ("False" if typ=="Codepoint" else f"not _py_bool({value})")
+            if rhs_empty!="True":
+                outer=[] if rhs_empty=="False" else [self.indent()+f"if not ({rhs_empty}):"]
+                level=self.indent()+("" if rhs_empty=="False" else "    ")
+                lines+=outer+[level+f"if {name}.byte_length() == 0:",level+f"    {target_tag} = {tag}",level+f"    {target_slot} = {slot}",
+                    level+"else:",level+f"    {target_tag} = -1",level+f"    {target_slot} = -1"]
+            replacement=copy.deepcopy(node)
+            if lines:
+                temp=plan.temporary()
+                # The lowered expression may be a string literal or a Codepoint.
+                lines.append(self.indent()+f"var {temp} = {value}")
+                self.var_types[temp]=typ or "String"
+                replacement.value=ast.Name(id=temp,ctx=ast.Load())
+            return "\n".join([*lines,self._visit_stmt(replacement)])
+        if isinstance(node,ast.Return) or (tracked and not isinstance(node,ast.AugAssign)):
+            value=node.value
+            if value is None:
+                raise ASTTranspileError("Unproven annotation-only/empty return")
+            lines,code,tag,slot=self._origin_expr(value)
+            replacement=copy.deepcopy(node)
+            # Simple aliases keep existing _PyStr/Codepoint-aware statement lowering.
+            if lines or code!=self.visit_expr(value):
+                tmp=plan.temporary()
+                lines.append(self.indent()+f"var {tmp} = {code}")
+                if code in self.var_types: self.var_types[tmp]=self.var_types[code]
+                replacement.value=ast.Name(id=tmp,ctx=ast.Load())
+            result=self._visit_stmt(replacement)
+            if isinstance(node,ast.Assign) and isinstance(replacement.value,ast.Name):
+                source_type=self.var_types.get(replacement.value.id)
+                if source_type:
+                    for name in targets:
+                        self.var_types.setdefault(name,"String" if source_type=="_PyStr" else source_type)
+            if isinstance(node,ast.Return):
+                prefix=self.indent()+"return "
+                result=prefix+f"({result[len(prefix):]}, {tag}, {slot})"
+            else:
+                for name in tracked:
+                    result+=f"\n{self.indent()}{plan.tags[name]} = {tag}\n{self.indent()}{plan.slots[name]} = {slot}"
+            return "\n".join([*lines,result])
+        result=self._visit_stmt(node)
+        for name in tracked:
+            result+=f"\n{self.indent()}{plan.tags[name]} = -1\n{self.indent()}{plan.slots[name]} = -1"
+        return result
+
+    def _visit_stmt(self, node: ast.stmt) -> str:
         if isinstance(node, ast.Return):
             if node.value is None:
                 return f"{self.indent()}return"
@@ -1300,6 +1366,8 @@ class MojoASTTranspiler:
             if self.ret_mojo_type == "String" and isinstance(node.value, ast.Name) and self.var_types.get(node.value.id) == "_PyStr":
                 return f"{self.indent()}return {val}.to_string()"
             if (self.ret_elem_type is not None or self.ret_mojo_type == "String") and isinstance(node.value, ast.Name):
+                if node.value.id in self.borrowed_names:
+                    return f"{self.indent()}return {val}.copy()"
                 return f"{self.indent()}return {val}^"
             return f"{self.indent()}return {val}"
 
@@ -1319,7 +1387,7 @@ class MojoASTTranspiler:
                 idx_code = self.visit_expr(node.value.slice)
                 mojo_type = "Codepoint"
                 self.var_types[var_name] = "Codepoint"
-                expr_code = f"{src_name}.get_cp_fast({idx_code})"
+                expr_code = f"{src_name}.get_cp({idx_code})"
             elif isinstance(node.value, ast.List) and len(node.value.elts) == 0:
                 expr_code = f"{mojo_type}()"
             elif mojo_type == "String" and isinstance(node.value, ast.Constant) and node.value.value == "":
@@ -1354,7 +1422,7 @@ class MojoASTTranspiler:
                     idx_code = self.visit_expr(node.value.slice)
                     self.var_types[var_name] = "Codepoint"
                     inferred_annot = ": Codepoint"
-                    expr_code = f"{src_name}.get_cp_fast({idx_code})"
+                    expr_code = f"{src_name}.get_cp({idx_code})"
                 elif isinstance(node.value, ast.List) and len(node.value.elts) == 0:
                     inferred_type = self.var_types.get(var_name, self.ret_mojo_type)
                     self.var_types.setdefault(var_name, inferred_type)
@@ -1402,6 +1470,8 @@ class MojoASTTranspiler:
                 ast.FloorDiv: "_checked_floordiv",
                 ast.Mod: "_checked_mod",
                 ast.Pow: "_checked_pow",
+                ast.LShift: "_checked_lshift",
+                ast.RShift: "_checked_rshift",
             }
             if isinstance(node.target, ast.Subscript):
                 if not isinstance(node.target.value, ast.Name):
@@ -1412,7 +1482,7 @@ class MojoASTTranspiler:
                 arr_type = self.var_types.get(arr_name)
                 idx_code = self.visit_expr(node.target.slice)
                 val_code = self.visit_expr(node.value)
-                len_expr = self.active_ptr_lens.get(arr_name, f"len({arr_name})")
+                len_expr = f"len({arr_name})"
                 tmp_idx = self._next_tmp("_hot_idx")
                 lines = [f"{self.indent()}var {tmp_idx} = _checked_index({idx_code}, {len_expr})"]
                 target_elem = f"{arr_name}[{tmp_idx}]"
@@ -1436,7 +1506,7 @@ class MojoASTTranspiler:
                 ):
                     src_name = node.value.value.id
                     idx_expr = self.visit_expr(node.value.slice)
-                    return f"{self.indent()}{var_name}.write({src_name}.get_cp_fast({idx_expr}))"
+                    return f"{self.indent()}{var_name}.write({src_name}.get_cp({idx_expr}))"
                 expr_code = self.visit_expr(node.value)
                 return f"{self.indent()}{var_name}.write({expr_code})"
 
@@ -1483,36 +1553,11 @@ class MojoASTTranspiler:
             if not isinstance(node.target, ast.Name):
                 raise ASTTranspileError("Only simple variable loop targets are supported")
             var_name = node.target.id
-            hoisted_decls, loop_body = self._collect_and_hoist_invariants(node.body, loop_var=var_name)
-
-            inbounds_entry = None
             if isinstance(node.iter, ast.Call) and isinstance(node.iter.func, ast.Name) and node.iter.func.id == "range":
                 range_args = [self.visit_expr(a) for a in node.iter.args]
                 iter_code = f"range({', '.join(range_args)})"
                 loop_var_type = "Int"
 
-                lower = 0
-                upper_node = None
-                if len(node.iter.args) == 1:
-                    lower = 0
-                    upper_node = node.iter.args[0]
-                elif len(node.iter.args) == 2:
-                    if isinstance(node.iter.args[0], ast.Constant) and isinstance(node.iter.args[0].value, int):
-                        lower = node.iter.args[0].value
-                        upper_node = node.iter.args[1]
-
-                if upper_node is not None:
-                    upper_arrays = set()
-                    if isinstance(upper_node, ast.Call) and isinstance(upper_node.func, ast.Name) and upper_node.func.id == "len":
-                        if len(upper_node.args) == 1 and isinstance(upper_node.args[0], ast.Name):
-                            upper_arrays.add(upper_node.args[0].id)
-                    elif isinstance(upper_node, ast.Name):
-                        if upper_node.id in self.length_aliases:
-                            upper_arrays.update(self.length_aliases[upper_node.id])
-                        if upper_node.id.startswith("_n_") and upper_node.id[3:] in self.active_ptr_lens:
-                            upper_arrays.add(upper_node.id[3:])
-                    if upper_arrays:
-                        inbounds_entry = (var_name, {"arrays": upper_arrays, "lower": lower})
             else:
                 iter_expr = self.visit_expr(node.iter)
                 iter_t = self.var_types.get(iter_expr)
@@ -1529,19 +1574,15 @@ class MojoASTTranspiler:
                     }
                     loop_var_type = elem_t_map.get(iter_t or "", "")
 
-            lines = list(hoisted_decls)
+            lines = []
             lines.append(f"{self.indent()}for {var_name} in {iter_code}:")
             self.indent_level += 1
             self.scopes.append({var_name})
             prev_t = self.var_types.get(var_name)
             if loop_var_type:
                 self.var_types[var_name] = loop_var_type
-            if inbounds_entry:
-                self.loop_inbounds.append({inbounds_entry[0]: inbounds_entry[1]})
-            for s in loop_body:
+            for s in node.body:
                 lines.append(self.visit_stmt(s))
-            if inbounds_entry:
-                self.loop_inbounds.pop()
             if prev_t is not None:
                 self.var_types[var_name] = prev_t
             else:
@@ -1551,13 +1592,12 @@ class MojoASTTranspiler:
             return "\n".join(lines)
 
         elif isinstance(node, ast.While):
-            hoisted_decls, loop_body = self._collect_and_hoist_invariants(node.body)
-            lines = list(hoisted_decls)
+            lines = []
             test_code = self._emit_cond_expr(node.test)
             lines.append(f"{self.indent()}while {test_code}:")
             self.indent_level += 1
             self.scopes.append(set())
-            for s in loop_body:
+            for s in node.body:
                 lines.append(self.visit_stmt(s))
             self.scopes.pop()
             self.indent_level -= 1
@@ -1618,38 +1658,6 @@ class MojoASTTranspiler:
                     raise ASTTranspileError("List slicing is not supported in native AST compilation")
                 idx = self.visit_expr(node.slice)
 
-                # Check for proven inbounds loop variable access
-                is_proven = False
-                if isinstance(node.value, ast.Name):
-                    arr_name = node.value.id
-                    for frame in reversed(self.loop_inbounds):
-                        for lvar, info in frame.items():
-                            if arr_name in info["arrays"]:
-                                if isinstance(node.slice, ast.Name) and node.slice.id == lvar and info["lower"] >= 0:
-                                    is_proven = True
-                                    break
-                                elif (
-                                    isinstance(node.slice, ast.BinOp)
-                                    and isinstance(node.slice.op, ast.Sub)
-                                    and isinstance(node.slice.left, ast.Name)
-                                    and node.slice.left.id == lvar
-                                    and isinstance(node.slice.right, ast.Constant)
-                                    and isinstance(node.slice.right.value, int)
-                                    and node.slice.right.value >= 1
-                                    and info["lower"] >= node.slice.right.value
-                                ):
-                                    is_proven = True
-                                    break
-                        if is_proven:
-                            break
-
-                if is_proven:
-                    if isinstance(node.value, ast.Name) and node.value.id in self.active_ptr_lens:
-                        return f"{val}[unsafe_offset=_safe_array_index({idx})]"
-                    return f"{val}[_safe_array_index({idx})]"
-
-                if isinstance(node.value, ast.Name) and node.value.id in self.active_ptr_lens:
-                    return f"{val}[unsafe_offset=_checked_index({idx}, {self.active_ptr_lens[node.value.id]})]"
                 return f"{val}[_checked_index({idx}, len({val}))]"
 
         elif isinstance(node, ast.List):
@@ -1668,11 +1676,6 @@ class MojoASTTranspiler:
             elif isinstance(node.op, ast.Mult):
                 return f"_checked_mul({left}, {right})"
             elif isinstance(node.op, ast.Div):
-                if isinstance(node.right, ast.Constant) and isinstance(node.right.value, (int, float)) and node.right.value != 0:
-                    left_type = self.var_types.get(node.left.id) if isinstance(node.left, ast.Name) else None
-                    if left_type == "Float64":
-                        return f"({left} / {right})"
-                    return f"(Float64({left}) / Float64({right}))"
                 return f"_checked_div({left}, {right})"
             elif isinstance(node.op, ast.FloorDiv):
                 return f"_checked_floordiv({left}, {right})"
@@ -1680,7 +1683,11 @@ class MojoASTTranspiler:
                 return f"_checked_mod({left}, {right})"
             elif isinstance(node.op, ast.Pow):
                 return f"_checked_pow({left}, {right})"
-            elif isinstance(node.op, (ast.BitAnd, ast.BitOr, ast.BitXor, ast.LShift, ast.RShift)):
+            elif isinstance(node.op, ast.LShift):
+                return f"_checked_lshift({left}, {right})"
+            elif isinstance(node.op, ast.RShift):
+                return f"_checked_rshift({left}, {right})"
+            elif isinstance(node.op, (ast.BitAnd, ast.BitOr, ast.BitXor)):
                 op = self.visit_op(node.op)
                 return f"({left} {op} {right})"
             else:
@@ -1723,7 +1730,7 @@ class MojoASTTranspiler:
                 def _as_ord(n: ast.expr) -> str:
                     if _is_pystr_sub(n):
                         vname = n.value.id  # type: ignore[attr-defined]
-                        return f"{vname}.get_ord_fast({self.visit_expr(n.slice)})"  # type: ignore[attr-defined]
+                        return f"{vname}.get_ord({self.visit_expr(n.slice)})"  # type: ignore[attr-defined]
                     if _is_cp_var(n):
                         return f"Int({self.visit_expr(n)})"
                     return str(ord(n.value))  # type: ignore[attr-defined]
@@ -1775,12 +1782,6 @@ class MojoASTTranspiler:
                 fn_name = node.func.id
                 args = [self.visit_expr(a) for a in node.args]
                 if fn_name == "len":
-                    if (
-                        len(node.args) == 1
-                        and isinstance(node.args[0], ast.Name)
-                        and node.args[0].id in self.active_ptr_lens
-                    ):
-                        return self.active_ptr_lens[node.args[0].id]
                     return f"_len({', '.join(args)})"
                 elif fn_name == "ord":
                     if len(node.args) != 1:
@@ -1867,6 +1868,8 @@ class MojoASTTranspiler:
                 elif isinstance(node.func.value, ast.Name) and node.func.value.id == "math":
                     fn_name = node.func.attr
                     args = [self.visit_expr(a) for a in node.args]
+                    if fn_name == "sqrt":
+                        return f"_checked_sqrt({args[0]})"
                     return f"math.{fn_name}({', '.join(args)})"
                 else:
                     raise ASTTranspileError(f"Unsupported method call: {ast.dump(node.func)}")
@@ -1946,7 +1949,46 @@ def transpile_python_to_mojo(source_code: str, mod_name: str) -> str:
     if not hotloop_nodes and len(helper_nodes) == 1:
         helper_nodes = []
 
-    transpiler = MojoASTTranspiler(mod_name, known_funcs=all_func_names)
+    # Withhold an entry if copying its list arguments can change Python behavior.
+    # Propagate the restriction to native callers before generating any wrappers.
+    restricted = set()
+    calls = {}
+    for node in (*helper_nodes, *target_nodes):
+        calls[node.name] = {call.func.id for call in ast.walk(node)
+                            if isinstance(call, ast.Call) and isinstance(call.func, ast.Name)}
+        for arg in node.args.args:
+            if arg.annotation and parse_type_annotation(arg.annotation)[2] is not None:
+                if not _borrowed_list_is_read_only(node, arg.arg):
+                    restricted.add(node.name)
+        if any(isinstance(item, (ast.For, ast.While)) and item.orelse for item in ast.walk(node)):
+            restricted.add(node.name)
+    while callers := {name for name, targets in calls.items() if targets & restricted} - restricted:
+        restricted.update(callers)
+
+    try:
+        layout = _provenance.Layout(source_code,[*helper_nodes,*target_nodes])
+    except (ValueError,TypeError) as exc:
+        raise ASTTranspileError(f"Unproven Python code mapping: {exc}") from exc
+    return_origins = _return_origin.analyze([*helper_nodes, *target_nodes],layout)
+    # An unproven helper must not be reached through an otherwise fresh return.
+    # Its native value may also differ (for example Python's operand-selecting or).
+    for name, plan in return_origins.items():
+        pending=list(calls[name])
+        visited=set()
+        while pending:
+            callee=pending.pop()
+            if callee==name:
+                plan.reason="Python recursion semantics require Python"
+                break
+            if callee not in visited:
+                visited.add(callee)
+                pending.extend(calls.get(callee,()))
+    unproven = {name for name, plan in return_origins.items() if plan.reason}
+    while callers := {name for name, targets in calls.items() if targets & unproven} - unproven:
+        for name in callers:
+            return_origins[name].reason = "callee return semantics are unproven"
+        unproven.update(callers)
+    transpiler = MojoASTTranspiler(mod_name, known_funcs=all_func_names, return_origins=return_origins)
     export_regs = []
     wrappers = []
     native_funcs = []
@@ -1954,15 +1996,23 @@ def transpile_python_to_mojo(source_code: str, mod_name: str) -> str:
     # First, transpile unexported helper functions as native functions
     for node in helper_nodes:
         _, _, nat = transpiler.transpile_function_components(node)
-        native_funcs.append(nat)
+        if node.name not in restricted:
+            native_funcs.append(nat)
 
     # Next, transpile @hotloop target functions with C-ABI wrappers and module export
     for node in target_nodes:
         reg, wrap, nat = transpiler.transpile_function_components(node)
+        if node.name in restricted:
+            continue
         export_regs.append(reg)
         wrappers.append(wrap)
         native_funcs.append(nat)
 
+    if "_hotloop_provenance_v1" in all_func_names:
+        raise ASTTranspileError("Function name is reserved for private provenance metadata")
+    export_regs.append('        m.def_function[_hotloop_context_spec_impl]("_hotloop_provenance_v1")')
+    spec_literal = repr(json.dumps(layout.spec(),sort_keys=True,separators=(",",":")))
+    wrappers.append(f"def _hotloop_context_spec_impl() raises -> PythonObject:\n    return PythonObject(String({spec_literal}))")
     export_block = "\n".join(export_regs)
     wrappers_block = "\n\n".join(wrappers)
     native_block = "\n\n".join(native_funcs)
@@ -1970,12 +2020,12 @@ def transpile_python_to_mojo(source_code: str, mod_name: str) -> str:
     mojo_source = f"""from std.python import Python, PythonObject
 from std.python.bindings import PythonModuleBuilder
 from std.collections import List
-from std.memory import OpaquePointer
 from std.os import abort
 import std.math as math
 
 {CHECKED_HELPERS_MOJO}
 
+# Python-only entries: {", ".join(sorted(restricted))}
 @export
 def PyInit_{mod_name}() abi("C") -> PythonObject:
     try:

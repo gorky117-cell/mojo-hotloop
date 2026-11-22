@@ -1,0 +1,337 @@
+{
+  "tests": {
+    "full_pytest": 324,
+    "independent_new_tests": 111,
+    "unchanged_nine_native": 9,
+    "unchanged_argument_origin_native": 41,
+    "security_original_tests": 129,
+    "application_scenarios": 7220,
+    "application_public_native_calls": 6220,
+    "application_public_fallback_calls": 3071,
+    "adversarial_pass": 49,
+    "adversarial_expected_rejection": 1,
+    "standalone_cache_tests": 6,
+    "published_defects_equal": 15,
+    "historical_tests": {
+      "passed": 75,
+      "failed": 11,
+      "failures": [
+        "tests/test_generalization_e6.py::TestGeneralizationE6::test_02_distance_geometry_10_functions",
+        "tests/test_generalization_e6.py::TestGeneralizationE6::test_03_array_transforms_10_functions",
+        "tests/test_generalization_e6.py::TestGeneralizationE6::test_05_validation_search_bitwise_12_functions",
+        "tests/test_optimization_safety_e8.py::TestOptimizationSafetyE8::test_10_dispatch_qualifier_cache_drift_safety",
+        "tests/test_runtime_security.py::TestRuntimeSecurityAndStability::test_02_numpy_wrong_dtype_shape_and_non_contiguous_safety",
+        "tests/test_runtime_security.py::TestRuntimeSecurityAndStability::test_07_inspect_dispatch_runtime_introspection",
+        "tests/test_unfamiliar_functions.py::TestUnfamiliarFunctions::test_01_scalar_numerical_10_functions",
+        "tests/test_unfamiliar_functions.py::TestUnfamiliarFunctions::test_02_numpy_and_collection_10_functions",
+        "tests/test_unfamiliar_functions.py::TestUnfamiliarFunctions::test_03_strings_unicode_and_helpers_10_functions",
+        "tests/test_unfamiliar_functions.py::TestUnfamiliarFunctions::test_04_kwargs_truthiness_exceptions_and_edges",
+        "tests/test_unfamiliar_functions.py::TestUnfamiliarFunctions::test_06_unfamiliar_speedups_summary"
+      ]
+    },
+    "decorated_helper_policy_cases": 3,
+    "additional_admission_tests": 28,
+    "retained_baseline_tests": 296
+  },
+  "applications": {
+    "pii_scrubber": {
+      "native": 1019,
+      "fallback": 0
+    },
+    "pdf_cleaner": {
+      "native": 1020,
+      "fallback": 0
+    },
+    "quant_backtest": {
+      "native": 1117,
+      "fallback": 0
+    },
+    "rag_chunker": {
+      "native": 20,
+      "fallback": 1022
+    },
+    "ocr_matcher": {
+      "native": 1020,
+      "fallback": 1
+    },
+    "geo_distance": {
+      "native": 1014,
+      "fallback": 1028
+    },
+    "ar_spatial": {
+      "native": 1010,
+      "fallback": 1020
+    }
+  },
+  "oracle_disqualifications": [
+    {
+      "application": "geo_distance",
+      "size": "100",
+      "label": "candidate",
+      "engine": "numpy",
+      "strict_correct": false,
+      "tolerance_correct": true,
+      "routes": [
+        "numpy"
+      ],
+      "p50_us": 39.01269841269841,
+      "p95_batch_us": 41.21666666666666,
+      "process_p50_us": [
+        38.288379844961234,
+        39.66850393700788,
+        39.792561983471074,
+        38.89205555555556,
+        39.01269841269841
+      ],
+      "min_process_p50_us": 38.288379844961234,
+      "max_process_p50_us": 39.792561983471074,
+      "python_visible_peak_bytes": [
+        8536,
+        8536,
+        8536,
+        8536,
+        8536
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "geo_distance",
+      "size": "1000",
+      "label": "candidate",
+      "engine": "numpy",
+      "strict_correct": false,
+      "tolerance_correct": true,
+      "routes": [
+        "numpy"
+      ],
+      "p50_us": 157.4,
+      "p95_batch_us": 186.9432162162162,
+      "process_p50_us": [
+        166.0075,
+        157.4,
+        155.4488888888889,
+        185.95132432432433,
+        155.16666666666666
+      ],
+      "min_process_p50_us": 155.16666666666666,
+      "max_process_p50_us": 185.95132432432433,
+      "python_visible_peak_bytes": [
+        66136,
+        66136,
+        66136,
+        66136,
+        66136
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "geo_distance",
+      "size": "10000",
+      "label": "candidate",
+      "engine": "numpy",
+      "strict_correct": false,
+      "tolerance_correct": true,
+      "routes": [
+        "numpy"
+      ],
+      "p50_us": 1266.8831666666667,
+      "p95_batch_us": 1388.28,
+      "process_p50_us": [
+        1237.0333333333333,
+        1241.0,
+        1341.14,
+        1268.6333333333332,
+        1266.8831666666667
+      ],
+      "min_process_p50_us": 1237.0333333333333,
+      "max_process_p50_us": 1341.14,
+      "python_visible_peak_bytes": [
+        642136,
+        642136,
+        642136,
+        642136,
+        642136
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "pdf_cleaner",
+      "size": "large",
+      "label": "candidate",
+      "engine": "compiled_regex",
+      "strict_correct": false,
+      "tolerance_correct": false,
+      "routes": [
+        "compiled_regex"
+      ],
+      "p50_us": null,
+      "p95_batch_us": null,
+      "process_p50_us": [],
+      "min_process_p50_us": null,
+      "max_process_p50_us": null,
+      "python_visible_peak_bytes": [],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "pdf_cleaner",
+      "size": "medium",
+      "label": "candidate",
+      "engine": "compiled_regex",
+      "strict_correct": false,
+      "tolerance_correct": false,
+      "routes": [
+        "compiled_regex"
+      ],
+      "p50_us": null,
+      "p95_batch_us": null,
+      "process_p50_us": [],
+      "min_process_p50_us": null,
+      "max_process_p50_us": null,
+      "python_visible_peak_bytes": [],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "pdf_cleaner",
+      "size": "small",
+      "label": "candidate",
+      "engine": "compiled_regex",
+      "strict_correct": false,
+      "tolerance_correct": false,
+      "routes": [
+        "compiled_regex"
+      ],
+      "p50_us": null,
+      "p95_batch_us": null,
+      "process_p50_us": [],
+      "min_process_p50_us": null,
+      "max_process_p50_us": null,
+      "python_visible_peak_bytes": [],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "quant_backtest",
+      "size": "0",
+      "label": "candidate",
+      "engine": "manual_cpp",
+      "strict_correct": false,
+      "tolerance_correct": true,
+      "routes": [
+        "manual_cpp"
+      ],
+      "p50_us": 0.07970000000000001,
+      "p95_batch_us": 0.12190000000000001,
+      "process_p50_us": [
+        0.07955,
+        0.0775,
+        0.11965,
+        0.07995000000000001,
+        0.07970000000000001
+      ],
+      "min_process_p50_us": 0.0775,
+      "max_process_p50_us": 0.11965,
+      "python_visible_peak_bytes": [
+        24,
+        24,
+        24,
+        24,
+        24
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "quant_backtest",
+      "size": "0",
+      "label": "candidate",
+      "engine": "numba",
+      "strict_correct": false,
+      "tolerance_correct": true,
+      "routes": [
+        "numba"
+      ],
+      "p50_us": 0.2061,
+      "p95_batch_us": 0.27735000000000004,
+      "process_p50_us": [
+        0.20875,
+        0.19805,
+        0.24725,
+        0.2061,
+        0.2037
+      ],
+      "min_process_p50_us": 0.19805,
+      "max_process_p50_us": 0.24725,
+      "python_visible_peak_bytes": [
+        96,
+        96,
+        96,
+        96,
+        96
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "rag_chunker",
+      "size": "large",
+      "label": "candidate",
+      "engine": "private_entry",
+      "strict_correct": false,
+      "tolerance_correct": false,
+      "routes": [
+        "private_entry"
+      ],
+      "p50_us": null,
+      "p95_batch_us": null,
+      "process_p50_us": [],
+      "min_process_p50_us": null,
+      "max_process_p50_us": null,
+      "python_visible_peak_bytes": [],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "rag_chunker",
+      "size": "medium",
+      "label": "candidate",
+      "engine": "private_entry",
+      "strict_correct": false,
+      "tolerance_correct": false,
+      "routes": [
+        "private_entry"
+      ],
+      "p50_us": null,
+      "p95_batch_us": null,
+      "process_p50_us": [],
+      "min_process_p50_us": null,
+      "max_process_p50_us": null,
+      "python_visible_peak_bytes": [],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "rag_chunker",
+      "size": "small",
+      "label": "candidate",
+      "engine": "private_entry",
+      "strict_correct": false,
+      "tolerance_correct": false,
+      "routes": [
+        "private_entry"
+      ],
+      "p50_us": null,
+      "p95_batch_us": null,
+      "process_p50_us": [],
+      "min_process_p50_us": null,
+      "max_process_p50_us": null,
+      "python_visible_peak_bytes": [],
+      "native_calls": 0,
+      "fallback_calls": 0
+    }
+  ]
+}

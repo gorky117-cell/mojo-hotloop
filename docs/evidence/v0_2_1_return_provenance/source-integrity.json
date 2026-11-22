@@ -1,0 +1,43 @@
+{
+  "tests/test_unfamiliar_functions.py": {
+    "module_source_sha256": "52d1139ef2f7f74ff4a280c2ff651449be15b715bde728d95f29ff0441bea56b",
+    "function_definitions": 36
+  },
+  "tests/test_generalization_e6.py": {
+    "module_source_sha256": "8a32d4c3cf74b7beead9548757d3f68498891003de187cd5eb825b512d931bb8",
+    "function_definitions": 52
+  },
+  "original_nine_byte_identical": true,
+  "tests/test_generalization_holdout_e8.py": {
+    "file_byte_identical": true,
+    "file_sha256": "a8fe26562a086474f4ae2f92394fbaba62c5da5d2ed8c81259239b3ac7db9ee4"
+  },
+  "examples/pii_scrubber/original.py": {
+    "unchanged_from_parent": true,
+    "sha256": "02ecc580d7acf9dfd3898c65435bf7214dbad0b2b24920a1b07c62a5c6c17747"
+  },
+  "examples/rag_chunker/original.py": {
+    "unchanged_from_parent": true,
+    "sha256": "99279aa80abac33f4057e3a6658356b768a81efdab07cd239bd70ba0dd89d569"
+  },
+  "examples/pdf_cleaner/original.py": {
+    "unchanged_from_parent": true,
+    "sha256": "7806a78041ec6d4ed37f35926f9f7f173357951922f4adc87d35cfe60f899676"
+  },
+  "examples/ocr_matcher/original.py": {
+    "unchanged_from_parent": true,
+    "sha256": "a7f6ea07b4b74ff699c2b0463f59135ca84231d45ac06027650ec5ad26dba767"
+  },
+  "examples/quant_backtest/original.py": {
+    "unchanged_from_parent": true,
+    "sha256": "526819d568d413ef3cd34042e60cb89b5ff5a9098679c31a1274c218abf584ba"
+  },
+  "examples/geo_distance/original.py": {
+    "unchanged_from_parent": true,
+    "sha256": "a17b2d51fc164261a3104d4174992db49d9f6d939eca0bb850e85018ad2f4c70"
+  },
+  "examples/ar_spatial/original.py": {
+    "unchanged_from_parent": true,
+    "sha256": "6fe64ba4bf7396e9fea4f74575ae45b3c9647b4320f3858b9f8f1435fa8a6f1c"
+  }
+}

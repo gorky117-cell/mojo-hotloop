@@ -1,0 +1,338 @@
+[
+  {
+    "application": "pdf_cleaner",
+    "size": "small",
+    "engine": "default_public",
+    "ratio": 1.0126137386581384,
+    "paired_ratios": [
+      1.0945868945868946,
+      1.0831357966555373,
+      0.8736206929805321,
+      1.020492675522566,
+      0.8337138337655506
+    ],
+    "over10pct_trials": 0
+  },
+  {
+    "application": "pdf_cleaner",
+    "size": "medium",
+    "engine": "default_public",
+    "ratio": 1.0401859112113554,
+    "paired_ratios": [
+      1.0781947962238085,
+      1.08175868743663,
+      0.8549262403021676,
+      1.0391496630431833,
+      0.8507131120883173
+    ],
+    "over10pct_trials": 0
+  },
+  {
+    "application": "pdf_cleaner",
+    "size": "large",
+    "engine": "default_public",
+    "ratio": 1.011570597796687,
+    "paired_ratios": [
+      1.049581148266703,
+      1.0079513981953006,
+      0.9221224537238835,
+      1.0383132927030143,
+      1.0151090069088236
+    ],
+    "over10pct_trials": 0
+  },
+  {
+    "application": "rag_chunker",
+    "size": "small",
+    "engine": "default_public",
+    "ratio": 1.0232976985835285,
+    "paired_ratios": [
+      1.3101976051822286,
+      0.9915180427653024,
+      0.9987086286325056,
+      0.8760713834928838,
+      1.0789499142307546
+    ],
+    "over10pct_trials": 1
+  },
+  {
+    "application": "rag_chunker",
+    "size": "medium",
+    "engine": "default_public",
+    "ratio": 1.041717188268065,
+    "paired_ratios": [
+      1.2753665396031113,
+      1.020307987297022,
+      1.032869080779944,
+      0.8658750366846191,
+      1.0707395272581943
+    ],
+    "over10pct_trials": 1
+  },
+  {
+    "application": "rag_chunker",
+    "size": "large",
+    "engine": "default_public",
+    "ratio": 1.0354902750239927,
+    "paired_ratios": [
+      1.2836991305397898,
+      0.9948930326373838,
+      1.040347935990641,
+      0.8836002471130542,
+      1.0377752320010285
+    ],
+    "over10pct_trials": 1
+  },
+  {
+    "application": "ocr_matcher",
+    "size": "small",
+    "engine": "default_public",
+    "ratio": 1.0287978242707425,
+    "paired_ratios": [
+      0.9747708247415222,
+      1.0227723632301977,
+      1.0281698441828184,
+      1.008635037412975,
+      1.4407842260592856
+    ],
+    "over10pct_trials": 1
+  },
+  {
+    "application": "ocr_matcher",
+    "size": "small",
+    "engine": "forced_public",
+    "ratio": 1.1368367056141353,
+    "paired_ratios": [
+      1.1135942985876883,
+      1.0968282871213373,
+      1.1265995021341522,
+      1.1449258235193527,
+      1.59187275049344
+    ],
+    "over10pct_trials": 4
+  },
+  {
+    "application": "ocr_matcher",
+    "size": "medium",
+    "engine": "default_public",
+    "ratio": 1.0288102701895805,
+    "paired_ratios": [
+      1.0032354645547614,
+      0.9557942119040047,
+      1.0288102701895805,
+      1.000791406111328,
+      1.3738523901082895
+    ],
+    "over10pct_trials": 1
+  },
+  {
+    "application": "ocr_matcher",
+    "size": "medium",
+    "engine": "forced_public",
+    "ratio": 1.0604536288226856,
+    "paired_ratios": [
+      1.0297226193010736,
+      1.0131070279697587,
+      1.0557786678351342,
+      1.0418810394891242,
+      1.3952863072839787
+    ],
+    "over10pct_trials": 1
+  },
+  {
+    "application": "ocr_matcher",
+    "size": "large",
+    "engine": "default_public",
+    "ratio": 1.0269649332440234,
+    "paired_ratios": [
+      0.9983598538255689,
+      0.9769156464998916,
+      1.0333188397174802,
+      1.0075717869126095,
+      1.319274659205905
+    ],
+    "over10pct_trials": 1
+  },
+  {
+    "application": "ocr_matcher",
+    "size": "large",
+    "engine": "forced_public",
+    "ratio": 1.0693344358371777,
+    "paired_ratios": [
+      1.0402695455828395,
+      1.0119462094177039,
+      1.2118751682948665,
+      1.0431622588522882,
+      1.3181562976407009
+    ],
+    "over10pct_trials": 2
+  },
+  {
+    "application": "geo_distance",
+    "size": "100",
+    "engine": "default_public",
+    "ratio": 1.0179104184410774,
+    "paired_ratios": [
+      0.9385537818702908,
+      1.024553242543518,
+      1.1022638728655385,
+      1.1091106522304013,
+      0.9932057894938786
+    ],
+    "over10pct_trials": 2
+  },
+  {
+    "application": "geo_distance",
+    "size": "100",
+    "engine": "forced_public",
+    "ratio": 1.0447638930052794,
+    "paired_ratios": [
+      1.0128554171421478,
+      1.0447638930052794,
+      1.2146808417588206,
+      1.1369623736079457,
+      1.0491567260176504
+    ],
+    "over10pct_trials": 2
+  },
+  {
+    "application": "geo_distance",
+    "size": "1000",
+    "engine": "default_public",
+    "ratio": 1.0103352524013713,
+    "paired_ratios": [
+      1.0996100181991506,
+      1.001736131072147,
+      1.1367560676008455,
+      1.0498037699322642,
+      1.0026424527920343
+    ],
+    "over10pct_trials": 1
+  },
+  {
+    "application": "geo_distance",
+    "size": "1000",
+    "engine": "forced_public",
+    "ratio": 1.0260824060244707,
+    "paired_ratios": [
+      1.2786988244831778,
+      1.0172488008854998,
+      1.1522075910147171,
+      1.0365990827589515,
+      1.0186606335015922
+    ],
+    "over10pct_trials": 2
+  },
+  {
+    "application": "geo_distance",
+    "size": "10000",
+    "engine": "default_public",
+    "ratio": 1.0307405662439986,
+    "paired_ratios": [
+      1.2201878786878209,
+      1.0037459778763187,
+      1.2787686293672125,
+      0.9491331130081486,
+      1.0248882889026028
+    ],
+    "over10pct_trials": 2
+  },
+  {
+    "application": "geo_distance",
+    "size": "10000",
+    "engine": "forced_public",
+    "ratio": 1.032137258269274,
+    "paired_ratios": [
+      1.1949616954649667,
+      1.0306953377315262,
+      1.3132367316428037,
+      0.9457381924290161,
+      1.032137258269274
+    ],
+    "over10pct_trials": 2
+  },
+  {
+    "application": "ar_spatial",
+    "size": "100",
+    "engine": "default_public",
+    "ratio": 1.0098357210394064,
+    "paired_ratios": [
+      1.1903737139849107,
+      1.0080412173020203,
+      0.9932859051417204,
+      1.0698388956587939,
+      0.9966189565640462
+    ],
+    "over10pct_trials": 1
+  },
+  {
+    "application": "ar_spatial",
+    "size": "100",
+    "engine": "forced_public",
+    "ratio": 1.0488653636148988,
+    "paired_ratios": [
+      1.2328163184430108,
+      1.0444935732837495,
+      1.0115829062880406,
+      1.0808572052882417,
+      1.2570163403831316
+    ],
+    "over10pct_trials": 2
+  },
+  {
+    "application": "ar_spatial",
+    "size": "1000",
+    "engine": "default_public",
+    "ratio": 1.0277667592225308,
+    "paired_ratios": [
+      1.1587216462921128,
+      1.0101254723480657,
+      0.9772874939970054,
+      1.0622106758476983,
+      1.1446362122384646
+    ],
+    "over10pct_trials": 2
+  },
+  {
+    "application": "ar_spatial",
+    "size": "1000",
+    "engine": "forced_public",
+    "ratio": 1.0352638011815032,
+    "paired_ratios": [
+      1.1412266755079332,
+      1.0107761254838052,
+      0.9804297467848869,
+      1.0758290658504486,
+      1.112008855878633
+    ],
+    "over10pct_trials": 2
+  },
+  {
+    "application": "ar_spatial",
+    "size": "10000",
+    "engine": "default_public",
+    "ratio": 1.044291518723233,
+    "paired_ratios": [
+      1.1043229986456313,
+      0.9883397711273962,
+      0.9693683543412436,
+      1.0723168305518396,
+      1.151630211934697
+    ],
+    "over10pct_trials": 2
+  },
+  {
+    "application": "ar_spatial",
+    "size": "10000",
+    "engine": "forced_public",
+    "ratio": 1.0360141558531677,
+    "paired_ratios": [
+      1.1018203686998358,
+      1.0070603928062187,
+      0.9686476368741226,
+      1.0721464304513524,
+      1.1476670490449299
+    ],
+    "over10pct_trials": 2
+  }
+]

@@ -1,0 +1,754 @@
+FFFFFF...FFFFFF...FFFFFF....                                             [100%]
+=================================== FAILURES ===================================
+__ test_unqualified_runtime_refuses_before_native_body[default-architecture] ___
+
+subject = <module 'profile_subject' from '/tmp/pytest-of-gaurav/pytest-102/runtime-profile0/profile_subject.py'>
+profile = 'architecture', mode = 'default'
+
+    @pytest.mark.parametrize("profile",["architecture","platform","pointers","byteorder","free-threaded","gil-disabled","python","implementation","pylong"])
+    @pytest.mark.parametrize("mode",["default","forced","strict"])
+    def test_unqualified_runtime_refuses_before_native_body(subject,profile,mode):
+        fn=hotloop(force_native=mode=="forced",strict=mode=="strict",cache_check="import")(subject.identity._original)
+        assert fn._compiled is not None
+        entered=[]
+        def forbidden(*args):
+            entered.append(True)
+            raise AssertionError("unqualified native body")
+        fn._compiled.raw=forbidden
+        owner=float("123.5")
+        with unsupported(profile):
+            if mode=="strict":
+                with pytest.raises(HotloopNativeExecutionError):fn(owner)
+            else:
+>               assert fn(owner) is owner
+                       ^^^^^^^^^
+
+test_admission.py:64: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../baseline-52bc429/venv/lib/python3.12/site-packages/hotloop/decorator.py:383: in wrapper
+    res = wrapper._compiled(*call_args, **call_kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../baseline-52bc429/venv/lib/python3.12/site-packages/hotloop/_provenance.py:206: in __call__
+    return self.raw(self.context,*args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+args = ((), 123.5)
+
+    def forbidden(*args):
+        entered.append(True)
+>       raise AssertionError("unqualified native body")
+E       AssertionError: unqualified native body
+
+test_admission.py:57: AssertionError
+____ test_unqualified_runtime_refuses_before_native_body[default-platform] _____
+
+subject = <module 'profile_subject' from '/tmp/pytest-of-gaurav/pytest-102/runtime-profile0/profile_subject.py'>
+profile = 'platform', mode = 'default'
+
+    @pytest.mark.parametrize("profile",["architecture","platform","pointers","byteorder","free-threaded","gil-disabled","python","implementation","pylong"])
+    @pytest.mark.parametrize("mode",["default","forced","strict"])
+    def test_unqualified_runtime_refuses_before_native_body(subject,profile,mode):
+        fn=hotloop(force_native=mode=="forced",strict=mode=="strict",cache_check="import")(subject.identity._original)
+        assert fn._compiled is not None
+        entered=[]
+        def forbidden(*args):
+            entered.append(True)
+            raise AssertionError("unqualified native body")
+        fn._compiled.raw=forbidden
+        owner=float("123.5")
+        with unsupported(profile):
+            if mode=="strict":
+                with pytest.raises(HotloopNativeExecutionError):fn(owner)
+            else:
+>               assert fn(owner) is owner
+                       ^^^^^^^^^
+
+test_admission.py:64: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../baseline-52bc429/venv/lib/python3.12/site-packages/hotloop/decorator.py:383: in wrapper
+    res = wrapper._compiled(*call_args, **call_kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../baseline-52bc429/venv/lib/python3.12/site-packages/hotloop/_provenance.py:206: in __call__
+    return self.raw(self.context,*args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+args = ((), 123.5)
+
+    def forbidden(*args):
+        entered.append(True)
+>       raise AssertionError("unqualified native body")
+E       AssertionError: unqualified native body
+
+test_admission.py:57: AssertionError
+____ test_unqualified_runtime_refuses_before_native_body[default-pointers] _____
+
+subject = <module 'profile_subject' from '/tmp/pytest-of-gaurav/pytest-102/runtime-profile0/profile_subject.py'>
+profile = 'pointers', mode = 'default'
+
+    @pytest.mark.parametrize("profile",["architecture","platform","pointers","byteorder","free-threaded","gil-disabled","python","implementation","pylong"])
+    @pytest.mark.parametrize("mode",["default","forced","strict"])
+    def test_unqualified_runtime_refuses_before_native_body(subject,profile,mode):
+        fn=hotloop(force_native=mode=="forced",strict=mode=="strict",cache_check="import")(subject.identity._original)
+        assert fn._compiled is not None
+        entered=[]
+        def forbidden(*args):
+            entered.append(True)
+            raise AssertionError("unqualified native body")
+        fn._compiled.raw=forbidden
+        owner=float("123.5")
+        with unsupported(profile):
+            if mode=="strict":
+                with pytest.raises(HotloopNativeExecutionError):fn(owner)
+            else:
+>               assert fn(owner) is owner
+                       ^^^^^^^^^
+
+test_admission.py:64: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../baseline-52bc429/venv/lib/python3.12/site-packages/hotloop/decorator.py:383: in wrapper
+    res = wrapper._compiled(*call_args, **call_kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../baseline-52bc429/venv/lib/python3.12/site-packages/hotloop/_provenance.py:206: in __call__
+    return self.raw(self.context,*args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+args = ((), 123.5)
+
+    def forbidden(*args):
+        entered.append(True)
+>       raise AssertionError("unqualified native body")
+E       AssertionError: unqualified native body
+
+test_admission.py:57: AssertionError
+____ test_unqualified_runtime_refuses_before_native_body[default-byteorder] ____
+
+subject = <module 'profile_subject' from '/tmp/pytest-of-gaurav/pytest-102/runtime-profile0/profile_subject.py'>
+profile = 'byteorder', mode = 'default'
+
+    @pytest.mark.parametrize("profile",["architecture","platform","pointers","byteorder","free-threaded","gil-disabled","python","implementation","pylong"])
+    @pytest.mark.parametrize("mode",["default","forced","strict"])
+    def test_unqualified_runtime_refuses_before_native_body(subject,profile,mode):
+        fn=hotloop(force_native=mode=="forced",strict=mode=="strict",cache_check="import")(subject.identity._original)
+        assert fn._compiled is not None
+        entered=[]
+        def forbidden(*args):
+            entered.append(True)
+            raise AssertionError("unqualified native body")
+        fn._compiled.raw=forbidden
+        owner=float("123.5")
+        with unsupported(profile):
+            if mode=="strict":
+                with pytest.raises(HotloopNativeExecutionError):fn(owner)
+            else:
+>               assert fn(owner) is owner
+                       ^^^^^^^^^
+
+test_admission.py:64: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../baseline-52bc429/venv/lib/python3.12/site-packages/hotloop/decorator.py:383: in wrapper
+    res = wrapper._compiled(*call_args, **call_kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../baseline-52bc429/venv/lib/python3.12/site-packages/hotloop/_provenance.py:206: in __call__
+    return self.raw(self.context,*args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+args = ((), 123.5)
+
+    def forbidden(*args):
+        entered.append(True)
+>       raise AssertionError("unqualified native body")
+E       AssertionError: unqualified native body
+
+test_admission.py:57: AssertionError
+__ test_unqualified_runtime_refuses_before_native_body[default-free-threaded] __
+
+subject = <module 'profile_subject' from '/tmp/pytest-of-gaurav/pytest-102/runtime-profile0/profile_subject.py'>
+profile = 'free-threaded', mode = 'default'
+
+    @pytest.mark.parametrize("profile",["architecture","platform","pointers","byteorder","free-threaded","gil-disabled","python","implementation","pylong"])
+    @pytest.mark.parametrize("mode",["default","forced","strict"])
+    def test_unqualified_runtime_refuses_before_native_body(subject,profile,mode):
+        fn=hotloop(force_native=mode=="forced",strict=mode=="strict",cache_check="import")(subject.identity._original)
+        assert fn._compiled is not None
+        entered=[]
+        def forbidden(*args):
+            entered.append(True)
+            raise AssertionError("unqualified native body")
+        fn._compiled.raw=forbidden
+        owner=float("123.5")
+        with unsupported(profile):
+            if mode=="strict":
+                with pytest.raises(HotloopNativeExecutionError):fn(owner)
+            else:
+>               assert fn(owner) is owner
+                       ^^^^^^^^^
+
+test_admission.py:64: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../baseline-52bc429/venv/lib/python3.12/site-packages/hotloop/decorator.py:383: in wrapper
+    res = wrapper._compiled(*call_args, **call_kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../baseline-52bc429/venv/lib/python3.12/site-packages/hotloop/_provenance.py:206: in __call__
+    return self.raw(self.context,*args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+args = ((), 123.5)
+
+    def forbidden(*args):
+        entered.append(True)
+>       raise AssertionError("unqualified native body")
+E       AssertionError: unqualified native body
+
+test_admission.py:57: AssertionError
+__ test_unqualified_runtime_refuses_before_native_body[default-gil-disabled] ___
+
+subject = <module 'profile_subject' from '/tmp/pytest-of-gaurav/pytest-102/runtime-profile0/profile_subject.py'>
+profile = 'gil-disabled', mode = 'default'
+
+    @pytest.mark.parametrize("profile",["architecture","platform","pointers","byteorder","free-threaded","gil-disabled","python","implementation","pylong"])
+    @pytest.mark.parametrize("mode",["default","forced","strict"])
+    def test_unqualified_runtime_refuses_before_native_body(subject,profile,mode):
+        fn=hotloop(force_native=mode=="forced",strict=mode=="strict",cache_check="import")(subject.identity._original)
+        assert fn._compiled is not None
+        entered=[]
+        def forbidden(*args):
+            entered.append(True)
+            raise AssertionError("unqualified native body")
+        fn._compiled.raw=forbidden
+        owner=float("123.5")
+        with unsupported(profile):
+            if mode=="strict":
+                with pytest.raises(HotloopNativeExecutionError):fn(owner)
+            else:
+>               assert fn(owner) is owner
+                       ^^^^^^^^^
+
+test_admission.py:64: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../baseline-52bc429/venv/lib/python3.12/site-packages/hotloop/decorator.py:383: in wrapper
+    res = wrapper._compiled(*call_args, **call_kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../baseline-52bc429/venv/lib/python3.12/site-packages/hotloop/_provenance.py:206: in __call__
+    return self.raw(self.context,*args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+args = ((), 123.5)
+
+    def forbidden(*args):
+        entered.append(True)
+>       raise AssertionError("unqualified native body")
+E       AssertionError: unqualified native body
+
+test_admission.py:57: AssertionError
+___ test_unqualified_runtime_refuses_before_native_body[forced-architecture] ___
+
+subject = <module 'profile_subject' from '/tmp/pytest-of-gaurav/pytest-102/runtime-profile0/profile_subject.py'>
+profile = 'architecture', mode = 'forced'
+
+    @pytest.mark.parametrize("profile",["architecture","platform","pointers","byteorder","free-threaded","gil-disabled","python","implementation","pylong"])
+    @pytest.mark.parametrize("mode",["default","forced","strict"])
+    def test_unqualified_runtime_refuses_before_native_body(subject,profile,mode):
+        fn=hotloop(force_native=mode=="forced",strict=mode=="strict",cache_check="import")(subject.identity._original)
+        assert fn._compiled is not None
+        entered=[]
+        def forbidden(*args):
+            entered.append(True)
+            raise AssertionError("unqualified native body")
+        fn._compiled.raw=forbidden
+        owner=float("123.5")
+        with unsupported(profile):
+            if mode=="strict":
+                with pytest.raises(HotloopNativeExecutionError):fn(owner)
+            else:
+>               assert fn(owner) is owner
+                       ^^^^^^^^^
+
+test_admission.py:64: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../baseline-52bc429/venv/lib/python3.12/site-packages/hotloop/decorator.py:383: in wrapper
+    res = wrapper._compiled(*call_args, **call_kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../baseline-52bc429/venv/lib/python3.12/site-packages/hotloop/_provenance.py:206: in __call__
+    return self.raw(self.context,*args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+args = ((), 123.5)
+
+    def forbidden(*args):
+        entered.append(True)
+>       raise AssertionError("unqualified native body")
+E       AssertionError: unqualified native body
+
+test_admission.py:57: AssertionError
+_____ test_unqualified_runtime_refuses_before_native_body[forced-platform] _____
+
+subject = <module 'profile_subject' from '/tmp/pytest-of-gaurav/pytest-102/runtime-profile0/profile_subject.py'>
+profile = 'platform', mode = 'forced'
+
+    @pytest.mark.parametrize("profile",["architecture","platform","pointers","byteorder","free-threaded","gil-disabled","python","implementation","pylong"])
+    @pytest.mark.parametrize("mode",["default","forced","strict"])
+    def test_unqualified_runtime_refuses_before_native_body(subject,profile,mode):
+        fn=hotloop(force_native=mode=="forced",strict=mode=="strict",cache_check="import")(subject.identity._original)
+        assert fn._compiled is not None
+        entered=[]
+        def forbidden(*args):
+            entered.append(True)
+            raise AssertionError("unqualified native body")
+        fn._compiled.raw=forbidden
+        owner=float("123.5")
+        with unsupported(profile):
+            if mode=="strict":
+                with pytest.raises(HotloopNativeExecutionError):fn(owner)
+            else:
+>               assert fn(owner) is owner
+                       ^^^^^^^^^
+
+test_admission.py:64: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../baseline-52bc429/venv/lib/python3.12/site-packages/hotloop/decorator.py:383: in wrapper
+    res = wrapper._compiled(*call_args, **call_kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../baseline-52bc429/venv/lib/python3.12/site-packages/hotloop/_provenance.py:206: in __call__
+    return self.raw(self.context,*args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+args = ((), 123.5)
+
+    def forbidden(*args):
+        entered.append(True)
+>       raise AssertionError("unqualified native body")
+E       AssertionError: unqualified native body
+
+test_admission.py:57: AssertionError
+_____ test_unqualified_runtime_refuses_before_native_body[forced-pointers] _____
+
+subject = <module 'profile_subject' from '/tmp/pytest-of-gaurav/pytest-102/runtime-profile0/profile_subject.py'>
+profile = 'pointers', mode = 'forced'
+
+    @pytest.mark.parametrize("profile",["architecture","platform","pointers","byteorder","free-threaded","gil-disabled","python","implementation","pylong"])
+    @pytest.mark.parametrize("mode",["default","forced","strict"])
+    def test_unqualified_runtime_refuses_before_native_body(subject,profile,mode):
+        fn=hotloop(force_native=mode=="forced",strict=mode=="strict",cache_check="import")(subject.identity._original)
+        assert fn._compiled is not None
+        entered=[]
+        def forbidden(*args):
+            entered.append(True)
+            raise AssertionError("unqualified native body")
+        fn._compiled.raw=forbidden
+        owner=float("123.5")
+        with unsupported(profile):
+            if mode=="strict":
+                with pytest.raises(HotloopNativeExecutionError):fn(owner)
+            else:
+>               assert fn(owner) is owner
+                       ^^^^^^^^^
+
+test_admission.py:64: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../baseline-52bc429/venv/lib/python3.12/site-packages/hotloop/decorator.py:383: in wrapper
+    res = wrapper._compiled(*call_args, **call_kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../baseline-52bc429/venv/lib/python3.12/site-packages/hotloop/_provenance.py:206: in __call__
+    return self.raw(self.context,*args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+args = ((), 123.5)
+
+    def forbidden(*args):
+        entered.append(True)
+>       raise AssertionError("unqualified native body")
+E       AssertionError: unqualified native body
+
+test_admission.py:57: AssertionError
+____ test_unqualified_runtime_refuses_before_native_body[forced-byteorder] _____
+
+subject = <module 'profile_subject' from '/tmp/pytest-of-gaurav/pytest-102/runtime-profile0/profile_subject.py'>
+profile = 'byteorder', mode = 'forced'
+
+    @pytest.mark.parametrize("profile",["architecture","platform","pointers","byteorder","free-threaded","gil-disabled","python","implementation","pylong"])
+    @pytest.mark.parametrize("mode",["default","forced","strict"])
+    def test_unqualified_runtime_refuses_before_native_body(subject,profile,mode):
+        fn=hotloop(force_native=mode=="forced",strict=mode=="strict",cache_check="import")(subject.identity._original)
+        assert fn._compiled is not None
+        entered=[]
+        def forbidden(*args):
+            entered.append(True)
+            raise AssertionError("unqualified native body")
+        fn._compiled.raw=forbidden
+        owner=float("123.5")
+        with unsupported(profile):
+            if mode=="strict":
+                with pytest.raises(HotloopNativeExecutionError):fn(owner)
+            else:
+>               assert fn(owner) is owner
+                       ^^^^^^^^^
+
+test_admission.py:64: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../baseline-52bc429/venv/lib/python3.12/site-packages/hotloop/decorator.py:383: in wrapper
+    res = wrapper._compiled(*call_args, **call_kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../baseline-52bc429/venv/lib/python3.12/site-packages/hotloop/_provenance.py:206: in __call__
+    return self.raw(self.context,*args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+args = ((), 123.5)
+
+    def forbidden(*args):
+        entered.append(True)
+>       raise AssertionError("unqualified native body")
+E       AssertionError: unqualified native body
+
+test_admission.py:57: AssertionError
+__ test_unqualified_runtime_refuses_before_native_body[forced-free-threaded] ___
+
+subject = <module 'profile_subject' from '/tmp/pytest-of-gaurav/pytest-102/runtime-profile0/profile_subject.py'>
+profile = 'free-threaded', mode = 'forced'
+
+    @pytest.mark.parametrize("profile",["architecture","platform","pointers","byteorder","free-threaded","gil-disabled","python","implementation","pylong"])
+    @pytest.mark.parametrize("mode",["default","forced","strict"])
+    def test_unqualified_runtime_refuses_before_native_body(subject,profile,mode):
+        fn=hotloop(force_native=mode=="forced",strict=mode=="strict",cache_check="import")(subject.identity._original)
+        assert fn._compiled is not None
+        entered=[]
+        def forbidden(*args):
+            entered.append(True)
+            raise AssertionError("unqualified native body")
+        fn._compiled.raw=forbidden
+        owner=float("123.5")
+        with unsupported(profile):
+            if mode=="strict":
+                with pytest.raises(HotloopNativeExecutionError):fn(owner)
+            else:
+>               assert fn(owner) is owner
+                       ^^^^^^^^^
+
+test_admission.py:64: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../baseline-52bc429/venv/lib/python3.12/site-packages/hotloop/decorator.py:383: in wrapper
+    res = wrapper._compiled(*call_args, **call_kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../baseline-52bc429/venv/lib/python3.12/site-packages/hotloop/_provenance.py:206: in __call__
+    return self.raw(self.context,*args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+args = ((), 123.5)
+
+    def forbidden(*args):
+        entered.append(True)
+>       raise AssertionError("unqualified native body")
+E       AssertionError: unqualified native body
+
+test_admission.py:57: AssertionError
+___ test_unqualified_runtime_refuses_before_native_body[forced-gil-disabled] ___
+
+subject = <module 'profile_subject' from '/tmp/pytest-of-gaurav/pytest-102/runtime-profile0/profile_subject.py'>
+profile = 'gil-disabled', mode = 'forced'
+
+    @pytest.mark.parametrize("profile",["architecture","platform","pointers","byteorder","free-threaded","gil-disabled","python","implementation","pylong"])
+    @pytest.mark.parametrize("mode",["default","forced","strict"])
+    def test_unqualified_runtime_refuses_before_native_body(subject,profile,mode):
+        fn=hotloop(force_native=mode=="forced",strict=mode=="strict",cache_check="import")(subject.identity._original)
+        assert fn._compiled is not None
+        entered=[]
+        def forbidden(*args):
+            entered.append(True)
+            raise AssertionError("unqualified native body")
+        fn._compiled.raw=forbidden
+        owner=float("123.5")
+        with unsupported(profile):
+            if mode=="strict":
+                with pytest.raises(HotloopNativeExecutionError):fn(owner)
+            else:
+>               assert fn(owner) is owner
+                       ^^^^^^^^^
+
+test_admission.py:64: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../baseline-52bc429/venv/lib/python3.12/site-packages/hotloop/decorator.py:383: in wrapper
+    res = wrapper._compiled(*call_args, **call_kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../baseline-52bc429/venv/lib/python3.12/site-packages/hotloop/_provenance.py:206: in __call__
+    return self.raw(self.context,*args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+args = ((), 123.5)
+
+    def forbidden(*args):
+        entered.append(True)
+>       raise AssertionError("unqualified native body")
+E       AssertionError: unqualified native body
+
+test_admission.py:57: AssertionError
+___ test_unqualified_runtime_refuses_before_native_body[strict-architecture] ___
+
+subject = <module 'profile_subject' from '/tmp/pytest-of-gaurav/pytest-102/runtime-profile0/profile_subject.py'>
+profile = 'architecture', mode = 'strict'
+
+    @pytest.mark.parametrize("profile",["architecture","platform","pointers","byteorder","free-threaded","gil-disabled","python","implementation","pylong"])
+    @pytest.mark.parametrize("mode",["default","forced","strict"])
+    def test_unqualified_runtime_refuses_before_native_body(subject,profile,mode):
+        fn=hotloop(force_native=mode=="forced",strict=mode=="strict",cache_check="import")(subject.identity._original)
+        assert fn._compiled is not None
+        entered=[]
+        def forbidden(*args):
+            entered.append(True)
+            raise AssertionError("unqualified native body")
+        fn._compiled.raw=forbidden
+        owner=float("123.5")
+        with unsupported(profile):
+            if mode=="strict":
+>               with pytest.raises(HotloopNativeExecutionError):fn(owner)
+                                                                ^^^^^^^^^
+
+test_admission.py:62: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../baseline-52bc429/venv/lib/python3.12/site-packages/hotloop/decorator.py:383: in wrapper
+    res = wrapper._compiled(*call_args, **call_kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../baseline-52bc429/venv/lib/python3.12/site-packages/hotloop/_provenance.py:206: in __call__
+    return self.raw(self.context,*args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+args = ((), 123.5)
+
+    def forbidden(*args):
+        entered.append(True)
+>       raise AssertionError("unqualified native body")
+E       AssertionError: unqualified native body
+
+test_admission.py:57: AssertionError
+_____ test_unqualified_runtime_refuses_before_native_body[strict-platform] _____
+
+subject = <module 'profile_subject' from '/tmp/pytest-of-gaurav/pytest-102/runtime-profile0/profile_subject.py'>
+profile = 'platform', mode = 'strict'
+
+    @pytest.mark.parametrize("profile",["architecture","platform","pointers","byteorder","free-threaded","gil-disabled","python","implementation","pylong"])
+    @pytest.mark.parametrize("mode",["default","forced","strict"])
+    def test_unqualified_runtime_refuses_before_native_body(subject,profile,mode):
+        fn=hotloop(force_native=mode=="forced",strict=mode=="strict",cache_check="import")(subject.identity._original)
+        assert fn._compiled is not None
+        entered=[]
+        def forbidden(*args):
+            entered.append(True)
+            raise AssertionError("unqualified native body")
+        fn._compiled.raw=forbidden
+        owner=float("123.5")
+        with unsupported(profile):
+            if mode=="strict":
+>               with pytest.raises(HotloopNativeExecutionError):fn(owner)
+                                                                ^^^^^^^^^
+
+test_admission.py:62: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../baseline-52bc429/venv/lib/python3.12/site-packages/hotloop/decorator.py:383: in wrapper
+    res = wrapper._compiled(*call_args, **call_kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../baseline-52bc429/venv/lib/python3.12/site-packages/hotloop/_provenance.py:206: in __call__
+    return self.raw(self.context,*args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+args = ((), 123.5)
+
+    def forbidden(*args):
+        entered.append(True)
+>       raise AssertionError("unqualified native body")
+E       AssertionError: unqualified native body
+
+test_admission.py:57: AssertionError
+_____ test_unqualified_runtime_refuses_before_native_body[strict-pointers] _____
+
+subject = <module 'profile_subject' from '/tmp/pytest-of-gaurav/pytest-102/runtime-profile0/profile_subject.py'>
+profile = 'pointers', mode = 'strict'
+
+    @pytest.mark.parametrize("profile",["architecture","platform","pointers","byteorder","free-threaded","gil-disabled","python","implementation","pylong"])
+    @pytest.mark.parametrize("mode",["default","forced","strict"])
+    def test_unqualified_runtime_refuses_before_native_body(subject,profile,mode):
+        fn=hotloop(force_native=mode=="forced",strict=mode=="strict",cache_check="import")(subject.identity._original)
+        assert fn._compiled is not None
+        entered=[]
+        def forbidden(*args):
+            entered.append(True)
+            raise AssertionError("unqualified native body")
+        fn._compiled.raw=forbidden
+        owner=float("123.5")
+        with unsupported(profile):
+            if mode=="strict":
+>               with pytest.raises(HotloopNativeExecutionError):fn(owner)
+                                                                ^^^^^^^^^
+
+test_admission.py:62: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../baseline-52bc429/venv/lib/python3.12/site-packages/hotloop/decorator.py:383: in wrapper
+    res = wrapper._compiled(*call_args, **call_kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../baseline-52bc429/venv/lib/python3.12/site-packages/hotloop/_provenance.py:206: in __call__
+    return self.raw(self.context,*args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+args = ((), 123.5)
+
+    def forbidden(*args):
+        entered.append(True)
+>       raise AssertionError("unqualified native body")
+E       AssertionError: unqualified native body
+
+test_admission.py:57: AssertionError
+____ test_unqualified_runtime_refuses_before_native_body[strict-byteorder] _____
+
+subject = <module 'profile_subject' from '/tmp/pytest-of-gaurav/pytest-102/runtime-profile0/profile_subject.py'>
+profile = 'byteorder', mode = 'strict'
+
+    @pytest.mark.parametrize("profile",["architecture","platform","pointers","byteorder","free-threaded","gil-disabled","python","implementation","pylong"])
+    @pytest.mark.parametrize("mode",["default","forced","strict"])
+    def test_unqualified_runtime_refuses_before_native_body(subject,profile,mode):
+        fn=hotloop(force_native=mode=="forced",strict=mode=="strict",cache_check="import")(subject.identity._original)
+        assert fn._compiled is not None
+        entered=[]
+        def forbidden(*args):
+            entered.append(True)
+            raise AssertionError("unqualified native body")
+        fn._compiled.raw=forbidden
+        owner=float("123.5")
+        with unsupported(profile):
+            if mode=="strict":
+>               with pytest.raises(HotloopNativeExecutionError):fn(owner)
+                                                                ^^^^^^^^^
+
+test_admission.py:62: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../baseline-52bc429/venv/lib/python3.12/site-packages/hotloop/decorator.py:383: in wrapper
+    res = wrapper._compiled(*call_args, **call_kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../baseline-52bc429/venv/lib/python3.12/site-packages/hotloop/_provenance.py:206: in __call__
+    return self.raw(self.context,*args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+args = ((), 123.5)
+
+    def forbidden(*args):
+        entered.append(True)
+>       raise AssertionError("unqualified native body")
+E       AssertionError: unqualified native body
+
+test_admission.py:57: AssertionError
+__ test_unqualified_runtime_refuses_before_native_body[strict-free-threaded] ___
+
+subject = <module 'profile_subject' from '/tmp/pytest-of-gaurav/pytest-102/runtime-profile0/profile_subject.py'>
+profile = 'free-threaded', mode = 'strict'
+
+    @pytest.mark.parametrize("profile",["architecture","platform","pointers","byteorder","free-threaded","gil-disabled","python","implementation","pylong"])
+    @pytest.mark.parametrize("mode",["default","forced","strict"])
+    def test_unqualified_runtime_refuses_before_native_body(subject,profile,mode):
+        fn=hotloop(force_native=mode=="forced",strict=mode=="strict",cache_check="import")(subject.identity._original)
+        assert fn._compiled is not None
+        entered=[]
+        def forbidden(*args):
+            entered.append(True)
+            raise AssertionError("unqualified native body")
+        fn._compiled.raw=forbidden
+        owner=float("123.5")
+        with unsupported(profile):
+            if mode=="strict":
+>               with pytest.raises(HotloopNativeExecutionError):fn(owner)
+                                                                ^^^^^^^^^
+
+test_admission.py:62: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../baseline-52bc429/venv/lib/python3.12/site-packages/hotloop/decorator.py:383: in wrapper
+    res = wrapper._compiled(*call_args, **call_kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../baseline-52bc429/venv/lib/python3.12/site-packages/hotloop/_provenance.py:206: in __call__
+    return self.raw(self.context,*args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+args = ((), 123.5)
+
+    def forbidden(*args):
+        entered.append(True)
+>       raise AssertionError("unqualified native body")
+E       AssertionError: unqualified native body
+
+test_admission.py:57: AssertionError
+___ test_unqualified_runtime_refuses_before_native_body[strict-gil-disabled] ___
+
+subject = <module 'profile_subject' from '/tmp/pytest-of-gaurav/pytest-102/runtime-profile0/profile_subject.py'>
+profile = 'gil-disabled', mode = 'strict'
+
+    @pytest.mark.parametrize("profile",["architecture","platform","pointers","byteorder","free-threaded","gil-disabled","python","implementation","pylong"])
+    @pytest.mark.parametrize("mode",["default","forced","strict"])
+    def test_unqualified_runtime_refuses_before_native_body(subject,profile,mode):
+        fn=hotloop(force_native=mode=="forced",strict=mode=="strict",cache_check="import")(subject.identity._original)
+        assert fn._compiled is not None
+        entered=[]
+        def forbidden(*args):
+            entered.append(True)
+            raise AssertionError("unqualified native body")
+        fn._compiled.raw=forbidden
+        owner=float("123.5")
+        with unsupported(profile):
+            if mode=="strict":
+>               with pytest.raises(HotloopNativeExecutionError):fn(owner)
+                                                                ^^^^^^^^^
+
+test_admission.py:62: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../baseline-52bc429/venv/lib/python3.12/site-packages/hotloop/decorator.py:383: in wrapper
+    res = wrapper._compiled(*call_args, **call_kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../baseline-52bc429/venv/lib/python3.12/site-packages/hotloop/_provenance.py:206: in __call__
+    return self.raw(self.context,*args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+args = ((), 123.5)
+
+    def forbidden(*args):
+        entered.append(True)
+>       raise AssertionError("unqualified native body")
+E       AssertionError: unqualified native body
+
+test_admission.py:57: AssertionError
+=============================== warnings summary ===============================
+test_admission.py::test_unqualified_runtime_refuses_before_native_body[default-python]
+  /tmp/hotloop-master-20261122/baseline-52bc429/venv/lib/python3.12/site-packages/hotloop/decorator.py:390: HotloopFallbackWarning: [mojo-hotloop] identity: native conversion cannot preserve Python semantics
+    return python_semantics(args, kwargs, "native conversion cannot preserve Python semantics")
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED test_admission.py::test_unqualified_runtime_refuses_before_native_body[default-architecture]
+FAILED test_admission.py::test_unqualified_runtime_refuses_before_native_body[default-platform]
+FAILED test_admission.py::test_unqualified_runtime_refuses_before_native_body[default-pointers]
+FAILED test_admission.py::test_unqualified_runtime_refuses_before_native_body[default-byteorder]
+FAILED test_admission.py::test_unqualified_runtime_refuses_before_native_body[default-free-threaded]
+FAILED test_admission.py::test_unqualified_runtime_refuses_before_native_body[default-gil-disabled]
+FAILED test_admission.py::test_unqualified_runtime_refuses_before_native_body[forced-architecture]
+FAILED test_admission.py::test_unqualified_runtime_refuses_before_native_body[forced-platform]
+FAILED test_admission.py::test_unqualified_runtime_refuses_before_native_body[forced-pointers]
+FAILED test_admission.py::test_unqualified_runtime_refuses_before_native_body[forced-byteorder]
+FAILED test_admission.py::test_unqualified_runtime_refuses_before_native_body[forced-free-threaded]
+FAILED test_admission.py::test_unqualified_runtime_refuses_before_native_body[forced-gil-disabled]
+FAILED test_admission.py::test_unqualified_runtime_refuses_before_native_body[strict-architecture]
+FAILED test_admission.py::test_unqualified_runtime_refuses_before_native_body[strict-platform]
+FAILED test_admission.py::test_unqualified_runtime_refuses_before_native_body[strict-pointers]
+FAILED test_admission.py::test_unqualified_runtime_refuses_before_native_body[strict-byteorder]
+FAILED test_admission.py::test_unqualified_runtime_refuses_before_native_body[strict-free-threaded]
+FAILED test_admission.py::test_unqualified_runtime_refuses_before_native_body[strict-gil-disabled]
+18 failed, 10 passed, 1 warning in 14.02s

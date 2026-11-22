@@ -1,0 +1,375 @@
+{
+  "cases": 41,
+  "identity_correct": 41,
+  "rows": [
+    {
+      "name": "direct",
+      "mode": "default",
+      "route": "native",
+      "types_and_bits_equal": true,
+      "identity_correct": true,
+      "returned_owner": true,
+      "expected_owner": true
+    },
+    {
+      "name": "direct",
+      "mode": "default",
+      "route": "native",
+      "types_and_bits_equal": true,
+      "identity_correct": true,
+      "returned_owner": true,
+      "expected_owner": true
+    },
+    {
+      "name": "direct",
+      "mode": "default",
+      "route": "native",
+      "types_and_bits_equal": true,
+      "identity_correct": true,
+      "returned_owner": true,
+      "expected_owner": true
+    },
+    {
+      "name": "direct",
+      "mode": "default",
+      "route": "native",
+      "types_and_bits_equal": true,
+      "identity_correct": true,
+      "returned_owner": true,
+      "expected_owner": true
+    },
+    {
+      "name": "direct",
+      "mode": "default",
+      "route": "native",
+      "types_and_bits_equal": true,
+      "identity_correct": true,
+      "returned_owner": true,
+      "expected_owner": true
+    },
+    {
+      "name": "direct_int",
+      "mode": "default",
+      "route": "native",
+      "types_and_bits_equal": true,
+      "identity_correct": true,
+      "returned_owner": true,
+      "expected_owner": true
+    },
+    {
+      "name": "alias",
+      "mode": "default",
+      "route": "native",
+      "types_and_bits_equal": true,
+      "identity_correct": true,
+      "returned_owner": true,
+      "expected_owner": true
+    },
+    {
+      "name": "choose",
+      "mode": "default",
+      "route": "native",
+      "types_and_bits_equal": true,
+      "identity_correct": true,
+      "returned_owner": true,
+      "expected_owner": true
+    },
+    {
+      "name": "choose",
+      "mode": "default",
+      "route": "native",
+      "types_and_bits_equal": true,
+      "identity_correct": true,
+      "returned_owner": true,
+      "expected_owner": true
+    },
+    {
+      "name": "empty_loop",
+      "mode": "default",
+      "route": "native",
+      "types_and_bits_equal": true,
+      "identity_correct": true,
+      "returned_owner": true,
+      "expected_owner": true
+    },
+    {
+      "name": "empty_loop",
+      "mode": "default",
+      "route": "native",
+      "types_and_bits_equal": true,
+      "identity_correct": true,
+      "returned_owner": false,
+      "expected_owner": false
+    },
+    {
+      "name": "defaulted",
+      "mode": "default",
+      "route": "native",
+      "types_and_bits_equal": true,
+      "identity_correct": true,
+      "returned_owner": true,
+      "expected_owner": true
+    },
+    {
+      "name": "computed",
+      "mode": "default",
+      "route": "native",
+      "types_and_bits_equal": true,
+      "identity_correct": true,
+      "returned_owner": false,
+      "expected_owner": false
+    },
+    {
+      "name": "direct",
+      "mode": "forced",
+      "route": "native",
+      "types_and_bits_equal": true,
+      "identity_correct": true,
+      "returned_owner": true,
+      "expected_owner": true
+    },
+    {
+      "name": "direct",
+      "mode": "forced",
+      "route": "native",
+      "types_and_bits_equal": true,
+      "identity_correct": true,
+      "returned_owner": true,
+      "expected_owner": true
+    },
+    {
+      "name": "direct",
+      "mode": "forced",
+      "route": "native",
+      "types_and_bits_equal": true,
+      "identity_correct": true,
+      "returned_owner": true,
+      "expected_owner": true
+    },
+    {
+      "name": "direct",
+      "mode": "forced",
+      "route": "native",
+      "types_and_bits_equal": true,
+      "identity_correct": true,
+      "returned_owner": true,
+      "expected_owner": true
+    },
+    {
+      "name": "direct",
+      "mode": "forced",
+      "route": "native",
+      "types_and_bits_equal": true,
+      "identity_correct": true,
+      "returned_owner": true,
+      "expected_owner": true
+    },
+    {
+      "name": "direct_int",
+      "mode": "forced",
+      "route": "native",
+      "types_and_bits_equal": true,
+      "identity_correct": true,
+      "returned_owner": true,
+      "expected_owner": true
+    },
+    {
+      "name": "alias",
+      "mode": "forced",
+      "route": "native",
+      "types_and_bits_equal": true,
+      "identity_correct": true,
+      "returned_owner": true,
+      "expected_owner": true
+    },
+    {
+      "name": "choose",
+      "mode": "forced",
+      "route": "native",
+      "types_and_bits_equal": true,
+      "identity_correct": true,
+      "returned_owner": true,
+      "expected_owner": true
+    },
+    {
+      "name": "choose",
+      "mode": "forced",
+      "route": "native",
+      "types_and_bits_equal": true,
+      "identity_correct": true,
+      "returned_owner": true,
+      "expected_owner": true
+    },
+    {
+      "name": "empty_loop",
+      "mode": "forced",
+      "route": "native",
+      "types_and_bits_equal": true,
+      "identity_correct": true,
+      "returned_owner": true,
+      "expected_owner": true
+    },
+    {
+      "name": "empty_loop",
+      "mode": "forced",
+      "route": "native",
+      "types_and_bits_equal": true,
+      "identity_correct": true,
+      "returned_owner": false,
+      "expected_owner": false
+    },
+    {
+      "name": "defaulted",
+      "mode": "forced",
+      "route": "native",
+      "types_and_bits_equal": true,
+      "identity_correct": true,
+      "returned_owner": true,
+      "expected_owner": true
+    },
+    {
+      "name": "first",
+      "mode": "forced",
+      "route": "native",
+      "types_and_bits_equal": true,
+      "identity_correct": true,
+      "returned_owner": true,
+      "expected_owner": true
+    },
+    {
+      "name": "computed",
+      "mode": "forced",
+      "route": "native",
+      "types_and_bits_equal": true,
+      "identity_correct": true,
+      "returned_owner": false,
+      "expected_owner": false
+    },
+    {
+      "name": "direct",
+      "mode": "strict",
+      "route": "native",
+      "types_and_bits_equal": true,
+      "identity_correct": true,
+      "returned_owner": true,
+      "expected_owner": true
+    },
+    {
+      "name": "direct",
+      "mode": "strict",
+      "route": "native",
+      "types_and_bits_equal": true,
+      "identity_correct": true,
+      "returned_owner": true,
+      "expected_owner": true
+    },
+    {
+      "name": "direct",
+      "mode": "strict",
+      "route": "native",
+      "types_and_bits_equal": true,
+      "identity_correct": true,
+      "returned_owner": true,
+      "expected_owner": true
+    },
+    {
+      "name": "direct",
+      "mode": "strict",
+      "route": "native",
+      "types_and_bits_equal": true,
+      "identity_correct": true,
+      "returned_owner": true,
+      "expected_owner": true
+    },
+    {
+      "name": "direct",
+      "mode": "strict",
+      "route": "native",
+      "types_and_bits_equal": true,
+      "identity_correct": true,
+      "returned_owner": true,
+      "expected_owner": true
+    },
+    {
+      "name": "direct_int",
+      "mode": "strict",
+      "route": "native",
+      "types_and_bits_equal": true,
+      "identity_correct": true,
+      "returned_owner": true,
+      "expected_owner": true
+    },
+    {
+      "name": "alias",
+      "mode": "strict",
+      "route": "native",
+      "types_and_bits_equal": true,
+      "identity_correct": true,
+      "returned_owner": true,
+      "expected_owner": true
+    },
+    {
+      "name": "choose",
+      "mode": "strict",
+      "route": "native",
+      "types_and_bits_equal": true,
+      "identity_correct": true,
+      "returned_owner": true,
+      "expected_owner": true
+    },
+    {
+      "name": "choose",
+      "mode": "strict",
+      "route": "native",
+      "types_and_bits_equal": true,
+      "identity_correct": true,
+      "returned_owner": true,
+      "expected_owner": true
+    },
+    {
+      "name": "empty_loop",
+      "mode": "strict",
+      "route": "native",
+      "types_and_bits_equal": true,
+      "identity_correct": true,
+      "returned_owner": true,
+      "expected_owner": true
+    },
+    {
+      "name": "empty_loop",
+      "mode": "strict",
+      "route": "native",
+      "types_and_bits_equal": true,
+      "identity_correct": true,
+      "returned_owner": false,
+      "expected_owner": false
+    },
+    {
+      "name": "defaulted",
+      "mode": "strict",
+      "route": "native",
+      "types_and_bits_equal": true,
+      "identity_correct": true,
+      "returned_owner": true,
+      "expected_owner": true
+    },
+    {
+      "name": "first",
+      "mode": "strict",
+      "route": "native",
+      "types_and_bits_equal": true,
+      "identity_correct": true,
+      "returned_owner": true,
+      "expected_owner": true
+    },
+    {
+      "name": "computed",
+      "mode": "strict",
+      "route": "native",
+      "types_and_bits_equal": true,
+      "identity_correct": true,
+      "returned_owner": false,
+      "expected_owner": false
+    }
+  ]
+}

@@ -1,0 +1,66 @@
+{
+  "python": {
+    "input_after": [
+      4,
+      2,
+      3,
+      1
+    ],
+    "returned": [
+      4,
+      2,
+      3,
+      1
+    ],
+    "returned_input": true,
+    "route": "original",
+    "warnings": []
+  },
+  "default": {
+    "input_after": [
+      4,
+      2,
+      3,
+      1
+    ],
+    "returned": [
+      4,
+      2,
+      3,
+      1
+    ],
+    "returned_input": true,
+    "route": "python_fallback",
+    "warnings": [
+      "HotloopFallbackWarning"
+    ]
+  },
+  "forced": {
+    "input_after": [
+      4,
+      2,
+      3,
+      1
+    ],
+    "returned": [
+      4,
+      2,
+      3,
+      1
+    ],
+    "returned_input": true,
+    "route": "python_fallback",
+    "warnings": []
+  },
+  "strict": {
+    "input_after": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "exception": "HotloopNativeExecutionError",
+    "message": "Strict native mode enabled: failed to execute native Mojo backend for 'in_place_list_swap'. Reason: Native module has no qualified entry for 'in_place_list_swap' (Python list identity, mutation or control flow may require Python)",
+    "route": "native_error"
+  }
+}

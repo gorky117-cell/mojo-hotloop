@@ -1,0 +1,301 @@
+{
+  "total_count": 2,
+  "jobs": [
+    {
+      "id": 134169184418,
+      "run_id": 44120208039,
+      "workflow_name": "CI",
+      "head_branch": "main",
+      "run_url": "https://api.github.com/repos/gorky117-cell/mojo-hotloop/actions/runs/44120208039",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOVwQLH88AAAAfPRtIog",
+      "head_sha": "080125ec03b68a55423d426a48c112b7415f8b48",
+      "url": "https://api.github.com/repos/gorky117-cell/mojo-hotloop/actions/jobs/134169184418",
+      "html_url": "https://github.com/gorky117-cell/mojo-hotloop/actions/runs/44120208039/job/134169184418",
+      "status": "completed",
+      "conclusion": "success",
+      "created_at": "2026-11-17T15:57:22Z",
+      "started_at": "2026-11-17T15:57:25Z",
+      "completed_at": "2026-11-17T15:57:37Z",
+      "name": "Python Tests (Python 3.12)",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-11-17T15:57:26Z",
+          "completed_at": "2026-11-17T15:57:26Z"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-11-17T15:57:26Z",
+          "completed_at": "2026-11-17T15:57:27Z"
+        },
+        {
+          "name": "Set up Python 3.12",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-11-17T15:57:27Z",
+          "completed_at": "2026-11-17T15:57:27Z"
+        },
+        {
+          "name": "Install package",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-11-17T15:57:27Z",
+          "completed_at": "2026-11-17T15:57:32Z"
+        },
+        {
+          "name": "Verify import",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-11-17T15:57:32Z",
+          "completed_at": "2026-11-17T15:57:32Z"
+        },
+        {
+          "name": "Run adversarial compiler tests",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-11-17T15:57:32Z",
+          "completed_at": "2026-11-17T15:57:32Z"
+        },
+        {
+          "name": "Smoke test - fallback behavior",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7,
+          "started_at": "2026-11-17T15:57:32Z",
+          "completed_at": "2026-11-17T15:57:33Z"
+        },
+        {
+          "name": "Check packaging metadata",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8,
+          "started_at": "2026-11-17T15:57:33Z",
+          "completed_at": "2026-11-17T15:57:33Z"
+        },
+        {
+          "name": "Verify canonical benchmark tables consistency",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9,
+          "started_at": "2026-11-17T15:57:33Z",
+          "completed_at": "2026-11-17T15:57:33Z"
+        },
+        {
+          "name": "Post Set up Python 3.12",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 17,
+          "started_at": "2026-11-17T15:57:33Z",
+          "completed_at": "2026-11-17T15:57:33Z"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 18,
+          "started_at": "2026-11-17T15:57:33Z",
+          "completed_at": "2026-11-17T15:57:33Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 19,
+          "started_at": "2026-11-17T15:57:33Z",
+          "completed_at": "2026-11-17T15:57:33Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/gorky117-cell/mojo-hotloop/check-runs/134169184418",
+      "labels": [
+        "ubuntu-latest"
+      ],
+      "runner_id": 1000000190,
+      "runner_name": "GitHub Actions 1000000190",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 134169185070,
+      "run_id": 44120208039,
+      "workflow_name": "CI",
+      "head_branch": "main",
+      "run_url": "https://api.github.com/repos/gorky117-cell/mojo-hotloop/actions/runs/44120208039",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOVwQLH88AAAAfPRtLLg",
+      "head_sha": "080125ec03b68a55423d426a48c112b7415f8b48",
+      "url": "https://api.github.com/repos/gorky117-cell/mojo-hotloop/actions/jobs/134169185070",
+      "html_url": "https://github.com/gorky117-cell/mojo-hotloop/actions/runs/44120208039/job/134169185070",
+      "status": "completed",
+      "conclusion": "success",
+      "created_at": "2026-11-17T15:57:22Z",
+      "started_at": "2026-11-17T15:57:25Z",
+      "completed_at": "2026-11-17T15:59:57Z",
+      "name": "Native Verification (Mojo 1.2.0, Python 3.12)",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-11-17T15:57:26Z",
+          "completed_at": "2026-11-17T15:57:26Z"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-11-17T15:57:26Z",
+          "completed_at": "2026-11-17T15:57:27Z"
+        },
+        {
+          "name": "Set up Python 3.12",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-11-17T15:57:27Z",
+          "completed_at": "2026-11-17T15:57:28Z"
+        },
+        {
+          "name": "Install dependencies & Mojo 1.2.0",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-11-17T15:57:28Z",
+          "completed_at": "2026-11-17T15:57:44Z"
+        },
+        {
+          "name": "Verify toolchain versions",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-11-17T15:57:44Z",
+          "completed_at": "2026-11-17T15:57:44Z"
+        },
+        {
+          "name": "Native compilation smoke test & execution",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-11-17T15:57:44Z",
+          "completed_at": "2026-11-17T15:57:49Z"
+        },
+        {
+          "name": "Explicit fallback behavior test",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7,
+          "started_at": "2026-11-17T15:57:49Z",
+          "completed_at": "2026-11-17T15:57:49Z"
+        },
+        {
+          "name": "Build all seven domain use cases",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8,
+          "started_at": "2026-11-17T15:57:49Z",
+          "completed_at": "2026-11-17T15:58:28Z"
+        },
+        {
+          "name": "Run all seven domain verification suites (7,220 checks)",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9,
+          "started_at": "2026-11-17T15:58:28Z",
+          "completed_at": "2026-11-17T15:58:31Z"
+        },
+        {
+          "name": "Run unfamiliar functions test suite (35+ functions)",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 10,
+          "started_at": "2026-11-17T15:58:31Z",
+          "completed_at": "2026-11-17T15:58:41Z"
+        },
+        {
+          "name": "Run runtime security and stability suite",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11,
+          "started_at": "2026-11-17T15:58:41Z",
+          "completed_at": "2026-11-17T15:59:05Z"
+        },
+        {
+          "name": "Run Phase E generalization suite (52 functions)",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12,
+          "started_at": "2026-11-17T15:59:05Z",
+          "completed_at": "2026-11-17T15:59:16Z"
+        },
+        {
+          "name": "Run Phase E.8 optimization safety suite (10 stress tests)",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 13,
+          "started_at": "2026-11-17T15:59:16Z",
+          "completed_at": "2026-11-17T15:59:22Z"
+        },
+        {
+          "name": "Run Phase E.8 holdout generalization suite (25 holdout functions)",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 14,
+          "started_at": "2026-11-17T15:59:22Z",
+          "completed_at": "2026-11-17T15:59:30Z"
+        },
+        {
+          "name": "Run full combined pytest suite (86 tests)",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 15,
+          "started_at": "2026-11-17T15:59:30Z",
+          "completed_at": "2026-11-17T15:59:54Z"
+        },
+        {
+          "name": "Post Set up Python 3.12",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 29,
+          "started_at": "2026-11-17T15:59:54Z",
+          "completed_at": "2026-11-17T15:59:54Z"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 30,
+          "started_at": "2026-11-17T15:59:54Z",
+          "completed_at": "2026-11-17T15:59:54Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 31,
+          "started_at": "2026-11-17T15:59:54Z",
+          "completed_at": "2026-11-17T15:59:54Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/gorky117-cell/mojo-hotloop/check-runs/134169185070",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "runner_id": 1000000191,
+      "runner_name": "GitHub Actions 1000000191",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    }
+  ]
+}

@@ -125,7 +125,7 @@ import numpy as np
 # float32 (wrong dtype) -> pointer guard refuses float64 bitcast, safely unboxes elements
 arr32 = np.array([1.5, 2.5, 3.5], dtype=np.float32)
 assert sec_mod.sum_floats(arr32) == 7.5
-assert sec_mod.sum_floats._last_backend == "native"
+assert sec_mod.sum_floats._last_backend == "python_fallback_semantics"
 
 # int32 (wrong dtype) for pick_int -> safe elementwise unboxing
 i32 = np.array([10, 20, 30], dtype=np.int32)
@@ -136,13 +136,10 @@ base = np.array([1.0, 100.0, 2.0, 200.0, 3.0, 300.0], dtype=np.float64)
 assert sec_mod.sum_floats(base[::2]) == 6.0
 assert sec_mod.sum_floats(base[::-1]) == 606.0
 
-# 2D ndarray -> rejects pointer bitcast, elementwise Float64(py=row) raises TypeError safely (no segfault)
+# Preserve the actual Python result, including ndarray shape and type.
 mat = np.zeros((2, 2), dtype=np.float64)
-try:
-    sec_mod.sum_floats(mat)
-    raise AssertionError("Expected TypeError for 2D array")
-except Exception:
-    pass
+result = sec_mod.sum_floats(mat)
+assert type(result) is np.ndarray and np.array_equal(result, sec_mod.sum_floats._original(mat))
 print("OK_NUMPY_SAFETY")
 """
         )
@@ -256,8 +253,10 @@ assert info["call_count_native"] == 0
 arr = np.array([1.0, 2.0, 3.0], dtype=np.float64)
 sec_mod.sum_floats(arr)
 info_after = inspect_dispatch(sec_mod.sum_floats)
-assert info_after["call_count_native"] == 1
-assert info_after["last_backend"] == "native"
+assert info_after["call_count_native"] == 0
+assert info_after["call_count_fallback"] == 1
+assert info_after["last_backend"] == "python_fallback_semantics"
+
 
 # Test on un-decorated function
 def plain_fn(x):

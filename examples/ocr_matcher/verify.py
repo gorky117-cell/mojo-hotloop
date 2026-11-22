@@ -2,7 +2,8 @@ import os
 import random
 import sys
 
-sys.path.insert(0, "/home/gaurav/mojo-hotloop")
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
 from rapidfuzz.distance import Levenshtein
 from examples.ocr_matcher.original import find_closest_match, levenshtein_distance

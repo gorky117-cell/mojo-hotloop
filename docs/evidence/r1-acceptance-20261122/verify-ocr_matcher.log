@@ -1,0 +1,9 @@
+[*] mojo-hotloop building '/tmp/hotloop-master-20261122/proposed-568faf2/suite/examples/ocr_matcher/original.py' using engine='ast', backend='mojo'
+[+] Build SUCCESS: [Engine: AST] Successfully transpiled and built /tmp/hotloop-master-20261122/proposed-568faf2/suite/examples/ocr_matcher/fast.so via AST engine.
+    Artifact: /tmp/hotloop-master-20261122/proposed-568faf2/suite/examples/ocr_matcher/fast.so
+[✓] Done.
+[*] Starting Stage D4: OCR Fuzzy Matcher Verification Suite...
+examples/ocr_matcher/verify.py:51: HotloopFallbackWarning: [mojo-hotloop] Python collection input/output detected for 'find_closest_match'; per-element FFI conversion overhead makes native execution slower than pure Python. Safely executing pure Python implementation. (force_native=True may enable a qualified read-only list kernel.)
+  fb_res = find_closest_match("invoce", ["receipt", "invoce", "invoice", "vendor"], 2)
+  [✓] Deterministic cases passed (20 tests)
+[✓] Stage D4: OCR Fuzzy Matcher PASSED: 1020 tests verified (100% matched against RapidFuzz & Py, 1020 forced-native executions + default list[str] fallback verified, 0 mismatches). Zero errors.

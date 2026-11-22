@@ -1,7 +1,7 @@
 # Supported Python Syntax — mojo-hotloop AST Transpiler
 
-> **Version**: mojo-hotloop v0.1.0, Mojo 1.2.0 target  
-> **Transpiler**: `hotloop/ast_transpiler.py`, offline AST engine (`0.1.0-ast`)
+> **Version**: mojo-hotloop v0.2.1, Mojo 1.2.0 target
+> **Transpiler**: `hotloop/ast_transpiler.py`, offline AST engine (`0.2.1-ast`)
 
 This document describes exactly which Python constructs the AST transpiler
 supports, and what must be rewritten for a function to be transpilable.
@@ -38,13 +38,7 @@ All function parameters and return types **must** be annotated.
 **Not directly annotated yet**: `dict`, `set`, `tuple`, `Optional`, `Union`,
 `Any`, generic type parameters.
 
-> [!TIP]
-> **Zero-copy `numpy.ndarray` acceleration**: Parameters annotated `list[float]`
-> or `list[int]` (when only read via `len(xs)` and `xs[i]`) automatically receive a
-> zero-copy C-pointer dispatch fast-path when passed a 1-D, C-contiguous `float64`
-> or `int64` `numpy.ndarray`. Multi-dimensional, strided, or wrong-dtype arrays are
-> safely routed away from raw pointer dereferencing. See [`examples/numpy_vector/`](../examples/numpy_vector/README.md)
-> for a runnable end-to-end benchmark and verification suite demonstrating 40× speedup over pure Python.
+**Collection boundary.** v0.2.1 copies qualified exact lists of builtin elements into native storage. Functions that can mutate, retain, alias or return a borrowed list use Python. NumPy values, memoryviews and other buffer exporters use Python in ordinary and forced modes. Strict mode rejects these calls. No native kernel borrows a buffer address. The preserved [NumPy example](../examples/numpy_vector/README.md) describes the old route; its native expectation is not valid for v0.2.1.
 
 **Keyword & default arguments**: Functions compiled by `@hotloop` support default
 parameter values and keyword call-site arguments (bound via `inspect.signature`

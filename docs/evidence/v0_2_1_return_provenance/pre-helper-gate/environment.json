@@ -1,0 +1,130 @@
+{
+  "baseline": {
+    "package": "/tmp/mojo-remediation.bGitb68g/candidate/venv/lib/python3.12/site-packages/hotloop",
+    "python": "3.12.16 (main, Nov 11 2026, 00:15:59) [Clang 23.1.3 ]",
+    "abi": "cpython-312-x86_64-linux-gnu",
+    "files": {
+      "hotloop/ast_transpiler.py": "3cf8ecba66cae2c4f5ee2e6c84401195a75af11fb65c948d8cc215b79d8b99b4",
+      "hotloop/decorator.py": "30a2d316c9858f1628892e56cb9a2feb26c4431dc07bb8390b6b248c1e9e4850",
+      "hotloop/cli.py": "b3cd308c6cd91197eb112c94179e6e46b8976f857d72041bd40a102e9f0b24ab",
+      "hotloop/_native_cache.py": "fccbf6c66caff966dee884d8f819bb1ef73864056bad13dab137d2e3d2f576a8",
+      "hotloop/_arguments.py": "c46d71a1b367fad00fefc3d70e54e5fcd109ad3975f169fd1cb62d8415253cb0",
+      "hotloop/__init__.py": "3263c4c33e07ec43fb5d35fd95c014ca39a75bf1733523e927f7548fef0e0099",
+      "hotloop/backends/mojo.py": "0b4530979b27f57cf1d9cefdc580f087346b2d3920fec845e951c12b478c15ab",
+      "hotloop/backends/base.py": "06224d9606a713255551e4fe9e90f88fcaee14c430e37d2415470c3eadd90fc1",
+      "hotloop/backends/__init__.py": "573247d37c7d5d4a9689e0c539681629e85979cedd3fb4487e0fc50d42f91a71"
+    },
+    "versions": {
+      "numpy": "2.5.4",
+      "numba": "0.68.1",
+      "pytest": "9.2.0",
+      "setuptools": "84.2.1",
+      "rapidfuzz": "3.14.6"
+    },
+    "revision": "c2aebd78be8aebb325c94976dbc20462ad350948",
+    "native_binary_sha256": "3dc2c48ce689002d44222c829f8388b016a75df5344b9e89d344ef3dbb73c74f",
+    "binary_bytes": 173696,
+    "kernel_bytes": 443,
+    "kernel_instruction_count": 105,
+    "kernel_fp_instructions": {
+      "vaddsd": 4,
+      "vcvtsi2sd": 2,
+      "vdivsd": 1,
+      "vmovapd": 5,
+      "vmovsd": 8,
+      "vmulsd": 11,
+      "vsubsd": 2,
+      "vucomisd": 4,
+      "vxorpd": 4
+    },
+    "generated_sha256": "8b26a255e6e9d24110b3d958f42df68bc6efd0b8ff820da083e1306c22a12dea"
+  },
+  "origin": {
+    "package": "/tmp/hotloop-return.yUC7GEbn/release-gate/venv/lib/python3.12/site-packages/hotloop",
+    "python": "3.12.16 (main, Nov 11 2026, 00:15:59) [Clang 23.1.3 ]",
+    "abi": "cpython-312-x86_64-linux-gnu",
+    "files": {
+      "hotloop/ast_transpiler.py": "607f3beea8b3996c1a76713b0d497b723483bdfca82d754dd16895fe7ca12ba4",
+      "hotloop/decorator.py": "30a2d316c9858f1628892e56cb9a2feb26c4431dc07bb8390b6b248c1e9e4850",
+      "hotloop/cli.py": "b3cd308c6cd91197eb112c94179e6e46b8976f857d72041bd40a102e9f0b24ab",
+      "hotloop/_native_cache.py": "fccbf6c66caff966dee884d8f819bb1ef73864056bad13dab137d2e3d2f576a8",
+      "hotloop/_arguments.py": "c46d71a1b367fad00fefc3d70e54e5fcd109ad3975f169fd1cb62d8415253cb0",
+      "hotloop/__init__.py": "3263c4c33e07ec43fb5d35fd95c014ca39a75bf1733523e927f7548fef0e0099",
+      "hotloop/_return_origin.py": "6d2846d4e6250f75d439df126ff7f03ce67b966dd86e7c8e4d85b2a858d407bd",
+      "hotloop/backends/mojo.py": "0b4530979b27f57cf1d9cefdc580f087346b2d3920fec845e951c12b478c15ab",
+      "hotloop/backends/base.py": "06224d9606a713255551e4fe9e90f88fcaee14c430e37d2415470c3eadd90fc1",
+      "hotloop/backends/__init__.py": "573247d37c7d5d4a9689e0c539681629e85979cedd3fb4487e0fc50d42f91a71"
+    },
+    "versions": {
+      "numpy": "2.5.4",
+      "numba": "0.68.1",
+      "pytest": "9.2.0",
+      "setuptools": "84.2.1",
+      "rapidfuzz": "3.14.6"
+    },
+    "revision": "1a59efd4c2d6917fb6c1af06a15e7a403ae57e61",
+    "native_binary_sha256": "325f2e052ed3a6f9c8e2dcdcb8b157102b0d7076327e62d5c35c15132c046f0e",
+    "binary_bytes": 173712,
+    "kernel_bytes": 484,
+    "kernel_instruction_count": 112,
+    "kernel_fp_instructions": {
+      "vaddsd": 4,
+      "vcvtsi2sd": 2,
+      "vdivsd": 1,
+      "vmovapd": 5,
+      "vmovsd": 8,
+      "vmulsd": 11,
+      "vsubsd": 2,
+      "vucomisd": 4,
+      "vxorpd": 4
+    },
+    "generated_sha256": "9c8a267e3d0a91f8e4fc5181b420b7e1b609f2949ee9401a33b3848bb7c49299"
+  },
+  "candidate": {
+    "package": "/tmp/hotloop-provenance/verified/venv/lib/python3.12/site-packages/hotloop",
+    "python": "3.12.16 (main, Nov 11 2026, 00:15:59) [Clang 23.1.3 ]",
+    "abi": "cpython-312-x86_64-linux-gnu",
+    "files": {
+      "hotloop/ast_transpiler.py": "c911958a5e98fe244ceb0ea68da140bb86fbe4b14b2787e2756d25799368499d",
+      "hotloop/decorator.py": "fa388c97b0806b68391dbd08c779f0a02775845ada826051a7a82bb44e78ade3",
+      "hotloop/cli.py": "b3cd308c6cd91197eb112c94179e6e46b8976f857d72041bd40a102e9f0b24ab",
+      "hotloop/_provenance.py": "f06f72c71b1e5d06aa3f808ea6a80da291ab1a536ff53c4ea45872a9f691d102",
+      "hotloop/_native_cache.py": "8b66135cb5e37afc07a4ca2f3f763c2652633ea76caaa505f6b6b310c76c15b1",
+      "hotloop/_arguments.py": "c46d71a1b367fad00fefc3d70e54e5fcd109ad3975f169fd1cb62d8415253cb0",
+      "hotloop/__init__.py": "3263c4c33e07ec43fb5d35fd95c014ca39a75bf1733523e927f7548fef0e0099",
+      "hotloop/_return_origin.py": "39dbe2dc75958dd10d074ebddcaaadc3e21cf4a2e8a9c8bab1c038ee583843a5",
+      "hotloop/backends/mojo.py": "0b4530979b27f57cf1d9cefdc580f087346b2d3920fec845e951c12b478c15ab",
+      "hotloop/backends/base.py": "06224d9606a713255551e4fe9e90f88fcaee14c430e37d2415470c3eadd90fc1",
+      "hotloop/backends/__init__.py": "573247d37c7d5d4a9689e0c539681629e85979cedd3fb4487e0fc50d42f91a71"
+    },
+    "versions": {
+      "numpy": "2.5.4",
+      "numba": "0.68.1",
+      "pytest": "9.2.0",
+      "setuptools": "84.2.1",
+      "rapidfuzz": "3.14.6"
+    },
+    "revision": "741053fe542a9c88cd95b6556400dae7c0800e33",
+    "native_binary_sha256": "e4bc8f97fa10fd2ae9f9d61474d8420039e20ded866662331c7308f6bcbd94aa",
+    "binary_bytes": 175480,
+    "kernel_bytes": 536,
+    "kernel_instruction_count": 120,
+    "kernel_fp_instructions": {
+      "vaddsd": 4,
+      "vcvtsi2sd": 2,
+      "vdivsd": 1,
+      "vmovapd": 6,
+      "vmovsd": 8,
+      "vmulsd": 11,
+      "vsubsd": 2,
+      "vucomisd": 4,
+      "vxorpd": 4
+    },
+    "generated_sha256": "b3bf4be11709077c6c5253c34e7d62f7daac404d375d8e32611fe4e14c6c314f"
+  },
+  "plain_numerical_Mojo_body_identical": true,
+  "cpu": "Architecture:                         x86_64\nCPU op-mode(s):                       32-bit, 64-bit\nAddress sizes:                        39 bits physical, 48 bits virtual\nByte Order:                           Little Endian\nCPU(s):                               8\nOn-line CPU(s) list:                  0-7\nVendor ID:                            GenuineIntel\nModel name:                           Intel(R) Core(TM) i5-8265U CPU @ 1.60GHz\nCPU family:                           6\nModel:                                142\nThread(s) per core:                   2\nCore(s) per socket:                   4\nSocket(s):                            1\nStepping:                             12\nBogoMIPS:                             3600.01\nFlags:                                fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss ht syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon rep_good nopl xtopology cpuid tsc_known_freq pni pclmulqdq vmx ssse3 fma cx16 pdcm pcid sse4_1 sse4_2 movbe popcnt aes xsave avx f16c rdrand hypervisor lahf_lm abm 3dnowprefetch ssbd ibrs ibpb stibp ibrs_enhanced tpr_shadow ept vpid ept_ad fsgsbase bmi1 avx2 smep bmi2 erms invpcid rdseed adx smap clflushopt xsaveopt xsavec xgetbv1 xsaves vnmi md_clear flush_l1d arch_capabilities\nVirtualization:                       VT-x\nHypervisor vendor:                    Microsoft\nVirtualization type:                  full\nL1d cache:                            128 KiB (4 instances)\nL1i cache:                            128 KiB (4 instances)\nL2 cache:                             1 MiB (4 instances)\nL3 cache:                             6 MiB (1 instance)\nNUMA node(s):                         1\nNUMA node0 CPU(s):                    0-7\nVulnerability Gather data sampling:   Not affected\nVulnerability Itlb multihit:          KVM: Mitigation: VMX disabled\nVulnerability L1tf:                   Not affected\nVulnerability Mds:                    Not affected\nVulnerability Meltdown:               Not affected\nVulnerability Mmio stale data:        Mitigation; Clear CPU buffers; SMT Host state unknown\nVulnerability Reg file data sampling: Not affected\nVulnerability Retbleed:               Mitigation; Enhanced IBRS\nVulnerability Spec rstack overflow:   Not affected\nVulnerability Spec store bypass:      Mitigation; Speculative Store Bypass disabled via prctl\nVulnerability Spectre v1:             Mitigation; usercopy/swapgs barriers and __user pointer sanitization\nVulnerability Spectre v2:             Mitigation; Enhanced / Automatic IBRS; IBPB conditional; RSB filling; PBRSB-eIBRS SW sequence; BHI SW loop, KVM SW loop\nVulnerability Srbds:                  Unknown: Dependent on hypervisor status\nVulnerability Tsx async abort:        Not affected\n",
+  "mojo": "Mojo 1.2.0 (2016d0cd)\n",
+  "compiler": "c++ (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0\nCopyright (C) 2023 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+  "platform": "Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39"
+}

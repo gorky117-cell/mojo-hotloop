@@ -3,7 +3,8 @@ import random
 import re
 import sys
 
-sys.path.insert(0, "/home/gaurav/mojo-hotloop")
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
 from examples.pdf_cleaner.original import clean_pdf_text
 

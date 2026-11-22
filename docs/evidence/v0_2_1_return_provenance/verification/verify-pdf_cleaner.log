@@ -1,0 +1,7 @@
+[*] mojo-hotloop building '/tmp/hotloop-provenance/final-gate/suite/examples/pdf_cleaner/original.py' using engine='ast', backend='mojo'
+[+] Build SUCCESS: [Engine: AST] Successfully transpiled and built /tmp/hotloop-provenance/final-gate/suite/examples/pdf_cleaner/fast.so via AST engine.
+    Artifact: /tmp/hotloop-provenance/final-gate/suite/examples/pdf_cleaner/fast.so
+[✓] Done.
+[*] Starting Stage D3: PDF Text Cleaner Verification Suite...
+  [✓] Deterministic cases passed (20 tests)
+[✓] Stage D3: PDF Text Cleaner PASSED: 1020 tests verified (182021 total output chars, 100% native execution, 0 mismatches, 0 fallbacks). Zero errors.
