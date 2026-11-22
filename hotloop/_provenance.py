@@ -17,6 +17,34 @@ ERROR = "HOTLOOP_PYTHON_SEMANTICS: return owner cannot be proven"
 INTRINSICS={name:getattr(builtins,name) for name in ("len","range","ord","chr","abs","min","max","int","float","str","bool")}
 MATH={name:value for name,value in vars(math).items() if not name.startswith("_")}
 
+# A snapshot taken after application monkeypatching is not proof of a stdlib
+# operation. Qualify only referenced bindings, without executing the callable.
+_LITERAL_TYPES = {"int": (0).__class__, "float": (0.0).__class__,
+                  "str": "".__class__, "bool": True.__class__}
+_MATH_CONSTANT_BITS = {
+    "pi": "400921fb54442d18", "e": "4005bf0a8b145769",
+    "tau": "401921fb54442d18", "inf": "7ff0000000000000",
+    "nan": "7ff8000000000000",
+}
+
+def _canonical_intrinsic(name, value):
+    if name in _LITERAL_TYPES:
+        return value is _LITERAL_TYPES[name]
+    if name == "range":
+        # Exact CPython profile: heap-type flag is Py_TPFLAGS_HEAPTYPE (1 << 9).
+        # Python classes can spoof module/name; static builtin types cannot.
+        return (type(value) is type and value.__module__ == "builtins"
+                and value.__name__ == "range" and not value.__flags__ & (1 << 9))
+    return (type(value) is types.BuiltinFunctionType and value.__self__ is builtins
+            and value.__module__ == "builtins" and value.__name__ == name)
+
+def _canonical_math(name, value):
+    if type(value) is types.BuiltinFunctionType:
+        return (value.__self__ is math and value.__module__ == "math"
+                and value.__name__ == name)
+    return (type(value) is _LITERAL_TYPES["float"]
+            and struct.pack(">d", value).hex() == _MATH_CONSTANT_BITS.get(name))
+
 def _value(value):
     if isinstance(value, types.CodeType):
         return _code(value)
@@ -184,9 +212,11 @@ class Entry:
         for name,actual in owners.items():
             namespace=actual.__globals__
             for item in spec.get("builtins",{}).get(name,()):
+                if item not in INTRINSICS or not _canonical_intrinsic(item, INTRINSICS[item]):
+                    raise ValueError(ERROR)
                 builtin_guards[(id(namespace),id(actual.__builtins__),item)]=(namespace,actual.__builtins__,item,INTRINSICS[item])
             for item in spec.get("math",{}).get(name,()):
-                if item not in MATH:
+                if item not in MATH or not _canonical_math(item, MATH[item]):
                     raise ValueError(ERROR)
                 math_guards[(id(namespace),item)]=(namespace,item,MATH[item])
         self.builtin_guards=tuple(builtin_guards.values())

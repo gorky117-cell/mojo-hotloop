@@ -9,6 +9,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ## 0.2.1 — Corrective release candidate (unpublished)
 
+- Reject pre-import replacement of referenced math functions/constants and Python intrinsics before entering native user code; keep correct Python fallback and strict refusal.
 - Repair scalar, constant, argument and list-element return ownership through verified CPython code/default/helper context; reject unproven object sharing and decorated-helper policies.
 - Qualify native execution only on GIL-enabled, 64-bit, little-endian Linux x86-64 CPython 3.12.16 with the reviewed Mojo 1.2.0 toolchain. Other environments use Python where installation/toolchain loading permits; strict calls reject unqualified entries.
 - Verify compiler implementation, SDK files, build settings, source and runtime ABI in cache identity; verify full binary contents and pin the checked inode during loading. Rebuild older artifacts.
