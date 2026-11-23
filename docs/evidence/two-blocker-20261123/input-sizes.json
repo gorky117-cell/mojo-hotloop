@@ -1,0 +1,104 @@
+[
+  {
+    "application": "pii_scrubber",
+    "size": "short",
+    "argument_types": [
+      "str"
+    ],
+    "text_characters": 53,
+    "ticks": null
+  },
+  {
+    "application": "pii_scrubber",
+    "size": "medium",
+    "argument_types": [
+      "str"
+    ],
+    "text_characters": 8192,
+    "ticks": null
+  },
+  {
+    "application": "pii_scrubber",
+    "size": "large",
+    "argument_types": [
+      "str"
+    ],
+    "text_characters": 100000,
+    "ticks": null
+  },
+  {
+    "application": "pdf_cleaner",
+    "size": "small",
+    "argument_types": [
+      "str"
+    ],
+    "text_characters": 1024,
+    "ticks": null
+  },
+  {
+    "application": "pdf_cleaner",
+    "size": "medium",
+    "argument_types": [
+      "str"
+    ],
+    "text_characters": 10240,
+    "ticks": null
+  },
+  {
+    "application": "pdf_cleaner",
+    "size": "large",
+    "argument_types": [
+      "str"
+    ],
+    "text_characters": 100000,
+    "ticks": null
+  },
+  {
+    "application": "quant_backtest",
+    "size": "0",
+    "argument_types": [
+      "int",
+      "float",
+      "float",
+      "float"
+    ],
+    "text_characters": null,
+    "ticks": 0
+  },
+  {
+    "application": "quant_backtest",
+    "size": "100",
+    "argument_types": [
+      "int",
+      "float",
+      "float",
+      "float"
+    ],
+    "text_characters": null,
+    "ticks": 100
+  },
+  {
+    "application": "quant_backtest",
+    "size": "10000",
+    "argument_types": [
+      "int",
+      "float",
+      "float",
+      "float"
+    ],
+    "text_characters": null,
+    "ticks": 10000
+  },
+  {
+    "application": "quant_backtest",
+    "size": "100000",
+    "argument_types": [
+      "int",
+      "float",
+      "float",
+      "float"
+    ],
+    "text_characters": null,
+    "ticks": 100000
+  }
+]

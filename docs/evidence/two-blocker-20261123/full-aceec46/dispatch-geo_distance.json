@@ -1,0 +1,17 @@
+{
+  "application": "geo_distance",
+  "public_wrappers": [
+    {
+      "function": "accumulate_haversine_distance",
+      "native_calls": 0,
+      "fallback_calls": 1028,
+      "last_backend": "python_fallback_semantics"
+    },
+    {
+      "function": "accumulate_haversine_distance",
+      "native_calls": 1014,
+      "fallback_calls": 0,
+      "last_backend": "native"
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+[*] mojo-hotloop building '/tmp/hotloop-two-blocker-20261123/full-aceec46/suite/examples/pii_scrubber/original.py' using engine='ast', backend='mojo'
+[+] Build SUCCESS: [Engine: AST] Successfully transpiled and built /tmp/hotloop-two-blocker-20261123/full-aceec46/suite/examples/pii_scrubber/fast.so via AST engine.
+    Artifact: /tmp/hotloop-two-blocker-20261123/full-aceec46/suite/examples/pii_scrubber/fast.so
+[✓] Done.
+[*] Starting Stage D1: PII Scrubber Verification Suite...
+  [✓] Deterministic cases passed (19 tests)
+[✓] Stage D1: PII Scrubber PASSED: 1019 tests verified (1019 native executions, 0 mismatches, 0 fallbacks). Zero errors.

@@ -1,0 +1,57 @@
+{
+  "package": "/home/gaurav/mojo-hotloop-v021-math-final/hotloop/__init__.py",
+  "rows": [
+    {
+      "value": true,
+      "error": null,
+      "function": "isnan",
+      "mode": "default",
+      "backend": "python_fallback_semantics",
+      "native_calls": 0,
+      "fallback_calls": 1
+    },
+    {
+      "value": true,
+      "error": null,
+      "function": "isnan",
+      "mode": "forced",
+      "backend": "python_fallback_semantics",
+      "native_calls": 0,
+      "fallback_calls": 1
+    },
+    {
+      "error": "HotloopNativeExecutionError",
+      "function": "isnan",
+      "mode": "strict",
+      "backend": "native_error",
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "value": true,
+      "error": null,
+      "function": "isinf",
+      "mode": "default",
+      "backend": "python_fallback_semantics",
+      "native_calls": 0,
+      "fallback_calls": 1
+    },
+    {
+      "value": true,
+      "error": null,
+      "function": "isinf",
+      "mode": "forced",
+      "backend": "python_fallback_semantics",
+      "native_calls": 0,
+      "fallback_calls": 1
+    },
+    {
+      "error": "HotloopNativeExecutionError",
+      "function": "isinf",
+      "mode": "strict",
+      "backend": "native_error",
+      "native_calls": 0,
+      "fallback_calls": 0
+    }
+  ]
+}

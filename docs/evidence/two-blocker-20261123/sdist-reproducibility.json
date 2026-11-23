@@ -1,0 +1,19 @@
+{
+  "source_commit": "aceec467cd846289568927a2783e7f50bfe1e21b",
+  "builds": [
+    {
+      "path": "/tmp/hotloop-two-blocker-20261123/full-aceec46/dist/mojo_hotloop-0.2.1.tar.gz",
+      "sha256": "141e7ce6df01cec64b36f804760a2674486fa6e56caa61d4f871324c8ca79e0a",
+      "gzip_mtime": 1795453561
+    },
+    {
+      "path": "/tmp/hotloop-two-blocker-20261123/sdist-repeat/dist/mojo_hotloop-0.2.1.tar.gz",
+      "sha256": "5140f446ccdfc99cecfa8fa2b8773bf00145cc76d19d9e130695b116442d2820",
+      "gzip_mtime": 1795453703
+    }
+  ],
+  "file_payloads_equal": true,
+  "file_payload_count": 42,
+  "byte_for_byte_reproducible": false,
+  "cause": "setuptools gzip wall-clock timestamp differs despite same SOURCE_DATE_EPOCH"
+}

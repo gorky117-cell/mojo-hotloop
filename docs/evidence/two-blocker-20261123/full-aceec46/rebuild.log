@@ -1,0 +1,9 @@
+Processing /tmp/hotloop-two-blocker-20261123/full-aceec46/dist/mojo_hotloop-0.2.1.tar.gz
+  Preparing metadata (pyproject.toml): started
+  Preparing metadata (pyproject.toml): finished with status 'done'
+Building wheels for collected packages: mojo-hotloop
+  Building wheel for mojo-hotloop (pyproject.toml): started
+  Building wheel for mojo-hotloop (pyproject.toml): finished with status 'done'
+  Created wheel for mojo-hotloop: filename=mojo_hotloop-0.2.1-py3-none-any.whl size=59120 sha256=3496110eca75fd0f9afb6dd66c9360d4886c8462f00c1831680a3e84e9b12f46
+  Stored in directory: /tmp/pip-ephem-wheel-cache-xyvcfgab/wheels/c4/3a/d6/622d86daafc85e96d5bf8be2830c48021e161e15a5cb825b26
+Successfully built mojo-hotloop
