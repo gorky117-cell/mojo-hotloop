@@ -6,7 +6,8 @@ UNKNOWN = -(1 << 62)
 
 # This release qualifies only these Python math call shapes. The table is also
 # consumed by code generation; other operations keep Python semantics.
-NATIVE_MATH_ARITIES = {"sin": 1, "cos": 1, "sqrt": 1, "log": 1, "exp": 1, "atan2": 2}
+NATIVE_MATH_ARITIES = {"sin": 1, "cos": 1, "sqrt": 1, "log": 1, "exp": 1, "atan2": 2,
+                       "isnan": 1, "isinf": 1}
 
 def native_math_call(node):
     return (isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute)

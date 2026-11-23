@@ -1,3 +1,5 @@
+> **Isolated v0.2.1 two-blocker correction candidate.** See docs/V0_2_1_TWO_BLOCKER_CORRECTION.md for the exact verification result and remaining release gates. The blocked math-prototype notice below is retained as historical context for commit 0a6dacf; it does not describe a published release.
+
 # mojo-hotloop
 
 > **Blocked local math-correction prototype — not release-approved.** The original 15 math-exception checks are repaired, but a permanent adjacent test exposes unresolved numeric-string coercion: a function annotated with a string argument can execute math.log("2.0") natively instead of raising CPython TypeError. The bounded implementation/revision limit has been reached. See [the final gate record](docs/V0_2_1_MATH_CORRECTNESS_FINAL_GATE.md). No release or integration promotion is authorized.

@@ -38,6 +38,8 @@ def load(path,name):
 def worker(label,folder,root):
     import hotloop as package
     folder=Path(folder);folder.mkdir();root=Path(root);rows=[];builds=[]
+    expected_install=Path(sys.executable).absolute().parent.parent.resolve()
+    assert Path(package.__file__).resolve().is_relative_to(expected_install),package.__file__
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
         for app,symbol in APPS.items():
@@ -61,11 +63,16 @@ def worker(label,folder,root):
                     rows.append(record)
         gate=ast.parse((root/"audit/math_correctness/original_gate.py").read_text())
         text=next(ast.literal_eval(n.value) for n in gate.body if isinstance(n,ast.Assign) and any(isinstance(x,ast.Name) and x.id=="SOURCE" for x in n.targets))
+        text += "\n@hotloop\ndef square_root(x: float) -> float:\n    return math.sqrt(x)\n"
+        text += "\n@hotloop\ndef angle(x: float) -> float:\n    return math.atan2(x, 1.0)\n"
+        text += "\n@hotloop\ndef is_nan(x: float) -> bool:\n    return math.isnan(x)\n"
+        text += "\n@hotloop\ndef is_inf(x: float) -> bool:\n    return math.isinf(x)\n"
         d=folder/"math";d.mkdir();source=d/"subject.py";source.write_text(text)
         ok,message,_=MojoBackend().build_ast(source);assert ok,message;module=load(source,"regression_math")
         cases=[("sine","valid",0.5),("cosine","valid",0.5),("logarithm","valid",2.0),("exponential","valid",1.0),
                ("sine","inf",float("inf")),("cosine","inf",float("inf")),("logarithm","zero",0.0),
-               ("logarithm","negative",-1.0),("exponential","overflow",1000.0)]
+               ("logarithm","negative",-1.0),("exponential","overflow",1000.0),("square_root","valid",2.0),("angle","valid",0.5),
+               ("is_nan","valid",float("nan")),("is_inf","valid",float("inf"))]
         for symbol,size,value in cases:
             public=getattr(module,symbol);original=public._original;expected=observe(original,(value,))
             for engine,fn in [("cpython",original),("public",public)]:
@@ -80,7 +87,8 @@ def worker(label,folder,root):
                 if engine=="public":record["actual_backend"]=fn._last_backend
                 if label=="candidate":assert correct,record
                 rows.append(record)
-    return dict(label=label,python=sys.version,package=package.__file__,rows=rows,builds=builds)
+    from hotloop._native_cache import implementation_revision
+    return dict(label=label,python=sys.version,package=package.__file__,implementation=implementation_revision(),rows=rows,builds=builds)
 
 def main():
     if sys.argv[1]=="--worker":

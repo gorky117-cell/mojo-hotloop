@@ -651,6 +651,29 @@ def _py_ord(s: String) raises -> Int:
 from std.ffi import external_call, c_double
 from std.memory import bitcast
 
+# Overload resolution is the operand proof at every lowered call, including
+# helper results and temporaries. Deliberately no String/PythonObject overload.
+# Exact Python input types/ranges are checked before the native body.
+@always_inline
+def _math_operand(x: Float64) -> Float64:
+    return x
+
+@always_inline
+def _math_operand(x: Int) -> Float64:
+    return Float64(x)
+
+@always_inline
+def _math_operand(x: Bool) -> Float64:
+    return Float64(Int(x))
+
+@always_inline
+def _checked_math_isnan(x: Float64) -> Bool:
+    return math.isnan(x)
+
+@always_inline
+def _checked_math_isinf(x: Float64) -> Bool:
+    return math.isinf(x)
+
 @always_inline
 def _checked_sqrt(x: Float64) raises -> Float64:
     if x < 0.0:
@@ -1912,7 +1935,7 @@ def {tagged_name}({", ".join(tagged_args)}) raises -> Tuple[{ret_mojo_type}, Int
                     if not _return_origin.native_math_call(node):
                         return "_unqualified_math()"
                     fn_name = node.func.attr
-                    args = [f"Float64({self.visit_expr(a)})" for a in node.args]
+                    args = [f"_math_operand({self.visit_expr(a)})" for a in node.args]
                     helper = "_checked_sqrt" if fn_name == "sqrt" else f"_checked_math_{fn_name}"
                     return f"{helper}({', '.join(args)})"
                 else:
