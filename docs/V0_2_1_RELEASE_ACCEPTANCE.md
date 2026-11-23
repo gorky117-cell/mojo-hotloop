@@ -1,3 +1,5 @@
+> **Supersession — bounded math correction:** this earlier report remains historical for its exact568faf2 source. The current prototype is BLOCKED by an operand-type wrong-code regression; see [the new final gate](V0_2_1_MATH_CORRECTNESS_FINAL_GATE.md). Earlier green suites do not waive that defect.
+
 # v0.2.1 release acceptance
 
 22 November 2026. **B — READY WITH DISCLOSED LIMITATIONS REQUIRING OWNER APPROVAL**, for proposed runtime **568faf2c96ac8aa22758eccf45464fdb4c20b413**. No publication is authorized.

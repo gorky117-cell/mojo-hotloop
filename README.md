@@ -1,5 +1,9 @@
 # mojo-hotloop
 
+> **Blocked local math-correction prototype — not release-approved.** The original 15 math-exception checks are repaired, but a permanent adjacent test exposes unresolved numeric-string coercion: a function annotated with a string argument can execute math.log("2.0") natively instead of raising CPython TypeError. The bounded implementation/revision limit has been reached. See [the final gate record](docs/V0_2_1_MATH_CORRECTNESS_FINAL_GATE.md). No release or integration promotion is authorized.
+
+> The legacy public README below is retained for separate Pre-M0 integration. Its ndarray-native and historical performance statements are not claims for this corrective prototype.
+
 Automatic native acceleration for a supported, typed subset of Python using deterministic Python-to-Mojo translation and transparent fallback.
 
 [![Python CI](https://github.com/gorky117-cell/mojo-hotloop/actions/workflows/ci.yml/badge.svg?branch=main&job=Python%20Tests%20(Python%203.12))](https://github.com/gorky117-cell/mojo-hotloop/actions/workflows/ci.yml)

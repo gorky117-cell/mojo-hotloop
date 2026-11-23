@@ -411,6 +411,13 @@ def _create_hotloop_wrapper(fn: Callable, strict: bool = False, force_native: bo
                     )
                     return wrapper._original(*args, **kwargs)
 
+                elif "HOTLOOP_MATH_RANGE_ERROR" in err_str:
+                    # A CPython math exception is the native result, not a
+                    # request to replay application code in Python.
+                    wrapper._call_count_native += 1
+                    msg = err_str.split("HOTLOOP_MATH_RANGE_ERROR: ", 1)[-1]
+                    raise OverflowError(msg) from None
+
                 elif "HOTLOOP_ZERO_DIVISION_ERROR" in err_str:
                     wrapper._call_count_native += 1
                     msg = err_str.split("HOTLOOP_ZERO_DIVISION_ERROR: ", 1)[-1]

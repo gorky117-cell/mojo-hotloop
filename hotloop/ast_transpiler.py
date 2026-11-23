@@ -646,11 +646,54 @@ def _py_ord(s: String) raises -> Int:
         return Int(cp)
     raise Error("HOTLOOP_VALUE_ERROR: ord() expected a character")
 
+# Fixed C signatures: double op(double), double atan2(double, double).
+# No borrowed storage, Python callback or GIL release crosses these calls.
+from std.ffi import external_call, c_double
+from std.memory import bitcast
+
 @always_inline
 def _checked_sqrt(x: Float64) raises -> Float64:
     if x < 0.0:
         raise Error("HOTLOOP_VALUE_ERROR: math domain error")
-    return math.sqrt(x)
+    return external_call["sqrt", c_double](c_double(x))
+
+@always_inline
+def _checked_math_sin(x: Float64) raises -> Float64:
+    if math.isinf(x):
+        raise Error("HOTLOOP_VALUE_ERROR: math domain error")
+    return external_call["sin", c_double](c_double(x))
+
+@always_inline
+def _checked_math_cos(x: Float64) raises -> Float64:
+    if math.isinf(x):
+        raise Error("HOTLOOP_VALUE_ERROR: math domain error")
+    return external_call["cos", c_double](c_double(x))
+
+@always_inline
+def _checked_math_log(x: Float64) raises -> Float64:
+    if x <= 0.0:
+        raise Error("HOTLOOP_VALUE_ERROR: math domain error")
+    return external_call["log", c_double](c_double(x))
+
+@always_inline
+def _checked_math_exp(x: Float64) raises -> Float64:
+    var result = external_call["exp", c_double](c_double(x))
+    if math.isinf(result) and math.isfinite(x):
+        raise Error("HOTLOOP_MATH_RANGE_ERROR: math range error")
+    return result
+
+@always_inline
+def _checked_math_atan2(y: Float64, x: Float64) raises -> Float64:
+    # CPython m_atan2 returns its canonical NaN, not either input payload.
+    if math.isnan(y) or math.isnan(x):
+        return bitcast[DType.float64](UInt64(0x7ff8000000000000))
+    return external_call["atan2", c_double](c_double(y), c_double(x))
+
+@always_inline
+def _unqualified_math() raises -> Float64:
+    # The entry and transitive callers are replaced by refusal stubs before
+    # emission. Never produce a numeric sentinel or evaluate application args.
+    raise Error("HOTLOOP_PYTHON_SEMANTICS: unqualified math operation")
 
 @always_inline
 def _py_chr(code: Int) raises -> String:
@@ -1866,11 +1909,12 @@ def {tagged_name}({", ".join(tagged_args)}) raises -> Tuple[{ret_mojo_type}, Int
                         arg_strs.append(a_expr)
                     return f"{obj}.{node.func.attr}({', '.join(arg_strs)})"
                 elif isinstance(node.func.value, ast.Name) and node.func.value.id == "math":
+                    if not _return_origin.native_math_call(node):
+                        return "_unqualified_math()"
                     fn_name = node.func.attr
-                    args = [self.visit_expr(a) for a in node.args]
-                    if fn_name == "sqrt":
-                        return f"_checked_sqrt({args[0]})"
-                    return f"math.{fn_name}({', '.join(args)})"
+                    args = [f"Float64({self.visit_expr(a)})" for a in node.args]
+                    helper = "_checked_sqrt" if fn_name == "sqrt" else f"_checked_math_{fn_name}"
+                    return f"{helper}({', '.join(args)})"
                 else:
                     raise ASTTranspileError(f"Unsupported method call: {ast.dump(node.func)}")
             else:

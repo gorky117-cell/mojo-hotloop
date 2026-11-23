@@ -4,6 +4,17 @@ from ._provenance import INTRINSICS
 
 UNKNOWN = -(1 << 62)
 
+# This release qualifies only these Python math call shapes. The table is also
+# consumed by code generation; other operations keep Python semantics.
+NATIVE_MATH_ARITIES = {"sin": 1, "cos": 1, "sqrt": 1, "log": 1, "exp": 1, "atan2": 2}
+
+def native_math_call(node):
+    return (isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute)
+            and isinstance(node.func.value, ast.Name) and node.func.value.id == "math"
+            and node.func.attr in NATIVE_MATH_ARITIES
+            and len(node.args) == NATIVE_MATH_ARITIES[node.func.attr]
+            and not node.keywords)
+
 
 def _targets(node):
     if isinstance(node, ast.Assign):
@@ -305,6 +316,10 @@ class ReturnOrigin:
         for call in ast.walk(self.fn):
             if isinstance(call,ast.Call) and isinstance(call.func,ast.Name) and call.func.id=="print":
                 return "Python stream effects require Python execution"
+            if (isinstance(call, ast.Call) and isinstance(call.func, ast.Attribute)
+                    and isinstance(call.func.value, ast.Name) and call.func.value.id == "math"
+                    and not native_math_call(call)):
+                return "unqualified math operation or signature requires Python"
             if (isinstance(call,ast.Call) and isinstance(call.func,ast.Attribute)
                     and call.func.attr in {"startswith","endswith"}
                     and (len(call.args)>1 or call.keywords)):

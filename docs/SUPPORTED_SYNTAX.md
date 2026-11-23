@@ -156,6 +156,8 @@ x **= 2   # ✅
 
 Import with `import math`, then use `math.<function>`:
 
+The blocked math-correction prototype qualifies unary sin/cos/sqrt/log/exp and binary atan2 using scalar system-libm calls and operation-specific exceptions. Other operations/signatures, including math.pow and two-argument log, require Python; strict refuses them. Aliased imports are not added as native syntax. Numeric-string operand admission remains a known release-blocking defect, not supported behavior.
+
 | Function | Supported |
 |----------|-----------|
 | `math.sin(x)` | ✅ |
@@ -164,8 +166,8 @@ Import with `import math`, then use `math.<function>`:
 | `math.atan2(y, x)` | ✅ |
 | `math.log(x)` | ✅ |
 | `math.exp(x)` | ✅ |
-| `math.floor(x)` | ✅ |
-| `math.ceil(x)` | ✅ |
+| `math.floor(x)` | Python fallback; native integer/type contract unqualified |
+| `math.ceil(x)` | Python fallback; native integer/type contract unqualified |
 | `math.pi` | ✅ |
 | `math.e` | ✅ |
 | `math.inf` | ❌ |
