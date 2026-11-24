@@ -1,0 +1,63 @@
+========================================================================
+mojo-hotloop Adversarial Compiler Test Suite v0.1.0
+Python 3.12.16 (main, Nov 11 2026, 00:15:59) [Clang 23.1.3 ]
+========================================================================
+
+========================================================================
+Test                                   Status             Detail
+========================================================================
+T01_empty_return                       PASS               Transpilation succeeded
+T02_int64_boundary                     PASS               Transpilation succeeded
+T03_div_zero                           PASS               Transpilation succeeded
+T04_nan_inf                            PASS               Transpilation succeeded
+T05_neg_index                          PASS               Transpilation succeeded
+T06_long_loop                          PASS               Transpilation succeeded
+T07_nested_cond                        PASS               Transpilation succeeded
+T08_unicode                            PASS               Transpilation succeeded
+T09_empty_string                       PASS               Transpilation succeeded
+T10_empty_list                         PASS               Transpilation succeeded
+T11_float_inf_lit                      PASS               Transpilation succeeded
+T12_cache_idempotency                  PASS               Identical inputs produce identical Mojo output (determi
+T13_concurrent_safety                  PASS               8 concurrent transpilations succeeded
+T14_int64_add                          PASS               Transpilation succeeded
+T15_return_int                         PASS               Transpilation succeeded
+T16_return_float                       PASS               Transpilation succeeded
+T17_return_bool                        PASS               Transpilation succeeded
+T18_return_list_float                  PASS               Transpilation succeeded
+T19_return_list_int                    PASS               Transpilation succeeded
+T20_five_params                        PASS               Transpilation succeeded
+T21_trig                               PASS               Transpilation succeeded
+T22_abs_scalar                         PASS               Transpilation succeeded
+T23_string_concat                      PASS               Transpilation succeeded
+T24_len_calls                          PASS               Transpilation succeeded
+T25_nested_for                         PASS               Transpilation succeeded
+T26_early_return                       PASS               Transpilation succeeded
+T27_bool_and_or                        PASS               Transpilation succeeded
+T28_mixed_arith                        PASS               Transpilation succeeded
+T29_floordiv_mod                       PASS               Transpilation succeeded
+T30_power                              PASS               Transpilation succeeded
+T31_zero_range                         PASS               Transpilation succeeded
+T32_multi_return                       PASS               Transpilation succeeded
+T33_augmented_assign                   PASS               Transpilation succeeded
+T34_chained_cmp                        PASS               Transpilation succeeded
+T35_return_str                         PASS               Transpilation succeeded
+T36_while_loop                         PASS               Transpilation succeeded
+T37_int_div_zero                       PASS               Transpilation succeeded
+T38_sqrt_edge                          PASS               Transpilation succeeded
+T39_list_int_cond                      PASS               Transpilation succeeded
+T40_stale_cache_detection              PASS               Correctly detected stale binary: Source SHA256 mismatch
+T41_range_two_arg                      PASS               Transpilation succeeded
+T42_missing_annotation                 EXP_FAIL           Correctly rejected unannotated function: Argument 'x' m
+T43_no_hotloop_single_fn               PASS               Single-function file transpiles without @hotloop decora
+T44_empty_string_input                 PASS               Transpilation succeeded
+T45_modulo_zero_guard                  PASS               Transpilation succeeded
+T46_multiple_accumulators              PASS               Transpilation succeeded
+T47_nested_list_build                  PASS               Transpilation succeeded
+T48_break_via_return                   PASS               Transpilation succeeded
+T49_bool_return_comparison             PASS               Transpilation succeeded
+T50_math_pi_e                          PASS               math.pi reference transpiled
+T51_cli_check_syntax                   PASS               hotloop build --check-syntax passed offline validation
+T52_startswith_endswith                PASS               startswith and endswith transpiled cleanly
+========================================================================
+TOTAL: 52 tests  |  PASS: 51  |  EXP_FAIL: 1  |  UNEXPECTED FAIL: 0
+========================================================================

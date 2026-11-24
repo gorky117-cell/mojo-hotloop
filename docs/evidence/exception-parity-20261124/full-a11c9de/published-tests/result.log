@@ -1,0 +1,421 @@
+...................................................FF.F................F [ 83%]
+.F....F.FFFF.F                                                           [100%]
+=================================== FAILURES ===================================
+_________ TestGeneralizationE6.test_02_distance_geometry_10_functions __________
+
+self = <test_generalization_e6.TestGeneralizationE6 testMethod=test_02_distance_geometry_10_functions>
+
+    def test_02_distance_geometry_10_functions(self):
+        c = "Distance & Geometry"
+        self._check(c, "euclidean_dist_3d", 1.5, 2.5, 3.5, 4.5, 5.5, 6.5, approx=True)
+        xs = np.linspace(-10.0, 10.0, 2048, dtype=np.float64)
+        ys = np.linspace(5.0, 25.0, 2048, dtype=np.float64)
+>       self._check(c, "manhattan_dist_arr", xs, ys, approx=True)
+
+tests/test_generalization_e6.py:662: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_generalization_e6.py:611: in _check
+    self.assertEqual(fn._last_backend, "native", f"{fn_name} expected native, got {fn._last_backend}")
+E   AssertionError: 'python_fallback_semantics' != 'native'
+E   - python_fallback_semantics
+E   + native
+E    : manhattan_dist_arr expected native, got python_fallback_semantics
+__________ TestGeneralizationE6.test_03_array_transforms_10_functions __________
+
+self = <test_generalization_e6.TestGeneralizationE6 testMethod=test_03_array_transforms_10_functions>
+
+    def test_03_array_transforms_10_functions(self):
+        c = "Array Transforms & Reductions"
+        arr_i = np.arange(1, 1001, dtype=np.int64)
+        arr_f = np.linspace(0.5, 500.0, 2048, dtype=np.float64)
+        arr_f2 = np.linspace(-250.0, 250.0, 2048, dtype=np.float64)
+>       self._check(c, "running_prod_mod", arr_i, 1000000007)
+
+tests/test_generalization_e6.py:679: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_generalization_e6.py:611: in _check
+    self.assertEqual(fn._last_backend, "native", f"{fn_name} expected native, got {fn._last_backend}")
+E   AssertionError: 'python_fallback_semantics' != 'native'
+E   - python_fallback_semantics
+E   + native
+E    : running_prod_mod expected native, got python_fallback_semantics
+_____ TestGeneralizationE6.test_05_validation_search_bitwise_12_functions ______
+
+self = <test_generalization_e6.TestGeneralizationE6 testMethod=test_05_validation_search_bitwise_12_functions>
+
+    def test_05_validation_search_bitwise_12_functions(self):
+        c = "Validation, Search & Bitwise"
+        sorted_arr = np.arange(10, 20000, 2, dtype=np.int64)
+>       self._check(c, "binary_search_arr", sorted_arr, 12344)
+
+tests/test_generalization_e6.py:712: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_generalization_e6.py:611: in _check
+    self.assertEqual(fn._last_backend, "native", f"{fn_name} expected native, got {fn._last_backend}")
+E   AssertionError: 'python_fallback_semantics' != 'native'
+E   - python_fallback_semantics
+E   + native
+E    : binary_search_arr expected native, got python_fallback_semantics
+____ TestOptimizationSafetyE8.test_10_dispatch_qualifier_cache_drift_safety ____
+
+self = <test_optimization_safety_e8.TestOptimizationSafetyE8 testMethod=test_10_dispatch_qualifier_cache_drift_safety>
+
+    def test_10_dispatch_qualifier_cache_drift_safety(self):
+        """Dispatch qualifier cache handles type drift and fallback triggers correctly."""
+        from hotloop import inspect_dispatch
+    
+        # 1. Python list input safely routes to fallback (avoiding per-element FFI conversion overhead)
+        flist = [1.0, 2.0, 3.0]
+        self.mod.sum_arr_safe(flist)
+        info = inspect_dispatch(self.mod.sum_arr_safe)
+        self.assertEqual(info["last_backend"], "python_fallback_slower")
+        self.assertIn("fallback_reason", info)
+    
+        # 2. NumPy ndarray input dynamically switches to native backend
+        np_arr = np.array([4.0, 5.0, 6.0], dtype=np.float64)
+        self.mod.sum_arr_safe(np_arr)
+        info2 = inspect_dispatch(self.mod.sum_arr_safe)
+>       self.assertEqual(info2["last_backend"], "native")
+E       AssertionError: 'python_fallback_semantics' != 'native'
+E       - python_fallback_semantics
+E       + native
+
+tests/test_optimization_safety_e8.py:266: AssertionError
+_ TestRuntimeSecurityAndStability.test_02_numpy_wrong_dtype_shape_and_non_contiguous_safety _
+
+self = <test_runtime_security.TestRuntimeSecurityAndStability testMethod=test_02_numpy_wrong_dtype_shape_and_non_contiguous_safety>
+
+        def test_02_numpy_wrong_dtype_shape_and_non_contiguous_safety(self):
+            proc = self._run_subproc(
+                """
+    import numpy as np
+    # float32 (wrong dtype) -> pointer guard refuses float64 bitcast, safely unboxes elements
+    arr32 = np.array([1.5, 2.5, 3.5], dtype=np.float32)
+    assert sec_mod.sum_floats(arr32) == 7.5
+    assert sec_mod.sum_floats._last_backend == "native"
+    
+    # int32 (wrong dtype) for pick_int -> safe elementwise unboxing
+    i32 = np.array([10, 20, 30], dtype=np.int32)
+    assert sec_mod.pick_int(i32, -1) == 30
+    
+    # Non-contiguous strided slice and reversed view -> pointer guard skips bitcast, reads true slice elements!
+    base = np.array([1.0, 100.0, 2.0, 200.0, 3.0, 300.0], dtype=np.float64)
+    assert sec_mod.sum_floats(base[::2]) == 6.0
+    assert sec_mod.sum_floats(base[::-1]) == 606.0
+    
+    # 2D ndarray -> rejects pointer bitcast, elementwise Float64(py=row) raises TypeError safely (no segfault)
+    mat = np.zeros((2, 2), dtype=np.float64)
+    try:
+        sec_mod.sum_floats(mat)
+        raise AssertionError("Expected TypeError for 2D array")
+    except Exception:
+        pass
+    print("OK_NUMPY_SAFETY")
+    """
+            )
+>           self.assertEqual(proc.returncode, 0, proc.stderr)
+E           AssertionError: 1 != 0 : /tmp/hotloop-exception-parity-20261124/full-a11c9de/venv/lib/python3.12/site-packages/hotloop/decorator.py:317: HotloopFallbackWarning: [mojo-hotloop] sum_floats: input requires Python object semantics
+E             return python_semantics(args, kwargs, "input requires Python object semantics")
+E           Traceback (most recent call last):
+E             File "<string>", line 10, in <module>
+E           AssertionError
+
+tests/test_runtime_security.py:149: AssertionError
+_ TestRuntimeSecurityAndStability.test_07_inspect_dispatch_runtime_introspection _
+
+self = <test_runtime_security.TestRuntimeSecurityAndStability testMethod=test_07_inspect_dispatch_runtime_introspection>
+
+        def test_07_inspect_dispatch_runtime_introspection(self):
+            proc = self._run_subproc(
+                """
+    import numpy as np
+    from hotloop import inspect_dispatch
+    
+    # Test inspect_dispatch on hotloop decorated function
+    info = inspect_dispatch(sec_mod.sum_floats)
+    assert info["is_hotloop"] is True
+    assert info["backend_available"] is True
+    assert info["call_count_native"] == 0
+    
+    # Call native function
+    arr = np.array([1.0, 2.0, 3.0], dtype=np.float64)
+    sec_mod.sum_floats(arr)
+    info_after = inspect_dispatch(sec_mod.sum_floats)
+    assert info_after["call_count_native"] == 1
+    assert info_after["last_backend"] == "native"
+    
+    # Test on un-decorated function
+    def plain_fn(x):
+        return x * 2
+    
+    plain_info = inspect_dispatch(plain_fn)
+    assert plain_info["is_hotloop"] is False
+    assert plain_info["backend_available"] is False
+    print("OK_INSPECT_DISPATCH")
+    """
+            )
+>           self.assertEqual(proc.returncode, 0, proc.stderr)
+E           AssertionError: 1 != 0 : /tmp/hotloop-exception-parity-20261124/full-a11c9de/venv/lib/python3.12/site-packages/hotloop/decorator.py:317: HotloopFallbackWarning: [mojo-hotloop] sum_floats: input requires Python object semantics
+E             return python_semantics(args, kwargs, "input requires Python object semantics")
+E           Traceback (most recent call last):
+E             File "<string>", line 19, in <module>
+E           AssertionError
+
+tests/test_runtime_security.py:272: AssertionError
+________ TestUnfamiliarFunctions.test_01_scalar_numerical_10_functions _________
+
+self = <test_unfamiliar_functions.TestUnfamiliarFunctions testMethod=test_01_scalar_numerical_10_functions>
+
+    def test_01_scalar_numerical_10_functions(self):
+        self._check_native("fibonacci_iter", 30)
+        self._check_native("gcd_euclid", -462, 1071)
+        for v in (-5, 0, 1, 2, 3, 4, 97, 100, 7919):
+            self._check_native("is_prime", v)
+        self._check_native("newton_sqrt", 2.0, 20, approx=True)
+        self._check_native("horner_poly", 2.5, 1.0, -2.0, 3.0, -0.5, approx=True)
+        for v in (-10.0, 0.0, 5.0, 10.0, 25.0):
+            self._check_native("clamp_range", v, 0.0, 10.0)
+        self._check_native("collatz_count", 27)
+>       self._check_native("mixed_arith_calc", -7, 2.0, 3, approx=True)
+
+tests/test_unfamiliar_functions.py:478: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_unfamiliar_functions.py:461: in _check_native
+    self.assertEqual(fn._last_backend, "native", f"{fn_name} expected native backend, got {fn._last_backend}")
+E   AssertionError: 'python_fallback_semantics' != 'native'
+E   - python_fallback_semantics
+E   + native
+E    : mixed_arith_calc expected native backend, got python_fallback_semantics
+______ TestUnfamiliarFunctions.test_02_numpy_and_collection_10_functions _______
+
+self = <test_unfamiliar_functions.TestUnfamiliarFunctions testMethod=test_02_numpy_and_collection_10_functions>
+
+    def test_02_numpy_and_collection_10_functions(self):
+        a = np.linspace(1.0, 100.0, 1000, dtype=np.float64)
+        b = np.linspace(-5.0, 5.0, 1000, dtype=np.float64)
+        ints = np.arange(1, 200, dtype=np.int64)
+        peaks_arr = np.array([1.0, 3.0, 2.0, 5.0, 4.0, 6.0, 1.0], dtype=np.float64)
+    
+>       self._check_native("dot_product", a, b, approx=True)
+
+tests/test_unfamiliar_functions.py:489: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_unfamiliar_functions.py:461: in _check_native
+    self.assertEqual(fn._last_backend, "native", f"{fn_name} expected native backend, got {fn._last_backend}")
+E   AssertionError: 'python_fallback_semantics' != 'native'
+E   - python_fallback_semantics
+E   + native
+E    : dot_product expected native backend, got python_fallback_semantics
+___ TestUnfamiliarFunctions.test_03_strings_unicode_and_helpers_10_functions ___
+
+self = <test_unfamiliar_functions.TestUnfamiliarFunctions testMethod=test_03_strings_unicode_and_helpers_10_functions>
+
+    def test_03_strings_unicode_and_helpers_10_functions(self):
+        self._check_native("count_vowels", "MojoHotloop Acceleration Engine 2026")
+        self._check_native("reverse_str", "abcdefg")
+        self._check_native("reverse_str", "नमस्ते🚀")
+        self._check_native("stride_slice_str", "0123456789", 2)
+        self._check_native("stride_slice_str", "0123456789", -2)
+        self._check_native("is_palindrome_ascii", "racecar")
+        self._check_native("is_palindrome_ascii", "hello")
+        self._check_native("rle_compress", "aaabbbccccdaa")
+        self._check_native("caesar_cipher", "hello world!", 3)
+        self._check_native("utf8_codepoint_len_match", "🚀middle🚀")
+        self._check_native("utf8_codepoint_len_match", "नमस्ते")
+        self._check_native("prefix_match_eq", "GET / HTTP/1.1", 6)
+        self._check_native("prefix_match_eq", "GET / HTTPS", 0)
+        self._check_native("local_str_sub", True)
+        self._check_native("local_str_sub", False)
+        arr = np.array([1.0, 2.0, 3.0, 4.0], dtype=np.float64)
+>       self._check_native("helper_composition", arr, approx=True)
+
+tests/test_unfamiliar_functions.py:539: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_unfamiliar_functions.py:461: in _check_native
+    self.assertEqual(fn._last_backend, "native", f"{fn_name} expected native backend, got {fn._last_backend}")
+E   AssertionError: 'python_fallback_semantics' != 'native'
+E   - python_fallback_semantics
+E   + native
+E    : helper_composition expected native backend, got python_fallback_semantics
+____ TestUnfamiliarFunctions.test_04_kwargs_truthiness_exceptions_and_edges ____
+
+self = <test_unfamiliar_functions.TestUnfamiliarFunctions testMethod=test_04_kwargs_truthiness_exceptions_and_edges>
+
+    def test_04_kwargs_truthiness_exceptions_and_edges(self):
+        # Keyword arguments & defaults
+        self._check_native("kwargs_and_defaults", 5)
+        self._check_native("kwargs_and_defaults", 5, bias=7)
+        self._check_native("kwargs_and_defaults", scale=3, x=4, bias=2)
+    
+        # Truthiness (`if s:` / `if not xs:` / `bool(n)`)
+        fn_t = self.mod.truthiness_branch
+        fn_t._force_native = True
+        try:
+            for s, xs, n in [("", [], 0), ("abc", [1], 5), ("x", [], -1)]:
+                self.assertEqual(fn_t(s, xs, n), fn_t._original(s, xs, n))
+                self.assertEqual(fn_t._last_backend, "native")
+        finally:
+            fn_t._force_native = False
+    
+        # Exception parity (ZeroDivisionError, ValueError, IndexError)
+        with self.assertRaises(ZeroDivisionError):
+            self.mod.exception_parity_ops(10, 0, "abc", 0)
+>       with self.assertRaises(ValueError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: ValueError not raised
+
+tests/test_unfamiliar_functions.py:560: AssertionError
+_________ TestUnfamiliarFunctions.test_06_unfamiliar_speedups_summary __________
+
+self = <test_unfamiliar_functions.TestUnfamiliarFunctions testMethod=test_06_unfamiliar_speedups_summary>
+
+    def test_06_unfamiliar_speedups_summary(self):
+        a = np.linspace(1.0, 100.0, 20000, dtype=np.float64)
+        b = np.linspace(-5.0, 5.0, 20000, dtype=np.float64)
+        s = ("a1b2c3d4e5" * 4000)
+    
+        def bench(fn, args, iters=30):
+            for _ in range(3):
+                fn(*args)
+            samples = []
+            gc.disable()
+            try:
+                for _ in range(5):
+                    t0 = time.perf_counter_ns()
+                    for _ in range(iters):
+                        fn(*args)
+                    t1 = time.perf_counter_ns()
+                    samples.append((t1 - t0) / (iters * 1000.0))
+            finally:
+                gc.enable()
+            return statistics.median(samples)
+    
+        py_dot = bench(self.mod.dot_product._original, (a.tolist(), b.tolist()), 15)
+        mj_dot = bench(self.mod.dot_product, (a, b), 60)
+        py_welf = bench(self.mod.variance_welford._original, (a.tolist(),), 15)
+        mj_welf = bench(self.mod.variance_welford, (a,), 60)
+        py_rle = bench(self.mod.rle_compress._original, (s,), 10)
+        mj_rle = bench(self.mod.rle_compress, (s,), 30)
+        py_caesar = bench(self.mod.caesar_cipher._original, (s, 5), 10)
+        mj_caesar = bench(self.mod.caesar_cipher, (s, 5), 30)
+    
+        print(
+            f"\n[Stage 4 Unfamiliar Perf] dot_product(20k)={py_dot/mj_dot:.2f}x "
+            f"| variance_welford(20k)={py_welf/mj_welf:.2f}x "
+            f"| rle_compress(40k)={py_rle/mj_rle:.2f}x "
+            f"| caesar_cipher(40k)={py_caesar/mj_caesar:.2f}x"
+        )
+>       self.assertGreater(py_dot / mj_dot, 5.0)
+E       AssertionError: 0.21331130911658783 not greater than 5.0
+
+tests/test_unfamiliar_functions.py:624: AssertionError
+----------------------------- Captured stdout call -----------------------------
+
+[Stage 4 Unfamiliar Perf] dot_product(20k)=0.21x | variance_welford(20k)=0.23x | rle_compress(40k)=2.17x | caesar_cipher(40k)=4.25x
+=============================== warnings summary ===============================
+tests/test_generalization_e6.py::TestGeneralizationE6::test_02_distance_geometry_10_functions
+  /tmp/hotloop-exception-parity-20261124/full-a11c9de/venv/lib/python3.12/site-packages/hotloop/decorator.py:317: HotloopFallbackWarning: [mojo-hotloop] manhattan_dist_arr: input requires Python object semantics
+    return python_semantics(args, kwargs, "input requires Python object semantics")
+
+tests/test_generalization_e6.py::TestGeneralizationE6::test_03_array_transforms_10_functions
+  /tmp/hotloop-exception-parity-20261124/full-a11c9de/venv/lib/python3.12/site-packages/hotloop/decorator.py:317: HotloopFallbackWarning: [mojo-hotloop] running_prod_mod: input requires Python object semantics
+    return python_semantics(args, kwargs, "input requires Python object semantics")
+
+tests/test_generalization_e6.py::TestGeneralizationE6::test_05_validation_search_bitwise_12_functions
+  /tmp/hotloop-exception-parity-20261124/full-a11c9de/venv/lib/python3.12/site-packages/hotloop/decorator.py:317: HotloopFallbackWarning: [mojo-hotloop] binary_search_arr: input requires Python object semantics
+    return python_semantics(args, kwargs, "input requires Python object semantics")
+
+tests/test_generalization_holdout_e8.py::TestGeneralizationHoldoutE8::test_01_numerical_and_quadrature
+  /tmp/hotloop-exception-parity-20261124/full-a11c9de/venv/lib/python3.12/site-packages/hotloop/decorator.py:317: HotloopFallbackWarning: [mojo-hotloop] horner_eval: input requires Python object semantics
+    return python_semantics(args, kwargs, "input requires Python object semantics")
+
+tests/test_generalization_holdout_e8.py::TestGeneralizationHoldoutE8::test_02_dsp_and_statistics
+  /tmp/hotloop-exception-parity-20261124/full-a11c9de/venv/lib/python3.12/site-packages/hotloop/decorator.py:317: HotloopFallbackWarning: [mojo-hotloop] moving_variance_sum: input requires Python object semantics
+    return python_semantics(args, kwargs, "input requires Python object semantics")
+
+tests/test_generalization_holdout_e8.py::TestGeneralizationHoldoutE8::test_02_dsp_and_statistics
+  /tmp/hotloop-exception-parity-20261124/full-a11c9de/venv/lib/python3.12/site-packages/hotloop/decorator.py:317: HotloopFallbackWarning: [mojo-hotloop] exp_smoothing_series: input requires Python object semantics
+    return python_semantics(args, kwargs, "input requires Python object semantics")
+
+tests/test_generalization_holdout_e8.py::TestGeneralizationHoldoutE8::test_02_dsp_and_statistics
+  /tmp/hotloop-exception-parity-20261124/full-a11c9de/venv/lib/python3.12/site-packages/hotloop/decorator.py:317: HotloopFallbackWarning: [mojo-hotloop] correlation_covar_sum: input requires Python object semantics
+    return python_semantics(args, kwargs, "input requires Python object semantics")
+
+tests/test_generalization_holdout_e8.py::TestGeneralizationHoldoutE8::test_02_dsp_and_statistics
+  /tmp/hotloop-exception-parity-20261124/full-a11c9de/venv/lib/python3.12/site-packages/hotloop/decorator.py:317: HotloopFallbackWarning: [mojo-hotloop] mean_absolute_dev: input requires Python object semantics
+    return python_semantics(args, kwargs, "input requires Python object semantics")
+
+tests/test_generalization_holdout_e8.py::TestGeneralizationHoldoutE8::test_02_dsp_and_statistics
+  /tmp/hotloop-exception-parity-20261124/full-a11c9de/venv/lib/python3.12/site-packages/hotloop/decorator.py:317: HotloopFallbackWarning: [mojo-hotloop] count_signal_peaks: input requires Python object semantics
+    return python_semantics(args, kwargs, "input requires Python object semantics")
+
+tests/test_generalization_holdout_e8.py::TestGeneralizationHoldoutE8::test_05_geometry_finance_and_dp
+  /tmp/hotloop-exception-parity-20261124/full-a11c9de/venv/lib/python3.12/site-packages/hotloop/decorator.py:317: HotloopFallbackWarning: [mojo-hotloop] polygon_perimeter_2d: input requires Python object semantics
+    return python_semantics(args, kwargs, "input requires Python object semantics")
+
+tests/test_generalization_holdout_e8.py::TestGeneralizationHoldoutE8::test_05_geometry_finance_and_dp
+  /tmp/hotloop-exception-parity-20261124/full-a11c9de/venv/lib/python3.12/site-packages/hotloop/decorator.py:317: HotloopFallbackWarning: [mojo-hotloop] frobenius_norm_flat: input requires Python object semantics
+    return python_semantics(args, kwargs, "input requires Python object semantics")
+
+tests/test_generalization_holdout_e8.py::TestGeneralizationHoldoutE8::test_05_geometry_finance_and_dp
+  /tmp/hotloop-exception-parity-20261124/full-a11c9de/venv/lib/python3.12/site-packages/hotloop/decorator.py:317: HotloopFallbackWarning: [mojo-hotloop] sum_clamped_values: input requires Python object semantics
+    return python_semantics(args, kwargs, "input requires Python object semantics")
+
+tests/test_generalization_holdout_e8.py::TestGeneralizationHoldoutE8::test_05_geometry_finance_and_dp
+  /tmp/hotloop-exception-parity-20261124/full-a11c9de/venv/lib/python3.12/site-packages/hotloop/decorator.py:317: HotloopFallbackWarning: [mojo-hotloop] kadane_max_subarray: input requires Python object semantics
+    return python_semantics(args, kwargs, "input requires Python object semantics")
+
+tests/test_generalization_holdout_e8.py::TestGeneralizationHoldoutE8::test_05_geometry_finance_and_dp
+  /tmp/hotloop-exception-parity-20261124/full-a11c9de/venv/lib/python3.12/site-packages/hotloop/decorator.py:317: HotloopFallbackWarning: [mojo-hotloop] max_drawdown_percent: input requires Python object semantics
+    return python_semantics(args, kwargs, "input requires Python object semantics")
+
+tests/test_optimization_safety_e8.py::TestOptimizationSafetyE8::test_01_bounds_check_elimination_empty_arrays
+  /tmp/hotloop-exception-parity-20261124/full-a11c9de/published-tests/tests/test_optimization_safety_e8.py:155: HotloopFallbackWarning: [mojo-hotloop] Python collection input/output detected for 'sum_arr_safe'; per-element FFI conversion overhead makes native execution slower than pure Python. Safely executing pure Python implementation. (force_native=True may enable a qualified read-only list kernel.)
+    actual = self.mod.sum_arr_safe(empty_list)
+
+tests/test_optimization_safety_e8.py::TestOptimizationSafetyE8::test_01_bounds_check_elimination_empty_arrays
+  /tmp/hotloop-exception-parity-20261124/full-a11c9de/venv/lib/python3.12/site-packages/hotloop/decorator.py:317: HotloopFallbackWarning: [mojo-hotloop] sum_arr_safe: input requires Python object semantics
+    return python_semantics(args, kwargs, "input requires Python object semantics")
+
+tests/test_optimization_safety_e8.py::TestOptimizationSafetyE8::test_02_bounds_check_elimination_aliasing
+  /tmp/hotloop-exception-parity-20261124/full-a11c9de/published-tests/tests/test_optimization_safety_e8.py:170: HotloopFallbackWarning: [mojo-hotloop] Python collection input/output detected for 'aliased_dot_product'; per-element FFI conversion overhead makes native execution slower than pure Python. Safely executing pure Python implementation. (force_native=True may enable a qualified read-only list kernel.)
+    actual = self.mod.aliased_dot_product(arr, arr)
+
+tests/test_optimization_safety_e8.py::TestOptimizationSafetyE8::test_02_bounds_check_elimination_aliasing
+  /tmp/hotloop-exception-parity-20261124/full-a11c9de/venv/lib/python3.12/site-packages/hotloop/decorator.py:317: HotloopFallbackWarning: [mojo-hotloop] aliased_dot_product: input requires Python object semantics
+    return python_semantics(args, kwargs, "input requires Python object semantics")
+
+tests/test_unfamiliar_functions.py::TestUnfamiliarFunctions::test_01_scalar_numerical_10_functions
+  /tmp/hotloop-exception-parity-20261124/full-a11c9de/venv/lib/python3.12/site-packages/hotloop/decorator.py:392: HotloopFallbackWarning: [mojo-hotloop] mixed_arith_calc: native conversion cannot preserve Python semantics
+    return python_semantics(args, kwargs, "native conversion cannot preserve Python semantics")
+
+tests/test_unfamiliar_functions.py::TestUnfamiliarFunctions::test_02_numpy_and_collection_10_functions
+  /tmp/hotloop-exception-parity-20261124/full-a11c9de/venv/lib/python3.12/site-packages/hotloop/decorator.py:317: HotloopFallbackWarning: [mojo-hotloop] dot_product: input requires Python object semantics
+    return python_semantics(args, kwargs, "input requires Python object semantics")
+
+tests/test_unfamiliar_functions.py::TestUnfamiliarFunctions::test_03_strings_unicode_and_helpers_10_functions
+  /tmp/hotloop-exception-parity-20261124/full-a11c9de/venv/lib/python3.12/site-packages/hotloop/decorator.py:317: HotloopFallbackWarning: [mojo-hotloop] helper_composition: input requires Python object semantics
+    return python_semantics(args, kwargs, "input requires Python object semantics")
+
+tests/test_unfamiliar_functions.py::TestUnfamiliarFunctions::test_04_kwargs_truthiness_exceptions_and_edges
+  /tmp/hotloop-exception-parity-20261124/full-a11c9de/venv/lib/python3.12/site-packages/hotloop/decorator.py:392: HotloopFallbackWarning: [mojo-hotloop] exception_parity_ops: native conversion cannot preserve Python semantics
+    return python_semantics(args, kwargs, "native conversion cannot preserve Python semantics")
+
+tests/test_unfamiliar_functions.py::TestUnfamiliarFunctions::test_06_unfamiliar_speedups_summary
+  /tmp/hotloop-exception-parity-20261124/full-a11c9de/venv/lib/python3.12/site-packages/hotloop/decorator.py:317: HotloopFallbackWarning: [mojo-hotloop] variance_welford: input requires Python object semantics
+    return python_semantics(args, kwargs, "input requires Python object semantics")
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_generalization_e6.py::TestGeneralizationE6::test_02_distance_geometry_10_functions
+FAILED tests/test_generalization_e6.py::TestGeneralizationE6::test_03_array_transforms_10_functions
+FAILED tests/test_generalization_e6.py::TestGeneralizationE6::test_05_validation_search_bitwise_12_functions
+FAILED tests/test_optimization_safety_e8.py::TestOptimizationSafetyE8::test_10_dispatch_qualifier_cache_drift_safety
+FAILED tests/test_runtime_security.py::TestRuntimeSecurityAndStability::test_02_numpy_wrong_dtype_shape_and_non_contiguous_safety
+FAILED tests/test_runtime_security.py::TestRuntimeSecurityAndStability::test_07_inspect_dispatch_runtime_introspection
+FAILED tests/test_unfamiliar_functions.py::TestUnfamiliarFunctions::test_01_scalar_numerical_10_functions
+FAILED tests/test_unfamiliar_functions.py::TestUnfamiliarFunctions::test_02_numpy_and_collection_10_functions
+FAILED tests/test_unfamiliar_functions.py::TestUnfamiliarFunctions::test_03_strings_unicode_and_helpers_10_functions
+FAILED tests/test_unfamiliar_functions.py::TestUnfamiliarFunctions::test_04_kwargs_truthiness_exceptions_and_edges
+FAILED tests/test_unfamiliar_functions.py::TestUnfamiliarFunctions::test_06_unfamiliar_speedups_summary
+11 failed, 75 passed, 23 warnings in 210.18s (0:03:30)

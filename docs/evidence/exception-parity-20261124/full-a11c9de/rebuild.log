@@ -1,0 +1,9 @@
+Processing /tmp/hotloop-exception-parity-20261124/full-a11c9de/dist/mojo_hotloop-0.2.1.tar.gz
+  Preparing metadata (pyproject.toml): started
+  Preparing metadata (pyproject.toml): finished with status 'done'
+Building wheels for collected packages: mojo-hotloop
+  Building wheel for mojo-hotloop (pyproject.toml): started
+  Building wheel for mojo-hotloop (pyproject.toml): finished with status 'done'
+  Created wheel for mojo-hotloop: filename=mojo_hotloop-0.2.1-py3-none-any.whl size=59614 sha256=7fe26c9bf170d5f763b593ef92b49e4aa62c0932e547f1109df084e08fbc8031
+  Stored in directory: /tmp/pip-ephem-wheel-cache-fec3e52w/wheels/c3/7a/bf/0b662ed69dd79f711d9f875bb3e5597d9b1483ad46dfa60a1c
+Successfully built mojo-hotloop

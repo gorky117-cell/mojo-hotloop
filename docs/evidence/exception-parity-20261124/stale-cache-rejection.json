@@ -1,0 +1,37 @@
+{
+  "old_context": {
+    "abi": "4ec8604f24ecbf151ced44ed6dd05a1822fc0e81dcb955d55781f70815d2ccb7",
+    "compiler_version": "Mojo 1.2.0 (2016d0cd)",
+    "implementation": "535e08744f93ac26f80ac18f5fd1876f0c86c49c0494bca1c66a9e311bab0036",
+    "launcher": "/home/gaurav/mojo-hotloop/.venv/bin/mojo",
+    "settings": "5c23e166b1f1cd395d037e5b668c60f3e48c181dbe7fbc5a2b9700dc7482c5ab",
+    "toolchain": "3a59b45400ee1726e18507644e1429bc246b47625a179f86e44a29f398b074e2"
+  },
+  "current_implementation": "b3da83b40449769f4f57f9b15f97371184bd9587f6967a5ef8bf13f81a1b6178",
+  "rows": [
+    {
+      "exception": "IndexError",
+      "message": "list index out of range",
+      "mode": "default",
+      "backend": "python_fallback_stale_cache",
+      "native_calls": 0,
+      "fallback_calls": 1
+    },
+    {
+      "exception": "IndexError",
+      "message": "list index out of range",
+      "mode": "forced",
+      "backend": "python_fallback_stale_cache",
+      "native_calls": 0,
+      "fallback_calls": 1
+    },
+    {
+      "exception": "HotloopNativeExecutionError",
+      "message": "Strict native mode enabled: failed to execute native Mojo backend for 'accumulate_haversine_distance'. Reason: Stale native binary detected: Compiler revision, toolchain, runtime ABI or build settings changed",
+      "mode": "strict",
+      "backend": "native_error",
+      "native_calls": 0,
+      "fallback_calls": 0
+    }
+  ]
+}

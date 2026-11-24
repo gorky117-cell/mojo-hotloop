@@ -1,0 +1,13 @@
+{
+  "shared_file": "/home/gaurav/.cache/modular/.mojo_cache/mojo/transform/1.2.05871cbfed81a950c5c3a2b8244af52f2-production/M2VhMjQyMTliNGMwM2ZhNWFkMGQzMjgyMWU4MDQ2OTM",
+  "shared_file_bytes": 0,
+  "initial_resumed_cache_tests": {
+    "passed": 0,
+    "failed": 6,
+    "reason": "Mojo reports existing transform cache file is empty; fixtures could not compile"
+  },
+  "recovery": "XDG_CACHE_HOME=/tmp/hotloop-exception-parity-20261124/sdk-cache",
+  "verified_sdk_cache_location": "/tmp/hotloop-exception-parity-20261124/sdk-cache/modular/.mojo_cache",
+  "shared_cache_preserved": true,
+  "compiler_runtime_or_test_expectations_changed": false
+}

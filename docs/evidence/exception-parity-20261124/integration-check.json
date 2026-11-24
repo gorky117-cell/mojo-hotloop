@@ -1,0 +1,28 @@
+{
+  "corrective_source": "a11c9decc76dfdb7350f921d9b5f97451583e78b",
+  "r1_ancestor": true,
+  "prem0_depends_on_r1": true,
+  "m0_depends_on_prem0": true,
+  "steps": [
+    {
+      "stage": "Pre-M0",
+      "source_base": "69fa0bbfcfa772e3ceb35464286eea89f0a6398a",
+      "source_tip": "a094b6dc0bfb20a2e8ca1feee98827908805f63b",
+      "conflicts": [
+        "README.md"
+      ],
+      "virtual_tree": "2b03752d5f1a628b8efb3d965b5f38d3cef7f137",
+      "runtime_and_tests_unchanged": true
+    },
+    {
+      "stage": "M0",
+      "source_base": "a094b6dc0bfb20a2e8ca1feee98827908805f63b",
+      "source_tip": "ef3706930f6502f0f6d9ac88190cdd476e6d0fbf",
+      "conflicts": [],
+      "virtual_tree": "91657d0570aa10b332f956411a32a5233225660e",
+      "runtime_and_tests_unchanged": true
+    }
+  ],
+  "method": "temporary Git index only; no checkout, branch update, merge or rebase",
+  "plan_update": "R1 promotion must include the corrected descendant and new list-exception regression. Resolve only README history before Pre-M0; then apply dependent M0. Existing exact-CPython/GIL, required-native and no-build negative gates remain required. No hosted run authorized."
+}

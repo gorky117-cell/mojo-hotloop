@@ -1,0 +1,22 @@
+{
+  "existing_refs_unchanged": 52,
+  "existing_worktrees_unchanged": 37,
+  "worktrees_now": 38,
+  "original_dirty_checkout_unchanged": true,
+  "baseline_test_and_math_gate_files_unchanged": 28,
+  "new_pytest_files": 1,
+  "holdouts": [
+    {
+      "path": "tests/test_generalization_e6.py",
+      "sha256": "6c504c5a06fe702b20dcd4548fa33dd4ccffd49a23f73becd7537736abd8aa88"
+    },
+    {
+      "path": "tests/test_generalization_holdout_e8.py",
+      "sha256": "a8fe26562a086474f4ae2f92394fbaba62c5da5d2ed8c81259239b3ac7db9ee4"
+    },
+    {
+      "path": "tests/test_unfamiliar_functions.py",
+      "sha256": "43a4af42a0a67840b4e6377ab882e170c52a64a6e017f19eec4de6e7add7b4ed"
+    }
+  ]
+}
