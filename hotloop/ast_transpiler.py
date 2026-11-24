@@ -349,6 +349,22 @@ def _checked_index(idx: Int, n: Int) raises -> Int:
     raise Error("HOTLOOP_INDEX_ERROR: index out of range")
 
 @always_inline
+def _checked_list_index(idx: Int, n: Int) raises -> Int:
+    if UInt(idx) < UInt(n):
+        return idx
+    if idx < 0 and idx >= -n:
+        return idx + n
+    raise Error("HOTLOOP_INDEX_ERROR: list index out of range")
+
+@always_inline
+def _checked_list_assignment_index(idx: Int, n: Int) raises -> Int:
+    if UInt(idx) < UInt(n):
+        return idx
+    if idx < 0 and idx >= -n:
+        return idx + n
+    raise Error("HOTLOOP_INDEX_ERROR: list assignment index out of range")
+
+@always_inline
 def _py_bool(x: Bool) -> Bool:
     return x
 
@@ -1053,6 +1069,19 @@ class MojoASTTranspiler:
             return expr_code
         return f"_py_bool({expr_code})"
 
+    def _is_python_list(self, node: ast.expr) -> bool:
+        # Only emitted native List types with exact-list argument guards or
+        # Python list construction qualify. Never infer from an IndexError.
+        if isinstance(node, ast.List):
+            return True
+        if isinstance(node, ast.Name):
+            return self.var_types.get(node.id, "").startswith("List[")
+        if isinstance(node, ast.Call) and isinstance(node.func, ast.Name):
+            plan = self.return_origins.get(node.func.id)
+            return bool(plan and plan.fn.returns
+                        and parse_type_annotation(plan.fn.returns)[1].startswith("List["))
+        return False
+
     def _box_return_block(self, res_expr: str, indent: str, has_builtins: bool) -> str:
         if self.ret_elem_type is not None:
             lines = [f"{indent}var _res = {res_expr}"]
@@ -1099,6 +1128,8 @@ class MojoASTTranspiler:
         }
         self.codepoint_vars = _collect_codepoint_vars(func_def, pystr_arg_names)
         self._tmp_counter = 0
+        # The existing provenance prefix excludes every source name.
+        self._list_rhs_prefix = self.return_origins[func_def.name].prefix + "_list_rhs"
         self.borrowed_names = set()
 
         sig_args: List[str] = []
@@ -1279,7 +1310,7 @@ def {tagged_name}({", ".join(tagged_args)}) raises -> Tuple[{ret_mojo_type}, Int
         if kind=="item":
             index=plan.temporary()
             container=source.value.id
-            lines=[emit(f"var {index} = _checked_index({self.visit_expr(source.slice)}, len({container}))")]
+            lines=[emit(f"var {index} = _checked_list_index({self.visit_expr(source.slice)}, len({container}))")]
             return lines,f"{container}[{index}]",str(plan.arguments[container]),index
         if kind=="slice":
             container=node.value.id
@@ -1478,6 +1509,11 @@ def {tagged_name}({", ".join(tagged_args)}) raises -> Tuple[{ret_mojo_type}, Int
             if isinstance(target, ast.Subscript):
                 target_code = self.visit_expr(target)
                 expr_code = self.visit_expr(node.value)
+                if self._is_python_list(target.value):
+                    # Python evaluates the RHS before the list/index target.
+                    value = self._next_tmp(self._list_rhs_prefix)
+                    return (f"{self.indent()}var {value} = {expr_code}\n"
+                            f"{self.indent()}{target_code} = {value}")
                 return f"{self.indent()}{target_code} = {expr_code}"
             elif isinstance(target, ast.Name):
                 var_name = target.id
@@ -1550,7 +1586,8 @@ def {tagged_name}({", ".join(tagged_args)}) raises -> Tuple[{ret_mojo_type}, Int
                 val_code = self.visit_expr(node.value)
                 len_expr = f"len({arr_name})"
                 tmp_idx = self._next_tmp("_hot_idx")
-                lines = [f"{self.indent()}var {tmp_idx} = _checked_index({idx_code}, {len_expr})"]
+                index_helper = "_checked_list_index" if self._is_python_list(node.target.value) else "_checked_index"
+                lines = [f"{self.indent()}var {tmp_idx} = {index_helper}({idx_code}, {len_expr})"]
                 target_elem = f"{arr_name}[{tmp_idx}]"
                 helper = next((h for cls, h in op_helper_map.items() if isinstance(node.op, cls)), None)
                 if helper and arr_type in ("List[Int]", "List[Float64]"):
@@ -1724,7 +1761,11 @@ def {tagged_name}({", ".join(tagged_args)}) raises -> Tuple[{ret_mojo_type}, Int
                     raise ASTTranspileError("List slicing is not supported in native AST compilation")
                 idx = self.visit_expr(node.slice)
 
-                return f"{val}[_checked_index({idx}, len({val}))]"
+                helper = "_checked_index"
+                if self._is_python_list(node.value):
+                    helper = ("_checked_list_assignment_index" if isinstance(node.ctx, ast.Store)
+                              else "_checked_list_index")
+                return f"{val}[{helper}({idx}, len({val}))]"
 
         elif isinstance(node, ast.List):
             if len(node.elts) == 0:

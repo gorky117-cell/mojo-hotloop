@@ -1,3 +1,5 @@
+> **Isolated v0.2.1 list-exception correction candidate, awaiting full local verification and owner review.** This bounded change repairs proven list reads/stores and assignment evaluation order; it adds no new dispatch policy. The notices below are historical. Final evidence: docs/V0_2_1_EXCEPTION_PARITY_RELEASE_GATE.md. No release, integration or publication is authorized.
+
 > **Isolated v0.2.1 two-blocker correction candidate.** See docs/V0_2_1_TWO_BLOCKER_CORRECTION.md for the exact verification result and remaining release gates. The blocked math-prototype notice below is retained as historical context for commit 0a6dacf; it does not describe a published release.
 
 # mojo-hotloop
