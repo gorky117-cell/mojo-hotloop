@@ -1,3 +1,5 @@
+> This guide describes AST lowering, not unconditional native qualification. The unreleased corrective candidate additionally enforces exact interpreter/platform, object provenance and input restrictions described in [README](../README.md). Unsupported calls may fall back even if syntax lowers.
+
 # Supported Python Syntax — mojo-hotloop AST Transpiler
 
 > **Version**: mojo-hotloop v0.2.1, Mojo 1.2.0 target
@@ -39,6 +41,8 @@ All function parameters and return types **must** be annotated.
 `Any`, generic type parameters.
 
 **Collection boundary.** v0.2.1 copies qualified exact lists of builtin elements into native storage. Functions that can mutate, retain, alias or return a borrowed list use Python. NumPy values, memoryviews and other buffer exporters use Python in ordinary and forced modes. Strict mode rejects these calls. No native kernel borrows a buffer address. The preserved [NumPy example](../examples/numpy_vector/README.md) describes the old route; its native expectation is not valid for v0.2.1.
+
+**Corrective native restrictions.** Prefix/suffix methods with start/end bounds or keywords use Python because bounded Unicode parity is unproven. Unbounded methods retain native qualification. Variadic signatures use semantic fallback even with keyword calls; strict mode rejects them before application effects.
 
 **Keyword & default arguments**: Functions compiled by `@hotloop` support default
 parameter values and keyword call-site arguments (bound via `inspect.signature`
@@ -156,7 +160,7 @@ x **= 2   # ✅
 
 Import with `import math`, then use `math.<function>`:
 
-The blocked math-correction prototype qualifies unary sin/cos/sqrt/log/exp and binary atan2 using scalar system-libm calls and operation-specific exceptions. Other operations/signatures, including math.pow and two-argument log, require Python; strict refuses them. Aliased imports are not added as native syntax. Numeric-string operand admission remains a known release-blocking defect, not supported behavior.
+In `v0.2.1`, unary `sin`/`cos`/`sqrt`/`log`/`exp`, binary `atan2`, and predicates `isnan`/`isinf` qualify **exact numeric operands only** (`int`, `float`, `bool`) via overloaded `_math_operand` helpers preserving CPython `ValueError`/`OverflowError` domain/range semantics. Strings, complex numbers, custom `__float__`/`__index__` objects, NumPy scalars, other `math.*` signatures (`math.pow`, two-argument `log`), and aliased imports fall back to Python (or raise `HotloopNativeExecutionError` in `strict=True`).
 
 | Function | Supported |
 |----------|-----------|
@@ -172,8 +176,8 @@ The blocked math-correction prototype qualifies unary sin/cos/sqrt/log/exp and b
 | `math.e` | ✅ |
 | `math.inf` | ❌ |
 | `math.nan` | ❌ |
-| `math.isnan(x)` | ❌ |
-| `math.isinf(x)` | ❌ |
+| `math.isnan(x)` | ✅ (`int` / `float` / `bool` numeric operands only) |
+| `math.isinf(x)` | ✅ (`int` / `float` / `bool` numeric operands only) |
 
 ---
 
@@ -202,10 +206,10 @@ ord(s[i])                       # ✅ Character access + codepoint
 s[i]                            # ✅ Positive & negative indexing (IndexError on OOB)
 s[start:stop]                   # ✅ String slicing
 s[start:stop:step]              # ✅ Stepped slicing (ValueError if step == 0)
-s.startswith(prefix)            # ✅ Prefix check (str, literal, or tuple of prefixes)
-s.endswith(suffix)              # ✅ Suffix check (str, literal, or tuple of suffixes)
-s.startswith(prefix, start, stop) # ✅ Bounded prefix check (ASCII & Unicode codepoints)
-s.endswith(suffix, start, stop)   # ✅ Bounded suffix check (ASCII & Unicode codepoints)
+s.startswith(prefix)            # ✅ Unbounded prefix check (str, literal, or tuple of prefixes)
+s.endswith(suffix)              # ✅ Unbounded suffix check (str, literal, or tuple of suffixes)
+s.startswith(prefix, start, stop) # Python fallback (bounded Unicode/keyword parity excluded from native)
+s.endswith(suffix, start, stop)   # Python fallback (bounded Unicode/keyword parity excluded from native)
 ```
 
 ---

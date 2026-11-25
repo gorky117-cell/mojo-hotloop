@@ -42,6 +42,27 @@ This document describes the planned milestones for mojo-hotloop.
 
 ---
 
+## v0.2.1 -- Security, Qualification & Semantic-Parity Correction (Local Candidate, Unpublished)
+
+**Goal**: Close all safety, ABI/cache, stdlib-binding, return-ownership, math-domain/overflow, and list-exception parity defects identified after `v0.2.0`, withdraw unproven native buffer routes, and align public documentation and hosted native CI.
+
+**Granular Status**: `Locally implemented` / `Locally verified` / `PR prepared` (local stacked branches; `PR submitted`, `Hosted CI verified`, `Merged`, and `Released` are **BLOCKED** pending contributor DCO sign-off, SDK/trademark wording review, and GitHub-hosted native CI execution).
+
+- [x] Narrow native ABI/runtime qualification to Linux x86-64 little-endian 64-bit GIL-enabled CPython `3.12.16` with Mojo `1.2.0` (`2016d0cd`), with safe Python fallback and `strict=True` refusal elsewhere *(locally verified)*
+- [x] Full cache identity verification (compiler, SDK files, build settings, source, runtime ABI) and binary inode pinning (`rebuilt`/invalid cache detection) *(locally verified)*
+- [x] Pre-import stdlib/intrinsic binding verification and verified scalar/constant/list-element return ownership *(locally verified)*
+- [x] Explicit withdrawal of `v0.2.0` native `ndarray`/buffer/shared-container borrowing paths (`v0.2.1` copies qualified exact lists of builtin elements; buffer exporters fall back to Python or fail in `strict=True`) *(locally verified)*
+- [x] Bounded/keyword `startswith`/`endswith` and variadic signature fallback preservation *(locally verified)*
+- [x] CPython `ValueError`/`OverflowError` parity for unary `math.sin`, `math.cos`, `math.sqrt`, `math.log`, `math.exp`, binary `math.atan2`, and `math.isnan`/`math.isinf` (`int`/`float`/`bool` operands only) *(locally verified)*
+- [x] CPython exact `IndexError` messages and RHS-before-index evaluation order on proven list reads/stores (`a11c9de`, `2789bdf`) *(locally verified; disclosed `geo_distance` 10k boxed-list slowdown)*
+- [x] Pre-M0 public documentation, `NOTICE`/`THIRD_PARTY_NOTICES` updates, and matched-contract benchmark credibility tables *(PR 2 prepared; legal wording review pending)*
+- [ ] M0 hosted GitHub Actions CI (`ubuntu-24.04`, Python `3.12.16`, Mojo `1.2.0`) and 25-function corpus verification *(PR 3 prepared locally; hosted CI UNVERIFIED until authorized push)*
+- [ ] Remote PR review, hosted CI execution, tag, and release publication *(local DCO sign-off completed across PRs 1-3; remote push/CI/release BLOCKED pending authorization)*
+
+> **Separate Phase F.2 track (`v0.3.0` candidate):** Safe NumPy zero-copy & SIMD optimization work is preserved independently on branch `codex/phase-f2-security-repair` (`61b0c36` / `aa8a21e`) and is explicitly **excluded** from `v0.2.1`.
+
+---
+
 ## v0.3.0 — Syntax & Vectorization Expansion (Target: Q1 2027)
 
 **Goal**: Expand Python syntax and SIMD vectorization paths.
@@ -58,7 +79,7 @@ This document describes the planned milestones for mojo-hotloop.
 
 ## v0.3.0 — NumPy Fast Path (Target: Q2 2027)
 
-**Goal**: Zero-copy NumPy 1-D array acceleration via raw pointer interop.
+**Goal**: Zero-copy NumPy 1-D array acceleration via raw pointer interop *(experimental security-repaired prototype preserved off-branch on `codex/phase-f2-security-repair` at `61b0c36`/`aa8a21e`; deferred until after `v0.2.1` release)*.
 
 - [ ] `numpy.ndarray` (1-D, contiguous, float64/int64) as parameter type
 - [ ] Direct C pointer dispatch: bypass per-element Python FFI

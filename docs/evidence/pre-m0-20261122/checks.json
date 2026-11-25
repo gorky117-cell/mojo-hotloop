@@ -1,0 +1,11 @@
+{
+  "runtime_unchanged": true,
+  "ci_unchanged": true,
+  "license_and_notice_unchanged": true,
+  "historical_report_and_dataset_unchanged": true,
+  "local_links": 22,
+  "adversarial_pass": 51,
+  "adversarial_expected_rejection": 1,
+  "owner_review": "PENDING",
+  "sdk_legal_approval": false
+}

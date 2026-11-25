@@ -1,3 +1,5 @@
+> Historical v0.1.0 measurements are preserved below. They predate corrective semantic/ownership restrictions and must not be treated as current performance or compatibility promises. See [current candidate observations](CURRENT_BENCHMARKS.md).
+
 # Benchmark Methodology and Results — mojo-hotloop v0.1.0
 
 > **Canonical Dataset**: [`benchmarks/canonical_benchmarks_v0.1.0.json`](../benchmarks/canonical_benchmarks_v0.1.0.json)  
