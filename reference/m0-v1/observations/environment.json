@@ -1,0 +1,21 @@
+{
+  "python": "3.12.16 (main, Nov 11 2026, 00:15:59) [Clang 23.1.3 ]",
+  "abi": "cpython-312-x86_64-linux-gnu",
+  "machine": "x86_64",
+  "platform": "Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39",
+  "mojo": "Mojo 1.2.0 (2016d0cd)",
+  "mojo_launcher_sha256": "322816e06ac39615cc7bec1835d1af42261313d2ad42223ff69147fdd53049e6",
+  "build_context": {
+    "implementation": "0d78c326cb7c8cec0e9920d4f7fa5de0fe79616b550717dcd14277c32d1328f3",
+    "abi": "4ec8604f24ecbf151ced44ed6dd05a1822fc0e81dcb955d55781f70815d2ccb7",
+    "settings": "5c23e166b1f1cd395d037e5b668c60f3e48c181dbe7fbc5a2b9700dc7482c5ab",
+    "toolchain": "3a59b45400ee1726e18507644e1429bc246b47625a179f86e44a29f398b074e2",
+    "launcher": "/home/gaurav/mojo-hotloop/.venv/bin/mojo",
+    "compiler_version": "Mojo 1.2.0 (2016d0cd)"
+  },
+  "package": "/tmp/hotloop-master-20261122/proposed-568faf2/venv/lib/python3.12/site-packages/hotloop/__init__.py",
+  "runner_image": null,
+  "runner_os_image": null,
+  "run_id": null,
+  "git_sha": null
+}

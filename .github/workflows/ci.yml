@@ -86,101 +86,72 @@ jobs:
           python benchmarks/generate_benchmark_reports.py --check
 
   native-verification:
-    name: "Native Verification (Mojo 1.2.0, Python 3.12)"
+    name: "Native Verification (Mojo 1.2.0, CPython 3.12.16)"
     runs-on: ubuntu-24.04
+    timeout-minutes: 25
     env:
-      PYTHONPATH: .
+      PYTHONDONTWRITEBYTECODE: "1"
+      OMP_NUM_THREADS: "1"
+      OPENBLAS_NUM_THREADS: "1"
     steps:
       - uses: actions/checkout@v4
-
-      - name: Set up Python 3.12
-        uses: actions/setup-python@v5
         with:
-          python-version: "3.12"
-
-      - name: Install dependencies & Mojo 1.2.0
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12.16"
+          architecture: x64
+          check-latest: false
+      - name: Install pinned runtime and test tools
         run: |
-          python -m pip install --upgrade pip
-          pip install mojo==1.2.0 numpy rapidfuzz numba hypothesis pytest
-          pip install -e .
-
-      - name: Verify toolchain versions
+          python -m pip install mojo==1.2.0 mojo-compiler==1.2.0 mojo-lldb-libs==1.2.0 numpy==2.5.4 numba==0.68.1 rapidfuzz==3.14.6 pytest==9.2.0 hypothesis==6.170.15 setuptools==84.2.1
+          python -m pip install --no-build-isolation .
+      - name: Verify and record exact qualification
         run: |
-          echo "=== Python ==="
-          python --version
-          echo "=== Mojo ==="
-          mojo --version
-
-      - name: Native compilation smoke test & execution
+          python tools/native_ci_preflight.py --output "$RUNNER_TEMP/native-environment.json"
+          python -m pip freeze > "$RUNNER_TEMP/native-dependencies.txt"
+      - name: Compile and require genuine native execution
         run: |
-          cat << 'EOF' > /tmp/smoke_test.py
-          from hotloop import hotloop
-
-          @hotloop
-          def sum_squares(n: int) -> int:
-              total: int = 0
-              for i in range(n):
-                  total += i * i
-              return total
-          EOF
-          hotloop build /tmp/smoke_test.py --engine=ast
-          python -c '
-          import sys
-          sys.path.insert(0, "/tmp")
-          import smoke_test
-          res = smoke_test.sum_squares(100_000)
-          print(f"Result: {res}")
-          print(f"Backend: {smoke_test.sum_squares._last_backend}")
-          assert res == 333328333350000, f"Expected 333328333350000, got {res}"
-          assert smoke_test.sum_squares._last_backend == "native", f"Expected native, got {smoke_test.sum_squares._last_backend}"
-          print("Native Smoke Test: PASSED")
-          '
-
-      - name: Explicit fallback behavior test
+          python tools/native_ci_smoke.py --directory "$RUNNER_TEMP/native-smoke"
+      - name: Frozen 25-function public reference corpus
         run: |
-          python -c '
-          import warnings
-          warnings.simplefilter("always")
-          from hotloop import hotloop
-
-          @hotloop
-          def uncompiled_func(x: float) -> float:
-              return x * 2.0
-
-          res = uncompiled_func(5.0)
-          assert res == 10.0
-          assert uncompiled_func._last_backend in ("python_fallback", "python_fallback_slower"), f"Expected fallback, got {uncompiled_func._last_backend}"
-          print("Fallback Verification: PASSED")
-          '
-
-      - name: Build all seven domain use cases
+          python tools/run_m0_reference.py --output "$RUNNER_TEMP/m0-reference"
+      - name: Prove required-native cases fail on fallback
         run: |
-          python audit/test_ast_provenance.py
-
-      - name: Run all seven domain verification suites (7,220 checks)
+          if python tools/run_m0_reference.py --no-build --samples 1 --output "$RUNNER_TEMP/m0-no-native"; then
+            echo "Required-native gate incorrectly accepted fallback"
+            exit 1
+          fi
+          python -c 'import json,os; from pathlib import Path; d=json.loads((Path(os.environ["RUNNER_TEMP"])/"m0-no-native/observations.json").read_text()); assert len(d["rows"])==25 and d["failures"] and d["default_native"]==0'
+      - name: Current regression and security suite
         run: |
-          python audit/run_all_verifications.py
-
-      - name: Run unfamiliar functions test suite (35+ functions)
+          mkdir -p "$RUNNER_TEMP/installed-suite/benchmarks"
+          cp -R tests audit examples "$RUNNER_TEMP/installed-suite/"
+          cd "$RUNNER_TEMP/installed-suite"
+          PYTHONPATH="$PWD:$PWD/audit" python -m pytest -q tests
+      - name: Cache corruption and invalidation
         run: |
-          python tests/test_unfamiliar_functions.py
-
-      - name: Run runtime security and stability suite
+          cd "$RUNNER_TEMP/installed-suite"
+          PYTHONPATH="$PWD:$PWD/audit" python audit/test_cache_invalidation.py
+      - name: Seven original application suites
         run: |
-          python tests/test_runtime_security.py
-
-      - name: Run Phase E generalization suite (52 functions)
+          cd "$RUNNER_TEMP/installed-suite"
+          for app in pii_scrubber pdf_cleaner quant_backtest rag_chunker ocr_matcher geo_distance ar_spatial; do
+            python -m hotloop.cli build "examples/$app/original.py" --no-verify
+            python "examples/$app/verify.py"
+          done
+      - name: Blocking Python math exception parity gate
         run: |
-          python tests/test_generalization_e6.py
-
-      - name: Run Phase E.8 optimization safety suite (10 stress tests)
-        run: |
-          python tests/test_optimization_safety_e8.py
-
-      - name: Run Phase E.8 holdout generalization suite (25 holdout functions)
-        run: |
-          python tests/test_generalization_holdout_e8.py
-
-      - name: Run full combined pytest suite (86 tests)
-        run: |
-          pytest tests/ -q
+          python tools/check_math_semantics.py --output "$RUNNER_TEMP/math-parity"
+      - name: Preserve exact observations
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: native-verification-${{ github.sha }}
+          path: |
+            ${{ runner.temp }}/native-environment.json
+            ${{ runner.temp }}/native-dependencies.txt
+            ${{ runner.temp }}/m0-reference/observations.json
+            ${{ runner.temp }}/m0-no-native/observations.json
+            ${{ runner.temp }}/math-parity/observations.json
+          if-no-files-found: error

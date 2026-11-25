@@ -77,7 +77,7 @@ The [v0.1.0 historical dataset](benchmarks/canonical_benchmarks_v0.1.0.json) and
 
 All transpilation, `mojo build` native compilation, SHA-256 manifest/cache verification, and runtime execution run **100% offline** with zero AI/cloud APIs or Rust dependencies (network access is only needed if installing packages via `pip`).
 
-Existing hosted CI on public main predates this candidate. Its [recorded run](https://github.com/gorky117-cell/mojo-hotloop/actions/runs/44120208039) includes a successful native smoke step. The updated `v0.2.1` CI workflow and 25-function frozen corpus are prepared locally in `.github/workflows/ci.yml` and `docs/M0_NATIVE_CI_AND_REFERENCE.md` (PR 3); no new green hosted badge is installed before an authorized hosted pass.
+Existing hosted CI on public main predates this candidate. Its [recorded run](https://github.com/gorky117-cell/mojo-hotloop/actions/runs/44120208039) includes a successful native smoke step. The updated `v0.2.1` CI workflow and 25-function frozen corpus are prepared locally in `.github/workflows/ci.yml` and [M0 CI specification](docs/M0_NATIVE_CI_AND_REFERENCE.md); no new green hosted badge is installed before an authorized hosted pass.
 
 ~~~bash
 python tests/test_compiler_adversarial.py

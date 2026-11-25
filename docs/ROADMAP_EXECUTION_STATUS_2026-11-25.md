@@ -1,0 +1,24 @@
+# Reconciled Roadmap Execution Status -- 25 November 2026
+
+This document reconciles the public feature roadmap ([`ROADMAP.md`](../ROADMAP.md), updated in PR 2) with the operational corrective tracker (`docs/ROADMAP_EXECUTION_STATUS_2026-11-23.md` on `codex/owner-approval-20261123`) without renumbering `v0.1.0`, `v0.2.0`, `v0.3.0`, `v0.4.0`, `v0.5.0`, or `v1.0.0`, and without merging experimental `v0.3.0` Phase F.2 work into `v0.2.1`.
+
+Status taxonomy used below: `Locally implemented`, `Locally verified`, `PR prepared`, `PR submitted`, `Hosted CI verified`, `Merged`, `Released`, `Blocked`.
+
+## 1. Release `v0.2.1` Stacked PR Workstreams (`R1`, `Pre-M0`, `M0`)
+
+| Workstream | Current Status | Prepared Branch / Base | Evidence Summary | Blocking Gates Before Remote / Release |
+|---|---|---|---|---|
+| **R1 / PR 1: `v0.2.1` Runtime, Security, ABI/Cache & Exception Parity** | `Locally implemented`, `Locally verified`, `PR prepared` | `codex/pr1-v021-runtime` (`ad8c86739f3488d9a89bd8cc8474d4a4923036b5`) stacked on `main` (`080125ec03b68a55423d426a48c112b7415f8b48`) | `380` pytest checks, `129` `c2aebd78` security checks, `7,220` app scenarios, `15/15` math parity, `15/15` `parity_probe`, `identity_probe`, `6/6` cache tests, corrupted `.so`/manifest rejection, `Python 3.12.3` fallback/strict refusal, and `11` documented `v0.2.0` historical failures. | Local DCO signed (`Gaurav Kumar Singh <gorky117@gmail.com>`); `PR submitted`, `Hosted CI verified`, `Merged`, `Released`: **Blocked** pending push authorization. |
+| **Pre-M0 / PR 2: Public Credibility Docs, Notices & Reconciled Roadmap** | `Locally implemented`, `Locally verified`, `PR prepared` | `codex/pr2-v021-docs` (`2c7d9b52ba97d9c81953111b483909f4b2a62953`) stacked on `codex/pr1-v021-runtime` | Updates `README.md`, `CHANGELOG.md`, `ROADMAP.md`, `docs/SUPPORTED_SYNTAX.md`, `docs/THIRD_PARTY_NOTICES.md`, `docs/BENCHMARKS.md`, `docs/CURRENT_BENCHMARKS.md`, `docs/PRE_M0_CREDIBILITY_REVIEW.md`, `docs/history/REVIEW_HISTORY_2026.md`. Zero runtime/CI changes. Discloses `geo_distance` regression, NumPy withdrawal, and `11` historical `v0.2.0` failures. | `PR submitted` / `Merged`: **Blocked** pending push authorization (local DCO signed; Modular SDK/no-`.so`-redistribution & nominative trademark notices updated). |
+| **M0 / PR 3: Hosted Native CI, Frozen 25-Fn Corpus & Readiness Audit** | `Locally implemented`, `Locally verified`, `PR prepared` | `codex/pr3-v021-m0-ci` stacked on `codex/pr2-v021-docs` | Adds `.github/workflows/ci.yml` (`python-tests`, `native-verification`, `dco-check`), `reference/m0-v1/*`, `tools/*`, `docs/M0_NATIVE_CI_AND_REFERENCE.md`, this tracker, and `docs/V0_2_1_RELEASE_READINESS_REPORT.md`. Local `25/25` M0 reference, `15/15` math gate, `--no-build` `46` expected failures pass. | `PR submitted`, `Hosted CI verified`, `Merged`, `Released`: **Blocked** pending push authorization and live GitHub Actions `ubuntu-24.04` pass (all 10 PR commits DCO-signed locally). |
+
+## 2. Post-`v0.2.1` Operational & Feature Roadmap (`M1`-`M6` & `v0.3.0`-`v1.0.0`)
+
+| Milestone | Status | Relationship to `v0.2.1` & Separate Branches | Next Unblocking Requirement |
+|---|---|---|---|
+| **M1 -- External Reliability / Two Independent Trials** | **Blocked** (`0/2` external non-maintainer reports) | `a4891fc` evaluation harness exists on separate branch `codex/m1-evaluation-preparation`; excluded from `v0.2.1` release critical path. | Release or authorize `v0.2.1` first; invite two independent external users on real workloads. |
+| **M2 -- Adoption-Focused Coverage** | **Blocked** (`NOT STARTED`) | Two future increments depend on ranking real M1 external blocker feedback. | Complete M1 external trials. |
+| **M3 -- Targeted Performance Recovery (`P1` Geo / `P2` AR / `P3` OCR / `P4` RAG)** | `Locally implemented` *elsewhere only* (`v0.3.0` F.2); **Blocked** for `main` | Safe NumPy zero-copy & SIMD candidate lives separately on `codex/phase-f2-security-repair` (`61b0c36` / `aa8a21e`); **not** merged into `v0.2.1`. Forced boxed-list `geo_distance` remains slower in `v0.2.1`. | Ship `v0.2.1` safety baseline first, then review/gate Phase F.2 for `v0.3.0`. |
+| **M4 -- Broader Maturity (`v0.4.0`-`v0.5.0`)** | **Blocked** (`NOT STARTED` -- conditional) | Watch mode, incremental invalidation, multi-function modules in [`ROADMAP.md`](../ROADMAP.md). | Independent demand + maintainer capacity after `v0.2.1`/`v0.3.0`. |
+| **M5 -- Production Gate / Readiness (`v1.0.0`)** | **Blocked** (`NOT STARTED` -- conditional) | Stable decorator/CLI, multi-OS, third-party security audit, PyPI release. | Real workload/deployment acceptance and external security audit. |
+| **M6 -- Controlled Commercial Pilot** | **Blocked** (`NOT STARTED` -- conditional) | Dependent on genuine partner/customer scope after M5 readiness. | Validated M5 production gate and signed pilot partner. |
