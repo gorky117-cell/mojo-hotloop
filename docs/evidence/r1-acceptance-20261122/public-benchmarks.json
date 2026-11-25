@@ -1,0 +1,7539 @@
+{
+  "schema": 1,
+  "dataset_id": "r1-v021-20261122-568faf2",
+  "release_status": "UNRELEASED_OWNER_REVIEW",
+  "candidate_revision": "568faf2c96ac8aa22758eccf45464fdb4c20b413",
+  "comparison_revision": "c2aebd78be8aebb325c94976dbc20462ad350948",
+  "environment": "Linux x86_64 WSL2 CPython 3.12.16 Mojo 1.2.0 (2016d0cd)",
+  "protocol": "5 processes/runtime; p50 is median of process p50; p95 is nearest-rank of 45 batch means; identical original inputs",
+  "rows": [
+    {
+      "application": "pii_scrubber",
+      "size": "short",
+      "backend": "native",
+      "cpython_p50_us": 22.140620805369124,
+      "public_p50_us": 15.912643678160919,
+      "public_p95_batch_us": 22.26256684491979,
+      "security_public_p50_us": 11.541055718475075,
+      "process_p50_us": [
+        15.320533582089553,
+        18.525446428571428,
+        15.147463768115943,
+        15.912643678160919,
+        22.094117647058827
+      ],
+      "best_measured_strict_competitor": "expert_regex",
+      "competitor_p50_us": 10.96841791044776,
+      "competitor_p95_batch_us": 18.737634408602148
+    },
+    {
+      "application": "pii_scrubber",
+      "size": "medium",
+      "backend": "native",
+      "cpython_p50_us": 4330.4,
+      "public_p50_us": 677.2637272727272,
+      "public_p95_batch_us": 898.8125,
+      "security_public_p50_us": 676.6181818181817,
+      "process_p50_us": [
+        654.9838333333333,
+        741.67,
+        677.2637272727272,
+        675.0454545454546,
+        895.45
+      ],
+      "best_measured_strict_competitor": "expert_regex",
+      "competitor_p50_us": 1512.82,
+      "competitor_p95_batch_us": 1854.975
+    },
+    {
+      "application": "pii_scrubber",
+      "size": "large",
+      "backend": "native",
+      "cpython_p50_us": 52567.603,
+      "public_p50_us": 8075.1,
+      "public_p95_batch_us": 8338.5,
+      "security_public_p50_us": 7829.3,
+      "process_p50_us": [
+        7973.106,
+        8020.3,
+        8075.1,
+        8202.1,
+        8292.4
+      ],
+      "best_measured_strict_competitor": "expert_regex",
+      "competitor_p50_us": 18655.9,
+      "competitor_p95_batch_us": 28676.802
+    },
+    {
+      "application": "pdf_cleaner",
+      "size": "small",
+      "backend": "native",
+      "cpython_p50_us": 203.69459459459458,
+      "public_p50_us": 44.508633093525184,
+      "public_p95_batch_us": 46.94172661870503,
+      "security_public_p50_us": 41.62956338028169,
+      "process_p50_us": [
+        44.83813669064748,
+        44.508633093525184,
+        46.60805747126437,
+        44.48148888888889,
+        44.22374100719424
+      ],
+      "best_measured_strict_competitor": "cpython",
+      "competitor_p50_us": 203.69459459459458,
+      "competitor_p95_batch_us": 213.48285714285714
+    },
+    {
+      "application": "pdf_cleaner",
+      "size": "medium",
+      "backend": "native",
+      "cpython_p50_us": 2016.6,
+      "public_p50_us": 346.1227272727273,
+      "public_p95_batch_us": 363.49,
+      "security_public_p50_us": 366.23490000000004,
+      "process_p50_us": [
+        337.0182272727273,
+        337.535,
+        357.62,
+        346.1227272727273,
+        347.04761904761904
+      ],
+      "best_measured_strict_competitor": "cpython",
+      "competitor_p50_us": 2016.6,
+      "competitor_p95_batch_us": 2115.1666666666665
+    },
+    {
+      "application": "pdf_cleaner",
+      "size": "large",
+      "backend": "native",
+      "cpython_p50_us": 19220.0,
+      "public_p50_us": 3173.5005,
+      "public_p95_batch_us": 3279.1505,
+      "security_public_p50_us": 3123.699,
+      "process_p50_us": [
+        3173.5005,
+        3196.6505,
+        3185.8005,
+        3163.6,
+        3104.15
+      ],
+      "best_measured_strict_competitor": "cpython",
+      "competitor_p50_us": 19220.0,
+      "competitor_p95_batch_us": 20581.801
+    },
+    {
+      "application": "quant_backtest",
+      "size": "0",
+      "backend": "native",
+      "cpython_p50_us": 0.0765,
+      "public_p50_us": 12.487915407854986,
+      "public_p95_batch_us": 15.108695652173914,
+      "security_public_p50_us": 11.3878612716763,
+      "process_p50_us": [
+        12.014120588235293,
+        11.990332326283987,
+        14.835507246376812,
+        12.893167701863355,
+        12.487915407854986
+      ],
+      "best_measured_strict_competitor": "cpython",
+      "competitor_p50_us": 0.0765,
+      "competitor_p95_batch_us": 0.09820000000000001
+    },
+    {
+      "application": "quant_backtest",
+      "size": "100",
+      "backend": "native",
+      "cpython_p50_us": 23.104024767801857,
+      "public_p50_us": 12.338235294117647,
+      "public_p95_batch_us": 16.159160305343512,
+      "security_public_p50_us": 11.649019607843139,
+      "process_p50_us": [
+        12.116715542521993,
+        11.738168639053255,
+        16.042366412213738,
+        12.338235294117647,
+        12.427492447129909
+      ],
+      "best_measured_strict_competitor": "manual_cpp",
+      "competitor_p50_us": 0.28145,
+      "competitor_p95_batch_us": 0.38230000000000003
+    },
+    {
+      "application": "quant_backtest",
+      "size": "10000",
+      "backend": "native",
+      "cpython_p50_us": 2512.0666666666666,
+      "public_p50_us": 43.292561983471074,
+      "public_p95_batch_us": 72.91098901098901,
+      "security_public_p50_us": 42.23145161290323,
+      "process_p50_us": [
+        41.3705,
+        42.971675000000005,
+        65.81759340659342,
+        47.87392173913043,
+        43.292561983471074
+      ],
+      "best_measured_strict_competitor": "numba",
+      "competitor_p50_us": 28.732828282828283,
+      "competitor_p95_batch_us": 38.274
+    },
+    {
+      "application": "quant_backtest",
+      "size": "100000",
+      "backend": "native",
+      "cpython_p50_us": 24166.3,
+      "public_p50_us": 398.4053157894737,
+      "public_p95_batch_us": 454.01764705882357,
+      "security_public_p50_us": 410.34444444444443,
+      "process_p50_us": [
+        398.4053157894737,
+        396.43163157894736,
+        449.08235294117645,
+        409.15,
+        397.4842105263158
+      ],
+      "best_measured_strict_competitor": "numba",
+      "competitor_p50_us": 370.8095238095238,
+      "competitor_p95_batch_us": 395.83004999999997
+    },
+    {
+      "application": "rag_chunker",
+      "size": "small",
+      "backend": "python_fallback_slower",
+      "cpython_p50_us": 3.7039759939984997,
+      "public_p50_us": 11.42458100558659,
+      "public_p95_batch_us": 13.267575757575758,
+      "security_public_p50_us": 11.130555555555555,
+      "process_p50_us": [
+        11.628862973760933,
+        11.555151515151517,
+        11.384078212290502,
+        11.34792243767313,
+        11.42458100558659
+      ],
+      "best_measured_strict_competitor": "cpython",
+      "competitor_p50_us": 3.7039759939984997,
+      "competitor_p95_batch_us": 3.8587396849212303
+    },
+    {
+      "application": "rag_chunker",
+      "size": "medium",
+      "backend": "python_fallback_slower",
+      "cpython_p50_us": 21.563276363636362,
+      "public_p50_us": 30.653846153846153,
+      "public_p95_batch_us": 32.144505494505495,
+      "security_public_p50_us": 32.30263157894737,
+      "process_p50_us": [
+        31.43799441340782,
+        30.653846153846153,
+        30.39728260869565,
+        30.917177914110432,
+        30.56923076923077
+      ],
+      "best_measured_strict_competitor": "cpython",
+      "competitor_p50_us": 21.563276363636362,
+      "competitor_p95_batch_us": 22.195555555555554
+    },
+    {
+      "application": "rag_chunker",
+      "size": "large",
+      "backend": "python_fallback_slower",
+      "cpython_p50_us": 137.76206896551724,
+      "public_p50_us": 145.86511627906978,
+      "public_p95_batch_us": 154.0157894736842,
+      "security_public_p50_us": 170.6102564102564,
+      "process_p50_us": [
+        148.20002272727274,
+        143.69024390243902,
+        143.59736842105264,
+        149.3464285714286,
+        145.86511627906978
+      ],
+      "best_measured_strict_competitor": "cpython",
+      "competitor_p50_us": 137.76206896551724,
+      "competitor_p95_batch_us": 147.16206896551725
+    },
+    {
+      "application": "ocr_matcher",
+      "size": "small",
+      "backend": "python_fallback_slower",
+      "cpython_p50_us": 103.76754545454546,
+      "public_p50_us": 112.4554,
+      "public_p95_batch_us": 137.88478260869564,
+      "security_public_p50_us": 110.74153846153847,
+      "process_p50_us": [
+        112.4554,
+        114.68181818181817,
+        111.16766176470588,
+        111.9454393939394,
+        135.71086956521737
+      ],
+      "best_measured_strict_competitor": "rapidfuzz",
+      "competitor_p50_us": 4.8773818027210885,
+      "competitor_p95_batch_us": 6.055075897435898
+    },
+    {
+      "application": "ocr_matcher",
+      "size": "medium",
+      "backend": "python_fallback_slower",
+      "cpython_p50_us": 1003.275,
+      "public_p50_us": 1022.8284285714285,
+      "public_p95_batch_us": 1256.5,
+      "security_public_p50_us": 1020.2285714285715,
+      "process_p50_us": [
+        1010.5715714285715,
+        1011.1141428571428,
+        1047.6858571428572,
+        1022.8284285714285,
+        1244.0
+      ],
+      "best_measured_strict_competitor": "rapidfuzz",
+      "competitor_p50_us": 39.63177604166666,
+      "competitor_p95_batch_us": 85.35723684210527
+    },
+    {
+      "application": "ocr_matcher",
+      "size": "large",
+      "backend": "python_fallback_slower",
+      "cpython_p50_us": 1677.62525,
+      "public_p50_us": 1699.20025,
+      "public_p95_batch_us": 2180.033,
+      "security_public_p50_us": 1692.55,
+      "process_p50_us": [
+        1699.20025,
+        1689.3,
+        1696.65,
+        1712.02475,
+        2175.2333333333336
+      ],
+      "best_measured_strict_competitor": "rapidfuzz",
+      "competitor_p50_us": 370.6,
+      "competitor_p95_batch_us": 501.2333333333333
+    },
+    {
+      "application": "geo_distance",
+      "size": "100",
+      "backend": "python_fallback_slower",
+      "cpython_p50_us": 57.14852205882353,
+      "public_p50_us": 66.1989898989899,
+      "public_p95_batch_us": 69.30097087378641,
+      "security_public_p50_us": 65.233,
+      "process_p50_us": [
+        63.20273636363637,
+        66.94854368932039,
+        66.61619047619047,
+        65.65232710280374,
+        66.1989898989899
+      ],
+      "best_measured_strict_competitor": "manual_cpp",
+      "competitor_p50_us": 7.149532710280374,
+      "competitor_p95_batch_us": 7.315680166147455
+    },
+    {
+      "application": "geo_distance",
+      "size": "1000",
+      "backend": "python_fallback_slower",
+      "cpython_p50_us": 599.2915,
+      "public_p50_us": 631.2691538461539,
+      "public_p95_batch_us": 683.9081666666666,
+      "security_public_p50_us": 693.590909090909,
+      "process_p50_us": [
+        632.7250833333334,
+        631.2691538461539,
+        617.8333333333334,
+        674.88325,
+        607.3307692307692
+      ],
+      "best_measured_strict_competitor": "manual_cpp",
+      "competitor_p50_us": 69.16347826086957,
+      "competitor_p95_batch_us": 84.62339361702128
+    },
+    {
+      "application": "geo_distance",
+      "size": "10000",
+      "backend": "python_fallback_slower",
+      "cpython_p50_us": 6366.0,
+      "public_p50_us": 6284.801,
+      "public_p95_batch_us": 6565.1,
+      "security_public_p50_us": 6319.4,
+      "process_p50_us": [
+        6251.001,
+        6339.7,
+        6284.801,
+        6474.499,
+        6079.5
+      ],
+      "best_measured_strict_competitor": "manual_cpp",
+      "competitor_p50_us": 684.1634545454546,
+      "competitor_p95_batch_us": 751.01
+    },
+    {
+      "application": "ar_spatial",
+      "size": "100",
+      "backend": "python_fallback_slower",
+      "cpython_p50_us": 25.854710144927537,
+      "public_p50_us": 38.67607361963191,
+      "public_p95_batch_us": 42.30733333333333,
+      "security_public_p50_us": 38.24107738095238,
+      "process_p50_us": [
+        40.78089171974523,
+        37.51560693641619,
+        38.67607361963191,
+        41.797333333333334,
+        37.56058823529412
+      ],
+      "best_measured_strict_competitor": "manual_cpp",
+      "competitor_p50_us": 2.1384000000000003,
+      "competitor_p95_batch_us": 2.3036999999999996
+    },
+    {
+      "application": "ar_spatial",
+      "size": "1000",
+      "backend": "python_fallback_slower",
+      "cpython_p50_us": 271.348275862069,
+      "public_p50_us": 286.1740740740741,
+      "public_p95_batch_us": 318.05,
+      "security_public_p50_us": 305.4808076923077,
+      "process_p50_us": [
+        284.13076923076926,
+        286.1740740740741,
+        284.4518888888889,
+        290.10380769230767,
+        294.74086363636366
+      ],
+      "best_measured_strict_competitor": "manual_cpp",
+      "competitor_p50_us": 20.484864864864864,
+      "competitor_p95_batch_us": 31.053714285714285
+    },
+    {
+      "application": "ar_spatial",
+      "size": "10000",
+      "backend": "python_fallback_slower",
+      "cpython_p50_us": 2799.55,
+      "public_p50_us": 2992.15,
+      "public_p95_batch_us": 4100.7,
+      "security_public_p50_us": 2879.652,
+      "process_p50_us": [
+        2770.15,
+        2820.75,
+        4009.9,
+        2992.15,
+        3186.65
+      ],
+      "best_measured_strict_competitor": "manual_cpp",
+      "competitor_p50_us": 208.9157894736842,
+      "competitor_p95_batch_us": 228.63335897435897
+    }
+  ],
+  "all_engines": [
+    {
+      "application": "ar_spatial",
+      "size": "100",
+      "label": "candidate",
+      "engine": "cpython",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "cpython"
+      ],
+      "p50_us": 25.854710144927537,
+      "p95_batch_us": 28.32330827067669,
+      "process_p50_us": [
+        27.35916030534351,
+        24.952758620689657,
+        25.854710144927537,
+        28.08796992481203,
+        24.895973154362416
+      ],
+      "min_process_p50_us": 24.895973154362416,
+      "max_process_p50_us": 28.08796992481203,
+      "python_visible_peak_bytes": [
+        424,
+        424,
+        424,
+        424,
+        424
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "ar_spatial",
+      "size": "100",
+      "label": "candidate",
+      "engine": "forced_public",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "native"
+      ],
+      "p50_us": 59.8704081632653,
+      "p95_batch_us": 67.7021978021978,
+      "process_p50_us": [
+        66.05164835164835,
+        59.44,
+        59.69174311926605,
+        65.76181818181817,
+        59.8704081632653
+      ],
+      "min_process_p50_us": 59.44,
+      "max_process_p50_us": 66.05164835164835,
+      "python_visible_peak_bytes": [
+        4726,
+        4954,
+        4726,
+        4669,
+        4954
+      ],
+      "native_calls": 4132,
+      "fallback_calls": 0
+    },
+    {
+      "application": "ar_spatial",
+      "size": "100",
+      "label": "candidate",
+      "engine": "hotloop_public",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "python_fallback_slower"
+      ],
+      "p50_us": 38.67607361963191,
+      "p95_batch_us": 42.30733333333333,
+      "process_p50_us": [
+        40.78089171974523,
+        37.51560693641619,
+        38.67607361963191,
+        41.797333333333334,
+        37.56058823529412
+      ],
+      "min_process_p50_us": 37.51560693641619,
+      "max_process_p50_us": 41.797333333333334,
+      "python_visible_peak_bytes": [
+        1777,
+        1777,
+        1777,
+        1777,
+        1777
+      ],
+      "native_calls": 0,
+      "fallback_calls": 7327
+    },
+    {
+      "application": "ar_spatial",
+      "size": "100",
+      "label": "candidate",
+      "engine": "manual_cpp",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "manual_cpp"
+      ],
+      "p50_us": 2.1384000000000003,
+      "p95_batch_us": 2.3036999999999996,
+      "process_p50_us": [
+        2.1924669350201267,
+        2.1226,
+        2.1384000000000003,
+        2.2687,
+        2.1357
+      ],
+      "min_process_p50_us": 2.1226,
+      "max_process_p50_us": 2.2687,
+      "python_visible_peak_bytes": [
+        144,
+        144,
+        144,
+        144,
+        144
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "ar_spatial",
+      "size": "100",
+      "label": "candidate",
+      "engine": "numba",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "numba"
+      ],
+      "p50_us": 223.946875,
+      "p95_batch_us": 241.2235294117647,
+      "process_p50_us": [
+        228.13235294117646,
+        219.875,
+        222.63888888888889,
+        236.10588235294117,
+        223.946875
+      ],
+      "min_process_p50_us": 219.875,
+      "max_process_p50_us": 236.10588235294117,
+      "python_visible_peak_bytes": [
+        3430,
+        3465,
+        3465,
+        3465,
+        3465
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "ar_spatial",
+      "size": "100",
+      "label": "candidate",
+      "engine": "numpy",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "numpy"
+      ],
+      "p50_us": 50.72871287128713,
+      "p95_batch_us": 52.84742268041237,
+      "process_p50_us": [
+        50.40338983050847,
+        50.72871287128713,
+        48.946078431372555,
+        51.955670103092785,
+        50.75205479452055
+      ],
+      "min_process_p50_us": 48.946078431372555,
+      "max_process_p50_us": 51.955670103092785,
+      "python_visible_peak_bytes": [
+        16128,
+        16128,
+        16128,
+        16128,
+        16128
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "ar_spatial",
+      "size": "100",
+      "label": "candidate",
+      "engine": "private_entry",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "private_entry"
+      ],
+      "p50_us": 47.40855263157895,
+      "p95_batch_us": 51.265125,
+      "process_p50_us": [
+        49.92377622377622,
+        47.04266666666666,
+        46.67375886524823,
+        49.813380281690144,
+        47.40855263157895
+      ],
+      "min_process_p50_us": 46.67375886524823,
+      "max_process_p50_us": 49.92377622377622,
+      "python_visible_peak_bytes": [
+        3501,
+        3501,
+        3387,
+        3615,
+        3330
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "ar_spatial",
+      "size": "100",
+      "label": "security",
+      "engine": "cpython",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "cpython"
+      ],
+      "p50_us": 25.597183098591547,
+      "p95_batch_us": 27.561678832116787,
+      "process_p50_us": [
+        24.722389830508472,
+        27.36642335766423,
+        25.534498257839722,
+        25.611929824561404,
+        25.597183098591547
+      ],
+      "min_process_p50_us": 24.722389830508472,
+      "max_process_p50_us": 27.36642335766423,
+      "python_visible_peak_bytes": [
+        424,
+        424,
+        424,
+        424,
+        424
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "ar_spatial",
+      "size": "100",
+      "label": "security",
+      "engine": "forced_public",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "native"
+      ],
+      "p50_us": 60.78362068965517,
+      "p95_batch_us": 68.68217821782179,
+      "process_p50_us": [
+        57.412754237288134,
+        67.51881188118811,
+        57.78495575221239,
+        60.82347826086957,
+        60.78362068965517
+      ],
+      "min_process_p50_us": 57.412754237288134,
+      "max_process_p50_us": 67.51881188118811,
+      "python_visible_peak_bytes": [
+        2666,
+        2666,
+        2609,
+        2666,
+        2666
+      ],
+      "native_calls": 5077,
+      "fallback_calls": 0
+    },
+    {
+      "application": "ar_spatial",
+      "size": "100",
+      "label": "security",
+      "engine": "hotloop_public",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "python_fallback_slower"
+      ],
+      "p50_us": 38.24107738095238,
+      "p95_batch_us": 43.70135099337748,
+      "process_p50_us": [
+        37.284794701986755,
+        41.30563380281691,
+        38.24107738095238,
+        38.62559523809524,
+        37.26342857142857
+      ],
+      "min_process_p50_us": 37.26342857142857,
+      "max_process_p50_us": 41.30563380281691,
+      "python_visible_peak_bytes": [
+        1769,
+        1769,
+        1769,
+        1769,
+        1769
+      ],
+      "native_calls": 0,
+      "fallback_calls": 7246
+    },
+    {
+      "application": "ar_spatial",
+      "size": "100",
+      "label": "security",
+      "engine": "manual_cpp",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "manual_cpp"
+      ],
+      "p50_us": 2.2756,
+      "p95_batch_us": 2.35555,
+      "process_p50_us": [
+        2.129451,
+        2.34565,
+        2.12575,
+        2.2756,
+        2.283956296722254
+      ],
+      "min_process_p50_us": 2.12575,
+      "max_process_p50_us": 2.34565,
+      "python_visible_peak_bytes": [
+        144,
+        144,
+        144,
+        144,
+        144
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "ar_spatial",
+      "size": "100",
+      "label": "security",
+      "engine": "numba",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "numba"
+      ],
+      "p50_us": 223.46285714285713,
+      "p95_batch_us": 245.88666666666666,
+      "process_p50_us": [
+        220.5834722222222,
+        241.29333333333335,
+        223.46285714285713,
+        237.06,
+        220.06111111111113
+      ],
+      "min_process_p50_us": 220.06111111111113,
+      "max_process_p50_us": 241.29333333333335,
+      "python_visible_peak_bytes": [
+        3465,
+        3706,
+        3418,
+        3465,
+        3418
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "ar_spatial",
+      "size": "100",
+      "label": "security",
+      "engine": "numpy",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "numpy"
+      ],
+      "p50_us": 49.885858585858585,
+      "p95_batch_us": 64.275,
+      "process_p50_us": [
+        48.636922330097086,
+        51.54526315789474,
+        48.68648648648649,
+        49.885858585858585,
+        63.21973684210526
+      ],
+      "min_process_p50_us": 48.636922330097086,
+      "max_process_p50_us": 63.21973684210526,
+      "python_visible_peak_bytes": [
+        16128,
+        16128,
+        16128,
+        16128,
+        16128
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "ar_spatial",
+      "size": "100",
+      "label": "security",
+      "engine": "private_entry",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "private_entry"
+      ],
+      "p50_us": 46.65974025974026,
+      "p95_batch_us": 51.99225352112676,
+      "process_p50_us": [
+        45.58448648648648,
+        51.8345,
+        45.94521739130435,
+        46.65974025974026,
+        46.78684210526316
+      ],
+      "min_process_p50_us": 45.58448648648648,
+      "max_process_p50_us": 51.8345,
+      "python_visible_peak_bytes": [
+        1278,
+        1278,
+        1335,
+        1335,
+        1335
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "ar_spatial",
+      "size": "1000",
+      "label": "candidate",
+      "engine": "cpython",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "cpython"
+      ],
+      "p50_us": 271.348275862069,
+      "p95_batch_us": 290.24615384615385,
+      "process_p50_us": [
+        265.80333333333334,
+        271.348275862069,
+        269.1607142857143,
+        273.4307692307693,
+        280.61071428571427
+      ],
+      "min_process_p50_us": 265.80333333333334,
+      "max_process_p50_us": 280.61071428571427,
+      "python_visible_peak_bytes": [
+        548,
+        548,
+        548,
+        548,
+        548
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "ar_spatial",
+      "size": "1000",
+      "label": "candidate",
+      "engine": "forced_public",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "native"
+      ],
+      "p50_us": 460.39375,
+      "p95_batch_us": 489.9142857142857,
+      "process_p50_us": [
+        444.6412352941177,
+        447.0058823529412,
+        475.05,
+        460.39375,
+        464.9529411764706
+      ],
+      "min_process_p50_us": 444.6412352941177,
+      "max_process_p50_us": 475.05,
+      "python_visible_peak_bytes": [
+        26440,
+        26554,
+        26440,
+        26269,
+        26269
+      ],
+      "native_calls": 739,
+      "fallback_calls": 0
+    },
+    {
+      "application": "ar_spatial",
+      "size": "1000",
+      "label": "candidate",
+      "engine": "hotloop_public",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "python_fallback_slower"
+      ],
+      "p50_us": 286.1740740740741,
+      "p95_batch_us": 318.05,
+      "process_p50_us": [
+        284.13076923076926,
+        286.1740740740741,
+        284.4518888888889,
+        290.10380769230767,
+        294.74086363636366
+      ],
+      "min_process_p50_us": 284.13076923076926,
+      "max_process_p50_us": 294.74086363636366,
+      "python_visible_peak_bytes": [
+        1847,
+        1847,
+        1847,
+        1847,
+        1847
+      ],
+      "native_calls": 0,
+      "fallback_calls": 1162
+    },
+    {
+      "application": "ar_spatial",
+      "size": "1000",
+      "label": "candidate",
+      "engine": "manual_cpp",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "manual_cpp"
+      ],
+      "p50_us": 20.484864864864864,
+      "p95_batch_us": 31.053714285714285,
+      "process_p50_us": [
+        19.7782722513089,
+        20.484864864864864,
+        23.7474358974359,
+        19.776084239130437,
+        22.808568571428573
+      ],
+      "min_process_p50_us": 19.776084239130437,
+      "max_process_p50_us": 23.7474358974359,
+      "python_visible_peak_bytes": [
+        144,
+        144,
+        144,
+        144,
+        144
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "ar_spatial",
+      "size": "1000",
+      "label": "candidate",
+      "engine": "numba",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "numba"
+      ],
+      "p50_us": 2221.1666666666665,
+      "p95_batch_us": 2551.967,
+      "process_p50_us": [
+        2167.6666666666665,
+        2210.5333333333333,
+        2502.0,
+        2232.3666666666663,
+        2221.1666666666665
+      ],
+      "min_process_p50_us": 2167.6666666666665,
+      "max_process_p50_us": 2502.0,
+      "python_visible_peak_bytes": [
+        25077,
+        25018,
+        25018,
+        25065,
+        25065
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "ar_spatial",
+      "size": "1000",
+      "label": "candidate",
+      "engine": "numpy",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "numpy"
+      ],
+      "p50_us": 237.85454545454544,
+      "p95_batch_us": 279.1347826086957,
+      "process_p50_us": [
+        227.9875,
+        237.85454545454544,
+        272.6,
+        224.5448275862069,
+        272.61245833333334
+      ],
+      "min_process_p50_us": 224.5448275862069,
+      "max_process_p50_us": 272.61245833333334,
+      "python_visible_peak_bytes": [
+        131356,
+        131356,
+        131356,
+        131356,
+        131356
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "ar_spatial",
+      "size": "1000",
+      "label": "candidate",
+      "engine": "private_entry",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "private_entry"
+      ],
+      "p50_us": 444.65,
+      "p95_batch_us": 504.35,
+      "process_p50_us": [
+        429.78829411764707,
+        444.65,
+        497.86875,
+        442.4055,
+        450.88817647058823
+      ],
+      "min_process_p50_us": 429.78829411764707,
+      "max_process_p50_us": 497.86875,
+      "python_visible_peak_bytes": [
+        25044,
+        25044,
+        24930,
+        24930,
+        24987
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "ar_spatial",
+      "size": "1000",
+      "label": "security",
+      "engine": "cpython",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "cpython"
+      ],
+      "p50_us": 281.0615769230769,
+      "p95_batch_us": 321.59615384615387,
+      "process_p50_us": [
+        266.5346551724138,
+        293.7653846153846,
+        281.0615769230769,
+        275.0448275862069,
+        315.89996
+      ],
+      "min_process_p50_us": 266.5346551724138,
+      "max_process_p50_us": 315.89996,
+      "python_visible_peak_bytes": [
+        548,
+        548,
+        548,
+        548,
+        548
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "ar_spatial",
+      "size": "1000",
+      "label": "security",
+      "engine": "forced_public",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "native"
+      ],
+      "p50_us": 484.4,
+      "p95_batch_us": 510.3,
+      "process_p50_us": [
+        452.0708823529412,
+        487.2285714285714,
+        501.67857142857144,
+        457.8,
+        484.4
+      ],
+      "min_process_p50_us": 452.0708823529412,
+      "max_process_p50_us": 501.67857142857144,
+      "python_visible_peak_bytes": [
+        9809,
+        9866,
+        9866,
+        9866,
+        9866
+      ],
+      "native_calls": 685,
+      "fallback_calls": 0
+    },
+    {
+      "application": "ar_spatial",
+      "size": "1000",
+      "label": "security",
+      "engine": "hotloop_public",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "python_fallback_slower"
+      ],
+      "p50_us": 305.4808076923077,
+      "p95_batch_us": 327.31666666666666,
+      "process_p50_us": [
+        282.80018518518517,
+        311.1304347826087,
+        305.4808076923077,
+        290.2269230769231,
+        320.6416666666667
+      ],
+      "min_process_p50_us": 282.80018518518517,
+      "max_process_p50_us": 320.6416666666667,
+      "python_visible_peak_bytes": [
+        1839,
+        1839,
+        1839,
+        1839,
+        1839
+      ],
+      "native_calls": 0,
+      "fallback_calls": 1144
+    },
+    {
+      "application": "ar_spatial",
+      "size": "1000",
+      "label": "security",
+      "engine": "manual_cpp",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "manual_cpp"
+      ],
+      "p50_us": 21.172343575418996,
+      "p95_batch_us": 23.483336666666666,
+      "process_p50_us": [
+        19.827408219178082,
+        21.47800586510264,
+        23.384336666666666,
+        20.73201133144476,
+        21.172343575418996
+      ],
+      "min_process_p50_us": 19.827408219178082,
+      "max_process_p50_us": 23.384336666666666,
+      "python_visible_peak_bytes": [
+        144,
+        144,
+        144,
+        144,
+        144
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "ar_spatial",
+      "size": "1000",
+      "label": "security",
+      "engine": "numba",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "numba"
+      ],
+      "p50_us": 2290.2666666666664,
+      "p95_batch_us": 2910.7505,
+      "process_p50_us": [
+        2148.0346666666665,
+        2279.8,
+        2667.2,
+        2290.2666666666664,
+        2298.3
+      ],
+      "min_process_p50_us": 2148.0346666666665,
+      "max_process_p50_us": 2667.2,
+      "python_visible_peak_bytes": [
+        25065,
+        25353,
+        25018,
+        25065,
+        25018
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "ar_spatial",
+      "size": "1000",
+      "label": "security",
+      "engine": "numpy",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "numpy"
+      ],
+      "p50_us": 234.94193548387096,
+      "p95_batch_us": 261.2962962962963,
+      "process_p50_us": [
+        222.01890625,
+        238.50666666666666,
+        257.75559259259256,
+        228.62413793103448,
+        234.94193548387096
+      ],
+      "min_process_p50_us": 222.01890625,
+      "max_process_p50_us": 257.75559259259256,
+      "python_visible_peak_bytes": [
+        131356,
+        131356,
+        131356,
+        131356,
+        131356
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "ar_spatial",
+      "size": "1000",
+      "label": "security",
+      "engine": "private_entry",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "private_entry"
+      ],
+      "p50_us": 467.035294117647,
+      "p95_batch_us": 536.4077692307693,
+      "process_p50_us": [
+        432.40588888888885,
+        474.65,
+        522.2461538461539,
+        463.77777777777777,
+        467.035294117647
+      ],
+      "min_process_p50_us": 432.40588888888885,
+      "max_process_p50_us": 522.2461538461539,
+      "python_visible_peak_bytes": [
+        8421,
+        8535,
+        8535,
+        8535,
+        8535
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "ar_spatial",
+      "size": "10000",
+      "label": "candidate",
+      "engine": "cpython",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "cpython"
+      ],
+      "p50_us": 2799.55,
+      "p95_batch_us": 3497.1995,
+      "process_p50_us": [
+        2738.0,
+        2799.55,
+        3404.85,
+        2734.9,
+        3381.7
+      ],
+      "min_process_p50_us": 2734.9,
+      "max_process_p50_us": 3404.85,
+      "python_visible_peak_bytes": [
+        548,
+        548,
+        548,
+        548,
+        548
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "ar_spatial",
+      "size": "10000",
+      "label": "candidate",
+      "engine": "forced_public",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "native"
+      ],
+      "p50_us": 4328.5,
+      "p95_batch_us": 6067.101,
+      "process_p50_us": [
+        4312.3,
+        4328.5,
+        5806.9,
+        4325.6,
+        5075.0
+      ],
+      "min_process_p50_us": 4312.3,
+      "max_process_p50_us": 5806.9,
+      "python_visible_peak_bytes": [
+        242383,
+        242440,
+        242440,
+        242269,
+        242269
+      ],
+      "native_calls": 55,
+      "fallback_calls": 0
+    },
+    {
+      "application": "ar_spatial",
+      "size": "10000",
+      "label": "candidate",
+      "engine": "hotloop_public",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "python_fallback_slower"
+      ],
+      "p50_us": 2992.15,
+      "p95_batch_us": 4100.7,
+      "process_p50_us": [
+        2770.15,
+        2820.75,
+        4009.9,
+        2992.15,
+        3186.65
+      ],
+      "min_process_p50_us": 2770.15,
+      "max_process_p50_us": 4009.9,
+      "python_visible_peak_bytes": [
+        1847,
+        1847,
+        1847,
+        1847,
+        1847
+      ],
+      "native_calls": 0,
+      "fallback_calls": 91
+    },
+    {
+      "application": "ar_spatial",
+      "size": "10000",
+      "label": "candidate",
+      "engine": "manual_cpp",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "manual_cpp"
+      ],
+      "p50_us": 208.9157894736842,
+      "p95_batch_us": 228.63335897435897,
+      "process_p50_us": [
+        194.22053846153847,
+        193.96486486486486,
+        208.9157894736842,
+        213.4264705882353,
+        212.87425714285715
+      ],
+      "min_process_p50_us": 193.96486486486486,
+      "max_process_p50_us": 213.4264705882353,
+      "python_visible_peak_bytes": [
+        144,
+        144,
+        144,
+        144,
+        144
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "ar_spatial",
+      "size": "10000",
+      "label": "candidate",
+      "engine": "numba",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "numba"
+      ],
+      "p50_us": 21648.4,
+      "p95_batch_us": 25544.899,
+      "process_p50_us": [
+        21626.401,
+        21475.7,
+        23833.701,
+        21648.4,
+        24368.799
+      ],
+      "min_process_p50_us": 21475.7,
+      "max_process_p50_us": 24368.799,
+      "python_visible_peak_bytes": [
+        241077,
+        241065,
+        241065,
+        241065,
+        241018
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "ar_spatial",
+      "size": "10000",
+      "label": "candidate",
+      "engine": "numpy",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "numpy"
+      ],
+      "p50_us": 2118.8333333333335,
+      "p95_batch_us": 3109.7,
+      "process_p50_us": [
+        1952.3003333333334,
+        2319.4,
+        2047.8333333333333,
+        2742.0666666666666,
+        2118.8333333333335
+      ],
+      "min_process_p50_us": 1952.3003333333334,
+      "max_process_p50_us": 2742.0666666666666,
+      "python_visible_peak_bytes": [
+        1123252,
+        1123252,
+        1123252,
+        1123252,
+        1123252
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "ar_spatial",
+      "size": "10000",
+      "label": "candidate",
+      "engine": "private_entry",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "private_entry"
+      ],
+      "p50_us": 4330.1,
+      "p95_batch_us": 7486.2,
+      "process_p50_us": [
+        4303.7,
+        4327.1,
+        5263.2,
+        4330.1,
+        6355.2
+      ],
+      "min_process_p50_us": 4303.7,
+      "max_process_p50_us": 6355.2,
+      "python_visible_peak_bytes": [
+        240987,
+        241044,
+        240987,
+        240930,
+        240873
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "ar_spatial",
+      "size": "10000",
+      "label": "security",
+      "engine": "cpython",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "cpython"
+      ],
+      "p50_us": 2839.2,
+      "p95_batch_us": 3133.3005,
+      "process_p50_us": [
+        2740.902,
+        3003.7,
+        3021.5505,
+        2839.2,
+        2812.5
+      ],
+      "min_process_p50_us": 2740.902,
+      "max_process_p50_us": 3021.5505,
+      "python_visible_peak_bytes": [
+        548,
+        548,
+        548,
+        548,
+        548
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "ar_spatial",
+      "size": "10000",
+      "label": "security",
+      "engine": "forced_public",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "native"
+      ],
+      "p50_us": 4595.601,
+      "p95_batch_us": 4952.8,
+      "process_p50_us": [
+        4683.803,
+        4471.7,
+        4595.601,
+        4921.9,
+        4292.7
+      ],
+      "min_process_p50_us": 4292.7,
+      "max_process_p50_us": 4921.9,
+      "python_visible_peak_bytes": [
+        81866,
+        81809,
+        81809,
+        81866,
+        81866
+      ],
+      "native_calls": 55,
+      "fallback_calls": 0
+    },
+    {
+      "application": "ar_spatial",
+      "size": "10000",
+      "label": "security",
+      "engine": "hotloop_public",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "python_fallback_slower"
+      ],
+      "p50_us": 2879.652,
+      "p95_batch_us": 3083.7505,
+      "process_p50_us": [
+        2879.652,
+        2869.7,
+        2966.55,
+        3010.85,
+        2866.8995
+      ],
+      "min_process_p50_us": 2866.8995,
+      "max_process_p50_us": 3010.85,
+      "python_visible_peak_bytes": [
+        1839,
+        1839,
+        1839,
+        1839,
+        1839
+      ],
+      "native_calls": 0,
+      "fallback_calls": 100
+    },
+    {
+      "application": "ar_spatial",
+      "size": "10000",
+      "label": "security",
+      "engine": "manual_cpp",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "manual_cpp"
+      ],
+      "p50_us": 201.42371052631577,
+      "p95_batch_us": 212.81318421052632,
+      "process_p50_us": [
+        206.1314285714286,
+        206.04722222222222,
+        201.42371052631577,
+        200.8435641025641,
+        199.68784848484847
+      ],
+      "min_process_p50_us": 199.68784848484847,
+      "max_process_p50_us": 206.1314285714286,
+      "python_visible_peak_bytes": [
+        144,
+        144,
+        144,
+        144,
+        144
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "ar_spatial",
+      "size": "10000",
+      "label": "security",
+      "engine": "numba",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "numba"
+      ],
+      "p50_us": 22874.002,
+      "p95_batch_us": 24161.0,
+      "process_p50_us": [
+        22698.715,
+        23696.6,
+        22874.002,
+        22978.699,
+        21570.6
+      ],
+      "min_process_p50_us": 21570.6,
+      "max_process_p50_us": 23696.6,
+      "python_visible_peak_bytes": [
+        241065,
+        241353,
+        241065,
+        241065,
+        241065
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "ar_spatial",
+      "size": "10000",
+      "label": "security",
+      "engine": "numpy",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "numpy"
+      ],
+      "p50_us": 1978.2333333333333,
+      "p95_batch_us": 2191.8666666666663,
+      "process_p50_us": [
+        1975.0,
+        2121.5333333333333,
+        1978.2333333333333,
+        1998.1996666666666,
+        1940.1
+      ],
+      "min_process_p50_us": 1940.1,
+      "max_process_p50_us": 2121.5333333333333,
+      "python_visible_peak_bytes": [
+        1123252,
+        1123252,
+        1123252,
+        1123252,
+        1123252
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "ar_spatial",
+      "size": "10000",
+      "label": "security",
+      "engine": "private_entry",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "private_entry"
+      ],
+      "p50_us": 4413.1,
+      "p95_batch_us": 4975.2,
+      "process_p50_us": [
+        4549.903,
+        4413.1,
+        4404.801,
+        4694.1,
+        4348.3
+      ],
+      "min_process_p50_us": 4348.3,
+      "max_process_p50_us": 4694.1,
+      "python_visible_peak_bytes": [
+        80478,
+        80535,
+        80421,
+        80535,
+        80535
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "geo_distance",
+      "size": "100",
+      "label": "candidate",
+      "engine": "cpython",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "cpython"
+      ],
+      "p50_us": 57.14852205882353,
+      "p95_batch_us": 60.658208955223884,
+      "process_p50_us": [
+        54.83972340425532,
+        60.470888059701494,
+        56.94242424242424,
+        57.14852205882353,
+        58.45970149253731
+      ],
+      "min_process_p50_us": 54.83972340425532,
+      "max_process_p50_us": 60.470888059701494,
+      "python_visible_peak_bytes": [
+        424,
+        424,
+        424,
+        424,
+        424
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "geo_distance",
+      "size": "100",
+      "label": "candidate",
+      "engine": "forced_public",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "native"
+      ],
+      "p50_us": 43.860707142857144,
+      "p95_batch_us": 46.156692913385825,
+      "process_p50_us": [
+        43.51183870967742,
+        43.85570714285714,
+        45.20944881889764,
+        43.860707142857144,
+        45.1440223880597
+      ],
+      "min_process_p50_us": 43.51183870967742,
+      "max_process_p50_us": 45.20944881889764,
+      "python_visible_peak_bytes": [
+        3469,
+        3469,
+        3469,
+        3469,
+        3469
+      ],
+      "native_calls": 5716,
+      "fallback_calls": 0
+    },
+    {
+      "application": "geo_distance",
+      "size": "100",
+      "label": "candidate",
+      "engine": "hotloop_public",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "python_fallback_slower"
+      ],
+      "p50_us": 66.1989898989899,
+      "p95_batch_us": 69.30097087378641,
+      "process_p50_us": [
+        63.20273636363637,
+        66.94854368932039,
+        66.61619047619047,
+        65.65232710280374,
+        66.1989898989899
+      ],
+      "min_process_p50_us": 63.20273636363637,
+      "max_process_p50_us": 66.94854368932039,
+      "python_visible_peak_bytes": [
+        1684,
+        1684,
+        1684,
+        1684,
+        1684
+      ],
+      "native_calls": 0,
+      "fallback_calls": 4726
+    },
+    {
+      "application": "geo_distance",
+      "size": "100",
+      "label": "candidate",
+      "engine": "manual_cpp",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "manual_cpp"
+      ],
+      "p50_us": 7.149532710280374,
+      "p95_batch_us": 7.315680166147455,
+      "process_p50_us": [
+        6.939825082508251,
+        7.149532710280374,
+        7.184631360332295,
+        6.936335335335335,
+        7.178564102564103
+      ],
+      "min_process_p50_us": 6.936335335335335,
+      "max_process_p50_us": 7.184631360332295,
+      "python_visible_peak_bytes": [
+        24,
+        24,
+        24,
+        24,
+        24
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "geo_distance",
+      "size": "100",
+      "label": "candidate",
+      "engine": "numba",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "numba"
+      ],
+      "p50_us": 154.9039411764706,
+      "p95_batch_us": 160.762,
+      "process_p50_us": [
+        154.9039411764706,
+        152.59807692307695,
+        157.32201999999998,
+        153.88198,
+        157.844
+      ],
+      "min_process_p50_us": 152.59807692307695,
+      "max_process_p50_us": 157.844,
+      "python_visible_peak_bytes": [
+        2598,
+        2718,
+        2383,
+        2430,
+        2430
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "geo_distance",
+      "size": "100",
+      "label": "candidate",
+      "engine": "numpy",
+      "strict_correct": false,
+      "tolerance_correct": true,
+      "routes": [
+        "numpy"
+      ],
+      "p50_us": 39.01269841269841,
+      "p95_batch_us": 41.21666666666666,
+      "process_p50_us": [
+        38.288379844961234,
+        39.66850393700788,
+        39.792561983471074,
+        38.89205555555556,
+        39.01269841269841
+      ],
+      "min_process_p50_us": 38.288379844961234,
+      "max_process_p50_us": 39.792561983471074,
+      "python_visible_peak_bytes": [
+        8536,
+        8536,
+        8536,
+        8536,
+        8536
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "geo_distance",
+      "size": "100",
+      "label": "candidate",
+      "engine": "private_entry",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "private_entry"
+      ],
+      "p50_us": 37.2053,
+      "p95_batch_us": 40.84867724867725,
+      "process_p50_us": [
+        37.2053,
+        37.08888888888889,
+        38.74754098360656,
+        37.133328125,
+        38.0896174863388
+      ],
+      "min_process_p50_us": 37.08888888888889,
+      "max_process_p50_us": 38.74754098360656,
+      "python_visible_peak_bytes": [
+        2238,
+        2238,
+        2238,
+        2238,
+        2238
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "geo_distance",
+      "size": "100",
+      "label": "security",
+      "engine": "cpython",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "cpython"
+      ],
+      "p50_us": 56.85619708029197,
+      "p95_batch_us": 71.08503937007873,
+      "process_p50_us": [
+        67.01968503937007,
+        57.07007299270073,
+        56.363503649635035,
+        56.48539325842697,
+        56.85619708029197
+      ],
+      "min_process_p50_us": 56.363503649635035,
+      "max_process_p50_us": 67.01968503937007,
+      "python_visible_peak_bytes": [
+        424,
+        424,
+        424,
+        424,
+        424
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "geo_distance",
+      "size": "100",
+      "label": "security",
+      "engine": "forced_public",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "native"
+      ],
+      "p50_us": 42.68211258278146,
+      "p95_batch_us": 59.308139534883715,
+      "process_p50_us": [
+        52.64186046511628,
+        47.25636363636364,
+        41.44267515923567,
+        42.68211258278146,
+        41.949666666666666
+      ],
+      "min_process_p50_us": 41.44267515923567,
+      "max_process_p50_us": 52.64186046511628,
+      "python_visible_peak_bytes": [
+        2501,
+        2501,
+        2501,
+        2501,
+        2501
+      ],
+      "native_calls": 5428,
+      "fallback_calls": 0
+    },
+    {
+      "application": "geo_distance",
+      "size": "100",
+      "label": "security",
+      "engine": "hotloop_public",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "python_fallback_slower"
+      ],
+      "p50_us": 65.233,
+      "p95_batch_us": 85.13655913978495,
+      "process_p50_us": [
+        81.38494623655914,
+        71.717,
+        64.85413761467889,
+        65.233,
+        65.13714285714285
+      ],
+      "min_process_p50_us": 64.85413761467889,
+      "max_process_p50_us": 81.38494623655914,
+      "python_visible_peak_bytes": [
+        1676,
+        1676,
+        1676,
+        1676,
+        1676
+      ],
+      "native_calls": 0,
+      "fallback_calls": 4258
+    },
+    {
+      "application": "geo_distance",
+      "size": "100",
+      "label": "security",
+      "engine": "manual_cpp",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "manual_cpp"
+      ],
+      "p50_us": 7.309448598130841,
+      "p95_batch_us": 11.972714078374457,
+      "process_p50_us": [
+        9.794049346879536,
+        7.629151815181518,
+        6.94316210739615,
+        7.309448598130841,
+        7.298358974358974
+      ],
+      "min_process_p50_us": 6.94316210739615,
+      "max_process_p50_us": 9.794049346879536,
+      "python_visible_peak_bytes": [
+        24,
+        24,
+        24,
+        24,
+        24
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "geo_distance",
+      "size": "100",
+      "label": "security",
+      "engine": "numba",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "numba"
+      ],
+      "p50_us": 155.05679545454544,
+      "p95_batch_us": 221.91818181818184,
+      "process_p50_us": [
+        206.61363636363635,
+        174.5025,
+        152.01176470588234,
+        155.05679545454544,
+        152.88823529411766
+      ],
+      "min_process_p50_us": 152.01176470588234,
+      "max_process_p50_us": 206.61363636363635,
+      "python_visible_peak_bytes": [
+        2430,
+        2430,
+        2590,
+        2590,
+        2590
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "geo_distance",
+      "size": "100",
+      "label": "security",
+      "engine": "numpy",
+      "strict_correct": false,
+      "tolerance_correct": true,
+      "routes": [
+        "numpy"
+      ],
+      "p50_us": 41.30598290598291,
+      "p95_batch_us": 76.01958762886598,
+      "process_p50_us": [
+        57.939175257731954,
+        41.30598290598291,
+        38.89586776859504,
+        38.41181102362204,
+        44.61531531531532
+      ],
+      "min_process_p50_us": 38.41181102362204,
+      "max_process_p50_us": 57.939175257731954,
+      "python_visible_peak_bytes": [
+        8536,
+        8536,
+        8536,
+        8536,
+        8536
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "geo_distance",
+      "size": "100",
+      "label": "security",
+      "engine": "private_entry",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "private_entry"
+      ],
+      "p50_us": 36.62536815920398,
+      "p95_batch_us": 66.4639751552795,
+      "process_p50_us": [
+        47.86024844720497,
+        40.605,
+        35.76182795698925,
+        36.62536815920398,
+        35.99264705882353
+      ],
+      "min_process_p50_us": 35.76182795698925,
+      "max_process_p50_us": 47.86024844720497,
+      "python_visible_peak_bytes": [
+        1221,
+        1278,
+        1221,
+        1278,
+        1278
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "geo_distance",
+      "size": "1000",
+      "label": "candidate",
+      "engine": "cpython",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "cpython"
+      ],
+      "p50_us": 599.2915,
+      "p95_batch_us": 624.2545454545455,
+      "process_p50_us": [
+        591.2000769230768,
+        622.9454545454546,
+        609.6923076923077,
+        599.2915,
+        591.1845384615385
+      ],
+      "min_process_p50_us": 591.1845384615385,
+      "max_process_p50_us": 622.9454545454546,
+      "python_visible_peak_bytes": [
+        516,
+        516,
+        516,
+        516,
+        516
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "geo_distance",
+      "size": "1000",
+      "label": "candidate",
+      "engine": "forced_public",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "native"
+      ],
+      "p50_us": 373.12,
+      "p95_batch_us": 474.56464705882354,
+      "process_p50_us": [
+        418.0842631578947,
+        364.43333333333334,
+        366.46315789473687,
+        445.3058235294117,
+        373.12
+      ],
+      "min_process_p50_us": 364.43333333333334,
+      "max_process_p50_us": 445.3058235294117,
+      "python_visible_peak_bytes": [
+        17869,
+        17869,
+        17869,
+        17869,
+        17869
+      ],
+      "native_calls": 874,
+      "fallback_calls": 0
+    },
+    {
+      "application": "geo_distance",
+      "size": "1000",
+      "label": "candidate",
+      "engine": "hotloop_public",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "python_fallback_slower"
+      ],
+      "p50_us": 631.2691538461539,
+      "p95_batch_us": 683.9081666666666,
+      "process_p50_us": [
+        632.7250833333334,
+        631.2691538461539,
+        617.8333333333334,
+        674.88325,
+        607.3307692307692
+      ],
+      "min_process_p50_us": 607.3307692307692,
+      "max_process_p50_us": 674.88325,
+      "python_visible_peak_bytes": [
+        1707,
+        1707,
+        1707,
+        1707,
+        1707
+      ],
+      "native_calls": 0,
+      "fallback_calls": 568
+    },
+    {
+      "application": "geo_distance",
+      "size": "1000",
+      "label": "candidate",
+      "engine": "manual_cpp",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "manual_cpp"
+      ],
+      "p50_us": 69.16347826086957,
+      "p95_batch_us": 84.62339361702128,
+      "process_p50_us": [
+        74.60381904761906,
+        68.44385964912281,
+        69.16347826086957,
+        82.83828723404255,
+        68.79729729729729
+      ],
+      "min_process_p50_us": 68.44385964912281,
+      "max_process_p50_us": 82.83828723404255,
+      "python_visible_peak_bytes": [
+        24,
+        24,
+        24,
+        24,
+        24
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "geo_distance",
+      "size": "1000",
+      "label": "candidate",
+      "engine": "numba",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "numba"
+      ],
+      "p50_us": 1539.0,
+      "p95_batch_us": 1879.89975,
+      "process_p50_us": [
+        1710.32525,
+        1478.5998,
+        1498.1,
+        1846.24975,
+        1539.0
+      ],
+      "min_process_p50_us": 1478.5998,
+      "max_process_p50_us": 1846.24975,
+      "python_visible_peak_bytes": [
+        16838,
+        16830,
+        16830,
+        17118,
+        16830
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "geo_distance",
+      "size": "1000",
+      "label": "candidate",
+      "engine": "numpy",
+      "strict_correct": false,
+      "tolerance_correct": true,
+      "routes": [
+        "numpy"
+      ],
+      "p50_us": 157.4,
+      "p95_batch_us": 186.9432162162162,
+      "process_p50_us": [
+        166.0075,
+        157.4,
+        155.4488888888889,
+        185.95132432432433,
+        155.16666666666666
+      ],
+      "min_process_p50_us": 155.16666666666666,
+      "max_process_p50_us": 185.95132432432433,
+      "python_visible_peak_bytes": [
+        66136,
+        66136,
+        66136,
+        66136,
+        66136
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "geo_distance",
+      "size": "1000",
+      "label": "candidate",
+      "engine": "private_entry",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "private_entry"
+      ],
+      "p50_us": 369.7362727272727,
+      "p95_batch_us": 457.6443888888889,
+      "process_p50_us": [
+        389.98005,
+        356.1363181818182,
+        355.8053157894737,
+        451.3110555555556,
+        369.7362727272727
+      ],
+      "min_process_p50_us": 355.8053157894737,
+      "max_process_p50_us": 451.3110555555556,
+      "python_visible_peak_bytes": [
+        16638,
+        16638,
+        16638,
+        16638,
+        16638
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "geo_distance",
+      "size": "1000",
+      "label": "security",
+      "engine": "cpython",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "cpython"
+      ],
+      "p50_us": 650.4,
+      "p95_batch_us": 863.9117777777777,
+      "process_p50_us": [
+        850.9561111111111,
+        650.4,
+        602.0916666666666,
+        594.0306923076922,
+        709.0
+      ],
+      "min_process_p50_us": 594.0306923076922,
+      "max_process_p50_us": 850.9561111111111,
+      "python_visible_peak_bytes": [
+        516,
+        516,
+        516,
+        516,
+        516
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "geo_distance",
+      "size": "1000",
+      "label": "security",
+      "engine": "forced_public",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "native"
+      ],
+      "p50_us": 416.11111111111114,
+      "p95_batch_us": 469.7065625,
+      "process_p50_us": [
+        459.7753125,
+        374.65714285714284,
+        446.6611111111111,
+        363.3635909090909,
+        416.11111111111114
+      ],
+      "min_process_p50_us": 363.3635909090909,
+      "max_process_p50_us": 459.7753125,
+      "python_visible_peak_bytes": [
+        9701,
+        9701,
+        9701,
+        9701,
+        9701
+      ],
+      "native_calls": 865,
+      "fallback_calls": 0
+    },
+    {
+      "application": "geo_distance",
+      "size": "1000",
+      "label": "security",
+      "engine": "hotloop_public",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "python_fallback_slower"
+      ],
+      "p50_us": 693.590909090909,
+      "p95_batch_us": 819.3783333333333,
+      "process_p50_us": [
+        811.7227777777778,
+        666.7,
+        693.590909090909,
+        604.6076923076922,
+        719.6636363636363
+      ],
+      "min_process_p50_us": 604.6076923076922,
+      "max_process_p50_us": 811.7227777777778,
+      "python_visible_peak_bytes": [
+        1699,
+        1699,
+        1699,
+        1699,
+        1699
+      ],
+      "native_calls": 0,
+      "fallback_calls": 514
+    },
+    {
+      "application": "geo_distance",
+      "size": "1000",
+      "label": "security",
+      "engine": "manual_cpp",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "manual_cpp"
+      ],
+      "p50_us": 72.77592592592593,
+      "p95_batch_us": 79.2,
+      "process_p50_us": [
+        77.65005000000001,
+        70.45225225225225,
+        77.85196078431372,
+        72.28089999999999,
+        72.77592592592593
+      ],
+      "min_process_p50_us": 70.45225225225225,
+      "max_process_p50_us": 77.85196078431372,
+      "python_visible_peak_bytes": [
+        24,
+        24,
+        24,
+        24,
+        24
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "geo_distance",
+      "size": "1000",
+      "label": "security",
+      "engine": "numba",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "numba"
+      ],
+      "p50_us": 1624.275,
+      "p95_batch_us": 1771.15,
+      "process_p50_us": [
+        1739.37625,
+        1555.98,
+        1755.47525,
+        1499.3,
+        1624.275
+      ],
+      "min_process_p50_us": 1499.3,
+      "max_process_p50_us": 1755.47525,
+      "python_visible_peak_bytes": [
+        17118,
+        16830,
+        16830,
+        16830,
+        16830
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "geo_distance",
+      "size": "1000",
+      "label": "security",
+      "engine": "numpy",
+      "strict_correct": false,
+      "tolerance_correct": true,
+      "routes": [
+        "numpy"
+      ],
+      "p50_us": 165.84545454545457,
+      "p95_batch_us": 175.8269512195122,
+      "process_p50_us": [
+        171.34643902439024,
+        160.26,
+        171.82380952380953,
+        155.16361363636364,
+        165.84545454545457
+      ],
+      "min_process_p50_us": 155.16361363636364,
+      "max_process_p50_us": 171.82380952380953,
+      "python_visible_peak_bytes": [
+        66136,
+        66136,
+        66136,
+        66136,
+        66136
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "geo_distance",
+      "size": "1000",
+      "label": "security",
+      "engine": "private_entry",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "private_entry"
+      ],
+      "p50_us": 392.22,
+      "p95_batch_us": 439.22222222222223,
+      "process_p50_us": [
+        426.18264705882353,
+        366.34,
+        432.9833333333333,
+        357.3681363636364,
+        392.22
+      ],
+      "min_process_p50_us": 357.3681363636364,
+      "max_process_p50_us": 432.9833333333333,
+      "python_visible_peak_bytes": [
+        8478,
+        8478,
+        8478,
+        8478,
+        8478
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "geo_distance",
+      "size": "10000",
+      "label": "candidate",
+      "engine": "cpython",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "cpython"
+      ],
+      "p50_us": 6366.0,
+      "p95_batch_us": 6942.199,
+      "process_p50_us": [
+        6419.701,
+        6366.0,
+        6265.6,
+        6891.898,
+        6022.5
+      ],
+      "min_process_p50_us": 6022.5,
+      "max_process_p50_us": 6891.898,
+      "python_visible_peak_bytes": [
+        516,
+        516,
+        516,
+        516,
+        516
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "geo_distance",
+      "size": "10000",
+      "label": "candidate",
+      "engine": "forced_public",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "native"
+      ],
+      "p50_us": 3730.549,
+      "p95_batch_us": 4258.001,
+      "process_p50_us": [
+        3687.9,
+        3496.3,
+        4206.7,
+        3730.549,
+        3732.6995
+      ],
+      "min_process_p50_us": 3496.3,
+      "max_process_p50_us": 4206.7,
+      "python_visible_peak_bytes": [
+        161869,
+        161869,
+        161869,
+        161869,
+        161869
+      ],
+      "native_calls": 91,
+      "fallback_calls": 0
+    },
+    {
+      "application": "geo_distance",
+      "size": "10000",
+      "label": "candidate",
+      "engine": "hotloop_public",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "python_fallback_slower"
+      ],
+      "p50_us": 6284.801,
+      "p95_batch_us": 6565.1,
+      "process_p50_us": [
+        6251.001,
+        6339.7,
+        6284.801,
+        6474.499,
+        6079.5
+      ],
+      "min_process_p50_us": 6079.5,
+      "max_process_p50_us": 6474.499,
+      "python_visible_peak_bytes": [
+        1707,
+        1707,
+        1707,
+        1707,
+        1707
+      ],
+      "native_calls": 0,
+      "fallback_calls": 55
+    },
+    {
+      "application": "geo_distance",
+      "size": "10000",
+      "label": "candidate",
+      "engine": "manual_cpp",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "manual_cpp"
+      ],
+      "p50_us": 684.1634545454546,
+      "p95_batch_us": 751.01,
+      "process_p50_us": [
+        686.3363636363637,
+        683.6090909090909,
+        731.3,
+        684.1634545454546,
+        680.8331666666667
+      ],
+      "min_process_p50_us": 680.8331666666667,
+      "max_process_p50_us": 731.3,
+      "python_visible_peak_bytes": [
+        24,
+        24,
+        24,
+        24,
+        24
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "geo_distance",
+      "size": "10000",
+      "label": "candidate",
+      "engine": "numba",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "numba"
+      ],
+      "p50_us": 15063.1,
+      "p95_batch_us": 16926.0,
+      "process_p50_us": [
+        15063.1,
+        14831.999,
+        16894.601,
+        15088.697,
+        14961.999
+      ],
+      "min_process_p50_us": 14831.999,
+      "max_process_p50_us": 16894.601,
+      "python_visible_peak_bytes": [
+        161126,
+        160783,
+        161118,
+        160990,
+        161118
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "geo_distance",
+      "size": "10000",
+      "label": "candidate",
+      "engine": "numpy",
+      "strict_correct": false,
+      "tolerance_correct": true,
+      "routes": [
+        "numpy"
+      ],
+      "p50_us": 1266.8831666666667,
+      "p95_batch_us": 1388.28,
+      "process_p50_us": [
+        1237.0333333333333,
+        1241.0,
+        1341.14,
+        1268.6333333333332,
+        1266.8831666666667
+      ],
+      "min_process_p50_us": 1237.0333333333333,
+      "max_process_p50_us": 1341.14,
+      "python_visible_peak_bytes": [
+        642136,
+        642136,
+        642136,
+        642136,
+        642136
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "geo_distance",
+      "size": "10000",
+      "label": "candidate",
+      "engine": "private_entry",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "private_entry"
+      ],
+      "p50_us": 3683.1,
+      "p95_batch_us": 4395.2,
+      "process_p50_us": [
+        3584.9,
+        3584.5,
+        4370.401,
+        3711.0495,
+        3683.1
+      ],
+      "min_process_p50_us": 3584.5,
+      "max_process_p50_us": 4370.401,
+      "python_visible_peak_bytes": [
+        160638,
+        160638,
+        160638,
+        160638,
+        160638
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "geo_distance",
+      "size": "10000",
+      "label": "security",
+      "engine": "cpython",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "cpython"
+      ],
+      "p50_us": 6288.4,
+      "p95_batch_us": 6613.205,
+      "process_p50_us": [
+        6510.604,
+        6279.9,
+        6424.901,
+        6042.0,
+        6288.4
+      ],
+      "min_process_p50_us": 6042.0,
+      "max_process_p50_us": 6510.604,
+      "python_visible_peak_bytes": [
+        516,
+        516,
+        516,
+        516,
+        516
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "geo_distance",
+      "size": "10000",
+      "label": "security",
+      "engine": "forced_public",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "native"
+      ],
+      "p50_us": 3725.9525,
+      "p95_batch_us": 4499.3,
+      "process_p50_us": [
+        3725.9525,
+        3620.45,
+        3744.15,
+        4394.9,
+        3618.95
+      ],
+      "min_process_p50_us": 3618.95,
+      "max_process_p50_us": 4394.9,
+      "python_visible_peak_bytes": [
+        81701,
+        81701,
+        81701,
+        81701,
+        81701
+      ],
+      "native_calls": 91,
+      "fallback_calls": 0
+    },
+    {
+      "application": "geo_distance",
+      "size": "10000",
+      "label": "security",
+      "engine": "hotloop_public",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "python_fallback_slower"
+      ],
+      "p50_us": 6319.4,
+      "p95_batch_us": 6471.004,
+      "process_p50_us": [
+        6327.205,
+        6128.6,
+        6319.4,
+        6322.2,
+        6301.5
+      ],
+      "min_process_p50_us": 6128.6,
+      "max_process_p50_us": 6327.205,
+      "python_visible_peak_bytes": [
+        1699,
+        1699,
+        1699,
+        1699,
+        1699
+      ],
+      "native_calls": 0,
+      "fallback_calls": 55
+    },
+    {
+      "application": "geo_distance",
+      "size": "10000",
+      "label": "security",
+      "engine": "manual_cpp",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "manual_cpp"
+      ],
+      "p50_us": 692.1186363636364,
+      "p95_batch_us": 773.18,
+      "process_p50_us": [
+        692.1186363636364,
+        680.1181818181817,
+        748.79,
+        766.11,
+        681.309090909091
+      ],
+      "min_process_p50_us": 680.1181818181817,
+      "max_process_p50_us": 766.11,
+      "python_visible_peak_bytes": [
+        24,
+        24,
+        24,
+        24,
+        24
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "geo_distance",
+      "size": "10000",
+      "label": "security",
+      "engine": "numba",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "numba"
+      ],
+      "p50_us": 14996.3,
+      "p95_batch_us": 17111.8,
+      "process_p50_us": [
+        14706.01,
+        14996.3,
+        16799.801,
+        16554.899,
+        14900.4
+      ],
+      "min_process_p50_us": 14706.01,
+      "max_process_p50_us": 16799.801,
+      "python_visible_peak_bytes": [
+        160990,
+        160830,
+        161118,
+        160830,
+        161118
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "geo_distance",
+      "size": "10000",
+      "label": "security",
+      "engine": "numpy",
+      "strict_correct": false,
+      "tolerance_correct": true,
+      "routes": [
+        "numpy"
+      ],
+      "p50_us": 1262.55,
+      "p95_batch_us": 1370.8,
+      "process_p50_us": [
+        1251.8341666666668,
+        1236.25,
+        1332.2602,
+        1323.12,
+        1262.55
+      ],
+      "min_process_p50_us": 1236.25,
+      "max_process_p50_us": 1332.2602,
+      "python_visible_peak_bytes": [
+        642136,
+        642136,
+        642136,
+        642136,
+        642136
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "geo_distance",
+      "size": "10000",
+      "label": "security",
+      "engine": "private_entry",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "private_entry"
+      ],
+      "p50_us": 3607.45,
+      "p95_batch_us": 4117.5,
+      "process_p50_us": [
+        3644.5525,
+        3600.45,
+        3599.4,
+        4077.4,
+        3607.45
+      ],
+      "min_process_p50_us": 3599.4,
+      "max_process_p50_us": 4077.4,
+      "python_visible_peak_bytes": [
+        80478,
+        80478,
+        80478,
+        80478,
+        80478
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "ocr_matcher",
+      "size": "large",
+      "label": "candidate",
+      "engine": "cpython",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "cpython"
+      ],
+      "p50_us": 1677.62525,
+      "p95_batch_us": 2152.5333333333333,
+      "process_p50_us": [
+        1677.62525,
+        1674.44975,
+        1670.1,
+        1678.67475,
+        2100.5333333333333
+      ],
+      "min_process_p50_us": 1670.1,
+      "max_process_p50_us": 2100.5333333333333,
+      "python_visible_peak_bytes": [
+        628,
+        628,
+        628,
+        628,
+        628
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "ocr_matcher",
+      "size": "large",
+      "label": "candidate",
+      "engine": "forced_public",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "native"
+      ],
+      "p50_us": 679.3181818181818,
+      "p95_batch_us": 916.324875,
+      "process_p50_us": [
+        683.9182727272727,
+        677.4271818181818,
+        679.3181818181818,
+        674.127090909091,
+        895.975
+      ],
+      "min_process_p50_us": 674.127090909091,
+      "max_process_p50_us": 895.975,
+      "python_visible_peak_bytes": [
+        17927,
+        17927,
+        17927,
+        17870,
+        17927
+      ],
+      "native_calls": 478,
+      "fallback_calls": 0
+    },
+    {
+      "application": "ocr_matcher",
+      "size": "large",
+      "label": "candidate",
+      "engine": "hotloop_public",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "python_fallback_slower"
+      ],
+      "p50_us": 1699.20025,
+      "p95_batch_us": 2180.033,
+      "process_p50_us": [
+        1699.20025,
+        1689.3,
+        1696.65,
+        1712.02475,
+        2175.2333333333336
+      ],
+      "min_process_p50_us": 1689.3,
+      "max_process_p50_us": 2175.2333333333336,
+      "python_visible_peak_bytes": [
+        1824,
+        1824,
+        1824,
+        1824,
+        1824
+      ],
+      "native_calls": 0,
+      "fallback_calls": 181
+    },
+    {
+      "application": "ocr_matcher",
+      "size": "large",
+      "label": "candidate",
+      "engine": "private_entry",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "private_entry"
+      ],
+      "p50_us": 669.4909090909091,
+      "p95_batch_us": 917.424875,
+      "process_p50_us": [
+        667.4728181818182,
+        668.9636363636364,
+        669.4909090909091,
+        674.4908181818182,
+        896.1625
+      ],
+      "min_process_p50_us": 667.4728181818182,
+      "max_process_p50_us": 896.1625,
+      "python_visible_peak_bytes": [
+        16691,
+        16691,
+        16691,
+        16691,
+        16691
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "ocr_matcher",
+      "size": "large",
+      "label": "candidate",
+      "engine": "rapidfuzz",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "rapidfuzz"
+      ],
+      "p50_us": 370.6,
+      "p95_batch_us": 501.2333333333333,
+      "process_p50_us": [
+        369.9714761904762,
+        367.58181818181816,
+        370.6,
+        373.2599,
+        500.03993333333335
+      ],
+      "min_process_p50_us": 367.58181818181816,
+      "max_process_p50_us": 500.03993333333335,
+      "python_visible_peak_bytes": [
+        260,
+        260,
+        260,
+        260,
+        260
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "ocr_matcher",
+      "size": "large",
+      "label": "security",
+      "engine": "cpython",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "cpython"
+      ],
+      "p50_us": 1688.17475,
+      "p95_batch_us": 1753.15,
+      "process_p50_us": [
+        1728.55,
+        1683.825,
+        1732.45,
+        1688.17475,
+        1679.225
+      ],
+      "min_process_p50_us": 1679.225,
+      "max_process_p50_us": 1732.45,
+      "python_visible_peak_bytes": [
+        628,
+        628,
+        628,
+        628,
+        628
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "ocr_matcher",
+      "size": "large",
+      "label": "security",
+      "engine": "forced_public",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "native"
+      ],
+      "p50_us": 664.9,
+      "p95_batch_us": 691.9,
+      "process_p50_us": [
+        664.9,
+        661.1416666666667,
+        678.3455454545455,
+        677.509,
+        658.2666666666667
+      ],
+      "min_process_p50_us": 658.2666666666667,
+      "max_process_p50_us": 678.3455454545455,
+      "python_visible_peak_bytes": [
+        17704,
+        17704,
+        17704,
+        17704,
+        17704
+      ],
+      "native_calls": 523,
+      "fallback_calls": 0
+    },
+    {
+      "application": "ocr_matcher",
+      "size": "large",
+      "label": "security",
+      "engine": "hotloop_public",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "python_fallback_slower"
+      ],
+      "p50_us": 1692.55,
+      "p95_batch_us": 1881.29975,
+      "process_p50_us": [
+        1692.55,
+        1687.825,
+        1759.5,
+        1691.07475,
+        1702.075
+      ],
+      "min_process_p50_us": 1687.825,
+      "max_process_p50_us": 1759.5,
+      "python_visible_peak_bytes": [
+        1816,
+        1816,
+        1816,
+        1816,
+        1816
+      ],
+      "native_calls": 0,
+      "fallback_calls": 172
+    },
+    {
+      "application": "ocr_matcher",
+      "size": "large",
+      "label": "security",
+      "engine": "private_entry",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "private_entry"
+      ],
+      "p50_us": 664.9500833333334,
+      "p95_batch_us": 827.6818181818182,
+      "process_p50_us": [
+        799.3454545454546,
+        646.75,
+        664.9500833333334,
+        671.1271818181817,
+        647.1
+      ],
+      "min_process_p50_us": 646.75,
+      "max_process_p50_us": 799.3454545454546,
+      "python_visible_peak_bytes": [
+        16476,
+        16476,
+        16476,
+        16476,
+        16476
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "ocr_matcher",
+      "size": "large",
+      "label": "security",
+      "engine": "rapidfuzz",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "rapidfuzz"
+      ],
+      "p50_us": 382.2237619047619,
+      "p95_batch_us": 427.33684210526314,
+      "process_p50_us": [
+        425.2473684210526,
+        370.525,
+        384.90957142857144,
+        382.2237619047619,
+        367.85238095238094
+      ],
+      "min_process_p50_us": 367.85238095238094,
+      "max_process_p50_us": 425.2473684210526,
+      "python_visible_peak_bytes": [
+        260,
+        260,
+        260,
+        260,
+        260
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "ocr_matcher",
+      "size": "medium",
+      "label": "candidate",
+      "engine": "cpython",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "cpython"
+      ],
+      "p50_us": 1003.275,
+      "p95_batch_us": 1663.7666666666667,
+      "process_p50_us": [
+        993.3285714285714,
+        1003.275,
+        1025.7,
+        991.8712857142857,
+        1293.15
+      ],
+      "min_process_p50_us": 991.8712857142857,
+      "max_process_p50_us": 1293.15,
+      "python_visible_peak_bytes": [
+        536,
+        536,
+        536,
+        536,
+        536
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "ocr_matcher",
+      "size": "medium",
+      "label": "candidate",
+      "engine": "forced_public",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "native"
+      ],
+      "p50_us": 192.3275,
+      "p95_batch_us": 239.91875,
+      "process_p50_us": [
+        191.7816052631579,
+        191.732475,
+        192.3275,
+        193.342475,
+        237.9625
+      ],
+      "min_process_p50_us": 191.732475,
+      "max_process_p50_us": 237.9625,
+      "python_visible_peak_bytes": [
+        3470,
+        3527,
+        3527,
+        3527,
+        3527
+      ],
+      "native_calls": 1720,
+      "fallback_calls": 0
+    },
+    {
+      "application": "ocr_matcher",
+      "size": "medium",
+      "label": "candidate",
+      "engine": "hotloop_public",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "python_fallback_slower"
+      ],
+      "p50_us": 1022.8284285714285,
+      "p95_batch_us": 1256.5,
+      "process_p50_us": [
+        1010.5715714285715,
+        1011.1141428571428,
+        1047.6858571428572,
+        1022.8284285714285,
+        1244.0
+      ],
+      "min_process_p50_us": 1010.5715714285715,
+      "max_process_p50_us": 1244.0,
+      "python_visible_peak_bytes": [
+        1732,
+        1732,
+        1732,
+        1732,
+        1732
+      ],
+      "native_calls": 0,
+      "fallback_calls": 289
+    },
+    {
+      "application": "ocr_matcher",
+      "size": "medium",
+      "label": "candidate",
+      "engine": "private_entry",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "private_entry"
+      ],
+      "p50_us": 183.17894736842103,
+      "p95_batch_us": 236.11467647058822,
+      "process_p50_us": [
+        182.3442093023256,
+        183.17894736842103,
+        182.24736842105264,
+        183.2162558139535,
+        233.08823529411765
+      ],
+      "min_process_p50_us": 182.24736842105264,
+      "max_process_p50_us": 233.08823529411765,
+      "python_visible_peak_bytes": [
+        2291,
+        2291,
+        2291,
+        2291,
+        2291
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "ocr_matcher",
+      "size": "medium",
+      "label": "candidate",
+      "engine": "rapidfuzz",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "rapidfuzz"
+      ],
+      "p50_us": 39.63177604166666,
+      "p95_batch_us": 85.35723684210527,
+      "process_p50_us": [
+        39.63177604166666,
+        39.34352331606218,
+        39.59223316062176,
+        39.77291145833333,
+        54.165789473684214
+      ],
+      "min_process_p50_us": 39.34352331606218,
+      "max_process_p50_us": 54.165789473684214,
+      "python_visible_peak_bytes": [
+        176,
+        176,
+        176,
+        176,
+        176
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "ocr_matcher",
+      "size": "medium",
+      "label": "security",
+      "engine": "cpython",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "cpython"
+      ],
+      "p50_us": 1028.3998333333334,
+      "p95_batch_us": 1060.2857142857142,
+      "process_p50_us": [
+        997.9142857142857,
+        1032.1833333333334,
+        1009.287625,
+        1028.3998333333334,
+        1031.0166666666667
+      ],
+      "min_process_p50_us": 997.9142857142857,
+      "max_process_p50_us": 1032.1833333333334,
+      "python_visible_peak_bytes": [
+        536,
+        536,
+        536,
+        536,
+        536
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "ocr_matcher",
+      "size": "medium",
+      "label": "security",
+      "engine": "forced_public",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "native"
+      ],
+      "p50_us": 191.46,
+      "p95_batch_us": 210.90978048780488,
+      "process_p50_us": [
+        190.58292682926827,
+        191.46,
+        198.59,
+        186.4825,
+        193.5975
+      ],
+      "min_process_p50_us": 186.4825,
+      "max_process_p50_us": 198.59,
+      "python_visible_peak_bytes": [
+        3304,
+        3304,
+        3304,
+        3304,
+        3304
+      ],
+      "native_calls": 1819,
+      "fallback_calls": 0
+    },
+    {
+      "application": "ocr_matcher",
+      "size": "medium",
+      "label": "security",
+      "engine": "hotloop_public",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "python_fallback_slower"
+      ],
+      "p50_us": 1020.2285714285715,
+      "p95_batch_us": 1066.442857142857,
+      "process_p50_us": [
+        1010.8285714285714,
+        1040.8714285714286,
+        1013.4125,
+        1020.2285714285715,
+        1046.0
+      ],
+      "min_process_p50_us": 1010.8285714285714,
+      "max_process_p50_us": 1046.0,
+      "python_visible_peak_bytes": [
+        1724,
+        1724,
+        1724,
+        1724,
+        1724
+      ],
+      "native_calls": 0,
+      "fallback_calls": 334
+    },
+    {
+      "application": "ocr_matcher",
+      "size": "medium",
+      "label": "security",
+      "engine": "private_entry",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "private_entry"
+      ],
+      "p50_us": 183.28837209302327,
+      "p95_batch_us": 190.51666666666665,
+      "process_p50_us": [
+        184.76904761904763,
+        183.28837209302327,
+        188.49288095238094,
+        177.57727272727274,
+        177.58139534883722
+      ],
+      "min_process_p50_us": 177.57727272727274,
+      "max_process_p50_us": 188.49288095238094,
+      "python_visible_peak_bytes": [
+        2076,
+        2076,
+        2076,
+        2076,
+        2076
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "ocr_matcher",
+      "size": "medium",
+      "label": "security",
+      "engine": "rapidfuzz",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "rapidfuzz"
+      ],
+      "p50_us": 39.49325906735751,
+      "p95_batch_us": 41.970899470899475,
+      "process_p50_us": [
+        40.84920634920635,
+        39.26891191709845,
+        41.23793103448276,
+        39.49325906735751,
+        39.35233160621762
+      ],
+      "min_process_p50_us": 39.26891191709845,
+      "max_process_p50_us": 41.23793103448276,
+      "python_visible_peak_bytes": [
+        176,
+        176,
+        176,
+        176,
+        176
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "ocr_matcher",
+      "size": "small",
+      "label": "candidate",
+      "engine": "cpython",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "cpython"
+      ],
+      "p50_us": 103.76754545454546,
+      "p95_batch_us": 125.979671875,
+      "process_p50_us": [
+        103.76754545454546,
+        104.19342105263158,
+        100.54743589743589,
+        100.1338813559322,
+        124.4796875
+      ],
+      "min_process_p50_us": 100.1338813559322,
+      "max_process_p50_us": 124.4796875,
+      "python_visible_peak_bytes": [
+        536,
+        536,
+        536,
+        536,
+        536
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "ocr_matcher",
+      "size": "small",
+      "label": "candidate",
+      "engine": "forced_public",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "native"
+      ],
+      "p50_us": 30.509137142857142,
+      "p95_batch_us": 40.81357142857143,
+      "process_p50_us": [
+        30.514694915254235,
+        30.34,
+        30.397159090909092,
+        30.509137142857142,
+        38.816428571428574
+      ],
+      "min_process_p50_us": 30.34,
+      "max_process_p50_us": 38.816428571428574,
+      "python_visible_peak_bytes": [
+        2087,
+        2087,
+        2087,
+        2087,
+        2087
+      ],
+      "native_calls": 7552,
+      "fallback_calls": 0
+    },
+    {
+      "application": "ocr_matcher",
+      "size": "small",
+      "label": "candidate",
+      "engine": "hotloop_public",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "python_fallback_slower"
+      ],
+      "p50_us": 112.4554,
+      "p95_batch_us": 137.88478260869564,
+      "process_p50_us": [
+        112.4554,
+        114.68181818181817,
+        111.16766176470588,
+        111.9454393939394,
+        135.71086956521737
+      ],
+      "min_process_p50_us": 111.16766176470588,
+      "max_process_p50_us": 135.71086956521737,
+      "python_visible_peak_bytes": [
+        1732,
+        1732,
+        1732,
+        1732,
+        1732
+      ],
+      "native_calls": 0,
+      "fallback_calls": 2809
+    },
+    {
+      "application": "ocr_matcher",
+      "size": "small",
+      "label": "candidate",
+      "engine": "private_entry",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "private_entry"
+      ],
+      "p50_us": 22.770655797101448,
+      "p95_batch_us": 28.178318584070794,
+      "process_p50_us": [
+        22.770655797101448,
+        22.7633663003663,
+        22.580147058823528,
+        23.254010948905112,
+        27.98495575221239
+      ],
+      "min_process_p50_us": 22.580147058823528,
+      "max_process_p50_us": 27.98495575221239,
+      "python_visible_peak_bytes": [
+        851,
+        851,
+        851,
+        851,
+        851
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "ocr_matcher",
+      "size": "small",
+      "label": "candidate",
+      "engine": "rapidfuzz",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "rapidfuzz"
+      ],
+      "p50_us": 4.8773818027210885,
+      "p95_batch_us": 6.055075897435898,
+      "process_p50_us": [
+        4.8773818027210885,
+        4.853182579564489,
+        4.837706270627063,
+        4.880585849870578,
+        5.957128205128205
+      ],
+      "min_process_p50_us": 4.837706270627063,
+      "max_process_p50_us": 5.957128205128205,
+      "python_visible_peak_bytes": [
+        176,
+        176,
+        176,
+        176,
+        176
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "ocr_matcher",
+      "size": "small",
+      "label": "security",
+      "engine": "cpython",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "cpython"
+      ],
+      "p50_us": 101.57215189873419,
+      "p95_batch_us": 106.9759493670886,
+      "process_p50_us": [
+        100.93797468354431,
+        103.61948051948052,
+        100.49367088607595,
+        101.73922784810127,
+        101.57215189873419
+      ],
+      "min_process_p50_us": 100.49367088607595,
+      "max_process_p50_us": 103.61948051948052,
+      "python_visible_peak_bytes": [
+        536,
+        536,
+        536,
+        536,
+        536
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "ocr_matcher",
+      "size": "small",
+      "label": "security",
+      "engine": "forced_public",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "native"
+      ],
+      "p50_us": 28.20935960591133,
+      "p95_batch_us": 30.124324324324323,
+      "process_p50_us": [
+        28.348730964467006,
+        29.832972972972975,
+        27.66331658291457,
+        28.20935960591133,
+        27.84679802955665
+      ],
+      "min_process_p50_us": 27.66331658291457,
+      "max_process_p50_us": 29.832972972972975,
+      "python_visible_peak_bytes": [
+        1943,
+        1943,
+        1943,
+        1943,
+        1943
+      ],
+      "native_calls": 8893,
+      "fallback_calls": 0
+    },
+    {
+      "application": "ocr_matcher",
+      "size": "small",
+      "label": "security",
+      "engine": "hotloop_public",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "python_fallback_slower"
+      ],
+      "p50_us": 110.74153846153847,
+      "p95_batch_us": 114.49830508474577,
+      "process_p50_us": [
+        109.5235294117647,
+        110.48550724637681,
+        112.86440677966102,
+        110.91383076923077,
+        110.74153846153847
+      ],
+      "min_process_p50_us": 109.5235294117647,
+      "max_process_p50_us": 112.86440677966102,
+      "python_visible_peak_bytes": [
+        1724,
+        1724,
+        1724,
+        1724,
+        1724
+      ],
+      "native_calls": 0,
+      "fallback_calls": 2944
+    },
+    {
+      "application": "ocr_matcher",
+      "size": "small",
+      "label": "security",
+      "engine": "private_entry",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "private_entry"
+      ],
+      "p50_us": 21.072520766773163,
+      "p95_batch_us": 22.134095081967214,
+      "process_p50_us": [
+        21.344680851063828,
+        21.785245901639342,
+        20.6981884057971,
+        21.072520766773163,
+        20.906050955414013
+      ],
+      "min_process_p50_us": 20.6981884057971,
+      "max_process_p50_us": 21.785245901639342,
+      "python_visible_peak_bytes": [
+        715,
+        715,
+        715,
+        715,
+        658
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "ocr_matcher",
+      "size": "small",
+      "label": "security",
+      "engine": "rapidfuzz",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "rapidfuzz"
+      ],
+      "p50_us": 4.842294807370185,
+      "p95_batch_us": 5.04953095684803,
+      "process_p50_us": [
+        4.830318257956449,
+        5.003189493433396,
+        4.669269105691057,
+        4.858375209380234,
+        4.842294807370185
+      ],
+      "min_process_p50_us": 4.669269105691057,
+      "max_process_p50_us": 5.003189493433396,
+      "python_visible_peak_bytes": [
+        176,
+        176,
+        176,
+        176,
+        176
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "pdf_cleaner",
+      "size": "large",
+      "label": "candidate",
+      "engine": "compiled_regex",
+      "strict_correct": false,
+      "tolerance_correct": false,
+      "routes": [
+        "compiled_regex"
+      ],
+      "p50_us": null,
+      "p95_batch_us": null,
+      "process_p50_us": [],
+      "min_process_p50_us": null,
+      "max_process_p50_us": null,
+      "python_visible_peak_bytes": [],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "pdf_cleaner",
+      "size": "large",
+      "label": "candidate",
+      "engine": "cpython",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "cpython"
+      ],
+      "p50_us": 19220.0,
+      "p95_batch_us": 20581.801,
+      "process_p50_us": [
+        19067.403,
+        19220.0,
+        20482.801,
+        19793.501,
+        19127.2
+      ],
+      "min_process_p50_us": 19067.403,
+      "max_process_p50_us": 20482.801,
+      "python_visible_peak_bytes": [
+        298980,
+        298980,
+        298980,
+        298980,
+        298980
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "pdf_cleaner",
+      "size": "large",
+      "label": "candidate",
+      "engine": "hotloop_public",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "native"
+      ],
+      "p50_us": 3173.5005,
+      "p95_batch_us": 3279.1505,
+      "process_p50_us": [
+        3173.5005,
+        3196.6505,
+        3185.8005,
+        3163.6,
+        3104.15
+      ],
+      "min_process_p50_us": 3104.15,
+      "max_process_p50_us": 3196.6505,
+      "python_visible_peak_bytes": [
+        499518,
+        499518,
+        499518,
+        499518,
+        499518
+      ],
+      "native_calls": 100,
+      "fallback_calls": 0
+    },
+    {
+      "application": "pdf_cleaner",
+      "size": "large",
+      "label": "candidate",
+      "engine": "private_entry",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "private_entry"
+      ],
+      "p50_us": 3155.45,
+      "p95_batch_us": 3232.1,
+      "process_p50_us": [
+        3146.8505,
+        3161.35,
+        3176.1005,
+        3155.45,
+        3044.45
+      ],
+      "min_process_p50_us": 3044.45,
+      "max_process_p50_us": 3176.1005,
+      "python_visible_peak_bytes": [
+        498366,
+        498366,
+        498366,
+        498366,
+        498366
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "pdf_cleaner",
+      "size": "large",
+      "label": "security",
+      "engine": "compiled_regex",
+      "strict_correct": false,
+      "tolerance_correct": false,
+      "routes": [
+        "compiled_regex"
+      ],
+      "p50_us": null,
+      "p95_batch_us": null,
+      "process_p50_us": [],
+      "min_process_p50_us": null,
+      "max_process_p50_us": null,
+      "python_visible_peak_bytes": [],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "pdf_cleaner",
+      "size": "large",
+      "label": "security",
+      "engine": "cpython",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "cpython"
+      ],
+      "p50_us": 20627.095,
+      "p95_batch_us": 24465.699,
+      "process_p50_us": [
+        19133.593,
+        20627.095,
+        21774.0,
+        23775.7,
+        19189.3
+      ],
+      "min_process_p50_us": 19133.593,
+      "max_process_p50_us": 23775.7,
+      "python_visible_peak_bytes": [
+        298980,
+        298980,
+        298980,
+        298980,
+        298980
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "pdf_cleaner",
+      "size": "large",
+      "label": "security",
+      "engine": "hotloop_public",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "native"
+      ],
+      "p50_us": 3123.699,
+      "p95_batch_us": 4009.699,
+      "process_p50_us": [
+        3123.699,
+        3967.399,
+        3031.3,
+        3144.0,
+        3066.75
+      ],
+      "min_process_p50_us": 3031.3,
+      "max_process_p50_us": 3967.399,
+      "python_visible_peak_bytes": [
+        499454,
+        499454,
+        499454,
+        499454,
+        499262
+      ],
+      "native_calls": 91,
+      "fallback_calls": 0
+    },
+    {
+      "application": "pdf_cleaner",
+      "size": "large",
+      "label": "security",
+      "engine": "private_entry",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "private_entry"
+      ],
+      "p50_us": 3102.2985,
+      "p95_batch_us": 3826.299,
+      "process_p50_us": [
+        3102.2985,
+        3731.599,
+        2992.9,
+        3118.5,
+        3014.0
+      ],
+      "min_process_p50_us": 2992.9,
+      "max_process_p50_us": 3731.599,
+      "python_visible_peak_bytes": [
+        498262,
+        498262,
+        498262,
+        498262,
+        498262
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "pdf_cleaner",
+      "size": "medium",
+      "label": "candidate",
+      "engine": "compiled_regex",
+      "strict_correct": false,
+      "tolerance_correct": false,
+      "routes": [
+        "compiled_regex"
+      ],
+      "p50_us": null,
+      "p95_batch_us": null,
+      "process_p50_us": [],
+      "min_process_p50_us": null,
+      "max_process_p50_us": null,
+      "python_visible_peak_bytes": [],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "pdf_cleaner",
+      "size": "medium",
+      "label": "candidate",
+      "engine": "cpython",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "cpython"
+      ],
+      "p50_us": 2016.6,
+      "p95_batch_us": 2115.1666666666665,
+      "process_p50_us": [
+        1954.0255,
+        2015.275,
+        2086.400333333333,
+        2016.6,
+        2018.2333333333333
+      ],
+      "min_process_p50_us": 1954.0255,
+      "max_process_p50_us": 2086.400333333333,
+      "python_visible_peak_bytes": [
+        30850,
+        30850,
+        30850,
+        30850,
+        30850
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "pdf_cleaner",
+      "size": "medium",
+      "label": "candidate",
+      "engine": "hotloop_public",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "native"
+      ],
+      "p50_us": 346.1227272727273,
+      "p95_batch_us": 363.49,
+      "process_p50_us": [
+        337.0182272727273,
+        337.535,
+        357.62,
+        346.1227272727273,
+        347.04761904761904
+      ],
+      "min_process_p50_us": 337.0182272727273,
+      "max_process_p50_us": 357.62,
+      "python_visible_peak_bytes": [
+        52511,
+        52511,
+        52511,
+        52511,
+        52511
+      ],
+      "native_calls": 955,
+      "fallback_calls": 0
+    },
+    {
+      "application": "pdf_cleaner",
+      "size": "medium",
+      "label": "candidate",
+      "engine": "private_entry",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "private_entry"
+      ],
+      "p50_us": 335.23913043478257,
+      "p95_batch_us": 349.97391304347826,
+      "process_p50_us": [
+        325.7334285714286,
+        324.2304347826087,
+        347.85217391304343,
+        335.23913043478257,
+        336.28181818181815
+      ],
+      "min_process_p50_us": 324.2304347826087,
+      "max_process_p50_us": 347.85217391304343,
+      "python_visible_peak_bytes": [
+        51551,
+        51551,
+        51551,
+        51551,
+        51551
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "pdf_cleaner",
+      "size": "medium",
+      "label": "security",
+      "engine": "compiled_regex",
+      "strict_correct": false,
+      "tolerance_correct": false,
+      "routes": [
+        "compiled_regex"
+      ],
+      "p50_us": null,
+      "p95_batch_us": null,
+      "process_p50_us": [],
+      "min_process_p50_us": null,
+      "max_process_p50_us": null,
+      "python_visible_peak_bytes": [],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "pdf_cleaner",
+      "size": "medium",
+      "label": "security",
+      "engine": "cpython",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "cpython"
+      ],
+      "p50_us": 2026.0996666666667,
+      "p95_batch_us": 2720.0,
+      "process_p50_us": [
+        2009.9326666666668,
+        2026.0996666666667,
+        2677.85,
+        2508.95,
+        2012.2333333333333
+      ],
+      "min_process_p50_us": 2009.9326666666668,
+      "max_process_p50_us": 2677.85,
+      "python_visible_peak_bytes": [
+        30850,
+        30850,
+        30850,
+        30850,
+        30850
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "pdf_cleaner",
+      "size": "medium",
+      "label": "security",
+      "engine": "hotloop_public",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "native"
+      ],
+      "p50_us": 366.23490000000004,
+      "p95_batch_us": 722.6789473684211,
+      "process_p50_us": [
+        321.2544090909091,
+        366.23490000000004,
+        401.44210526315794,
+        609.9727272727273,
+        321.21363636363634
+      ],
+      "min_process_p50_us": 321.21363636363634,
+      "max_process_p50_us": 609.9727272727273,
+      "python_visible_peak_bytes": [
+        52447,
+        52447,
+        52639,
+        52447,
+        52447
+      ],
+      "native_calls": 856,
+      "fallback_calls": 0
+    },
+    {
+      "application": "pdf_cleaner",
+      "size": "medium",
+      "label": "security",
+      "engine": "private_entry",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "private_entry"
+      ],
+      "p50_us": 353.4475238095238,
+      "p95_batch_us": 414.25,
+      "process_p50_us": [
+        309.30485,
+        353.4475238095238,
+        377.3727272727273,
+        408.3,
+        310.68
+      ],
+      "min_process_p50_us": 309.30485,
+      "max_process_p50_us": 408.3,
+      "python_visible_peak_bytes": [
+        51447,
+        51447,
+        51447,
+        51447,
+        51447
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "pdf_cleaner",
+      "size": "small",
+      "label": "candidate",
+      "engine": "compiled_regex",
+      "strict_correct": false,
+      "tolerance_correct": false,
+      "routes": [
+        "compiled_regex"
+      ],
+      "p50_us": null,
+      "p95_batch_us": null,
+      "process_p50_us": [],
+      "min_process_p50_us": null,
+      "max_process_p50_us": null,
+      "python_visible_peak_bytes": [],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "pdf_cleaner",
+      "size": "small",
+      "label": "candidate",
+      "engine": "cpython",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "cpython"
+      ],
+      "p50_us": 203.69459459459458,
+      "p95_batch_us": 213.48285714285714,
+      "process_p50_us": [
+        203.37897368421054,
+        203.69459459459458,
+        201.71621621621622,
+        208.62857142857143,
+        204.02972972972972
+      ],
+      "min_process_p50_us": 201.71621621621622,
+      "max_process_p50_us": 208.62857142857143,
+      "python_visible_peak_bytes": [
+        3382,
+        3382,
+        3382,
+        3382,
+        3382
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "pdf_cleaner",
+      "size": "small",
+      "label": "candidate",
+      "engine": "hotloop_public",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "native"
+      ],
+      "p50_us": 44.508633093525184,
+      "p95_batch_us": 46.94172661870503,
+      "process_p50_us": [
+        44.83813669064748,
+        44.508633093525184,
+        46.60805747126437,
+        44.48148888888889,
+        44.22374100719424
+      ],
+      "min_process_p50_us": 44.22374100719424,
+      "max_process_p50_us": 46.60805747126437,
+      "python_visible_peak_bytes": [
+        8117,
+        8117,
+        8117,
+        7925,
+        8117
+      ],
+      "native_calls": 5761,
+      "fallback_calls": 0
+    },
+    {
+      "application": "pdf_cleaner",
+      "size": "small",
+      "label": "candidate",
+      "engine": "private_entry",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "private_entry"
+      ],
+      "p50_us": 36.22971428571428,
+      "p95_batch_us": 38.46440677966102,
+      "process_p50_us": [
+        36.60157591623037,
+        36.22971428571428,
+        37.88249152542373,
+        36.20155958549223,
+        36.22435233160622
+      ],
+      "min_process_p50_us": 36.20155958549223,
+      "max_process_p50_us": 37.88249152542373,
+      "python_visible_peak_bytes": [
+        6965,
+        6965,
+        6965,
+        6965,
+        6965
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "pdf_cleaner",
+      "size": "small",
+      "label": "security",
+      "engine": "compiled_regex",
+      "strict_correct": false,
+      "tolerance_correct": false,
+      "routes": [
+        "compiled_regex"
+      ],
+      "p50_us": null,
+      "p95_batch_us": null,
+      "process_p50_us": [],
+      "min_process_p50_us": null,
+      "max_process_p50_us": null,
+      "python_visible_peak_bytes": [],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "pdf_cleaner",
+      "size": "small",
+      "label": "security",
+      "engine": "cpython",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "cpython"
+      ],
+      "p50_us": 205.11842105263156,
+      "p95_batch_us": 397.4951904761905,
+      "process_p50_us": [
+        204.17412903225807,
+        204.121,
+        265.6333333333333,
+        312.57619047619045,
+        205.11842105263156
+      ],
+      "min_process_p50_us": 204.121,
+      "max_process_p50_us": 312.57619047619045,
+      "python_visible_peak_bytes": [
+        3382,
+        3382,
+        3382,
+        3382,
+        3382
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "pdf_cleaner",
+      "size": "small",
+      "label": "security",
+      "engine": "hotloop_public",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "native"
+      ],
+      "p50_us": 41.62956338028169,
+      "p95_batch_us": 60.567460317460316,
+      "process_p50_us": [
+        41.18598,
+        41.62956338028169,
+        55.0,
+        56.81111111111111,
+        41.480555555555554
+      ],
+      "min_process_p50_us": 41.18598,
+      "max_process_p50_us": 56.81111111111111,
+      "python_visible_peak_bytes": [
+        8053,
+        7861,
+        8053,
+        7861,
+        7861
+      ],
+      "native_calls": 6112,
+      "fallback_calls": 0
+    },
+    {
+      "application": "pdf_cleaner",
+      "size": "small",
+      "label": "security",
+      "engine": "private_entry",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "private_entry"
+      ],
+      "p50_us": 34.45517452830189,
+      "p95_batch_us": 62.83108108108108,
+      "process_p50_us": [
+        34.45517452830189,
+        34.34284693877551,
+        46.49054054054054,
+        42.707216494845355,
+        34.28679245283019
+      ],
+      "min_process_p50_us": 34.28679245283019,
+      "max_process_p50_us": 46.49054054054054,
+      "python_visible_peak_bytes": [
+        6861,
+        6861,
+        6861,
+        6861,
+        6861
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "pii_scrubber",
+      "size": "large",
+      "label": "candidate",
+      "engine": "cpython",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "cpython"
+      ],
+      "p50_us": 52567.603,
+      "p95_batch_us": 60547.5,
+      "process_p50_us": [
+        51297.641,
+        53922.901,
+        52567.603,
+        52422.501,
+        57649.4
+      ],
+      "min_process_p50_us": 51297.641,
+      "max_process_p50_us": 57649.4,
+      "python_visible_peak_bytes": [
+        415463,
+        415463,
+        415463,
+        415463,
+        415463
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "pii_scrubber",
+      "size": "large",
+      "label": "candidate",
+      "engine": "expert_regex",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "expert_regex"
+      ],
+      "p50_us": 18655.9,
+      "p95_batch_us": 28676.802,
+      "process_p50_us": [
+        18392.414,
+        18655.9,
+        24530.801,
+        19076.9,
+        18039.7
+      ],
+      "min_process_p50_us": 18039.7,
+      "max_process_p50_us": 24530.801,
+      "python_visible_peak_bytes": [
+        1525149,
+        1525149,
+        1525149,
+        1525149,
+        1525149
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "pii_scrubber",
+      "size": "large",
+      "label": "candidate",
+      "engine": "hotloop_public",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "native"
+      ],
+      "p50_us": 8075.1,
+      "p95_batch_us": 8338.5,
+      "process_p50_us": [
+        7973.106,
+        8020.3,
+        8075.1,
+        8202.1,
+        8292.4
+      ],
+      "min_process_p50_us": 7973.106,
+      "max_process_p50_us": 8292.4,
+      "python_visible_peak_bytes": [
+        749310,
+        749310,
+        749310,
+        749310,
+        749310
+      ],
+      "native_calls": 55,
+      "fallback_calls": 0
+    },
+    {
+      "application": "pii_scrubber",
+      "size": "large",
+      "label": "candidate",
+      "engine": "private_entry",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "private_entry"
+      ],
+      "p50_us": 7932.306,
+      "p95_batch_us": 8282.1,
+      "process_p50_us": [
+        7932.306,
+        7921.9,
+        7897.501,
+        8151.0,
+        7979.4
+      ],
+      "min_process_p50_us": 7897.501,
+      "max_process_p50_us": 8151.0,
+      "python_visible_peak_bytes": [
+        748355,
+        748355,
+        748355,
+        748355,
+        748355
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "pii_scrubber",
+      "size": "large",
+      "label": "security",
+      "engine": "cpython",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "cpython"
+      ],
+      "p50_us": 54320.7,
+      "p95_batch_us": 73336.4,
+      "process_p50_us": [
+        45746.502,
+        52072.087,
+        70996.5,
+        54905.799,
+        54320.7
+      ],
+      "min_process_p50_us": 45746.502,
+      "max_process_p50_us": 70996.5,
+      "python_visible_peak_bytes": [
+        415463,
+        415463,
+        415463,
+        415463,
+        415463
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "pii_scrubber",
+      "size": "large",
+      "label": "security",
+      "engine": "expert_regex",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "expert_regex"
+      ],
+      "p50_us": 18123.2,
+      "p95_batch_us": 23280.3,
+      "process_p50_us": [
+        15761.9,
+        18064.496,
+        18220.5,
+        22489.6,
+        18123.2
+      ],
+      "min_process_p50_us": 15761.9,
+      "max_process_p50_us": 22489.6,
+      "python_visible_peak_bytes": [
+        1525149,
+        1525149,
+        1525149,
+        1525149,
+        1525149
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "pii_scrubber",
+      "size": "large",
+      "label": "security",
+      "engine": "hotloop_public",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "native"
+      ],
+      "p50_us": 7829.3,
+      "p95_batch_us": 8885.8,
+      "process_p50_us": [
+        6945.001,
+        7799.999,
+        8797.1,
+        8198.5,
+        7829.3
+      ],
+      "min_process_p50_us": 6945.001,
+      "max_process_p50_us": 8797.1,
+      "python_visible_peak_bytes": [
+        749246,
+        749246,
+        749438,
+        749246,
+        749246
+      ],
+      "native_calls": 55,
+      "fallback_calls": 0
+    },
+    {
+      "application": "pii_scrubber",
+      "size": "large",
+      "label": "security",
+      "engine": "private_entry",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "private_entry"
+      ],
+      "p50_us": 7830.998,
+      "p95_batch_us": 8922.4,
+      "process_p50_us": [
+        6858.3,
+        7830.998,
+        8762.9,
+        8553.299,
+        7800.5
+      ],
+      "min_process_p50_us": 6858.3,
+      "max_process_p50_us": 8762.9,
+      "python_visible_peak_bytes": [
+        748251,
+        748251,
+        748251,
+        748251,
+        748251
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "pii_scrubber",
+      "size": "medium",
+      "label": "candidate",
+      "engine": "cpython",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "cpython"
+      ],
+      "p50_us": 4330.4,
+      "p95_batch_us": 9987.7,
+      "process_p50_us": [
+        4324.504,
+        5144.5,
+        4330.4,
+        4325.4,
+        7190.8
+      ],
+      "min_process_p50_us": 4324.504,
+      "max_process_p50_us": 7190.8,
+      "python_visible_peak_bytes": [
+        35143,
+        35143,
+        35143,
+        35143,
+        35143
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "pii_scrubber",
+      "size": "medium",
+      "label": "candidate",
+      "engine": "expert_regex",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "expert_regex"
+      ],
+      "p50_us": 1512.82,
+      "p95_batch_us": 1854.975,
+      "process_p50_us": [
+        1461.6612,
+        1613.325,
+        1512.82,
+        1491.8002,
+        1838.55
+      ],
+      "min_process_p50_us": 1461.6612,
+      "max_process_p50_us": 1838.55,
+      "python_visible_peak_bytes": [
+        125244,
+        125244,
+        125244,
+        125244,
+        125244
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "pii_scrubber",
+      "size": "medium",
+      "label": "candidate",
+      "engine": "hotloop_public",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "native"
+      ],
+      "p50_us": 677.2637272727272,
+      "p95_batch_us": 898.8125,
+      "process_p50_us": [
+        654.9838333333333,
+        741.67,
+        677.2637272727272,
+        675.0454545454546,
+        895.45
+      ],
+      "min_process_p50_us": 654.9838333333333,
+      "max_process_p50_us": 895.45,
+      "python_visible_peak_bytes": [
+        62676,
+        62676,
+        62676,
+        62676,
+        62676
+      ],
+      "native_calls": 478,
+      "fallback_calls": 0
+    },
+    {
+      "application": "pii_scrubber",
+      "size": "medium",
+      "label": "candidate",
+      "engine": "private_entry",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "private_entry"
+      ],
+      "p50_us": 658.44,
+      "p95_batch_us": 851.975,
+      "process_p50_us": [
+        640.6338333333334,
+        724.36,
+        658.44,
+        643.5455454545454,
+        837.925
+      ],
+      "min_process_p50_us": 640.6338333333334,
+      "max_process_p50_us": 837.925,
+      "python_visible_peak_bytes": [
+        61721,
+        61721,
+        61721,
+        61721,
+        61721
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "pii_scrubber",
+      "size": "medium",
+      "label": "security",
+      "engine": "cpython",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "cpython"
+      ],
+      "p50_us": 4362.299,
+      "p95_batch_us": 8836.9,
+      "process_p50_us": [
+        3717.9,
+        4362.299,
+        8103.3,
+        4775.4,
+        4305.8
+      ],
+      "min_process_p50_us": 3717.9,
+      "max_process_p50_us": 8103.3,
+      "python_visible_peak_bytes": [
+        35143,
+        35143,
+        35143,
+        35143,
+        35143
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "pii_scrubber",
+      "size": "medium",
+      "label": "security",
+      "engine": "expert_regex",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "expert_regex"
+      ],
+      "p50_us": 1502.72,
+      "p95_batch_us": 2480.5,
+      "process_p50_us": [
+        1453.72,
+        1458.9598,
+        2430.5666666666666,
+        1534.6398000000002,
+        1502.72
+      ],
+      "min_process_p50_us": 1453.72,
+      "max_process_p50_us": 2430.5666666666666,
+      "python_visible_peak_bytes": [
+        125244,
+        125244,
+        125244,
+        125244,
+        125244
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "pii_scrubber",
+      "size": "medium",
+      "label": "security",
+      "engine": "hotloop_public",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "native"
+      ],
+      "p50_us": 676.6181818181817,
+      "p95_batch_us": 1359.4666666666667,
+      "process_p50_us": [
+        581.3769230769232,
+        654.0748333333333,
+        1178.3166666666668,
+        697.0818181818182,
+        676.6181818181817
+      ],
+      "min_process_p50_us": 581.3769230769232,
+      "max_process_p50_us": 1178.3166666666668,
+      "python_visible_peak_bytes": [
+        62612,
+        62612,
+        62612,
+        62612,
+        62612
+      ],
+      "native_calls": 487,
+      "fallback_calls": 0
+    },
+    {
+      "application": "pii_scrubber",
+      "size": "medium",
+      "label": "security",
+      "engine": "private_entry",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "private_entry"
+      ],
+      "p50_us": 643.3272727272727,
+      "p95_batch_us": 1158.7668333333334,
+      "process_p50_us": [
+        618.0857142857143,
+        638.2415,
+        1114.0333333333333,
+        685.1,
+        643.3272727272727
+      ],
+      "min_process_p50_us": 618.0857142857143,
+      "max_process_p50_us": 1114.0333333333333,
+      "python_visible_peak_bytes": [
+        61617,
+        61617,
+        61617,
+        61617,
+        61617
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "pii_scrubber",
+      "size": "short",
+      "label": "candidate",
+      "engine": "cpython",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "cpython"
+      ],
+      "p50_us": 22.140620805369124,
+      "p95_batch_us": 37.122065727699535,
+      "process_p50_us": [
+        22.140620805369124,
+        26.54584980237154,
+        22.037957095709572,
+        22.10677966101695,
+        32.426760563380284
+      ],
+      "min_process_p50_us": 22.037957095709572,
+      "max_process_p50_us": 32.426760563380284,
+      "python_visible_peak_bytes": [
+        493,
+        493,
+        493,
+        493,
+        493
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "pii_scrubber",
+      "size": "short",
+      "label": "candidate",
+      "engine": "expert_regex",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "expert_regex"
+      ],
+      "p50_us": 10.96841791044776,
+      "p95_batch_us": 18.737634408602148,
+      "process_p50_us": [
+        10.96841791044776,
+        13.651951951951952,
+        10.871679197994986,
+        10.910304020100503,
+        16.50215053763441
+      ],
+      "min_process_p50_us": 10.871679197994986,
+      "max_process_p50_us": 16.50215053763441,
+      "python_visible_peak_bytes": [
+        5539,
+        5539,
+        5539,
+        5539,
+        5539
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "pii_scrubber",
+      "size": "short",
+      "label": "candidate",
+      "engine": "hotloop_public",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "native"
+      ],
+      "p50_us": 15.912643678160919,
+      "p95_batch_us": 22.26256684491979,
+      "process_p50_us": [
+        15.320533582089553,
+        18.525446428571428,
+        15.147463768115943,
+        15.912643678160919,
+        22.094117647058827
+      ],
+      "min_process_p50_us": 15.147463768115943,
+      "max_process_p50_us": 22.094117647058827,
+      "python_visible_peak_bytes": [
+        1816,
+        1816,
+        1816,
+        1816,
+        1816
+      ],
+      "native_calls": 10954,
+      "fallback_calls": 0
+    },
+    {
+      "application": "pii_scrubber",
+      "size": "short",
+      "label": "candidate",
+      "engine": "private_entry",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "private_entry"
+      ],
+      "p50_us": 8.213771517996872,
+      "p95_batch_us": 12.02021505376344,
+      "process_p50_us": [
+        8.0636864,
+        9.716636197440584,
+        8.127384266263238,
+        8.213771517996872,
+        11.97741935483871
+      ],
+      "min_process_p50_us": 8.0636864,
+      "max_process_p50_us": 11.97741935483871,
+      "python_visible_peak_bytes": [
+        473,
+        473,
+        473,
+        473,
+        473
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "pii_scrubber",
+      "size": "short",
+      "label": "security",
+      "engine": "cpython",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "cpython"
+      ],
+      "p50_us": 22.218979661016952,
+      "p95_batch_us": 41.99045226130654,
+      "process_p50_us": [
+        20.233233532934133,
+        22.218979661016952,
+        39.53316582914573,
+        26.226446280991734,
+        22.179194630872484
+      ],
+      "min_process_p50_us": 20.233233532934133,
+      "max_process_p50_us": 39.53316582914573,
+      "python_visible_peak_bytes": [
+        493,
+        493,
+        493,
+        493,
+        493
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "pii_scrubber",
+      "size": "short",
+      "label": "security",
+      "engine": "expert_regex",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "expert_regex"
+      ],
+      "p50_us": 10.983248730964467,
+      "p95_batch_us": 22.48333333333333,
+      "process_p50_us": [
+        9.212043010752689,
+        10.866241116751269,
+        20.229166666666668,
+        12.393016759776536,
+        10.983248730964467
+      ],
+      "min_process_p50_us": 9.212043010752689,
+      "max_process_p50_us": 20.229166666666668,
+      "python_visible_peak_bytes": [
+        5539,
+        5539,
+        5539,
+        5539,
+        5539
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "pii_scrubber",
+      "size": "short",
+      "label": "security",
+      "engine": "hotloop_public",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "native"
+      ],
+      "p50_us": 11.541055718475075,
+      "p95_batch_us": 20.495959595959597,
+      "process_p50_us": [
+        10.117241379310345,
+        11.541055718475075,
+        18.482323232323232,
+        13.11160409556314,
+        11.453958944281524
+      ],
+      "min_process_p50_us": 10.117241379310345,
+      "max_process_p50_us": 18.482323232323232,
+      "python_visible_peak_bytes": [
+        1549,
+        1549,
+        1807,
+        1549,
+        1549
+      ],
+      "native_calls": 14221,
+      "fallback_calls": 0
+    },
+    {
+      "application": "pii_scrubber",
+      "size": "short",
+      "label": "security",
+      "engine": "private_entry",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "private_entry"
+      ],
+      "p50_us": 5.2080975609756095,
+      "p95_batch_us": 16.037339743589744,
+      "process_p50_us": [
+        4.726320132013202,
+        5.177271739130435,
+        13.25,
+        5.918811881188119,
+        5.2080975609756095
+      ],
+      "min_process_p50_us": 4.726320132013202,
+      "max_process_p50_us": 13.25,
+      "python_visible_peak_bytes": [
+        369,
+        369,
+        369,
+        369,
+        369
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "quant_backtest",
+      "size": "0",
+      "label": "candidate",
+      "engine": "cpython",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "cpython"
+      ],
+      "p50_us": 0.0765,
+      "p95_batch_us": 0.09820000000000001,
+      "process_p50_us": [
+        0.07604999999999999,
+        0.0762,
+        0.09540000000000001,
+        0.08015,
+        0.0765
+      ],
+      "min_process_p50_us": 0.07604999999999999,
+      "max_process_p50_us": 0.09540000000000001,
+      "python_visible_peak_bytes": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "quant_backtest",
+      "size": "0",
+      "label": "candidate",
+      "engine": "hotloop_public",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "native"
+      ],
+      "p50_us": 12.487915407854986,
+      "p95_batch_us": 15.108695652173914,
+      "process_p50_us": [
+        12.014120588235293,
+        11.990332326283987,
+        14.835507246376812,
+        12.893167701863355,
+        12.487915407854986
+      ],
+      "min_process_p50_us": 11.990332326283987,
+      "max_process_p50_us": 14.835507246376812,
+      "python_visible_peak_bytes": [
+        1910,
+        1910,
+        1910,
+        1910,
+        1910
+      ],
+      "native_calls": 14410,
+      "fallback_calls": 0
+    },
+    {
+      "application": "quant_backtest",
+      "size": "0",
+      "label": "candidate",
+      "engine": "manual_cpp",
+      "strict_correct": false,
+      "tolerance_correct": true,
+      "routes": [
+        "manual_cpp"
+      ],
+      "p50_us": 0.07970000000000001,
+      "p95_batch_us": 0.12190000000000001,
+      "process_p50_us": [
+        0.07955,
+        0.0775,
+        0.11965,
+        0.07995000000000001,
+        0.07970000000000001
+      ],
+      "min_process_p50_us": 0.0775,
+      "max_process_p50_us": 0.11965,
+      "python_visible_peak_bytes": [
+        24,
+        24,
+        24,
+        24,
+        24
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "quant_backtest",
+      "size": "0",
+      "label": "candidate",
+      "engine": "numba",
+      "strict_correct": false,
+      "tolerance_correct": true,
+      "routes": [
+        "numba"
+      ],
+      "p50_us": 0.2061,
+      "p95_batch_us": 0.27735000000000004,
+      "process_p50_us": [
+        0.20875,
+        0.19805,
+        0.24725,
+        0.2061,
+        0.2037
+      ],
+      "min_process_p50_us": 0.19805,
+      "max_process_p50_us": 0.24725,
+      "python_visible_peak_bytes": [
+        96,
+        96,
+        96,
+        96,
+        96
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "quant_backtest",
+      "size": "0",
+      "label": "candidate",
+      "engine": "private_entry",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "private_entry"
+      ],
+      "p50_us": 3.3744296577946766,
+      "p95_batch_us": 4.216592427616926,
+      "process_p50_us": [
+        3.3425751575157516,
+        3.297868561278863,
+        4.179064587973274,
+        3.3744296577946766,
+        3.4071047957371223
+      ],
+      "min_process_p50_us": 3.297868561278863,
+      "max_process_p50_us": 4.179064587973274,
+      "python_visible_peak_bytes": [
+        650,
+        650,
+        650,
+        553,
+        593
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "quant_backtest",
+      "size": "0",
+      "label": "security",
+      "engine": "cpython",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "cpython"
+      ],
+      "p50_us": 0.07775,
+      "p95_batch_us": 0.2147,
+      "process_p50_us": [
+        0.1024,
+        0.07625,
+        0.08555,
+        0.07775,
+        0.07554999999999999
+      ],
+      "min_process_p50_us": 0.07554999999999999,
+      "max_process_p50_us": 0.1024,
+      "python_visible_peak_bytes": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "quant_backtest",
+      "size": "0",
+      "label": "security",
+      "engine": "hotloop_public",
+      "strict_correct": false,
+      "tolerance_correct": true,
+      "routes": [
+        "native"
+      ],
+      "p50_us": 11.3878612716763,
+      "p95_batch_us": 13.923916943521595,
+      "process_p50_us": [
+        13.123584717607974,
+        11.126801152737753,
+        12.970716510903427,
+        11.3878612716763,
+        11.227322404371586
+      ],
+      "min_process_p50_us": 11.126801152737753,
+      "max_process_p50_us": 13.123584717607974,
+      "python_visible_peak_bytes": [
+        1833,
+        1833,
+        1833,
+        1833,
+        1833
+      ],
+      "native_calls": 15139,
+      "fallback_calls": 0
+    },
+    {
+      "application": "quant_backtest",
+      "size": "0",
+      "label": "security",
+      "engine": "manual_cpp",
+      "strict_correct": false,
+      "tolerance_correct": true,
+      "routes": [
+        "manual_cpp"
+      ],
+      "p50_us": 0.08109999999999999,
+      "p95_batch_us": 0.11915,
+      "process_p50_us": [
+        0.09384999999999999,
+        0.08109999999999999,
+        0.09355,
+        0.07995000000000001,
+        0.07940000000000001
+      ],
+      "min_process_p50_us": 0.07940000000000001,
+      "max_process_p50_us": 0.09384999999999999,
+      "python_visible_peak_bytes": [
+        24,
+        24,
+        24,
+        24,
+        24
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "quant_backtest",
+      "size": "0",
+      "label": "security",
+      "engine": "numba",
+      "strict_correct": false,
+      "tolerance_correct": true,
+      "routes": [
+        "numba"
+      ],
+      "p50_us": 0.23915,
+      "p95_batch_us": 0.2854,
+      "process_p50_us": [
+        0.27065,
+        0.20395,
+        0.26675,
+        0.238,
+        0.23915
+      ],
+      "min_process_p50_us": 0.20395,
+      "max_process_p50_us": 0.27065,
+      "python_visible_peak_bytes": [
+        96,
+        96,
+        96,
+        96,
+        96
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "quant_backtest",
+      "size": "0",
+      "label": "security",
+      "engine": "private_entry",
+      "strict_correct": false,
+      "tolerance_correct": true,
+      "routes": [
+        "private_entry"
+      ],
+      "p50_us": 2.8126547455295734,
+      "p95_batch_us": 3.880017761989343,
+      "process_p50_us": [
+        3.1783010408326664,
+        2.779330007127584,
+        3.4061278863232682,
+        2.8126547455295734,
+        2.759351789331533
+      ],
+      "min_process_p50_us": 2.759351789331533,
+      "max_process_p50_us": 3.4061278863232682,
+      "python_visible_peak_bytes": [
+        498,
+        498,
+        498,
+        498,
+        498
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "quant_backtest",
+      "size": "100",
+      "label": "candidate",
+      "engine": "cpython",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "cpython"
+      ],
+      "p50_us": 23.104024767801857,
+      "p95_batch_us": 29.68828205128205,
+      "process_p50_us": [
+        23.014464615384615,
+        22.401460641399414,
+        28.602564102564102,
+        23.104024767801857,
+        24.01323076923077
+      ],
+      "min_process_p50_us": 22.401460641399414,
+      "max_process_p50_us": 28.602564102564102,
+      "python_visible_peak_bytes": [
+        240,
+        240,
+        240,
+        240,
+        240
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "quant_backtest",
+      "size": "100",
+      "label": "candidate",
+      "engine": "hotloop_public",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "native"
+      ],
+      "p50_us": 12.338235294117647,
+      "p95_batch_us": 16.159160305343512,
+      "process_p50_us": [
+        12.116715542521993,
+        11.738168639053255,
+        16.042366412213738,
+        12.338235294117647,
+        12.427492447129909
+      ],
+      "min_process_p50_us": 11.738168639053255,
+      "max_process_p50_us": 16.042366412213738,
+      "python_visible_peak_bytes": [
+        1853,
+        1853,
+        1853,
+        1853,
+        1853
+      ],
+      "native_calls": 14518,
+      "fallback_calls": 0
+    },
+    {
+      "application": "quant_backtest",
+      "size": "100",
+      "label": "candidate",
+      "engine": "manual_cpp",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "manual_cpp"
+      ],
+      "p50_us": 0.28145,
+      "p95_batch_us": 0.38230000000000003,
+      "process_p50_us": [
+        0.2732,
+        0.2735,
+        0.37889999999999996,
+        0.29710000000000003,
+        0.28145
+      ],
+      "min_process_p50_us": 0.2732,
+      "max_process_p50_us": 0.37889999999999996,
+      "python_visible_peak_bytes": [
+        24,
+        24,
+        24,
+        24,
+        24
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "quant_backtest",
+      "size": "100",
+      "label": "candidate",
+      "engine": "numba",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "numba"
+      ],
+      "p50_us": 0.4065,
+      "p95_batch_us": 0.57245,
+      "process_p50_us": [
+        0.394,
+        0.38935000000000003,
+        0.5550505,
+        0.4065,
+        0.4071
+      ],
+      "min_process_p50_us": 0.38935000000000003,
+      "max_process_p50_us": 0.5550505,
+      "python_visible_peak_bytes": [
+        96,
+        96,
+        96,
+        96,
+        96
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "quant_backtest",
+      "size": "100",
+      "label": "candidate",
+      "engine": "private_entry",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "private_entry"
+      ],
+      "p50_us": 3.6106941838649154,
+      "p95_batch_us": 6.152941176470589,
+      "process_p50_us": [
+        3.427299249530957,
+        3.3631863186318633,
+        5.7328431372549025,
+        3.6106941838649154,
+        3.6427382053654025
+      ],
+      "min_process_p50_us": 3.3631863186318633,
+      "max_process_p50_us": 5.7328431372549025,
+      "python_visible_peak_bytes": [
+        593,
+        553,
+        650,
+        650,
+        553
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "quant_backtest",
+      "size": "100",
+      "label": "security",
+      "engine": "cpython",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "cpython"
+      ],
+      "p50_us": 24.337071651090344,
+      "p95_batch_us": 28.957886639676115,
+      "process_p50_us": [
+        26.186222672064776,
+        24.337071651090344,
+        28.23146853146853,
+        23.700335570469797,
+        22.845345345345343
+      ],
+      "min_process_p50_us": 22.845345345345343,
+      "max_process_p50_us": 28.23146853146853,
+      "python_visible_peak_bytes": [
+        240,
+        240,
+        240,
+        240,
+        240
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "quant_backtest",
+      "size": "100",
+      "label": "security",
+      "engine": "hotloop_public",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "native"
+      ],
+      "p50_us": 11.649019607843139,
+      "p95_batch_us": 14.022772277227723,
+      "process_p50_us": [
+        12.658607250755287,
+        11.303888888888888,
+        13.761386138613862,
+        11.649019607843139,
+        11.423743016759776
+      ],
+      "min_process_p50_us": 11.303888888888888,
+      "max_process_p50_us": 13.761386138613862,
+      "python_visible_peak_bytes": [
+        1833,
+        1833,
+        1833,
+        1833,
+        1833
+      ],
+      "native_calls": 15391,
+      "fallback_calls": 0
+    },
+    {
+      "application": "quant_backtest",
+      "size": "100",
+      "label": "security",
+      "engine": "manual_cpp",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "manual_cpp"
+      ],
+      "p50_us": 0.2943,
+      "p95_batch_us": 0.39405,
+      "process_p50_us": [
+        0.3284995,
+        0.28375,
+        0.3527,
+        0.2943,
+        0.27405
+      ],
+      "min_process_p50_us": 0.27405,
+      "max_process_p50_us": 0.3527,
+      "python_visible_peak_bytes": [
+        24,
+        24,
+        24,
+        24,
+        24
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "quant_backtest",
+      "size": "100",
+      "label": "security",
+      "engine": "numba",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "numba"
+      ],
+      "p50_us": 0.4445,
+      "p95_batch_us": 0.88875,
+      "process_p50_us": [
+        0.4717,
+        0.40105,
+        0.5842999999999999,
+        0.4445,
+        0.43045
+      ],
+      "min_process_p50_us": 0.40105,
+      "max_process_p50_us": 0.5842999999999999,
+      "python_visible_peak_bytes": [
+        96,
+        96,
+        96,
+        96,
+        96
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "quant_backtest",
+      "size": "100",
+      "label": "security",
+      "engine": "private_entry",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "private_entry"
+      ],
+      "p50_us": 3.1523809523809523,
+      "p95_batch_us": 3.9014010507880914,
+      "process_p50_us": [
+        3.1691087470449175,
+        2.903370013755158,
+        3.7316987740805603,
+        3.1523809523809523,
+        2.9872549019607844
+      ],
+      "min_process_p50_us": 2.903370013755158,
+      "max_process_p50_us": 3.7316987740805603,
+      "python_visible_peak_bytes": [
+        441,
+        441,
+        441,
+        498,
+        441
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "quant_backtest",
+      "size": "10000",
+      "label": "candidate",
+      "engine": "cpython",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "cpython"
+      ],
+      "p50_us": 2512.0666666666666,
+      "p95_batch_us": 3271.4505,
+      "process_p50_us": [
+        2339.667,
+        2406.5666666666666,
+        3235.0,
+        2512.4336666666663,
+        2512.0666666666666
+      ],
+      "min_process_p50_us": 2339.667,
+      "max_process_p50_us": 3235.0,
+      "python_visible_peak_bytes": [
+        320,
+        320,
+        320,
+        320,
+        320
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "quant_backtest",
+      "size": "10000",
+      "label": "candidate",
+      "engine": "hotloop_public",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "native"
+      ],
+      "p50_us": 43.292561983471074,
+      "p95_batch_us": 72.91098901098901,
+      "process_p50_us": [
+        41.3705,
+        42.971675000000005,
+        65.81759340659342,
+        47.87392173913043,
+        43.292561983471074
+      ],
+      "min_process_p50_us": 41.3705,
+      "max_process_p50_us": 65.81759340659342,
+      "python_visible_peak_bytes": [
+        1853,
+        1853,
+        1853,
+        1853,
+        1853
+      ],
+      "native_calls": 5131,
+      "fallback_calls": 0
+    },
+    {
+      "application": "quant_backtest",
+      "size": "10000",
+      "label": "candidate",
+      "engine": "manual_cpp",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "manual_cpp"
+      ],
+      "p50_us": 32.20452261306533,
+      "p95_batch_us": 42.17337662337662,
+      "process_p50_us": [
+        32.09303980099502,
+        32.20452261306533,
+        41.06753896103896,
+        34.16825396825397,
+        32.19246231155779
+      ],
+      "min_process_p50_us": 32.09303980099502,
+      "max_process_p50_us": 41.06753896103896,
+      "python_visible_peak_bytes": [
+        24,
+        24,
+        24,
+        24,
+        24
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "quant_backtest",
+      "size": "10000",
+      "label": "candidate",
+      "engine": "numba",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "numba"
+      ],
+      "p50_us": 28.732828282828283,
+      "p95_batch_us": 38.274,
+      "process_p50_us": [
+        28.22365024630542,
+        27.904,
+        36.64200666666667,
+        31.02085561497326,
+        28.732828282828283
+      ],
+      "min_process_p50_us": 27.904,
+      "max_process_p50_us": 36.64200666666667,
+      "python_visible_peak_bytes": [
+        96,
+        96,
+        96,
+        96,
+        96
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "quant_backtest",
+      "size": "10000",
+      "label": "candidate",
+      "engine": "private_entry",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "private_entry"
+      ],
+      "p50_us": 33.19523809523809,
+      "p95_batch_us": 45.22,
+      "process_p50_us": [
+        31.939553672316386,
+        32.39176470588235,
+        44.357608,
+        35.570198675496684,
+        33.19523809523809
+      ],
+      "min_process_p50_us": 31.939553672316386,
+      "max_process_p50_us": 44.357608,
+      "python_visible_peak_bytes": [
+        593,
+        553,
+        593,
+        553,
+        553
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "quant_backtest",
+      "size": "10000",
+      "label": "security",
+      "engine": "cpython",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "cpython"
+      ],
+      "p50_us": 2547.7663333333335,
+      "p95_batch_us": 2889.7,
+      "process_p50_us": [
+        2629.7323333333334,
+        2547.7663333333335,
+        2810.1,
+        2474.7333333333336,
+        2346.6663333333336
+      ],
+      "min_process_p50_us": 2346.6663333333336,
+      "max_process_p50_us": 2810.1,
+      "python_visible_peak_bytes": [
+        320,
+        320,
+        320,
+        320,
+        320
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "quant_backtest",
+      "size": "10000",
+      "label": "security",
+      "engine": "hotloop_public",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "native"
+      ],
+      "p50_us": 42.23145161290323,
+      "p95_batch_us": 48.95892857142857,
+      "process_p50_us": [
+        44.54704201680672,
+        41.8288,
+        48.55267857142857,
+        42.23145161290323,
+        42.014634146341464
+      ],
+      "min_process_p50_us": 41.8288,
+      "max_process_p50_us": 48.55267857142857,
+      "python_visible_peak_bytes": [
+        1833,
+        1833,
+        1833,
+        1833,
+        1833
+      ],
+      "native_calls": 5437,
+      "fallback_calls": 0
+    },
+    {
+      "application": "quant_backtest",
+      "size": "10000",
+      "label": "security",
+      "engine": "manual_cpp",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "manual_cpp"
+      ],
+      "p50_us": 32.92538860103627,
+      "p95_batch_us": 35.36260162601626,
+      "process_p50_us": [
+        34.14116577540106,
+        32.11515151515152,
+        35.04146341463415,
+        32.92538860103627,
+        32.11155778894472
+      ],
+      "min_process_p50_us": 32.11155778894472,
+      "max_process_p50_us": 35.04146341463415,
+      "python_visible_peak_bytes": [
+        24,
+        24,
+        24,
+        24,
+        24
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "quant_backtest",
+      "size": "10000",
+      "label": "security",
+      "engine": "numba",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "numba"
+      ],
+      "p50_us": 28.83737373737374,
+      "p95_batch_us": 31.670786516853934,
+      "process_p50_us": [
+        29.811186567164178,
+        28.17313432835821,
+        31.51685393258427,
+        28.83737373737374,
+        28.05792079207921
+      ],
+      "min_process_p50_us": 28.05792079207921,
+      "max_process_p50_us": 31.51685393258427,
+      "python_visible_peak_bytes": [
+        96,
+        96,
+        96,
+        96,
+        96
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "quant_backtest",
+      "size": "10000",
+      "label": "security",
+      "engine": "private_entry",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "private_entry"
+      ],
+      "p50_us": 32.37810059171598,
+      "p95_batch_us": 36.1541935483871,
+      "process_p50_us": [
+        33.12071951219512,
+        30.84269662921348,
+        35.19548387096774,
+        32.37810059171598,
+        31.290340909090908
+      ],
+      "min_process_p50_us": 30.84269662921348,
+      "max_process_p50_us": 35.19548387096774,
+      "python_visible_peak_bytes": [
+        441,
+        441,
+        441,
+        498,
+        441
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "quant_backtest",
+      "size": "100000",
+      "label": "candidate",
+      "engine": "cpython",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "cpython"
+      ],
+      "p50_us": 24166.3,
+      "p95_batch_us": 29147.101,
+      "process_p50_us": [
+        23544.304,
+        23502.902,
+        29043.801,
+        24166.3,
+        24681.2
+      ],
+      "min_process_p50_us": 23502.902,
+      "max_process_p50_us": 29043.801,
+      "python_visible_peak_bytes": [
+        320,
+        320,
+        320,
+        320,
+        320
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "quant_backtest",
+      "size": "100000",
+      "label": "candidate",
+      "engine": "hotloop_public",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "native"
+      ],
+      "p50_us": 398.4053157894737,
+      "p95_batch_us": 454.01764705882357,
+      "process_p50_us": [
+        398.4053157894737,
+        396.43163157894736,
+        449.08235294117645,
+        409.15,
+        397.4842105263158
+      ],
+      "min_process_p50_us": 396.43163157894736,
+      "max_process_p50_us": 449.08235294117645,
+      "python_visible_peak_bytes": [
+        1853,
+        1853,
+        1853,
+        1853,
+        1853
+      ],
+      "native_calls": 838,
+      "fallback_calls": 0
+    },
+    {
+      "application": "quant_backtest",
+      "size": "100000",
+      "label": "candidate",
+      "engine": "manual_cpp",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "manual_cpp"
+      ],
+      "p50_us": 389.08,
+      "p95_batch_us": 415.13157894736844,
+      "process_p50_us": [
+        387.4801,
+        389.07505,
+        411.10005263157893,
+        390.01505,
+        389.08
+      ],
+      "min_process_p50_us": 387.4801,
+      "max_process_p50_us": 411.10005263157893,
+      "python_visible_peak_bytes": [
+        24,
+        24,
+        24,
+        24,
+        24
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "quant_backtest",
+      "size": "100000",
+      "label": "candidate",
+      "engine": "numba",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "numba"
+      ],
+      "p50_us": 370.8095238095238,
+      "p95_batch_us": 395.83004999999997,
+      "process_p50_us": [
+        368.92861904761907,
+        370.8095238095238,
+        393.13005,
+        379.90476190476187,
+        368.64761904761906
+      ],
+      "min_process_p50_us": 368.64761904761906,
+      "max_process_p50_us": 393.13005,
+      "python_visible_peak_bytes": [
+        96,
+        96,
+        96,
+        96,
+        96
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "quant_backtest",
+      "size": "100000",
+      "label": "candidate",
+      "engine": "private_entry",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "private_entry"
+      ],
+      "p50_us": 386.535,
+      "p95_batch_us": 422.77222222222224,
+      "process_p50_us": [
+        384.03505,
+        384.78505,
+        422.06666666666666,
+        398.44,
+        386.535
+      ],
+      "min_process_p50_us": 384.03505,
+      "max_process_p50_us": 422.06666666666666,
+      "python_visible_peak_bytes": [
+        650,
+        553,
+        593,
+        553,
+        553
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "quant_backtest",
+      "size": "100000",
+      "label": "security",
+      "engine": "cpython",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "cpython"
+      ],
+      "p50_us": 24458.099,
+      "p95_batch_us": 25731.699,
+      "process_p50_us": [
+        24136.491,
+        25455.7,
+        24907.1,
+        23521.999,
+        24458.099
+      ],
+      "min_process_p50_us": 23521.999,
+      "max_process_p50_us": 25455.7,
+      "python_visible_peak_bytes": [
+        320,
+        320,
+        320,
+        320,
+        320
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "quant_backtest",
+      "size": "100000",
+      "label": "security",
+      "engine": "hotloop_public",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "native"
+      ],
+      "p50_us": 410.34444444444443,
+      "p95_batch_us": 426.60555555555555,
+      "process_p50_us": [
+        408.62205555555556,
+        424.3277777777777,
+        410.6,
+        410.34444444444443,
+        410.15555555555557
+      ],
+      "min_process_p50_us": 408.62205555555556,
+      "max_process_p50_us": 424.3277777777777,
+      "python_visible_peak_bytes": [
+        1833,
+        1833,
+        1833,
+        1833,
+        1833
+      ],
+      "native_calls": 820,
+      "fallback_calls": 0
+    },
+    {
+      "application": "quant_backtest",
+      "size": "100000",
+      "label": "security",
+      "engine": "manual_cpp",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "manual_cpp"
+      ],
+      "p50_us": 389.21,
+      "p95_batch_us": 401.6,
+      "process_p50_us": [
+        389.24485,
+        400.0842105263158,
+        388.49333333333334,
+        388.095,
+        389.21
+      ],
+      "min_process_p50_us": 388.095,
+      "max_process_p50_us": 400.0842105263158,
+      "python_visible_peak_bytes": [
+        24,
+        24,
+        24,
+        24,
+        24
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "quant_backtest",
+      "size": "100000",
+      "label": "security",
+      "engine": "numba",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "numba"
+      ],
+      "p50_us": 370.3619047619047,
+      "p95_batch_us": 386.25,
+      "process_p50_us": [
+        371.07128571428575,
+        380.615,
+        370.3619047619047,
+        368.64736842105265,
+        369.62380952380954
+      ],
+      "min_process_p50_us": 368.64736842105265,
+      "max_process_p50_us": 380.615,
+      "python_visible_peak_bytes": [
+        96,
+        96,
+        96,
+        96,
+        96
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "quant_backtest",
+      "size": "100000",
+      "label": "security",
+      "engine": "private_entry",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "private_entry"
+      ],
+      "p50_us": 386.19,
+      "p95_batch_us": 411.33684210526314,
+      "process_p50_us": [
+        385.24194736842105,
+        409.0947368421053,
+        385.55789473684206,
+        397.4684210526316,
+        386.19
+      ],
+      "min_process_p50_us": 385.24194736842105,
+      "max_process_p50_us": 409.0947368421053,
+      "python_visible_peak_bytes": [
+        441,
+        441,
+        441,
+        441,
+        441
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "rag_chunker",
+      "size": "large",
+      "label": "candidate",
+      "engine": "cpython",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "cpython"
+      ],
+      "p50_us": 137.76206896551724,
+      "p95_batch_us": 147.16206896551725,
+      "process_p50_us": [
+        137.76206896551724,
+        137.63602,
+        138.16080392156863,
+        140.03269230769232,
+        133.9177777777778
+      ],
+      "min_process_p50_us": 133.9177777777778,
+      "max_process_p50_us": 140.03269230769232,
+      "python_visible_peak_bytes": [
+        508828,
+        508828,
+        508828,
+        508828,
+        508828
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "rag_chunker",
+      "size": "large",
+      "label": "candidate",
+      "engine": "hotloop_public",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "python_fallback_slower"
+      ],
+      "p50_us": 145.86511627906978,
+      "p95_batch_us": 154.0157894736842,
+      "process_p50_us": [
+        148.20002272727274,
+        143.69024390243902,
+        143.59736842105264,
+        149.3464285714286,
+        145.86511627906978
+      ],
+      "min_process_p50_us": 143.59736842105264,
+      "max_process_p50_us": 149.3464285714286,
+      "python_visible_peak_bytes": [
+        510020,
+        510020,
+        510020,
+        510020,
+        510020
+      ],
+      "native_calls": 0,
+      "fallback_calls": 1756
+    },
+    {
+      "application": "rag_chunker",
+      "size": "large",
+      "label": "candidate",
+      "engine": "private_entry",
+      "strict_correct": false,
+      "tolerance_correct": false,
+      "routes": [
+        "private_entry"
+      ],
+      "p50_us": null,
+      "p95_batch_us": null,
+      "process_p50_us": [],
+      "min_process_p50_us": null,
+      "max_process_p50_us": null,
+      "python_visible_peak_bytes": [],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "rag_chunker",
+      "size": "large",
+      "label": "security",
+      "engine": "cpython",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "cpython"
+      ],
+      "p50_us": 161.8411764705882,
+      "p95_batch_us": 261.37333333333333,
+      "process_p50_us": [
+        134.77804878048778,
+        134.45652173913044,
+        161.8411764705882,
+        172.8774193548387,
+        183.26
+      ],
+      "min_process_p50_us": 134.45652173913044,
+      "max_process_p50_us": 183.26,
+      "python_visible_peak_bytes": [
+        508828,
+        508828,
+        508828,
+        508828,
+        508828
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "rag_chunker",
+      "size": "large",
+      "label": "security",
+      "engine": "hotloop_public",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "python_fallback_slower"
+      ],
+      "p50_us": 170.6102564102564,
+      "p95_batch_us": 188.63103448275862,
+      "process_p50_us": [
+        144.58695652173913,
+        144.47826086956522,
+        170.6102564102564,
+        176.2625,
+        184.46206896551723
+      ],
+      "min_process_p50_us": 144.47826086956522,
+      "max_process_p50_us": 184.46206896551723,
+      "python_visible_peak_bytes": [
+        510012,
+        510012,
+        510012,
+        510012,
+        510012
+      ],
+      "native_calls": 0,
+      "fallback_calls": 1738
+    },
+    {
+      "application": "rag_chunker",
+      "size": "large",
+      "label": "security",
+      "engine": "private_entry",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "private_entry"
+      ],
+      "p50_us": 3235.5,
+      "p95_batch_us": 3799.3995,
+      "process_p50_us": [
+        2827.2,
+        2838.35,
+        3235.5,
+        3381.9,
+        3611.45
+      ],
+      "min_process_p50_us": 2827.2,
+      "max_process_p50_us": 3611.45,
+      "python_visible_peak_bytes": [
+        510621,
+        510621,
+        510621,
+        510621,
+        510621
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "rag_chunker",
+      "size": "medium",
+      "label": "candidate",
+      "engine": "cpython",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "cpython"
+      ],
+      "p50_us": 21.563276363636362,
+      "p95_batch_us": 22.195555555555554,
+      "process_p50_us": [
+        21.563276363636362,
+        21.711281954887216,
+        21.520821561338288,
+        21.48185185185185,
+        21.776954732510287
+      ],
+      "min_process_p50_us": 21.48185185185185,
+      "max_process_p50_us": 21.776954732510287,
+      "python_visible_peak_bytes": [
+        53020,
+        53020,
+        53020,
+        53020,
+        53020
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "rag_chunker",
+      "size": "medium",
+      "label": "candidate",
+      "engine": "hotloop_public",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "python_fallback_slower"
+      ],
+      "p50_us": 30.653846153846153,
+      "p95_batch_us": 32.144505494505495,
+      "process_p50_us": [
+        31.43799441340782,
+        30.653846153846153,
+        30.39728260869565,
+        30.917177914110432,
+        30.56923076923077
+      ],
+      "min_process_p50_us": 30.39728260869565,
+      "max_process_p50_us": 31.43799441340782,
+      "python_visible_peak_bytes": [
+        54212,
+        54212,
+        54212,
+        54212,
+        54212
+      ],
+      "native_calls": 0,
+      "fallback_calls": 8020
+    },
+    {
+      "application": "rag_chunker",
+      "size": "medium",
+      "label": "candidate",
+      "engine": "private_entry",
+      "strict_correct": false,
+      "tolerance_correct": false,
+      "routes": [
+        "private_entry"
+      ],
+      "p50_us": null,
+      "p95_batch_us": null,
+      "process_p50_us": [],
+      "min_process_p50_us": null,
+      "max_process_p50_us": null,
+      "python_visible_peak_bytes": [],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "rag_chunker",
+      "size": "medium",
+      "label": "security",
+      "engine": "cpython",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "cpython"
+      ],
+      "p50_us": 22.191696750902526,
+      "p95_batch_us": 41.773619631901845,
+      "process_p50_us": [
+        21.118243243243242,
+        22.191696750902526,
+        21.77520325203252,
+        26.965546218487393,
+        25.5079754601227
+      ],
+      "min_process_p50_us": 21.118243243243242,
+      "max_process_p50_us": 26.965546218487393,
+      "python_visible_peak_bytes": [
+        53020,
+        53020,
+        53020,
+        53020,
+        53020
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "rag_chunker",
+      "size": "medium",
+      "label": "security",
+      "engine": "hotloop_public",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "python_fallback_slower"
+      ],
+      "p50_us": 32.30263157894737,
+      "p95_batch_us": 39.8375939849624,
+      "process_p50_us": [
+        29.86720430107527,
+        30.116463414634143,
+        32.30263157894737,
+        37.645112781954886,
+        36.6508064516129
+      ],
+      "min_process_p50_us": 29.86720430107527,
+      "max_process_p50_us": 37.645112781954886,
+      "python_visible_peak_bytes": [
+        54204,
+        54204,
+        54204,
+        54204,
+        54204
+      ],
+      "native_calls": 0,
+      "fallback_calls": 6841
+    },
+    {
+      "application": "rag_chunker",
+      "size": "medium",
+      "label": "security",
+      "engine": "private_entry",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "private_entry"
+      ],
+      "p50_us": 352.18636363636364,
+      "p95_batch_us": 518.95995,
+      "process_p50_us": [
+        300.488,
+        300.3958333333333,
+        352.18636363636364,
+        491.94995,
+        356.7789473684211
+      ],
+      "min_process_p50_us": 300.3958333333333,
+      "max_process_p50_us": 491.94995,
+      "python_visible_peak_bytes": [
+        54879,
+        54879,
+        54973,
+        54879,
+        54879
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "rag_chunker",
+      "size": "small",
+      "label": "candidate",
+      "engine": "cpython",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "cpython"
+      ],
+      "p50_us": 3.7039759939984997,
+      "p95_batch_us": 3.8587396849212303,
+      "process_p50_us": [
+        3.7172607879924953,
+        3.7039759939984997,
+        3.680220646178093,
+        3.65957095709571,
+        3.7090022505626408
+      ],
+      "min_process_p50_us": 3.65957095709571,
+      "max_process_p50_us": 3.7172607879924953,
+      "python_visible_peak_bytes": [
+        5472,
+        5472,
+        5472,
+        5472,
+        5472
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "rag_chunker",
+      "size": "small",
+      "label": "candidate",
+      "engine": "hotloop_public",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "python_fallback_slower"
+      ],
+      "p50_us": 11.42458100558659,
+      "p95_batch_us": 13.267575757575758,
+      "process_p50_us": [
+        11.628862973760933,
+        11.555151515151517,
+        11.384078212290502,
+        11.34792243767313,
+        11.42458100558659
+      ],
+      "min_process_p50_us": 11.34792243767313,
+      "max_process_p50_us": 11.628862973760933,
+      "python_visible_peak_bytes": [
+        6664,
+        6664,
+        6664,
+        6664,
+        6664
+      ],
+      "native_calls": 0,
+      "fallback_calls": 15760
+    },
+    {
+      "application": "rag_chunker",
+      "size": "small",
+      "label": "candidate",
+      "engine": "private_entry",
+      "strict_correct": false,
+      "tolerance_correct": false,
+      "routes": [
+        "private_entry"
+      ],
+      "p50_us": null,
+      "p95_batch_us": null,
+      "process_p50_us": [],
+      "min_process_p50_us": null,
+      "max_process_p50_us": null,
+      "python_visible_peak_bytes": [],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "rag_chunker",
+      "size": "small",
+      "label": "security",
+      "engine": "cpython",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "cpython"
+      ],
+      "p50_us": 3.714464944649446,
+      "p95_batch_us": 4.6738536585365855,
+      "process_p50_us": [
+        3.66,
+        3.758628841607565,
+        3.714464944649446,
+        4.574341463414634,
+        3.6767533490937745
+      ],
+      "min_process_p50_us": 3.66,
+      "max_process_p50_us": 4.574341463414634,
+      "python_visible_peak_bytes": [
+        5472,
+        5472,
+        5472,
+        5472,
+        5472
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    },
+    {
+      "application": "rag_chunker",
+      "size": "small",
+      "label": "security",
+      "engine": "hotloop_public",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "python_fallback_slower"
+      ],
+      "p50_us": 11.130555555555555,
+      "p95_batch_us": 14.348958333333334,
+      "process_p50_us": [
+        11.073605590062112,
+        11.094900849858357,
+        11.130555555555555,
+        13.598263888888889,
+        12.174301675977652
+      ],
+      "min_process_p50_us": 11.073605590062112,
+      "max_process_p50_us": 13.598263888888889,
+      "python_visible_peak_bytes": [
+        6656,
+        6656,
+        6656,
+        6656,
+        6656
+      ],
+      "native_calls": 0,
+      "fallback_calls": 15139
+    },
+    {
+      "application": "rag_chunker",
+      "size": "small",
+      "label": "security",
+      "engine": "private_entry",
+      "strict_correct": true,
+      "tolerance_correct": true,
+      "routes": [
+        "private_entry"
+      ],
+      "p50_us": 33.31176470588235,
+      "p95_batch_us": 61.98217821782178,
+      "process_p50_us": [
+        32.86489361702127,
+        33.13820224719101,
+        33.31176470588235,
+        55.812871287128715,
+        36.756737588652484
+      ],
+      "min_process_p50_us": 32.86489361702127,
+      "max_process_p50_us": 55.812871287128715,
+      "python_visible_peak_bytes": [
+        6646,
+        6646,
+        6599,
+        6599,
+        6599
+      ],
+      "native_calls": 0,
+      "fallback_calls": 0
+    }
+  ],
+  "costs": [
+    {
+      "application": "ar_spatial",
+      "label": "candidate",
+      "values": {
+        "cold_build_seconds": {
+          "p50": 2.1479704910000237,
+          "minimum": 2.0611554870000077,
+          "maximum": 2.347406389000014
+        },
+        "cache_hit_seconds": {
+          "p50": 0.019545901000014965,
+          "minimum": 0.018981899999999996,
+          "maximum": 0.035532900999982076
+        },
+        "import_after_build_seconds": {
+          "p50": 0.0050404000000128235,
+          "minimum": 0.0049283999999829575,
+          "maximum": 0.007115599999963251
+        },
+        "first_public_us": {
+          "p50": 155.799999959072,
+          "minimum": 149.30000000390464,
+          "maximum": 216.89999999807696
+        },
+        "numba_jit_seconds": {
+          "p50": 0.3426701119999507,
+          "minimum": 0.33675658700002487,
+          "maximum": 0.4164493979999975
+        }
+      }
+    },
+    {
+      "application": "ar_spatial",
+      "label": "security",
+      "values": {
+        "cold_build_seconds": {
+          "p50": 2.014966390000012,
+          "minimum": 1.9842349900000045,
+          "maximum": 2.061550683000007
+        },
+        "cache_hit_seconds": {
+          "p50": 0.011083400000018173,
+          "minimum": 0.010401406999989149,
+          "maximum": 0.02812340299999505
+        },
+        "import_after_build_seconds": {
+          "p50": 0.005090003000006504,
+          "minimum": 0.004761500000000751,
+          "maximum": 0.005404900000030466
+        },
+        "first_public_us": {
+          "p50": 163.19999997449486,
+          "minimum": 143.70000000951677,
+          "maximum": 177.90000001127737
+        },
+        "numba_jit_seconds": {
+          "p50": 0.3553138380000007,
+          "minimum": 0.34116549600003054,
+          "maximum": 0.35829849799998215
+        }
+      }
+    },
+    {
+      "application": "geo_distance",
+      "label": "candidate",
+      "values": {
+        "cold_build_seconds": {
+          "p50": 2.0336552690000076,
+          "minimum": 1.96230685499998,
+          "maximum": 3.2663369109999962
+        },
+        "cache_hit_seconds": {
+          "p50": 0.015016401999986329,
+          "minimum": 0.014845697999987806,
+          "maximum": 0.015733298999975887
+        },
+        "import_after_build_seconds": {
+          "p50": 0.005206600000008166,
+          "minimum": 0.00477390000000355,
+          "maximum": 0.005274299999996401
+        },
+        "first_public_us": {
+          "p50": 165.19999999786705,
+          "minimum": 159.10000001895241,
+          "maximum": 172.30000000267864
+        },
+        "numba_jit_seconds": {
+          "p50": 0.2413069929999665,
+          "minimum": 0.23355938899999273,
+          "maximum": 0.2475190600000019
+        }
+      }
+    },
+    {
+      "application": "geo_distance",
+      "label": "security",
+      "values": {
+        "cold_build_seconds": {
+          "p50": 2.0251082110000027,
+          "minimum": 1.928500692,
+          "maximum": 2.4566006630000174
+        },
+        "cache_hit_seconds": {
+          "p50": 0.007919799999996258,
+          "minimum": 0.007746100000019851,
+          "maximum": 0.008151999999995496
+        },
+        "import_after_build_seconds": {
+          "p50": 0.004960799999992105,
+          "minimum": 0.004796599999991713,
+          "maximum": 0.005286299999994526
+        },
+        "first_public_us": {
+          "p50": 186.79999999449137,
+          "minimum": 166.1999999669206,
+          "maximum": 227.99999999278953
+        },
+        "numba_jit_seconds": {
+          "p50": 0.25131359700003486,
+          "minimum": 0.23657837700000073,
+          "maximum": 0.2541787009999865
+        }
+      }
+    },
+    {
+      "application": "ocr_matcher",
+      "label": "candidate",
+      "values": {
+        "cold_build_seconds": {
+          "p50": 1.9409456670000083,
+          "minimum": 1.9354697440000166,
+          "maximum": 2.022340662000005
+        },
+        "cache_hit_seconds": {
+          "p50": 0.020052203000005875,
+          "minimum": 0.019521596999993562,
+          "maximum": 0.02388840000003256
+        },
+        "import_after_build_seconds": {
+          "p50": 0.005354999999980237,
+          "minimum": 0.005018499000016163,
+          "maximum": 0.006142398999998022
+        },
+        "first_public_us": {
+          "p50": 203.7999999799922,
+          "minimum": 199.19999999729043,
+          "maximum": 268.3999999817388
+        }
+      }
+    },
+    {
+      "application": "ocr_matcher",
+      "label": "security",
+      "values": {
+        "cold_build_seconds": {
+          "p50": 1.9691737100000068,
+          "minimum": 1.9191184869999915,
+          "maximum": 2.0454115759999922
+        },
+        "cache_hit_seconds": {
+          "p50": 0.009136200000000372,
+          "minimum": 0.00884169899995868,
+          "maximum": 0.009399000000001934
+        },
+        "import_after_build_seconds": {
+          "p50": 0.005069800000001123,
+          "minimum": 0.004992000000015651,
+          "maximum": 0.0052261000000157765
+        },
+        "first_public_us": {
+          "p50": 225.69999998722778,
+          "minimum": 204.10000001902517,
+          "maximum": 258.9999999997872
+        }
+      }
+    },
+    {
+      "application": "pdf_cleaner",
+      "label": "candidate",
+      "values": {
+        "cold_build_seconds": {
+          "p50": 2.075818640999998,
+          "minimum": 2.0355458999999883,
+          "maximum": 2.2024186130000203
+        },
+        "cache_hit_seconds": {
+          "p50": 0.024231305000000702,
+          "minimum": 0.02395250000000715,
+          "maximum": 0.025077900999974645
+        },
+        "import_after_build_seconds": {
+          "p50": 0.0050598999999920125,
+          "minimum": 0.004992500000000177,
+          "maximum": 0.005440500000020165
+        },
+        "first_public_us": {
+          "p50": 332.60000000723267,
+          "minimum": 324.599999999009,
+          "maximum": 343.39999996291226
+        }
+      }
+    },
+    {
+      "application": "pdf_cleaner",
+      "label": "security",
+      "values": {
+        "cold_build_seconds": {
+          "p50": 1.9712976309999988,
+          "minimum": 1.8426174250000003,
+          "maximum": 2.205593269000019
+        },
+        "cache_hit_seconds": {
+          "p50": 0.009660396000001015,
+          "minimum": 0.009261498000000756,
+          "maximum": 0.011624699999998711
+        },
+        "import_after_build_seconds": {
+          "p50": 0.005210398999963672,
+          "minimum": 0.0048290999999949236,
+          "maximum": 0.006253600000007964
+        },
+        "first_public_us": {
+          "p50": 164.10000000632863,
+          "minimum": 151.99999999992997,
+          "maximum": 207.60000001018852
+        }
+      }
+    },
+    {
+      "application": "pii_scrubber",
+      "label": "candidate",
+      "values": {
+        "cold_build_seconds": {
+          "p50": 3.108220071000005,
+          "minimum": 3.078939249000001,
+          "maximum": 3.5363936880000324
+        },
+        "cache_hit_seconds": {
+          "p50": 0.053121601000043484,
+          "minimum": 0.051310440999998264,
+          "maximum": 0.07244950000000472
+        },
+        "import_after_build_seconds": {
+          "p50": 0.04624650099998462,
+          "minimum": 0.04525853599999152,
+          "maximum": 0.07516110000000253
+        },
+        "first_public_us": {
+          "p50": 745.9999999923639,
+          "minimum": 682.2000000283879,
+          "maximum": 2519.6999999934633
+        }
+      }
+    },
+    {
+      "application": "pii_scrubber",
+      "label": "security",
+      "values": {
+        "cold_build_seconds": {
+          "p50": 2.8176990829999795,
+          "minimum": 2.557169704000003,
+          "maximum": 3.069449585000001
+        },
+        "cache_hit_seconds": {
+          "p50": 0.017046099999959097,
+          "minimum": 0.015039500000000317,
+          "maximum": 0.04309109999999805
+        },
+        "import_after_build_seconds": {
+          "p50": 0.04569459999999026,
+          "minimum": 0.03972950200000014,
+          "maximum": 0.09233280000000832
+        },
+        "first_public_us": {
+          "p50": 304.7999999807871,
+          "minimum": 238.1000000042377,
+          "maximum": 520.7990000144491
+        }
+      }
+    },
+    {
+      "application": "quant_backtest",
+      "label": "candidate",
+      "values": {
+        "cold_build_seconds": {
+          "p50": 1.9410838909999768,
+          "minimum": 1.9171627250000114,
+          "maximum": 2.14532243299999
+        },
+        "cache_hit_seconds": {
+          "p50": 0.013221001000005117,
+          "minimum": 0.012685701999998855,
+          "maximum": 0.013492900000017016
+        },
+        "import_after_build_seconds": {
+          "p50": 0.0048686000000088825,
+          "minimum": 0.004801100000008773,
+          "maximum": 0.004945699999950648
+        },
+        "first_public_us": {
+          "p50": 133.69999999213178,
+          "minimum": 130.79999996534752,
+          "maximum": 146.19999998899402
+        },
+        "numba_jit_seconds": {
+          "p50": 0.4516020980000235,
+          "minimum": 0.43773347399999807,
+          "maximum": 0.559892327
+        }
+      }
+    },
+    {
+      "application": "quant_backtest",
+      "label": "security",
+      "values": {
+        "cold_build_seconds": {
+          "p50": 1.919177302999998,
+          "minimum": 1.9002283730000045,
+          "maximum": 2.3099446030000195
+        },
+        "cache_hit_seconds": {
+          "p50": 0.006857000000024982,
+          "minimum": 0.0065198000000350476,
+          "maximum": 0.007447299999967072
+        },
+        "import_after_build_seconds": {
+          "p50": 0.004824799999994411,
+          "minimum": 0.004774400000002288,
+          "maximum": 0.005202498999977934
+        },
+        "first_public_us": {
+          "p50": 48.39999996875122,
+          "minimum": 46.29999997973755,
+          "maximum": 59.49999996346378
+        },
+        "numba_jit_seconds": {
+          "p50": 0.460275691999982,
+          "minimum": 0.4489961940000171,
+          "maximum": 0.5522111009999833
+        }
+      }
+    },
+    {
+      "application": "rag_chunker",
+      "label": "candidate",
+      "values": {
+        "cold_build_seconds": {
+          "p50": 1.9591995260000061,
+          "minimum": 1.9523168299999725,
+          "maximum": 1.9684124919999988
+        },
+        "cache_hit_seconds": {
+          "p50": 0.025705198999958156,
+          "minimum": 0.025325402999996527,
+          "maximum": 0.02603250199999252
+        },
+        "import_after_build_seconds": {
+          "p50": 0.008371002000004069,
+          "minimum": 0.008050700000012512,
+          "maximum": 0.009282299999995303
+        },
+        "first_public_us": {
+          "p50": 299.9000000158958,
+          "minimum": 244.799999990164,
+          "maximum": 304.59999999266074
+        }
+      }
+    },
+    {
+      "application": "rag_chunker",
+      "label": "security",
+      "values": {
+        "cold_build_seconds": {
+          "p50": 1.9612738749999892,
+          "minimum": 1.9224736630000052,
+          "maximum": 2.0864106619999916
+        },
+        "cache_hit_seconds": {
+          "p50": 0.011015499999984968,
+          "minimum": 0.010811399999994364,
+          "maximum": 0.014083000000027823
+        },
+        "import_after_build_seconds": {
+          "p50": 0.00845609999998942,
+          "minimum": 0.008078799999992725,
+          "maximum": 0.010894800000016858
+        },
+        "first_public_us": {
+          "p50": 281.70000001637163,
+          "minimum": 254.2999999946005,
+          "maximum": 313.8000000149077
+        }
+      }
+    }
+  ]
+}

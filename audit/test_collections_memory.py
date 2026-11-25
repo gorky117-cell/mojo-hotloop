@@ -1,13 +1,19 @@
-import os
+from pathlib import Path
 import resource
 import sys
 
-repo_root = "/home/gaurav/mojo-hotloop"
-sys.path.insert(0, repo_root)
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
+from hotloop import hotloop
 
 from audit.unseen_cases.running_max.original import running_max
 from audit.unseen_cases.count_greater.original import count_greater
 from audit.unseen_cases.simple_moving_average.original import simple_moving_average
+
+running_max = hotloop(strict=True)(running_max._original)
+count_greater = hotloop(strict=True)(count_greater._original)
+simple_moving_average = hotloop(strict=True)(simple_moving_average._original)
+
 
 def get_rss_kb():
     return resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
@@ -37,4 +43,5 @@ print(f"Growth     : {rss_growth_kb} KB across 60,000 native collection calls")
 
 # Allow small Python GC buffer (<= 2048 KB)
 assert rss_growth_kb <= 2048, f"Memory leak detected! Growth was {rss_growth_kb} KB"
-print("SUCCESS: Zero memory leaks verified!")
+assert all(fn._call_count_native == 20100 for fn in (running_max, count_greater, simple_moving_average))
+print("All three kernels ran natively within the peak RSS growth limit.")

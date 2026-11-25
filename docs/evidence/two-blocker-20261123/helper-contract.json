@@ -1,0 +1,33 @@
+{
+  "build_ok": false,
+  "diagnostic": "Mojo compilation failed:\n/tmp/hotloop-two-blocker-20261123/helper-contract/fast.mojo:657:62: error: invalid call to '_native_increment': value passed to 'x' cannot be converted from 'Int' to 'Float64'\n    return _checked_math_sin(_math_operand(_native_increment(x)))\n                                           ~~~~~~~~~~~~~~~~~ ^\n/tmp/hotloop-two-blocker-20261123/helper-contract/fast.mojo:653:5: note: function declared here\ndef _native_increment(x: Float64) raises -> Float64:\n    ^\n/home/gaurav/mojo-hotloop/.venv/bin/mojo: error: failed to parse the provided Mojo source module\n",
+  "rows": [
+    {
+      "actual": -0.848925964814655,
+      "expected": -0.848925964814655,
+      "equal": true,
+      "mode": "default",
+      "backend": "python_fallback",
+      "native_calls": 0,
+      "fallback_calls": 1
+    },
+    {
+      "actual": -0.848925964814655,
+      "expected": -0.848925964814655,
+      "equal": true,
+      "mode": "forced",
+      "backend": "python_fallback",
+      "native_calls": 0,
+      "fallback_calls": 1
+    },
+    {
+      "error": "HotloopNativeExecutionError",
+      "message": "Strict native mode enabled: failed to execute native Mojo backend for 'helper_operand'. Reason: No native binary found for subject.py",
+      "expected": -0.848925964814655,
+      "mode": "strict",
+      "backend": "native_error",
+      "native_calls": 0,
+      "fallback_calls": 0
+    }
+  ]
+}

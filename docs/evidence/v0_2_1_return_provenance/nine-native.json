@@ -1,0 +1,78 @@
+{
+  "native": 9,
+  "fallback": 0,
+  "cases": [
+    {
+      "function": "literal_default",
+      "mode": "default",
+      "identity": true,
+      "native": 1,
+      "fallback": 0,
+      "backend": "native"
+    },
+    {
+      "function": "local_constant",
+      "mode": "default",
+      "identity": true,
+      "native": 1,
+      "fallback": 0,
+      "backend": "native"
+    },
+    {
+      "function": "helper_default",
+      "mode": "default",
+      "identity": true,
+      "native": 1,
+      "fallback": 0,
+      "backend": "native"
+    },
+    {
+      "function": "literal_default",
+      "mode": "forced",
+      "identity": true,
+      "native": 1,
+      "fallback": 0,
+      "backend": "native"
+    },
+    {
+      "function": "local_constant",
+      "mode": "forced",
+      "identity": true,
+      "native": 1,
+      "fallback": 0,
+      "backend": "native"
+    },
+    {
+      "function": "helper_default",
+      "mode": "forced",
+      "identity": true,
+      "native": 1,
+      "fallback": 0,
+      "backend": "native"
+    },
+    {
+      "function": "literal_default",
+      "mode": "strict",
+      "identity": true,
+      "native": 1,
+      "fallback": 0,
+      "backend": "native"
+    },
+    {
+      "function": "local_constant",
+      "mode": "strict",
+      "identity": true,
+      "native": 1,
+      "fallback": 0,
+      "backend": "native"
+    },
+    {
+      "function": "helper_default",
+      "mode": "strict",
+      "identity": true,
+      "native": 1,
+      "fallback": 0,
+      "backend": "native"
+    }
+  ]
+}

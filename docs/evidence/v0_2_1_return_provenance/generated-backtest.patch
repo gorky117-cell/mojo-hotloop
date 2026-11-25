@@ -1,0 +1,87 @@
+--- security/fast.mojo
++++ proposed/fast.mojo
+@@ -529,11 +529,12 @@
+     try:
+         var m = PythonModuleBuilder("fast")
+         m.def_function[_pywrap_stateful_trailing_backtest]("stateful_trailing_backtest")
++        m.def_function[_hotloop_context_spec_impl]("_hotloop_provenance_v1")
+         return m.finalize()
+     except e:
+         abort(String("error creating Python Mojo module: ", e))
+ 
+-def _pywrap_stateful_trailing_backtest(arg0: PythonObject, arg1: PythonObject, arg2: PythonObject, arg3: PythonObject) raises -> PythonObject:
++def _pywrap_stateful_trailing_backtest(_hotloop_origin_context: PythonObject, arg0: PythonObject, arg1: PythonObject, arg2: PythonObject, arg3: PythonObject) raises -> PythonObject:
+     var _guard = Python.import_module("hotloop._arguments")
+     var _input0 = _guard.checked_argument(arg0, "int")
+     var ticks = Int(py=_input0)
+@@ -543,8 +544,22 @@
+     var stop_pct = Float64(py=_input2)
+     var _input3 = _guard.checked_argument(arg3, "float")
+     var fee_rate = Float64(py=_input3)
+-    var _res = _native_stateful_trailing_backtest(ticks, start_price, stop_pct, fee_rate)
++    var _hotloop_origin_result = _native_return_origin_stateful_trailing_backtest(ticks, start_price, stop_pct, fee_rate)
++    if _hotloop_origin_result[1] == -2:
++        return _hotloop_origin_context[_hotloop_origin_result[2]]
++    if _hotloop_origin_result[1] == 0:
++        return arg0
++    if _hotloop_origin_result[1] == 1:
++        return arg1
++    if _hotloop_origin_result[1] == 2:
++        return arg2
++    if _hotloop_origin_result[1] == 3:
++        return arg3
++    var _res = _hotloop_origin_result[0]
+     return PythonObject(_res)
++
++def _hotloop_context_spec_impl() raises -> PythonObject:
++    return PythonObject(String('{"builtins":{"stateful_trailing_backtest":["range"]},"calls":{"stateful_trailing_backtest":[]},"canonical":[0,3,4,5,17,18,19,20,21,24],"codes":{"stateful_trailing_backtest":"c0a8b21cc63c4a1f8f542128f0d4872f02f52575ff64405b881fb8222c2396e5"},"constants":[["stateful_trailing_backtest",1],["stateful_trailing_backtest",2],["stateful_trailing_backtest",3],["stateful_trailing_backtest",4],["stateful_trailing_backtest",1],["stateful_trailing_backtest",5],["stateful_trailing_backtest",6],["stateful_trailing_backtest",7],["stateful_trailing_backtest",8],["stateful_trailing_backtest",9],["stateful_trailing_backtest",3],["stateful_trailing_backtest",10],["stateful_trailing_backtest",11],["stateful_trailing_backtest",2],["stateful_trailing_backtest",3],["stateful_trailing_backtest",3],["stateful_trailing_backtest",2],["stateful_trailing_backtest",12],["stateful_trailing_backtest",13],["stateful_trailing_backtest",1],["stateful_trailing_backtest",14],["stateful_trailing_backtest",1],["stateful_trailing_backtest",3],["stateful_trailing_backtest",2],["stateful_trailing_backtest",4]],"math":{"stateful_trailing_backtest":[]},"profile":"cpython-3.12.16-pylong30","version":1}'))
+ 
+ def _native_stateful_trailing_backtest(ticks: Int, start_price: Float64, stop_pct: Float64, fee_rate: Float64) raises -> Float64:
+     if (ticks <= 0):
+@@ -580,3 +595,46 @@
+         return _checked_mul(units, price)
+     else:
+         return cash
++
++def _native_return_origin_stateful_trailing_backtest(ticks: Int, start_price: Float64, stop_pct: Float64, fee_rate: Float64) raises -> Tuple[Float64, Int, Int]:
++    var _hotloop_origin_0: Int = -1
++    var _hotloop_origin_0_item: Int = -1
++    if (ticks <= 0):
++        return (start_price, 1, -1)
++    var price = start_price
++    var peak_price = start_price
++    var cash = 0.0
++    _hotloop_origin_0 = -2
++    _hotloop_origin_0_item = 1
++    var units = 1.0
++    var in_position = True
++    var cooldown = 0
++    var lcg_state = 42
++    for _ in range(ticks):
++        lcg_state = (_checked_add(_checked_mul(1664525, lcg_state), 1013904223) & 4294967295)
++        var rand_val = _checked_div(lcg_state, 4294967296.0)
++        price = _checked_mul(price, _checked_add(1.0, _checked_mul(_checked_sub(rand_val, 0.5), 0.02)))
++        if in_position:
++            if (price > peak_price):
++                peak_price = price
++            elif ((stop_pct > 0.0) and (price <= _checked_mul(peak_price, _checked_sub(1.0, stop_pct)))):
++                cash = _checked_mul(_checked_mul(units, price), _checked_sub(1.0, fee_rate))
++                _hotloop_origin_0 = -1
++                _hotloop_origin_0_item = -1
++                units = 0.0
++                in_position = False
++                cooldown = 5
++        else:
++            if (cooldown > 0):
++                cooldown = _checked_sub(cooldown, 1)
++            if (cooldown == 0):
++                units = _checked_div(_checked_mul(cash, _checked_sub(1.0, fee_rate)), price)
++                cash = 0.0
++                _hotloop_origin_0 = -2
++                _hotloop_origin_0_item = 23
++                in_position = True
++                peak_price = price
++    if in_position:
++        return (_checked_mul(units, price), -1, -1)
++    else:
++        return (cash, _hotloop_origin_0, _hotloop_origin_0_item)

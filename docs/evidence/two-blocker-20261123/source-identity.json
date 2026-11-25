@@ -1,0 +1,17 @@
+{
+  "source_commit": "aceec467cd846289568927a2783e7f50bfe1e21b",
+  "source_archive_sha256": "fd3f05c45e849beb990a3ed1a8703c9afc1aeea80a7c22d56a3bb217d3344436",
+  "runtime_file_sha256": {
+    "hotloop/__init__.py": "3263c4c33e07ec43fb5d35fd95c014ca39a75bf1733523e927f7548fef0e0099",
+    "hotloop/_arguments.py": "c46d71a1b367fad00fefc3d70e54e5fcd109ad3975f169fd1cb62d8415253cb0",
+    "hotloop/_native_cache.py": "8b66135cb5e37afc07a4ca2f3f763c2652633ea76caaa505f6b6b310c76c15b1",
+    "hotloop/_provenance.py": "6a5be96177d083beed2ae649090266c02133a41e6102a6d1532b038c5410c8a2",
+    "hotloop/_return_origin.py": "62770c64c60fc27a13c5eef469d8d467f21b24302207bcdc0ca9373c2339efac",
+    "hotloop/ast_transpiler.py": "47bd6a1a0a6d5483472885d20f01a1bd873b81f4e0d6ac8eded0d6d564a3826b",
+    "hotloop/backends/__init__.py": "573247d37c7d5d4a9689e0c539681629e85979cedd3fb4487e0fc50d42f91a71",
+    "hotloop/backends/base.py": "06224d9606a713255551e4fe9e90f88fcaee14c430e37d2415470c3eadd90fc1",
+    "hotloop/backends/mojo.py": "0b4530979b27f57cf1d9cefdc580f087346b2d3920fec845e951c12b478c15ab",
+    "hotloop/cli.py": "28f4a3cc97243cb36a8614eb0e4768cf6572be54893b42e2f30f422034938b58",
+    "hotloop/decorator.py": "4845038dfb197af55113c07db3c4a32d4ef8bd123bd71e8a4dcc16b947bf70a8"
+  }
+}

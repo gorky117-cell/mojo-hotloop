@@ -1,0 +1,11 @@
+{
+  "application": "ocr_matcher",
+  "public_wrappers": [
+    {
+      "function": "find_closest_match",
+      "native_calls": 1020,
+      "fallback_calls": 1,
+      "last_backend": "native"
+    }
+  ]
+}

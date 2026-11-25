@@ -1,0 +1,11 @@
+{
+  "application": "pii_scrubber",
+  "public_wrappers": [
+    {
+      "function": "scrub_pii",
+      "native_calls": 1019,
+      "fallback_calls": 0,
+      "last_backend": "native"
+    }
+  ]
+}

@@ -1,0 +1,262 @@
+{
+  "version": "0.2.1",
+  "cases": {
+    "readme_scalar": {
+      "python": {
+        "value": "333328333350000",
+        "type": "builtins.int"
+      },
+      "actual": {
+        "value": "333328333350000",
+        "type": "builtins.int"
+      },
+      "route": "native",
+      "warnings": [],
+      "equal": true,
+      "native_calls": 1,
+      "fallback_calls": 0
+    },
+    "ordinary_product": {
+      "python": {
+        "value": "-1961",
+        "type": "builtins.int"
+      },
+      "actual": {
+        "value": "-1961",
+        "type": "builtins.int"
+      },
+      "route": "native",
+      "warnings": [],
+      "equal": true
+    },
+    "positive_overflow": {
+      "python": {
+        "value": "13835058055282163712",
+        "type": "builtins.int"
+      },
+      "actual": {
+        "value": "13835058055282163712",
+        "type": "builtins.int"
+      },
+      "route": "python_fallback_overflow",
+      "warnings": [
+        "HotloopFallbackWarning"
+      ],
+      "equal": true,
+      "strict": {
+        "exception": "HotloopNativeExecutionError"
+      },
+      "strict_route": "native_error"
+    },
+    "signed_limit_product": {
+      "python": {
+        "value": "9223372036854775808",
+        "type": "builtins.int"
+      },
+      "actual": {
+        "value": "9223372036854775808",
+        "type": "builtins.int"
+      },
+      "route": "python_fallback_overflow",
+      "warnings": [],
+      "equal": true,
+      "strict": {
+        "exception": "HotloopNativeExecutionError"
+      },
+      "strict_route": "native_error"
+    },
+    "signed_limit_times_one": {
+      "python": {
+        "value": "-9223372036854775808",
+        "type": "builtins.int"
+      },
+      "actual": {
+        "value": "-9223372036854775808",
+        "type": "builtins.int"
+      },
+      "route": "native",
+      "warnings": [],
+      "equal": true
+    },
+    "float_rounding": {
+      "python": {
+        "value": "0.0",
+        "type": "builtins.float",
+        "bits": "0000000000000000"
+      },
+      "actual": {
+        "value": "0.0",
+        "type": "builtins.float",
+        "bits": "0000000000000000"
+      },
+      "route": "native",
+      "warnings": [],
+      "equal": true
+    },
+    "signed_zero": {
+      "python": {
+        "value": "-0.0",
+        "type": "builtins.float",
+        "bits": "8000000000000000"
+      },
+      "actual": {
+        "value": "-0.0",
+        "type": "builtins.float",
+        "bits": "8000000000000000"
+      },
+      "route": "native",
+      "warnings": [],
+      "equal": true
+    },
+    "nan": {
+      "python": {
+        "value": "nan",
+        "type": "builtins.float",
+        "bits": "7ff8000000000000"
+      },
+      "actual": {
+        "value": "nan",
+        "type": "builtins.float",
+        "bits": "7ff8000000000000"
+      },
+      "route": "native",
+      "warnings": [],
+      "equal": true
+    },
+    "infinity": {
+      "python": {
+        "value": "inf",
+        "type": "builtins.float",
+        "bits": "7ff0000000000000"
+      },
+      "actual": {
+        "value": "inf",
+        "type": "builtins.float",
+        "bits": "7ff0000000000000"
+      },
+      "route": "native",
+      "warnings": [],
+      "equal": true
+    },
+    "zero_iterations": {
+      "python": {
+        "value": "0.0",
+        "type": "builtins.float",
+        "bits": "0000000000000000"
+      },
+      "actual": {
+        "value": "0.0",
+        "type": "builtins.float",
+        "bits": "0000000000000000"
+      },
+      "route": "native",
+      "warnings": [],
+      "equal": true
+    },
+    "division_exception": {
+      "python": {
+        "exception": "ZeroDivisionError"
+      },
+      "actual": {
+        "exception": "ZeroDivisionError"
+      },
+      "route": "native",
+      "warnings": [],
+      "equal": true
+    },
+    "numpy_scalar_contract": {
+      "python": {
+        "value": "1.25",
+        "type": "numpy.float64",
+        "bits": "3ff4000000000000"
+      },
+      "actual": {
+        "value": "1.25",
+        "type": "numpy.float64",
+        "bits": "3ff4000000000000"
+      },
+      "route": "python_fallback_semantics",
+      "warnings": [
+        "HotloopFallbackWarning"
+      ],
+      "equal": true
+    },
+    "strided_valid": {
+      "python": {
+        "value": "0.0",
+        "type": "numpy.float64",
+        "bits": "0000000000000000"
+      },
+      "actual": {
+        "value": "0.0",
+        "type": "numpy.float64",
+        "bits": "0000000000000000"
+      },
+      "route": "python_fallback_semantics",
+      "warnings": [],
+      "equal": true
+    },
+    "float32_valid": {
+      "python": {
+        "value": "1.25",
+        "type": "numpy.float32"
+      },
+      "actual": {
+        "value": "1.25",
+        "type": "numpy.float32"
+      },
+      "route": "python_fallback_semantics",
+      "warnings": [],
+      "equal": true
+    },
+    "float_decay_list_forced": {
+      "python": {
+        "value": "0.8849482403716069",
+        "type": "builtins.float",
+        "bits": "3fec517ef8e18fc2"
+      },
+      "actual": {
+        "value": "0.8849482403716069",
+        "type": "builtins.float",
+        "bits": "3fec517ef8e18fc2"
+      },
+      "route": "native",
+      "warnings": [],
+      "equal": true
+    }
+  },
+  "descriptors": [
+    {
+      "name": "float64",
+      "ndim": 1,
+      "contiguous": true,
+      "aligned": true,
+      "native_endian": true
+    },
+    {
+      "name": "float64",
+      "ndim": 1,
+      "contiguous": true,
+      "aligned": true,
+      "native_endian": false
+    },
+    {
+      "name": "float64",
+      "ndim": 1,
+      "contiguous": true,
+      "aligned": false,
+      "native_endian": true
+    }
+  ],
+  "manifest_keys": [
+    "compiler_version",
+    "context",
+    "generated_sha256",
+    "module",
+    "schema",
+    "so_sha256",
+    "source_file",
+    "source_sha256",
+    "transpiler_version"
+  ]
+}

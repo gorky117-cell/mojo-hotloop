@@ -1,0 +1,1468 @@
+{
+  "label": "candidate",
+  "python": "3.12.16 (main, Nov 11 2026, 00:15:59) [Clang 23.1.3 ]",
+  "package": "/tmp/hotloop-two-blocker-20261123/full-aceec46/venv/lib/python3.12/site-packages/hotloop/__init__.py",
+  "implementation": "535e08744f93ac26f80ac18f5fd1876f0c86c49c0494bca1c66a9e311bab0036",
+  "rows": [
+    {
+      "application": "pii_scrubber",
+      "size": "short",
+      "engine": "cpython",
+      "label": "candidate",
+      "correct": true,
+      "qualification": {
+        "type_correct": true,
+        "value_correct": true,
+        "bits_correct": true,
+        "aliases_correct": true,
+        "strict_correct": true,
+        "tolerance_correct": true,
+        "result_sha256": "a17b2ed77cb617dd1583214443e4801a76040cc69a95544ba51576174af1218f"
+      },
+      "source_sha256": "02ecc580d7acf9dfd3898c65435bf7214dbad0b2b24920a1b07c62a5c6c17747",
+      "input_sha256": "6a955a75f5e8ed3eb6b8e41b58bfbde5448ef88b2740b0dbf547a8432b717718",
+      "actual_backend": "cpython",
+      "batch_us": [
+        24.25318079096045,
+        24.164474576271186,
+        22.375774011299438,
+        22.292152542372882,
+        22.352604519774008,
+        22.080858757062146,
+        22.112491525423728,
+        22.280853107344633,
+        22.07520338983051
+      ],
+      "p50_us": 22.292152542372882,
+      "iterations": 177
+    },
+    {
+      "application": "pii_scrubber",
+      "size": "short",
+      "engine": "public",
+      "label": "candidate",
+      "correct": true,
+      "qualification": {
+        "type_correct": true,
+        "value_correct": true,
+        "bits_correct": true,
+        "aliases_correct": true,
+        "strict_correct": true,
+        "tolerance_correct": true,
+        "result_sha256": "a17b2ed77cb617dd1583214443e4801a76040cc69a95544ba51576174af1218f"
+      },
+      "source_sha256": "02ecc580d7acf9dfd3898c65435bf7214dbad0b2b24920a1b07c62a5c6c17747",
+      "input_sha256": "6a955a75f5e8ed3eb6b8e41b58bfbde5448ef88b2740b0dbf547a8432b717718",
+      "actual_backend": "native",
+      "batch_us": [
+        15.49310891089109,
+        14.525782178217822,
+        16.318861386138614,
+        15.680247524752474,
+        15.242613861386138,
+        15.087168316831683,
+        15.267376237623763,
+        15.531722772277227,
+        25.590178217821784
+      ],
+      "p50_us": 15.49310891089109,
+      "iterations": 101
+    },
+    {
+      "application": "pii_scrubber",
+      "size": "medium",
+      "engine": "cpython",
+      "label": "candidate",
+      "correct": true,
+      "qualification": {
+        "type_correct": true,
+        "value_correct": true,
+        "bits_correct": true,
+        "aliases_correct": true,
+        "strict_correct": true,
+        "tolerance_correct": true,
+        "result_sha256": "3003570a42abaa6c544fa5d9da81f9f9ddfa165ed3e4950d783fde49a5d888c8"
+      },
+      "source_sha256": "02ecc580d7acf9dfd3898c65435bf7214dbad0b2b24920a1b07c62a5c6c17747",
+      "input_sha256": "c24bd54b11fa4105ce7683a0e1cd57bb25db26614bf81a4cdb6b80dba7913ea7",
+      "actual_backend": "cpython",
+      "batch_us": [
+        4349.213,
+        4284.812,
+        4323.612,
+        5006.915,
+        4520.213,
+        4347.812,
+        4333.613,
+        4330.712,
+        4270.612
+      ],
+      "p50_us": 4333.613,
+      "iterations": 1
+    },
+    {
+      "application": "pii_scrubber",
+      "size": "medium",
+      "engine": "public",
+      "label": "candidate",
+      "correct": true,
+      "qualification": {
+        "type_correct": true,
+        "value_correct": true,
+        "bits_correct": true,
+        "aliases_correct": true,
+        "strict_correct": true,
+        "tolerance_correct": true,
+        "result_sha256": "3003570a42abaa6c544fa5d9da81f9f9ddfa165ed3e4950d783fde49a5d888c8"
+      },
+      "source_sha256": "02ecc580d7acf9dfd3898c65435bf7214dbad0b2b24920a1b07c62a5c6c17747",
+      "input_sha256": "c24bd54b11fa4105ce7683a0e1cd57bb25db26614bf81a4cdb6b80dba7913ea7",
+      "actual_backend": "native",
+      "batch_us": [
+        686.662,
+        676.382,
+        669.282,
+        667.2618,
+        669.222,
+        679.562,
+        667.6818000000001,
+        673.922,
+        668.182
+      ],
+      "p50_us": 669.282,
+      "iterations": 5
+    },
+    {
+      "application": "pii_scrubber",
+      "size": "large",
+      "engine": "cpython",
+      "label": "candidate",
+      "correct": true,
+      "qualification": {
+        "type_correct": true,
+        "value_correct": true,
+        "bits_correct": true,
+        "aliases_correct": true,
+        "strict_correct": true,
+        "tolerance_correct": true,
+        "result_sha256": "2fe92b263951d12ac9848dad76c7ffcf1af2053669464007dd9cb1da5f909743"
+      },
+      "source_sha256": "02ecc580d7acf9dfd3898c65435bf7214dbad0b2b24920a1b07c62a5c6c17747",
+      "input_sha256": "e025f90ae942f2cccb08635cad8afd6f6bd34a1cf1d4f3b5426a9cd63ed248a0",
+      "actual_backend": "cpython",
+      "batch_us": [
+        53085.552,
+        53946.756,
+        55723.06,
+        54370.256,
+        54548.557,
+        54442.557,
+        54611.557,
+        54783.157,
+        54756.558
+      ],
+      "p50_us": 54548.557,
+      "iterations": 1
+    },
+    {
+      "application": "pii_scrubber",
+      "size": "large",
+      "engine": "public",
+      "label": "candidate",
+      "correct": true,
+      "qualification": {
+        "type_correct": true,
+        "value_correct": true,
+        "bits_correct": true,
+        "aliases_correct": true,
+        "strict_correct": true,
+        "tolerance_correct": true,
+        "result_sha256": "2fe92b263951d12ac9848dad76c7ffcf1af2053669464007dd9cb1da5f909743"
+      },
+      "source_sha256": "02ecc580d7acf9dfd3898c65435bf7214dbad0b2b24920a1b07c62a5c6c17747",
+      "input_sha256": "e025f90ae942f2cccb08635cad8afd6f6bd34a1cf1d4f3b5426a9cd63ed248a0",
+      "actual_backend": "native",
+      "batch_us": [
+        9128.427,
+        8528.424,
+        8866.026,
+        8618.724,
+        8679.525,
+        8566.225,
+        8577.525,
+        8635.224,
+        8552.724
+      ],
+      "p50_us": 8618.724,
+      "iterations": 1
+    },
+    {
+      "application": "pdf_cleaner",
+      "size": "small",
+      "engine": "cpython",
+      "label": "candidate",
+      "correct": true,
+      "qualification": {
+        "type_correct": true,
+        "value_correct": true,
+        "bits_correct": true,
+        "aliases_correct": true,
+        "strict_correct": true,
+        "tolerance_correct": true,
+        "result_sha256": "7000679a3d7886ed5a36e838f587a9bfac70209e600c57d2e8cc2a16e7cba5ab"
+      },
+      "source_sha256": "7806a78041ec6d4ed37f35926f9f7f173357951922f4adc87d35cfe60f899676",
+      "input_sha256": "a60380dbcae276dadf839bc4f205ee0023687970661e87dc0d70d5d77763d34c",
+      "actual_backend": "cpython",
+      "batch_us": [
+        221.60972727272727,
+        209.71427272727274,
+        208.0779090909091,
+        207.95513636363634,
+        210.35063636363634,
+        213.62336363636365,
+        215.09609090909092,
+        217.05068181818183,
+        210.1596818181818
+      ],
+      "p50_us": 210.35063636363634,
+      "iterations": 22
+    },
+    {
+      "application": "pdf_cleaner",
+      "size": "small",
+      "engine": "public",
+      "label": "candidate",
+      "correct": true,
+      "qualification": {
+        "type_correct": true,
+        "value_correct": true,
+        "bits_correct": true,
+        "aliases_correct": true,
+        "strict_correct": true,
+        "tolerance_correct": true,
+        "result_sha256": "7000679a3d7886ed5a36e838f587a9bfac70209e600c57d2e8cc2a16e7cba5ab"
+      },
+      "source_sha256": "7806a78041ec6d4ed37f35926f9f7f173357951922f4adc87d35cfe60f899676",
+      "input_sha256": "a60380dbcae276dadf839bc4f205ee0023687970661e87dc0d70d5d77763d34c",
+      "actual_backend": "native",
+      "batch_us": [
+        47.1256,
+        45.860127272727276,
+        44.851054545454545,
+        47.38558181818182,
+        45.32196363636364,
+        44.96012727272727,
+        45.33832727272727,
+        46.02921818181819,
+        45.847418181818185
+      ],
+      "p50_us": 45.847418181818185,
+      "iterations": 55
+    },
+    {
+      "application": "pdf_cleaner",
+      "size": "medium",
+      "engine": "cpython",
+      "label": "candidate",
+      "correct": true,
+      "qualification": {
+        "type_correct": true,
+        "value_correct": true,
+        "bits_correct": true,
+        "aliases_correct": true,
+        "strict_correct": true,
+        "tolerance_correct": true,
+        "result_sha256": "b3ce044cc49e55d9f0a1d1d3fd6ca7e85c8fea248ac0fba4efe612e8fbc73cd0"
+      },
+      "source_sha256": "7806a78041ec6d4ed37f35926f9f7f173357951922f4adc87d35cfe60f899676",
+      "input_sha256": "a1eee922707f9b9e56b2a97b502d790287f7657a57b0bba762f02ffbd11e32f5",
+      "actual_backend": "cpython",
+      "batch_us": [
+        2077.7065,
+        2064.256,
+        2116.3565,
+        2056.706,
+        2069.206,
+        2064.0565,
+        2073.706,
+        2062.956,
+        2066.006
+      ],
+      "p50_us": 2066.006,
+      "iterations": 2
+    },
+    {
+      "application": "pdf_cleaner",
+      "size": "medium",
+      "engine": "public",
+      "label": "candidate",
+      "correct": true,
+      "qualification": {
+        "type_correct": true,
+        "value_correct": true,
+        "bits_correct": true,
+        "aliases_correct": true,
+        "strict_correct": true,
+        "tolerance_correct": true,
+        "result_sha256": "b3ce044cc49e55d9f0a1d1d3fd6ca7e85c8fea248ac0fba4efe612e8fbc73cd0"
+      },
+      "source_sha256": "7806a78041ec6d4ed37f35926f9f7f173357951922f4adc87d35cfe60f899676",
+      "input_sha256": "a1eee922707f9b9e56b2a97b502d790287f7657a57b0bba762f02ffbd11e32f5",
+      "actual_backend": "native",
+      "batch_us": [
+        361.9549230769231,
+        358.10107692307696,
+        353.57030769230767,
+        354.1163846153846,
+        365.6856923076923,
+        353.4933846153846,
+        355.00876923076925,
+        354.2395384615384,
+        361.7549230769231
+      ],
+      "p50_us": 355.00876923076925,
+      "iterations": 13
+    },
+    {
+      "application": "pdf_cleaner",
+      "size": "large",
+      "engine": "cpython",
+      "label": "candidate",
+      "correct": true,
+      "qualification": {
+        "type_correct": true,
+        "value_correct": true,
+        "bits_correct": true,
+        "aliases_correct": true,
+        "strict_correct": true,
+        "tolerance_correct": true,
+        "result_sha256": "4135779e5acfa7dea132ebbcec0903b9f2a533bdcfc602d55f1efab1d66e73d6"
+      },
+      "source_sha256": "7806a78041ec6d4ed37f35926f9f7f173357951922f4adc87d35cfe60f899676",
+      "input_sha256": "86bd27584e6c20d8f856d006e8633cb85f21c9abed7ec6f5f5ecea91b817389f",
+      "actual_backend": "cpython",
+      "batch_us": [
+        19546.858,
+        20288.061,
+        19725.058,
+        19792.159,
+        19735.959,
+        19801.459,
+        19680.459,
+        19818.059,
+        19653.758
+      ],
+      "p50_us": 19735.959,
+      "iterations": 1
+    },
+    {
+      "application": "pdf_cleaner",
+      "size": "large",
+      "engine": "public",
+      "label": "candidate",
+      "correct": true,
+      "qualification": {
+        "type_correct": true,
+        "value_correct": true,
+        "bits_correct": true,
+        "aliases_correct": true,
+        "strict_correct": true,
+        "tolerance_correct": true,
+        "result_sha256": "4135779e5acfa7dea132ebbcec0903b9f2a533bdcfc602d55f1efab1d66e73d6"
+      },
+      "source_sha256": "7806a78041ec6d4ed37f35926f9f7f173357951922f4adc87d35cfe60f899676",
+      "input_sha256": "86bd27584e6c20d8f856d006e8633cb85f21c9abed7ec6f5f5ecea91b817389f",
+      "actual_backend": "native",
+      "batch_us": [
+        3338.71,
+        3235.01,
+        3247.31,
+        3235.509,
+        3311.81,
+        3243.31,
+        3244.609,
+        3238.01,
+        3252.31
+      ],
+      "p50_us": 3244.609,
+      "iterations": 1
+    },
+    {
+      "application": "quant_backtest",
+      "size": "0",
+      "engine": "cpython",
+      "label": "candidate",
+      "correct": true,
+      "qualification": {
+        "type_correct": true,
+        "value_correct": true,
+        "bits_correct": true,
+        "aliases_correct": true,
+        "strict_correct": true,
+        "tolerance_correct": true,
+        "result_sha256": "99de02da7f6c27f934fe3cf67d151bac7196348e3fbfbb610f385709bbc94166"
+      },
+      "source_sha256": "526819d568d413ef3cd34042e60cb89b5ff5a9098679c31a1274c218abf584ba",
+      "input_sha256": "a078d0b555d5222764c1bcf8577aecbe3328b479b85bd9302f3fa4d6245bf6f0",
+      "actual_backend": "cpython",
+      "batch_us": [
+        0.0935,
+        0.08365049999999999,
+        0.0819,
+        0.0825005,
+        0.1005505,
+        0.08355,
+        0.0830005,
+        0.08305,
+        0.0815
+      ],
+      "p50_us": 0.08305,
+      "iterations": 2000
+    },
+    {
+      "application": "quant_backtest",
+      "size": "0",
+      "engine": "public",
+      "label": "candidate",
+      "correct": true,
+      "qualification": {
+        "type_correct": true,
+        "value_correct": true,
+        "bits_correct": true,
+        "aliases_correct": true,
+        "strict_correct": true,
+        "tolerance_correct": true,
+        "result_sha256": "99de02da7f6c27f934fe3cf67d151bac7196348e3fbfbb610f385709bbc94166"
+      },
+      "source_sha256": "526819d568d413ef3cd34042e60cb89b5ff5a9098679c31a1274c218abf584ba",
+      "input_sha256": "a078d0b555d5222764c1bcf8577aecbe3328b479b85bd9302f3fa4d6245bf6f0",
+      "actual_backend": "native",
+      "batch_us": [
+        13.57129375,
+        13.1825375,
+        12.9681625,
+        13.89754375,
+        13.4606625,
+        12.9000375,
+        13.361293750000002,
+        12.8894125,
+        13.461287500000001
+      ],
+      "p50_us": 13.361293750000002,
+      "iterations": 160
+    },
+    {
+      "application": "quant_backtest",
+      "size": "100",
+      "engine": "cpython",
+      "label": "candidate",
+      "correct": true,
+      "qualification": {
+        "type_correct": true,
+        "value_correct": true,
+        "bits_correct": true,
+        "aliases_correct": true,
+        "strict_correct": true,
+        "tolerance_correct": true,
+        "result_sha256": "556ac121decfbeb3d2aa928c0169e07dac173c5fa8d6f5f11181b07f7c674daa"
+      },
+      "source_sha256": "526819d568d413ef3cd34042e60cb89b5ff5a9098679c31a1274c218abf584ba",
+      "input_sha256": "a44c2f50e66491b6d9a4263f5b6e8632f1dfdaaff2b18bb5d252ea4ea0f2b0ec",
+      "actual_backend": "cpython",
+      "batch_us": [
+        25.627398907103828,
+        25.912098360655737,
+        26.185322404371586,
+        26.107726775956287,
+        26.124125683060107,
+        25.907726775956284,
+        25.98313661202186,
+        26.18696174863388,
+        25.930131147540983
+      ],
+      "p50_us": 25.98313661202186,
+      "iterations": 183
+    },
+    {
+      "application": "quant_backtest",
+      "size": "100",
+      "engine": "public",
+      "label": "candidate",
+      "correct": true,
+      "qualification": {
+        "type_correct": true,
+        "value_correct": true,
+        "bits_correct": true,
+        "aliases_correct": true,
+        "strict_correct": true,
+        "tolerance_correct": true,
+        "result_sha256": "556ac121decfbeb3d2aa928c0169e07dac173c5fa8d6f5f11181b07f7c674daa"
+      },
+      "source_sha256": "526819d568d413ef3cd34042e60cb89b5ff5a9098679c31a1274c218abf584ba",
+      "input_sha256": "a44c2f50e66491b6d9a4263f5b6e8632f1dfdaaff2b18bb5d252ea4ea0f2b0ec",
+      "actual_backend": "native",
+      "batch_us": [
+        13.731254335260115,
+        13.92836416184971,
+        13.373450867052023,
+        13.02778612716763,
+        13.377497109826589,
+        13.431832369942196,
+        13.235872832369942,
+        13.441080924855491,
+        13.355531791907515
+      ],
+      "p50_us": 13.377497109826589,
+      "iterations": 173
+    },
+    {
+      "application": "quant_backtest",
+      "size": "10000",
+      "engine": "cpython",
+      "label": "candidate",
+      "correct": true,
+      "qualification": {
+        "type_correct": true,
+        "value_correct": true,
+        "bits_correct": true,
+        "aliases_correct": true,
+        "strict_correct": true,
+        "tolerance_correct": true,
+        "result_sha256": "fef9592c5be5ab5d5e762c4214c81952468954feac3830d5e45041b501f62158"
+      },
+      "source_sha256": "526819d568d413ef3cd34042e60cb89b5ff5a9098679c31a1274c218abf584ba",
+      "input_sha256": "1a312f432459c50031cb9d2df485cc3c11e1746b69904a373298a26118cee4c0",
+      "actual_backend": "cpython",
+      "batch_us": [
+        2795.808,
+        2720.008,
+        2825.209,
+        3223.809,
+        2766.409,
+        2778.308,
+        2731.308,
+        2734.408,
+        2997.009
+      ],
+      "p50_us": 2778.308,
+      "iterations": 1
+    },
+    {
+      "application": "quant_backtest",
+      "size": "10000",
+      "engine": "public",
+      "label": "candidate",
+      "correct": true,
+      "qualification": {
+        "type_correct": true,
+        "value_correct": true,
+        "bits_correct": true,
+        "aliases_correct": true,
+        "strict_correct": true,
+        "tolerance_correct": true,
+        "result_sha256": "fef9592c5be5ab5d5e762c4214c81952468954feac3830d5e45041b501f62158"
+      },
+      "source_sha256": "526819d568d413ef3cd34042e60cb89b5ff5a9098679c31a1274c218abf584ba",
+      "input_sha256": "1a312f432459c50031cb9d2df485cc3c11e1746b69904a373298a26118cee4c0",
+      "actual_backend": "native",
+      "batch_us": [
+        50.9715873015873,
+        48.26204761904762,
+        47.25411111111111,
+        46.53663492063492,
+        49.01285714285714,
+        47.49061904761905,
+        47.95411111111111,
+        45.57949206349206,
+        46.290619047619046
+      ],
+      "p50_us": 47.49061904761905,
+      "iterations": 63
+    },
+    {
+      "application": "quant_backtest",
+      "size": "100000",
+      "engine": "cpython",
+      "label": "candidate",
+      "correct": true,
+      "qualification": {
+        "type_correct": true,
+        "value_correct": true,
+        "bits_correct": true,
+        "aliases_correct": true,
+        "strict_correct": true,
+        "tolerance_correct": true,
+        "result_sha256": "93fe476c002173577d91ca2ee7959a4319190b1b9f625189dab43b411a73aa62"
+      },
+      "source_sha256": "526819d568d413ef3cd34042e60cb89b5ff5a9098679c31a1274c218abf584ba",
+      "input_sha256": "6439af486e26c36132c734a1f1a46524d75b52653bd2713c6af60a33729a5fc7",
+      "actual_backend": "cpython",
+      "batch_us": [
+        28484.685,
+        27182.681,
+        27151.881,
+        26221.478,
+        26725.28,
+        26100.277,
+        26665.68,
+        26263.378,
+        26566.179
+      ],
+      "p50_us": 26665.68,
+      "iterations": 1
+    },
+    {
+      "application": "quant_backtest",
+      "size": "100000",
+      "engine": "public",
+      "label": "candidate",
+      "correct": true,
+      "qualification": {
+        "type_correct": true,
+        "value_correct": true,
+        "bits_correct": true,
+        "aliases_correct": true,
+        "strict_correct": true,
+        "tolerance_correct": true,
+        "result_sha256": "93fe476c002173577d91ca2ee7959a4319190b1b9f625189dab43b411a73aa62"
+      },
+      "source_sha256": "526819d568d413ef3cd34042e60cb89b5ff5a9098679c31a1274c218abf584ba",
+      "input_sha256": "6439af486e26c36132c734a1f1a46524d75b52653bd2713c6af60a33729a5fc7",
+      "actual_backend": "native",
+      "batch_us": [
+        439.5914,
+        432.9912,
+        434.8213,
+        423.7213,
+        429.74129999999997,
+        422.6412,
+        432.8913,
+        422.37129999999996,
+        433.93129999999996
+      ],
+      "p50_us": 432.8913,
+      "iterations": 10
+    },
+    {
+      "application": "math_sine",
+      "size": "valid",
+      "engine": "cpython",
+      "label": "candidate",
+      "correct": true,
+      "expected": {
+        "type": "float",
+        "bits": "3fdeaee8744b05f0"
+      },
+      "actual": {
+        "type": "float",
+        "bits": "3fdeaee8744b05f0"
+      },
+      "actual_backend": "cpython",
+      "source_sha256": "8da2238ab676bc881e9a358025698200cc744fd30720e69b5430572ed09cf95a",
+      "input_sha256": "ace5732151a42e3c2ce91e039d0bd2d3a86dce1bccb6b874852b1aaa7f01d3bd",
+      "batch_us": [
+        0.1040005,
+        0.1181005,
+        0.1022,
+        0.1018005,
+        0.1012,
+        0.10315049999999999,
+        0.1120505,
+        0.10135,
+        0.1026005
+      ],
+      "p50_us": 0.1026005,
+      "iterations": 2000
+    },
+    {
+      "application": "math_sine",
+      "size": "valid",
+      "engine": "public",
+      "label": "candidate",
+      "correct": true,
+      "expected": {
+        "type": "float",
+        "bits": "3fdeaee8744b05f0"
+      },
+      "actual": {
+        "type": "float",
+        "bits": "3fdeaee8744b05f0"
+      },
+      "actual_backend": "native",
+      "source_sha256": "8da2238ab676bc881e9a358025698200cc744fd30720e69b5430572ed09cf95a",
+      "input_sha256": "ace5732151a42e3c2ce91e039d0bd2d3a86dce1bccb6b874852b1aaa7f01d3bd",
+      "batch_us": [
+        8.562358744394619,
+        8.076708520179373,
+        8.146210762331838,
+        8.635004484304933,
+        7.840829596412556,
+        8.145766816143498,
+        8.029618834080718,
+        8.304511210762332,
+        8.022443946188341
+      ],
+      "p50_us": 8.145766816143498,
+      "iterations": 223
+    },
+    {
+      "application": "math_cosine",
+      "size": "valid",
+      "engine": "cpython",
+      "label": "candidate",
+      "correct": true,
+      "expected": {
+        "type": "float",
+        "bits": "3fec1528065b7d50"
+      },
+      "actual": {
+        "type": "float",
+        "bits": "3fec1528065b7d50"
+      },
+      "actual_backend": "cpython",
+      "source_sha256": "8da2238ab676bc881e9a358025698200cc744fd30720e69b5430572ed09cf95a",
+      "input_sha256": "ace5732151a42e3c2ce91e039d0bd2d3a86dce1bccb6b874852b1aaa7f01d3bd",
+      "batch_us": [
+        0.10250050000000001,
+        0.1007505,
+        0.10155,
+        0.10100050000000001,
+        0.11040000000000001,
+        0.1018505,
+        0.1015505,
+        0.1009,
+        0.1193505
+      ],
+      "p50_us": 0.1015505,
+      "iterations": 2000
+    },
+    {
+      "application": "math_cosine",
+      "size": "valid",
+      "engine": "public",
+      "label": "candidate",
+      "correct": true,
+      "expected": {
+        "type": "float",
+        "bits": "3fec1528065b7d50"
+      },
+      "actual": {
+        "type": "float",
+        "bits": "3fec1528065b7d50"
+      },
+      "actual_backend": "native",
+      "source_sha256": "8da2238ab676bc881e9a358025698200cc744fd30720e69b5430572ed09cf95a",
+      "input_sha256": "ace5732151a42e3c2ce91e039d0bd2d3a86dce1bccb6b874852b1aaa7f01d3bd",
+      "batch_us": [
+        8.461991452991453,
+        8.058995726495727,
+        7.917119658119658,
+        8.163273504273503,
+        7.975235042735043,
+        8.15942735042735,
+        8.006008547008546,
+        7.891474358974359,
+        8.363700854700856
+      ],
+      "p50_us": 8.058995726495727,
+      "iterations": 234
+    },
+    {
+      "application": "math_logarithm",
+      "size": "valid",
+      "engine": "cpython",
+      "label": "candidate",
+      "correct": true,
+      "expected": {
+        "type": "float",
+        "bits": "3fe62e42fefa39ef"
+      },
+      "actual": {
+        "type": "float",
+        "bits": "3fe62e42fefa39ef"
+      },
+      "actual_backend": "cpython",
+      "source_sha256": "8da2238ab676bc881e9a358025698200cc744fd30720e69b5430572ed09cf95a",
+      "input_sha256": "a06f129fc52abf6085679d7cd71dc41ec7580c7f5f73efef6d02dde22bb00994",
+      "batch_us": [
+        0.10190049999999999,
+        0.1042005,
+        0.10175,
+        0.1038005,
+        0.1034505,
+        0.10245,
+        0.10225050000000001,
+        0.1047,
+        0.1606005
+      ],
+      "p50_us": 0.1034505,
+      "iterations": 2000
+    },
+    {
+      "application": "math_logarithm",
+      "size": "valid",
+      "engine": "public",
+      "label": "candidate",
+      "correct": true,
+      "expected": {
+        "type": "float",
+        "bits": "3fe62e42fefa39ef"
+      },
+      "actual": {
+        "type": "float",
+        "bits": "3fe62e42fefa39ef"
+      },
+      "actual_backend": "native",
+      "source_sha256": "8da2238ab676bc881e9a358025698200cc744fd30720e69b5430572ed09cf95a",
+      "input_sha256": "a06f129fc52abf6085679d7cd71dc41ec7580c7f5f73efef6d02dde22bb00994",
+      "batch_us": [
+        8.577156950672647,
+        8.02737668161435,
+        7.885677130044843,
+        8.149798206278026,
+        8.01347533632287,
+        8.138143497757847,
+        8.29913004484305,
+        8.043071748878925,
+        8.143071748878924
+      ],
+      "p50_us": 8.138143497757847,
+      "iterations": 223
+    },
+    {
+      "application": "math_exponential",
+      "size": "valid",
+      "engine": "cpython",
+      "label": "candidate",
+      "correct": true,
+      "expected": {
+        "type": "float",
+        "bits": "4005bf0a8b145769"
+      },
+      "actual": {
+        "type": "float",
+        "bits": "4005bf0a8b145769"
+      },
+      "actual_backend": "cpython",
+      "source_sha256": "8da2238ab676bc881e9a358025698200cc744fd30720e69b5430572ed09cf95a",
+      "input_sha256": "54ade53a579f5389ecae3af42df9e96aa30fcf3fc02a7475afc18c3e4835f6f7",
+      "batch_us": [
+        0.09825,
+        0.0967505,
+        0.0973,
+        0.09735049999999999,
+        0.0960505,
+        0.10554999999999999,
+        0.09660049999999999,
+        0.0965,
+        0.09645050000000001
+      ],
+      "p50_us": 0.0967505,
+      "iterations": 2000
+    },
+    {
+      "application": "math_exponential",
+      "size": "valid",
+      "engine": "public",
+      "label": "candidate",
+      "correct": true,
+      "expected": {
+        "type": "float",
+        "bits": "4005bf0a8b145769"
+      },
+      "actual": {
+        "type": "float",
+        "bits": "4005bf0a8b145769"
+      },
+      "actual_backend": "native",
+      "source_sha256": "8da2238ab676bc881e9a358025698200cc744fd30720e69b5430572ed09cf95a",
+      "input_sha256": "54ade53a579f5389ecae3af42df9e96aa30fcf3fc02a7475afc18c3e4835f6f7",
+      "batch_us": [
+        8.314145098039216,
+        7.909435294117647,
+        8.189827450980392,
+        9.793364705882354,
+        8.296101960784314,
+        8.003160784313724,
+        8.225125490196078,
+        8.03884705882353,
+        8.62198431372549
+      ],
+      "p50_us": 8.225125490196078,
+      "iterations": 255
+    },
+    {
+      "application": "math_sine",
+      "size": "inf",
+      "engine": "cpython",
+      "label": "candidate",
+      "correct": true,
+      "expected": {
+        "exception": "ValueError",
+        "message": "math domain error"
+      },
+      "actual": {
+        "exception": "ValueError",
+        "message": "math domain error"
+      },
+      "actual_backend": "cpython",
+      "source_sha256": "8da2238ab676bc881e9a358025698200cc744fd30720e69b5430572ed09cf95a",
+      "input_sha256": "f88ee195c607511a9306d7414e8486784d38f028434d05de0be2e45451a2f760",
+      "batch_us": [
+        0.351451,
+        0.342651,
+        0.34950099999999995,
+        0.38560099999999997,
+        0.342151,
+        0.3644015,
+        0.34620100000000004,
+        0.342951,
+        0.36905099999999996
+      ],
+      "p50_us": 0.34950099999999995,
+      "iterations": 2000
+    },
+    {
+      "application": "math_sine",
+      "size": "inf",
+      "engine": "public",
+      "label": "candidate",
+      "correct": true,
+      "expected": {
+        "exception": "ValueError",
+        "message": "math domain error"
+      },
+      "actual": {
+        "exception": "ValueError",
+        "message": "math domain error"
+      },
+      "actual_backend": "native",
+      "source_sha256": "8da2238ab676bc881e9a358025698200cc744fd30720e69b5430572ed09cf95a",
+      "input_sha256": "f88ee195c607511a9306d7414e8486784d38f028434d05de0be2e45451a2f760",
+      "batch_us": [
+        11.45980459770115,
+        11.202908045977011,
+        11.42187356321839,
+        11.055775862068966,
+        11.30348275862069,
+        11.45348275862069,
+        11.535666666666666,
+        11.395436781609197,
+        11.197735632183909
+      ],
+      "p50_us": 11.395436781609197,
+      "iterations": 174
+    },
+    {
+      "application": "math_cosine",
+      "size": "inf",
+      "engine": "cpython",
+      "label": "candidate",
+      "correct": true,
+      "expected": {
+        "exception": "ValueError",
+        "message": "math domain error"
+      },
+      "actual": {
+        "exception": "ValueError",
+        "message": "math domain error"
+      },
+      "actual_backend": "cpython",
+      "source_sha256": "8da2238ab676bc881e9a358025698200cc744fd30720e69b5430572ed09cf95a",
+      "input_sha256": "f88ee195c607511a9306d7414e8486784d38f028434d05de0be2e45451a2f760",
+      "batch_us": [
+        0.35020100000000004,
+        0.342601,
+        0.350351,
+        0.36995100000000003,
+        0.343951,
+        0.350151,
+        0.347651,
+        0.341401,
+        0.35355149999999996
+      ],
+      "p50_us": 0.350151,
+      "iterations": 2000
+    },
+    {
+      "application": "math_cosine",
+      "size": "inf",
+      "engine": "public",
+      "label": "candidate",
+      "correct": true,
+      "expected": {
+        "exception": "ValueError",
+        "message": "math domain error"
+      },
+      "actual": {
+        "exception": "ValueError",
+        "message": "math domain error"
+      },
+      "actual_backend": "native",
+      "source_sha256": "8da2238ab676bc881e9a358025698200cc744fd30720e69b5430572ed09cf95a",
+      "input_sha256": "f88ee195c607511a9306d7414e8486784d38f028434d05de0be2e45451a2f760",
+      "batch_us": [
+        11.21908225108225,
+        11.271463203463203,
+        11.452415584415585,
+        11.015614718614719,
+        11.240727272727272,
+        11.203497835497835,
+        11.142025974025973,
+        11.624709956709955,
+        11.178385281385282
+      ],
+      "p50_us": 11.21908225108225,
+      "iterations": 231
+    },
+    {
+      "application": "math_logarithm",
+      "size": "zero",
+      "engine": "cpython",
+      "label": "candidate",
+      "correct": true,
+      "expected": {
+        "exception": "ValueError",
+        "message": "math domain error"
+      },
+      "actual": {
+        "exception": "ValueError",
+        "message": "math domain error"
+      },
+      "actual_backend": "cpython",
+      "source_sha256": "8da2238ab676bc881e9a358025698200cc744fd30720e69b5430572ed09cf95a",
+      "input_sha256": "af5570f5a1810b7af78caf4bc70a660f0df51e42baf91d4de5b2328de0e83dfc",
+      "batch_us": [
+        0.357101,
+        0.349401,
+        0.347001,
+        0.33930099999999996,
+        0.339001,
+        0.347251,
+        0.343051,
+        0.34520100000000004,
+        0.347851
+      ],
+      "p50_us": 0.347001,
+      "iterations": 2000
+    },
+    {
+      "application": "math_logarithm",
+      "size": "zero",
+      "engine": "public",
+      "label": "candidate",
+      "correct": true,
+      "expected": {
+        "exception": "ValueError",
+        "message": "math domain error"
+      },
+      "actual": {
+        "exception": "ValueError",
+        "message": "math domain error"
+      },
+      "actual_backend": "native",
+      "source_sha256": "8da2238ab676bc881e9a358025698200cc744fd30720e69b5430572ed09cf95a",
+      "input_sha256": "af5570f5a1810b7af78caf4bc70a660f0df51e42baf91d4de5b2328de0e83dfc",
+      "batch_us": [
+        11.376246696035244,
+        11.223378854625551,
+        11.816775330396476,
+        11.334837004405287,
+        11.410167400881058,
+        11.331312775330396,
+        11.482854625550662,
+        11.431748898678414,
+        11.189022026431717
+      ],
+      "p50_us": 11.376246696035244,
+      "iterations": 227
+    },
+    {
+      "application": "math_logarithm",
+      "size": "negative",
+      "engine": "cpython",
+      "label": "candidate",
+      "correct": true,
+      "expected": {
+        "exception": "ValueError",
+        "message": "math domain error"
+      },
+      "actual": {
+        "exception": "ValueError",
+        "message": "math domain error"
+      },
+      "actual_backend": "cpython",
+      "source_sha256": "8da2238ab676bc881e9a358025698200cc744fd30720e69b5430572ed09cf95a",
+      "input_sha256": "04483a819c2ebd085a0bdcf7f893bdbe491b794f5254e6842d181c40c17e4948",
+      "batch_us": [
+        0.348251,
+        0.33865100000000004,
+        0.337951,
+        0.3638015,
+        0.350251,
+        0.347351,
+        0.34780099999999997,
+        0.338551,
+        0.33970100000000003
+      ],
+      "p50_us": 0.347351,
+      "iterations": 2000
+    },
+    {
+      "application": "math_logarithm",
+      "size": "negative",
+      "engine": "public",
+      "label": "candidate",
+      "correct": true,
+      "expected": {
+        "exception": "ValueError",
+        "message": "math domain error"
+      },
+      "actual": {
+        "exception": "ValueError",
+        "message": "math domain error"
+      },
+      "actual_backend": "native",
+      "source_sha256": "8da2238ab676bc881e9a358025698200cc744fd30720e69b5430572ed09cf95a",
+      "input_sha256": "04483a819c2ebd085a0bdcf7f893bdbe491b794f5254e6842d181c40c17e4948",
+      "batch_us": [
+        11.111358490566037,
+        11.275509433962265,
+        10.670783018867926,
+        11.810415094339623,
+        10.885877358490566,
+        11.71324528301887,
+        11.454754716981132,
+        10.687764150943396,
+        11.34154716981132
+      ],
+      "p50_us": 11.275509433962265,
+      "iterations": 106
+    },
+    {
+      "application": "math_exponential",
+      "size": "overflow",
+      "engine": "cpython",
+      "label": "candidate",
+      "correct": true,
+      "expected": {
+        "exception": "OverflowError",
+        "message": "math range error"
+      },
+      "actual": {
+        "exception": "OverflowError",
+        "message": "math range error"
+      },
+      "actual_backend": "cpython",
+      "source_sha256": "8da2238ab676bc881e9a358025698200cc744fd30720e69b5430572ed09cf95a",
+      "input_sha256": "cef9cb44d11e407be7e32c81ca085681fb9ffaaa0f78426d2e78fc214df2a014",
+      "batch_us": [
+        0.347751,
+        0.380351,
+        0.352901,
+        0.3479015,
+        0.356151,
+        0.347151,
+        0.34770100000000004,
+        0.365351,
+        0.347351
+      ],
+      "p50_us": 0.3479015,
+      "iterations": 2000
+    },
+    {
+      "application": "math_exponential",
+      "size": "overflow",
+      "engine": "public",
+      "label": "candidate",
+      "correct": true,
+      "expected": {
+        "exception": "OverflowError",
+        "message": "math range error"
+      },
+      "actual": {
+        "exception": "OverflowError",
+        "message": "math range error"
+      },
+      "actual_backend": "native",
+      "source_sha256": "8da2238ab676bc881e9a358025698200cc744fd30720e69b5430572ed09cf95a",
+      "input_sha256": "cef9cb44d11e407be7e32c81ca085681fb9ffaaa0f78426d2e78fc214df2a014",
+      "batch_us": [
+        14.444374384236452,
+        11.847330049261084,
+        11.517275862068965,
+        11.603975369458128,
+        12.473926108374384,
+        11.532059113300493,
+        11.51284236453202,
+        11.405453201970444,
+        11.711857142857143
+      ],
+      "p50_us": 11.603975369458128,
+      "iterations": 203
+    },
+    {
+      "application": "math_square_root",
+      "size": "valid",
+      "engine": "cpython",
+      "label": "candidate",
+      "correct": true,
+      "expected": {
+        "type": "float",
+        "bits": "3ff6a09e667f3bcd"
+      },
+      "actual": {
+        "type": "float",
+        "bits": "3ff6a09e667f3bcd"
+      },
+      "actual_backend": "cpython",
+      "source_sha256": "8da2238ab676bc881e9a358025698200cc744fd30720e69b5430572ed09cf95a",
+      "input_sha256": "a06f129fc52abf6085679d7cd71dc41ec7580c7f5f73efef6d02dde22bb00994",
+      "batch_us": [
+        0.09435049999999999,
+        0.09334999999999999,
+        0.1021005,
+        0.09209999999999999,
+        0.11800050000000001,
+        0.0929505,
+        0.093,
+        0.0924005,
+        0.0916
+      ],
+      "p50_us": 0.093,
+      "iterations": 2000
+    },
+    {
+      "application": "math_square_root",
+      "size": "valid",
+      "engine": "public",
+      "label": "candidate",
+      "correct": true,
+      "expected": {
+        "type": "float",
+        "bits": "3ff6a09e667f3bcd"
+      },
+      "actual": {
+        "type": "float",
+        "bits": "3ff6a09e667f3bcd"
+      },
+      "actual_backend": "native",
+      "source_sha256": "8da2238ab676bc881e9a358025698200cc744fd30720e69b5430572ed09cf95a",
+      "input_sha256": "a06f129fc52abf6085679d7cd71dc41ec7580c7f5f73efef6d02dde22bb00994",
+      "batch_us": [
+        7.832780172413793,
+        7.890112068965517,
+        8.654767241379309,
+        7.942262931034483,
+        7.785801724137931,
+        7.959935344827586,
+        7.862956896551724,
+        8.122008620689655,
+        8.053900862068966
+      ],
+      "p50_us": 7.942262931034483,
+      "iterations": 232
+    },
+    {
+      "application": "math_angle",
+      "size": "valid",
+      "engine": "cpython",
+      "label": "candidate",
+      "correct": true,
+      "expected": {
+        "type": "float",
+        "bits": "3fddac670561bb4f"
+      },
+      "actual": {
+        "type": "float",
+        "bits": "3fddac670561bb4f"
+      },
+      "actual_backend": "cpython",
+      "source_sha256": "8da2238ab676bc881e9a358025698200cc744fd30720e69b5430572ed09cf95a",
+      "input_sha256": "ace5732151a42e3c2ce91e039d0bd2d3a86dce1bccb6b874852b1aaa7f01d3bd",
+      "batch_us": [
+        0.1303505,
+        0.1300005,
+        0.1300505,
+        0.1301,
+        0.1302005,
+        0.1299505,
+        0.1301005,
+        0.1382505,
+        0.14575049999999998
+      ],
+      "p50_us": 0.1301005,
+      "iterations": 2000
+    },
+    {
+      "application": "math_angle",
+      "size": "valid",
+      "engine": "public",
+      "label": "candidate",
+      "correct": true,
+      "expected": {
+        "type": "float",
+        "bits": "3fddac670561bb4f"
+      },
+      "actual": {
+        "type": "float",
+        "bits": "3fddac670561bb4f"
+      },
+      "actual_backend": "native",
+      "source_sha256": "8da2238ab676bc881e9a358025698200cc744fd30720e69b5430572ed09cf95a",
+      "input_sha256": "ace5732151a42e3c2ce91e039d0bd2d3a86dce1bccb6b874852b1aaa7f01d3bd",
+      "batch_us": [
+        12.606216216216216,
+        13.961432432432431,
+        8.286895752895752,
+        7.947127413127413,
+        8.30272972972973,
+        8.105428571428572,
+        7.9343861003861,
+        8.244042471042471,
+        8.132841698841698
+      ],
+      "p50_us": 8.244042471042471,
+      "iterations": 259
+    },
+    {
+      "application": "math_is_nan",
+      "size": "valid",
+      "engine": "cpython",
+      "label": "candidate",
+      "correct": true,
+      "expected": {
+        "type": "bool",
+        "value": true
+      },
+      "actual": {
+        "type": "bool",
+        "value": true
+      },
+      "actual_backend": "cpython",
+      "source_sha256": "8da2238ab676bc881e9a358025698200cc744fd30720e69b5430572ed09cf95a",
+      "input_sha256": "6e207f8a093ae399638bf9fa052908042478b6fd1c32ee3ab7bb17713faf5f30",
+      "batch_us": [
+        0.0780505,
+        0.0767,
+        0.0769505,
+        0.077,
+        0.0768505,
+        0.07795,
+        0.0779505,
+        0.07654999999999999,
+        0.0814005
+      ],
+      "p50_us": 0.077,
+      "iterations": 2000
+    },
+    {
+      "application": "math_is_nan",
+      "size": "valid",
+      "engine": "public",
+      "label": "candidate",
+      "correct": true,
+      "expected": {
+        "type": "bool",
+        "value": true
+      },
+      "actual": {
+        "type": "bool",
+        "value": true
+      },
+      "actual_backend": "native",
+      "source_sha256": "8da2238ab676bc881e9a358025698200cc744fd30720e69b5430572ed09cf95a",
+      "input_sha256": "6e207f8a093ae399638bf9fa052908042478b6fd1c32ee3ab7bb17713faf5f30",
+      "batch_us": [
+        8.306762411347517,
+        7.897187943262411,
+        8.182294326241134,
+        7.935840425531914,
+        7.991156028368794,
+        7.854989361702128,
+        7.79754255319149,
+        8.066691489361702,
+        8.053921985815602
+      ],
+      "p50_us": 7.991156028368794,
+      "iterations": 282
+    },
+    {
+      "application": "math_is_inf",
+      "size": "valid",
+      "engine": "cpython",
+      "label": "candidate",
+      "correct": true,
+      "expected": {
+        "type": "bool",
+        "value": true
+      },
+      "actual": {
+        "type": "bool",
+        "value": true
+      },
+      "actual_backend": "cpython",
+      "source_sha256": "8da2238ab676bc881e9a358025698200cc744fd30720e69b5430572ed09cf95a",
+      "input_sha256": "f88ee195c607511a9306d7414e8486784d38f028434d05de0be2e45451a2f760",
+      "batch_us": [
+        0.0937,
+        0.0774505,
+        0.07615000000000001,
+        0.08045050000000001,
+        0.0767,
+        0.07659999999999999,
+        0.0785505,
+        0.07705,
+        0.0767505
+      ],
+      "p50_us": 0.07705,
+      "iterations": 2000
+    },
+    {
+      "application": "math_is_inf",
+      "size": "valid",
+      "engine": "public",
+      "label": "candidate",
+      "correct": true,
+      "expected": {
+        "type": "bool",
+        "value": true
+      },
+      "actual": {
+        "type": "bool",
+        "value": true
+      },
+      "actual_backend": "native",
+      "source_sha256": "8da2238ab676bc881e9a358025698200cc744fd30720e69b5430572ed09cf95a",
+      "input_sha256": "f88ee195c607511a9306d7414e8486784d38f028434d05de0be2e45451a2f760",
+      "batch_us": [
+        7.8243707865168535,
+        8.152831460674157,
+        7.79740074906367,
+        8.153584269662922,
+        7.976801498127341,
+        7.774183520599251,
+        7.94608988764045,
+        7.836352059925093,
+        8.003022471910112
+      ],
+      "p50_us": 7.94608988764045,
+      "iterations": 267
+    }
+  ],
+  "builds": [
+    {
+      "application": "pii_scrubber",
+      "cold_seconds": 3.605216268999925
+    },
+    {
+      "application": "pdf_cleaner",
+      "cold_seconds": 2.364444697999943
+    },
+    {
+      "application": "quant_backtest",
+      "cold_seconds": 2.10790517800001
+    }
+  ]
+}

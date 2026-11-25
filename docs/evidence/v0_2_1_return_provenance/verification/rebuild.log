@@ -1,0 +1,9 @@
+Processing /tmp/hotloop-provenance/final-gate/dist/mojo_hotloop-0.2.1.tar.gz
+  Preparing metadata (pyproject.toml): started
+  Preparing metadata (pyproject.toml): finished with status 'done'
+Building wheels for collected packages: mojo-hotloop
+  Building wheel for mojo-hotloop (pyproject.toml): started
+  Building wheel for mojo-hotloop (pyproject.toml): finished with status 'done'
+  Created wheel for mojo-hotloop: filename=mojo_hotloop-0.2.1-py3-none-any.whl size=54820 sha256=1b794fea2285e1ebb9dbd243838f29b4275387136c57481c20b1955ab98d74ca
+  Stored in directory: /tmp/pip-ephem-wheel-cache-btkne2cf/wheels/62/10/2e/e91b87f837f5de71129ecbf830eb4e4ef9a25b70f98478e67b
+Successfully built mojo-hotloop

@@ -1,17 +1,13 @@
-import os
 import resource
-import sys
 import unittest
 
-repo_root = "/home/gaurav/mojo-hotloop"
-sys.path.insert(0, repo_root)
+# Standalone audit of the locally built Unicode fixture.
+from unicode_primitives import (
+    native_codepoint_len,
+    native_codepoint_to_byte_offsets,
+    native_reverse_codepoints,
+)
 
-from hotloop.decorator import _load_native_module
-mod, _ = _load_native_module(os.path.join(repo_root, "audit/unicode_primitives.so"))
-
-native_codepoint_len = getattr(mod, "native_codepoint_len")
-native_reverse_codepoints = getattr(mod, "native_reverse_codepoints")
-native_codepoint_to_byte_offsets = getattr(mod, "native_codepoint_to_byte_offsets")
 
 class TestTextBoundary(unittest.TestCase):
     def test_01_caller_string_immutability(self):
@@ -24,7 +20,7 @@ class TestTextBoundary(unittest.TestCase):
         self.assertEqual(original, input_copy)
 
     def test_02_memory_stability_leak_check(self):
-        """Text boundary calls produce zero memory leaks within Python arena margin."""
+        """Repeated text calls remain within the existing peak RSS growth limit."""
         doc = ("The quick brown fox 🦊 jumps over the lazy dog 🐶 with Hindi नमस्ते!\n") * 10
         
         # Warmup

@@ -1,0 +1,11 @@
+[*] mojo-hotloop building '/tmp/hotloop-two-blocker-20261123/full-aceec46/suite/examples/ar_spatial/original.py' using engine='ast', backend='mojo'
+[+] Build SUCCESS: [Engine: AST] Successfully transpiled and built /tmp/hotloop-two-blocker-20261123/full-aceec46/suite/examples/ar_spatial/fast.so via AST engine.
+    Artifact: /tmp/hotloop-two-blocker-20261123/full-aceec46/suite/examples/ar_spatial/fast.so
+[✓] Done.
+[*] Starting Stage D7: AR Spatial 3D Verification Suite...
+/tmp/hotloop-two-blocker-20261123/full-aceec46/venv/lib/python3.12/site-packages/hotloop/decorator.py:317: HotloopFallbackWarning: [mojo-hotloop] find_closest_point_to_ray: input requires Python object semantics
+  return python_semantics(args, kwargs, "input requires Python object semantics")
+examples/ar_spatial/verify.py:78: HotloopFallbackWarning: [mojo-hotloop] Python collection input/output detected for 'find_closest_point_to_ray'; per-element FFI conversion overhead makes native execution slower than pure Python. Safely executing pure Python implementation. (force_native=True may enable a qualified read-only list kernel.)
+  fb_res = find_closest_point_to_ray(xs, ys, zs, ox, oy, oz, dx, dy, dz)
+  [✓] Deterministic cases passed (10 tests)
+[✓] Stage D7: AR Spatial 3D PASSED: 1010 tests verified (102972 3D vertices, 100% matched against NumPy & Py, 1010 forced native boxed-list calls and 1010 ndarray Python fallback calls, 0 mismatches). Zero errors.

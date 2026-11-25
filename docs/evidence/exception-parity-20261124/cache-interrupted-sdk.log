@@ -1,0 +1,113 @@
+FFFFFF
+======================================================================
+FAIL: test_01_fresh_build_native_execution (__main__.TestCacheInvalidation.test_01_fresh_build_native_execution)
+Freshly built module executes natively.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/hotloop-exception-parity-20261124/full-a11c9de/suite/audit/test_cache_invalidation.py", line 61, in test_01_fresh_build_native_execution
+    self.build_so()
+  File "/tmp/hotloop-exception-parity-20261124/full-a11c9de/suite/audit/test_cache_invalidation.py", line 36, in build_so
+    self.assertEqual(proc.returncode, 0, f"Build failed:\nSTDOUT: {proc.stdout}\nSTDERR: {proc.stderr}")
+AssertionError: 1 != 0 : Build failed:
+STDOUT: [*] mojo-hotloop building '/tmp/hotloop_cache_test_n_h3key3/calc_mod.py' using engine='ast', backend='mojo'
+[-] Build FAILED:
+[Engine: AST] Mojo compilation failed:
+/home/gaurav/mojo-hotloop/.venv/bin/mojo: error: file '/home/gaurav/.cache/modular/.mojo_cache/mojo/transform/1.2.05871cbfed81a950c5c3a2b8244af52f2-production/M2VhMjQyMTliNGMwM2ZhNWFkMGQzMjgyMWU4MDQ2OTM' exists, but is empty
+
+
+STDERR: 
+
+======================================================================
+FAIL: test_02_stale_binary_between_runs_fallback (__main__.TestCacheInvalidation.test_02_stale_binary_between_runs_fallback)
+Modifying source between runs without rebuild triggers python_fallback_stale_cache.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/hotloop-exception-parity-20261124/full-a11c9de/suite/audit/test_cache_invalidation.py", line 69, in test_02_stale_binary_between_runs_fallback
+    self.build_so()
+  File "/tmp/hotloop-exception-parity-20261124/full-a11c9de/suite/audit/test_cache_invalidation.py", line 36, in build_so
+    self.assertEqual(proc.returncode, 0, f"Build failed:\nSTDOUT: {proc.stdout}\nSTDERR: {proc.stderr}")
+AssertionError: 1 != 0 : Build failed:
+STDOUT: [*] mojo-hotloop building '/tmp/hotloop_cache_test_tzfv1ayl/calc_mod.py' using engine='ast', backend='mojo'
+[-] Build FAILED:
+[Engine: AST] Mojo compilation failed:
+/home/gaurav/mojo-hotloop/.venv/bin/mojo: error: file '/home/gaurav/.cache/modular/.mojo_cache/mojo/transform/1.2.05871cbfed81a950c5c3a2b8244af52f2-production/M2VhMjQyMTliNGMwM2ZhNWFkMGQzMjgyMWU4MDQ2OTM' exists, but is empty
+
+
+STDERR: 
+
+======================================================================
+FAIL: test_03_stale_binary_strict_mode_rejection (__main__.TestCacheInvalidation.test_03_stale_binary_strict_mode_rejection)
+Strict mode raises HotloopNativeExecutionError on stale binary.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/hotloop-exception-parity-20261124/full-a11c9de/suite/audit/test_cache_invalidation.py", line 88, in test_03_stale_binary_strict_mode_rejection
+    self.build_so()
+  File "/tmp/hotloop-exception-parity-20261124/full-a11c9de/suite/audit/test_cache_invalidation.py", line 36, in build_so
+    self.assertEqual(proc.returncode, 0, f"Build failed:\nSTDOUT: {proc.stdout}\nSTDERR: {proc.stderr}")
+AssertionError: 1 != 0 : Build failed:
+STDOUT: [*] mojo-hotloop building '/tmp/hotloop_cache_test_tzu_tbcr/calc_mod.py' using engine='ast', backend='mojo'
+[-] Build FAILED:
+[Engine: AST] Mojo compilation failed:
+/home/gaurav/mojo-hotloop/.venv/bin/mojo: error: file '/home/gaurav/.cache/modular/.mojo_cache/mojo/transform/1.2.05871cbfed81a950c5c3a2b8244af52f2-production/M2VhMjQyMTliNGMwM2ZhNWFkMGQzMjgyMWU4MDQ2OTM' exists, but is empty
+
+
+STDERR: 
+
+======================================================================
+FAIL: test_04_rebuild_restores_native_execution (__main__.TestCacheInvalidation.test_04_rebuild_restores_native_execution)
+Rebuilding after source edit restores native execution with updated logic.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/hotloop-exception-parity-20261124/full-a11c9de/suite/audit/test_cache_invalidation.py", line 102, in test_04_rebuild_restores_native_execution
+    self.build_so()
+  File "/tmp/hotloop-exception-parity-20261124/full-a11c9de/suite/audit/test_cache_invalidation.py", line 36, in build_so
+    self.assertEqual(proc.returncode, 0, f"Build failed:\nSTDOUT: {proc.stdout}\nSTDERR: {proc.stderr}")
+AssertionError: 1 != 0 : Build failed:
+STDOUT: [*] mojo-hotloop building '/tmp/hotloop_cache_test_5j1itb6u/calc_mod.py' using engine='ast', backend='mojo'
+[-] Build FAILED:
+[Engine: AST] Mojo compilation failed:
+/home/gaurav/mojo-hotloop/.venv/bin/mojo: error: file '/home/gaurav/.cache/modular/.mojo_cache/mojo/transform/1.2.05871cbfed81a950c5c3a2b8244af52f2-production/M2VhMjQyMTliNGMwM2ZhNWFkMGQzMjgyMWU4MDQ2OTM' exists, but is empty
+
+
+STDERR: 
+
+======================================================================
+FAIL: test_05_content_addressed_cache_restoration (__main__.TestCacheInvalidation.test_05_content_addressed_cache_restoration)
+Reverting source code to previously compiled state hits content-addressed __mojocache__.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/hotloop-exception-parity-20261124/full-a11c9de/suite/audit/test_cache_invalidation.py", line 115, in test_05_content_addressed_cache_restoration
+    self.build_so()
+  File "/tmp/hotloop-exception-parity-20261124/full-a11c9de/suite/audit/test_cache_invalidation.py", line 36, in build_so
+    self.assertEqual(proc.returncode, 0, f"Build failed:\nSTDOUT: {proc.stdout}\nSTDERR: {proc.stderr}")
+AssertionError: 1 != 0 : Build failed:
+STDOUT: [*] mojo-hotloop building '/tmp/hotloop_cache_test_17mxouso/calc_mod.py' using engine='ast', backend='mojo'
+[-] Build FAILED:
+[Engine: AST] Mojo compilation failed:
+/home/gaurav/mojo-hotloop/.venv/bin/mojo: error: file '/home/gaurav/.cache/modular/.mojo_cache/mojo/transform/1.2.05871cbfed81a950c5c3a2b8244af52f2-production/M2VhMjQyMTliNGMwM2ZhNWFkMGQzMjgyMWU4MDQ2OTM' exists, but is empty
+
+
+STDERR: 
+
+======================================================================
+FAIL: test_06_runtime_source_modification_detection (__main__.TestCacheInvalidation.test_06_runtime_source_modification_detection)
+Modifying source while Python process is running invalidates loaded native cache.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/hotloop-exception-parity-20261124/full-a11c9de/suite/audit/test_cache_invalidation.py", line 133, in test_06_runtime_source_modification_detection
+    self.build_so()
+  File "/tmp/hotloop-exception-parity-20261124/full-a11c9de/suite/audit/test_cache_invalidation.py", line 36, in build_so
+    self.assertEqual(proc.returncode, 0, f"Build failed:\nSTDOUT: {proc.stdout}\nSTDERR: {proc.stderr}")
+AssertionError: 1 != 0 : Build failed:
+STDOUT: [*] mojo-hotloop building '/tmp/hotloop_cache_test_cehyb_ee/calc_mod.py' using engine='ast', backend='mojo'
+[-] Build FAILED:
+[Engine: AST] Mojo compilation failed:
+/home/gaurav/mojo-hotloop/.venv/bin/mojo: error: file '/home/gaurav/.cache/modular/.mojo_cache/mojo/transform/1.2.05871cbfed81a950c5c3a2b8244af52f2-production/M2VhMjQyMTliNGMwM2ZhNWFkMGQzMjgyMWU4MDQ2OTM' exists, but is empty
+
+
+STDERR: 
+
+----------------------------------------------------------------------
+Ran 6 tests in 20.896s
+
+FAILED (failures=6)

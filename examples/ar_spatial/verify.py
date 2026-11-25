@@ -3,7 +3,8 @@ import os
 import random
 import sys
 
-sys.path.insert(0, "/home/gaurav/mojo-hotloop")
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
 import numpy as np
 from examples.ar_spatial.original import find_closest_point_to_ray
@@ -38,6 +39,8 @@ def numpy_closest_point_to_ray(
     return int(np.argmin(dist_sq))
 
 def run_tests():
+    from hotloop import hotloop
+    forced = hotloop(strict=True)(find_closest_point_to_ray._original)
     print("[*] Starting Stage D7: AR Spatial 3D Verification Suite...")
 
     # 1. Deterministic cases
@@ -62,9 +65,13 @@ def run_tests():
         np_ys = np.array(ys, dtype=np.float64)
         np_zs = np.array(zs, dtype=np.float64)
         mojo_res = find_closest_point_to_ray(np_xs, np_ys, np_zs, ox, oy, oz, dx, dy, dz)
+        assert find_closest_point_to_ray._last_backend == "python_fallback_semantics"
+        assert type(mojo_res) is type(find_closest_point_to_ray._original(np_xs, np_ys, np_zs, ox, oy, oz, dx, dy, dz))
+        native_res = forced(xs, ys, zs, ox, oy, oz, dx, dy, dz)
+        assert native_res == py_res
 
-        if find_closest_point_to_ray._last_backend != "native":
-            print(f"[FAIL] Expected native backend for NumPy array, got {find_closest_point_to_ray._last_backend}")
+        if forced._last_backend != "native":
+            print(f"[FAIL] Expected native backend for forced list array, got {find_closest_point_to_ray._last_backend}")
             sys.exit(1)
 
         # Also check Python list auto-fallback safety
@@ -89,7 +96,6 @@ def run_tests():
     rng = random.Random(42)
     random_passed = 0
     total_3d_points = 0
-    native_before = find_closest_point_to_ray._call_count_native
 
     for test_idx in range(1000):
         n_points = rng.randint(2, 200)
@@ -111,8 +117,12 @@ def run_tests():
         py_res = find_closest_point_to_ray._original(xs, ys, zs, ox, oy, oz, dx, dy, dz)
         np_res = numpy_closest_point_to_ray(xs, ys, zs, ox, oy, oz, dx, dy, dz)
         mojo_res = find_closest_point_to_ray(np_xs, np_ys, np_zs, ox, oy, oz, dx, dy, dz)
+        assert find_closest_point_to_ray._last_backend == "python_fallback_semantics"
+        assert type(mojo_res) is type(find_closest_point_to_ray._original(np_xs, np_ys, np_zs, ox, oy, oz, dx, dy, dz))
+        native_res = forced(xs, ys, zs, ox, oy, oz, dx, dy, dz)
+        assert native_res == py_res
 
-        if find_closest_point_to_ray._last_backend != "native":
+        if forced._last_backend != "native":
             print(f"[FAIL] Expected native backend at #{test_idx}, got {find_closest_point_to_ray._last_backend}")
             sys.exit(1)
 
@@ -132,8 +142,8 @@ def run_tests():
         total_3d_points += n_points
 
     total_tests = deterministic_passed + random_passed
-    native_runs = find_closest_point_to_ray._call_count_native
-    print(f"[✓] Stage D7: AR Spatial 3D PASSED: {total_tests} tests verified ({total_3d_points} 3D vertices, 100% matched against NumPy & Py, {native_runs} native @hotloop ndarray executions, 0 mismatches). Zero errors.")
+    native_runs = forced._call_count_native
+    print(f"[✓] Stage D7: AR Spatial 3D PASSED: {total_tests} tests verified ({total_3d_points} 3D vertices, 100% matched against NumPy & Py, {native_runs} forced native boxed-list calls and {total_tests} ndarray Python fallback calls, 0 mismatches). Zero errors.")
 
 if __name__ == "__main__":
     run_tests()

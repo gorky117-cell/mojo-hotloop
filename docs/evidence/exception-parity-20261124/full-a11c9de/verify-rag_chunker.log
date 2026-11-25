@@ -1,0 +1,11 @@
+[*] mojo-hotloop building '/tmp/hotloop-exception-parity-20261124/full-a11c9de/suite/examples/rag_chunker/original.py' using engine='ast', backend='mojo'
+[+] Build SUCCESS: [Engine: AST] Successfully transpiled and built /tmp/hotloop-exception-parity-20261124/full-a11c9de/suite/examples/rag_chunker/fast.so via AST engine.
+    Artifact: /tmp/hotloop-exception-parity-20261124/full-a11c9de/suite/examples/rag_chunker/fast.so
+[✓] Done.
+[*] Starting Stage D2: RAG Document Chunker Verification Suite...
+examples/rag_chunker/verify.py:38: HotloopFallbackWarning: [mojo-hotloop] Python collection input/output detected for 'chunk_document'; per-element FFI conversion overhead makes native execution slower than pure Python. Safely executing pure Python implementation. (force_native=True may enable a qualified read-only list kernel.)
+  fb_res = chunk_document("Hello world test", 10, 2)
+/tmp/hotloop-exception-parity-20261124/full-a11c9de/venv/lib/python3.12/site-packages/hotloop/decorator.py:392: HotloopFallbackWarning: [mojo-hotloop] chunk_document: native conversion cannot preserve Python semantics
+  return python_semantics(args, kwargs, "native conversion cannot preserve Python semantics")
+  [✓] Deterministic cases passed (20 tests)
+[✓] Stage D2: RAG Document Chunker PASSED: 1020 tests verified (176204 total chunks, 0 native executions; forced semantic fallback + default list[str] fallback verified, 0 mismatches). Zero errors.

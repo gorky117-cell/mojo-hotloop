@@ -1,19 +1,14 @@
-import os
-import sys
 import unittest
 
-repo_root = "/home/gaurav/mojo-hotloop"
-sys.path.insert(0, repo_root)
+# Standalone audit of the locally built Unicode fixture.
+from unicode_primitives import (
+    native_codepoint_at,
+    native_codepoint_len,
+    native_codepoint_slice,
+    native_codepoint_to_byte_offsets,
+    native_reverse_codepoints,
+)
 
-from hotloop.decorator import _load_native_module
-mod, err = _load_native_module(os.path.join(repo_root, "audit/unicode_primitives.so"))
-assert mod is not None, f"Failed to load unicode_primitives.so: {err}"
-
-native_codepoint_len = getattr(mod, "native_codepoint_len")
-native_codepoint_at = getattr(mod, "native_codepoint_at")
-native_codepoint_slice = getattr(mod, "native_codepoint_slice")
-native_codepoint_to_byte_offsets = getattr(mod, "native_codepoint_to_byte_offsets")
-native_reverse_codepoints = getattr(mod, "native_reverse_codepoints")
 
 class TestUnicodeSemantics(unittest.TestCase):
     def setUp(self):

@@ -1,0 +1,28 @@
+{
+  "corrective_source": "aceec467cd846289568927a2783e7f50bfe1e21b",
+  "r1_ancestor": true,
+  "prem0_depends_on_r1": true,
+  "m0_depends_on_prem0": true,
+  "steps": [
+    {
+      "stage": "Pre-M0",
+      "source_base": "69fa0bbfcfa772e3ceb35464286eea89f0a6398a",
+      "source_tip": "a094b6dc0bfb20a2e8ca1feee98827908805f63b",
+      "conflicts": [
+        "README.md"
+      ],
+      "virtual_tree": "26db407496fa7de159334a689ea016e3183dc204",
+      "runtime_and_tests_unchanged": true
+    },
+    {
+      "stage": "M0",
+      "source_base": "a094b6dc0bfb20a2e8ca1feee98827908805f63b",
+      "source_tip": "ef3706930f6502f0f6d9ac88190cdd476e6d0fbf",
+      "conflicts": [],
+      "virtual_tree": "abc58acd2a10adb9dab71b74797d8d970f072d78",
+      "runtime_and_tests_unchanged": true
+    }
+  ],
+  "method": "temporary Git index only; no checkout, branch, merge or rebase",
+  "promoted": false
+}

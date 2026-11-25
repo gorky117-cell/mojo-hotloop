@@ -1,0 +1,247 @@
+FFFFFFFFF                                                                [100%]
+=================================== FAILURES ===================================
+________ test_shared_default_constant_identity[default-literal_default] ________
+
+subject = <module 'constant_subject' from '/tmp/pytest-of-gaurav/pytest-69/return-constant0/constant_subject.py'>
+name = 'literal_default', mode = 'default'
+
+    @pytest.mark.parametrize("name", ["literal_default","local_constant","helper_default"])
+    @pytest.mark.parametrize("mode", ["default","forced","strict"])
+    def test_shared_default_constant_identity(subject, name, mode):
+        original = getattr(subject,name)._original
+        owner = original.__defaults__[0]
+        assert original() is owner
+        fn = hotloop(force_native=mode=="forced", strict=mode=="strict")(original)
+        try:
+            result = fn()
+        except HotloopNativeExecutionError:
+            # Conservative qualification is acceptable; strict must not run Python.
+            assert mode == "strict"
+            return
+        assert type(result) is float and result == owner
+>       assert result is owner, (
+            f"{name}: {mode} returned a new float through {fn._last_backend}; "
+            "the original returns the exact default argument object")
+E       AssertionError: literal_default: default returned a new float through native; the original returns the exact default argument object
+E       assert 1.25 is 1.25
+
+test_constants.py:56: AssertionError
+________ test_shared_default_constant_identity[default-local_constant] _________
+
+subject = <module 'constant_subject' from '/tmp/pytest-of-gaurav/pytest-69/return-constant0/constant_subject.py'>
+name = 'local_constant', mode = 'default'
+
+    @pytest.mark.parametrize("name", ["literal_default","local_constant","helper_default"])
+    @pytest.mark.parametrize("mode", ["default","forced","strict"])
+    def test_shared_default_constant_identity(subject, name, mode):
+        original = getattr(subject,name)._original
+        owner = original.__defaults__[0]
+        assert original() is owner
+        fn = hotloop(force_native=mode=="forced", strict=mode=="strict")(original)
+        try:
+            result = fn()
+        except HotloopNativeExecutionError:
+            # Conservative qualification is acceptable; strict must not run Python.
+            assert mode == "strict"
+            return
+        assert type(result) is float and result == owner
+>       assert result is owner, (
+            f"{name}: {mode} returned a new float through {fn._last_backend}; "
+            "the original returns the exact default argument object")
+E       AssertionError: local_constant: default returned a new float through native; the original returns the exact default argument object
+E       assert 1.25 is 1.25
+
+test_constants.py:56: AssertionError
+________ test_shared_default_constant_identity[default-helper_default] _________
+
+subject = <module 'constant_subject' from '/tmp/pytest-of-gaurav/pytest-69/return-constant0/constant_subject.py'>
+name = 'helper_default', mode = 'default'
+
+    @pytest.mark.parametrize("name", ["literal_default","local_constant","helper_default"])
+    @pytest.mark.parametrize("mode", ["default","forced","strict"])
+    def test_shared_default_constant_identity(subject, name, mode):
+        original = getattr(subject,name)._original
+        owner = original.__defaults__[0]
+        assert original() is owner
+        fn = hotloop(force_native=mode=="forced", strict=mode=="strict")(original)
+        try:
+            result = fn()
+        except HotloopNativeExecutionError:
+            # Conservative qualification is acceptable; strict must not run Python.
+            assert mode == "strict"
+            return
+        assert type(result) is float and result == owner
+>       assert result is owner, (
+            f"{name}: {mode} returned a new float through {fn._last_backend}; "
+            "the original returns the exact default argument object")
+E       AssertionError: helper_default: default returned a new float through native; the original returns the exact default argument object
+E       assert 1.25 is 1.25
+
+test_constants.py:56: AssertionError
+________ test_shared_default_constant_identity[forced-literal_default] _________
+
+subject = <module 'constant_subject' from '/tmp/pytest-of-gaurav/pytest-69/return-constant0/constant_subject.py'>
+name = 'literal_default', mode = 'forced'
+
+    @pytest.mark.parametrize("name", ["literal_default","local_constant","helper_default"])
+    @pytest.mark.parametrize("mode", ["default","forced","strict"])
+    def test_shared_default_constant_identity(subject, name, mode):
+        original = getattr(subject,name)._original
+        owner = original.__defaults__[0]
+        assert original() is owner
+        fn = hotloop(force_native=mode=="forced", strict=mode=="strict")(original)
+        try:
+            result = fn()
+        except HotloopNativeExecutionError:
+            # Conservative qualification is acceptable; strict must not run Python.
+            assert mode == "strict"
+            return
+        assert type(result) is float and result == owner
+>       assert result is owner, (
+            f"{name}: {mode} returned a new float through {fn._last_backend}; "
+            "the original returns the exact default argument object")
+E       AssertionError: literal_default: forced returned a new float through native; the original returns the exact default argument object
+E       assert 1.25 is 1.25
+
+test_constants.py:56: AssertionError
+_________ test_shared_default_constant_identity[forced-local_constant] _________
+
+subject = <module 'constant_subject' from '/tmp/pytest-of-gaurav/pytest-69/return-constant0/constant_subject.py'>
+name = 'local_constant', mode = 'forced'
+
+    @pytest.mark.parametrize("name", ["literal_default","local_constant","helper_default"])
+    @pytest.mark.parametrize("mode", ["default","forced","strict"])
+    def test_shared_default_constant_identity(subject, name, mode):
+        original = getattr(subject,name)._original
+        owner = original.__defaults__[0]
+        assert original() is owner
+        fn = hotloop(force_native=mode=="forced", strict=mode=="strict")(original)
+        try:
+            result = fn()
+        except HotloopNativeExecutionError:
+            # Conservative qualification is acceptable; strict must not run Python.
+            assert mode == "strict"
+            return
+        assert type(result) is float and result == owner
+>       assert result is owner, (
+            f"{name}: {mode} returned a new float through {fn._last_backend}; "
+            "the original returns the exact default argument object")
+E       AssertionError: local_constant: forced returned a new float through native; the original returns the exact default argument object
+E       assert 1.25 is 1.25
+
+test_constants.py:56: AssertionError
+_________ test_shared_default_constant_identity[forced-helper_default] _________
+
+subject = <module 'constant_subject' from '/tmp/pytest-of-gaurav/pytest-69/return-constant0/constant_subject.py'>
+name = 'helper_default', mode = 'forced'
+
+    @pytest.mark.parametrize("name", ["literal_default","local_constant","helper_default"])
+    @pytest.mark.parametrize("mode", ["default","forced","strict"])
+    def test_shared_default_constant_identity(subject, name, mode):
+        original = getattr(subject,name)._original
+        owner = original.__defaults__[0]
+        assert original() is owner
+        fn = hotloop(force_native=mode=="forced", strict=mode=="strict")(original)
+        try:
+            result = fn()
+        except HotloopNativeExecutionError:
+            # Conservative qualification is acceptable; strict must not run Python.
+            assert mode == "strict"
+            return
+        assert type(result) is float and result == owner
+>       assert result is owner, (
+            f"{name}: {mode} returned a new float through {fn._last_backend}; "
+            "the original returns the exact default argument object")
+E       AssertionError: helper_default: forced returned a new float through native; the original returns the exact default argument object
+E       assert 1.25 is 1.25
+
+test_constants.py:56: AssertionError
+________ test_shared_default_constant_identity[strict-literal_default] _________
+
+subject = <module 'constant_subject' from '/tmp/pytest-of-gaurav/pytest-69/return-constant0/constant_subject.py'>
+name = 'literal_default', mode = 'strict'
+
+    @pytest.mark.parametrize("name", ["literal_default","local_constant","helper_default"])
+    @pytest.mark.parametrize("mode", ["default","forced","strict"])
+    def test_shared_default_constant_identity(subject, name, mode):
+        original = getattr(subject,name)._original
+        owner = original.__defaults__[0]
+        assert original() is owner
+        fn = hotloop(force_native=mode=="forced", strict=mode=="strict")(original)
+        try:
+            result = fn()
+        except HotloopNativeExecutionError:
+            # Conservative qualification is acceptable; strict must not run Python.
+            assert mode == "strict"
+            return
+        assert type(result) is float and result == owner
+>       assert result is owner, (
+            f"{name}: {mode} returned a new float through {fn._last_backend}; "
+            "the original returns the exact default argument object")
+E       AssertionError: literal_default: strict returned a new float through native; the original returns the exact default argument object
+E       assert 1.25 is 1.25
+
+test_constants.py:56: AssertionError
+_________ test_shared_default_constant_identity[strict-local_constant] _________
+
+subject = <module 'constant_subject' from '/tmp/pytest-of-gaurav/pytest-69/return-constant0/constant_subject.py'>
+name = 'local_constant', mode = 'strict'
+
+    @pytest.mark.parametrize("name", ["literal_default","local_constant","helper_default"])
+    @pytest.mark.parametrize("mode", ["default","forced","strict"])
+    def test_shared_default_constant_identity(subject, name, mode):
+        original = getattr(subject,name)._original
+        owner = original.__defaults__[0]
+        assert original() is owner
+        fn = hotloop(force_native=mode=="forced", strict=mode=="strict")(original)
+        try:
+            result = fn()
+        except HotloopNativeExecutionError:
+            # Conservative qualification is acceptable; strict must not run Python.
+            assert mode == "strict"
+            return
+        assert type(result) is float and result == owner
+>       assert result is owner, (
+            f"{name}: {mode} returned a new float through {fn._last_backend}; "
+            "the original returns the exact default argument object")
+E       AssertionError: local_constant: strict returned a new float through native; the original returns the exact default argument object
+E       assert 1.25 is 1.25
+
+test_constants.py:56: AssertionError
+_________ test_shared_default_constant_identity[strict-helper_default] _________
+
+subject = <module 'constant_subject' from '/tmp/pytest-of-gaurav/pytest-69/return-constant0/constant_subject.py'>
+name = 'helper_default', mode = 'strict'
+
+    @pytest.mark.parametrize("name", ["literal_default","local_constant","helper_default"])
+    @pytest.mark.parametrize("mode", ["default","forced","strict"])
+    def test_shared_default_constant_identity(subject, name, mode):
+        original = getattr(subject,name)._original
+        owner = original.__defaults__[0]
+        assert original() is owner
+        fn = hotloop(force_native=mode=="forced", strict=mode=="strict")(original)
+        try:
+            result = fn()
+        except HotloopNativeExecutionError:
+            # Conservative qualification is acceptable; strict must not run Python.
+            assert mode == "strict"
+            return
+        assert type(result) is float and result == owner
+>       assert result is owner, (
+            f"{name}: {mode} returned a new float through {fn._last_backend}; "
+            "the original returns the exact default argument object")
+E       AssertionError: helper_default: strict returned a new float through native; the original returns the exact default argument object
+E       assert 1.25 is 1.25
+
+test_constants.py:56: AssertionError
+=========================== short test summary info ============================
+FAILED test_constants.py::test_shared_default_constant_identity[default-literal_default]
+FAILED test_constants.py::test_shared_default_constant_identity[default-local_constant]
+FAILED test_constants.py::test_shared_default_constant_identity[default-helper_default]
+FAILED test_constants.py::test_shared_default_constant_identity[forced-literal_default]
+FAILED test_constants.py::test_shared_default_constant_identity[forced-local_constant]
+FAILED test_constants.py::test_shared_default_constant_identity[forced-helper_default]
+FAILED test_constants.py::test_shared_default_constant_identity[strict-literal_default]
+FAILED test_constants.py::test_shared_default_constant_identity[strict-local_constant]
+FAILED test_constants.py::test_shared_default_constant_identity[strict-helper_default]
+9 failed in 5.11s

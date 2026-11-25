@@ -1,0 +1,63 @@
+running sdist
+running egg_info
+creating mojo_hotloop.egg-info
+writing mojo_hotloop.egg-info/PKG-INFO
+writing dependency_links to mojo_hotloop.egg-info/dependency_links.txt
+writing entry points to mojo_hotloop.egg-info/entry_points.txt
+writing requirements to mojo_hotloop.egg-info/requires.txt
+writing top-level names to mojo_hotloop.egg-info/top_level.txt
+writing manifest file 'mojo_hotloop.egg-info/SOURCES.txt'
+reading manifest file 'mojo_hotloop.egg-info/SOURCES.txt'
+adding license file 'LICENSE'
+adding license file 'NOTICE'
+writing manifest file 'mojo_hotloop.egg-info/SOURCES.txt'
+running check
+creating mojo_hotloop-0.2.1
+creating mojo_hotloop-0.2.1/hotloop
+creating mojo_hotloop-0.2.1/hotloop/backends
+creating mojo_hotloop-0.2.1/mojo_hotloop.egg-info
+creating mojo_hotloop-0.2.1/tests
+copying files to mojo_hotloop-0.2.1...
+copying LICENSE -> mojo_hotloop-0.2.1
+copying NOTICE -> mojo_hotloop-0.2.1
+copying README.md -> mojo_hotloop-0.2.1
+copying pyproject.toml -> mojo_hotloop-0.2.1
+copying hotloop/__init__.py -> mojo_hotloop-0.2.1/hotloop
+copying hotloop/_arguments.py -> mojo_hotloop-0.2.1/hotloop
+copying hotloop/_native_cache.py -> mojo_hotloop-0.2.1/hotloop
+copying hotloop/_provenance.py -> mojo_hotloop-0.2.1/hotloop
+copying hotloop/_return_origin.py -> mojo_hotloop-0.2.1/hotloop
+copying hotloop/ast_transpiler.py -> mojo_hotloop-0.2.1/hotloop
+copying hotloop/cli.py -> mojo_hotloop-0.2.1/hotloop
+copying hotloop/decorator.py -> mojo_hotloop-0.2.1/hotloop
+copying hotloop/backends/__init__.py -> mojo_hotloop-0.2.1/hotloop/backends
+copying hotloop/backends/base.py -> mojo_hotloop-0.2.1/hotloop/backends
+copying hotloop/backends/mojo.py -> mojo_hotloop-0.2.1/hotloop/backends
+copying mojo_hotloop.egg-info/PKG-INFO -> mojo_hotloop-0.2.1/mojo_hotloop.egg-info
+copying mojo_hotloop.egg-info/SOURCES.txt -> mojo_hotloop-0.2.1/mojo_hotloop.egg-info
+copying mojo_hotloop.egg-info/dependency_links.txt -> mojo_hotloop-0.2.1/mojo_hotloop.egg-info
+copying mojo_hotloop.egg-info/entry_points.txt -> mojo_hotloop-0.2.1/mojo_hotloop.egg-info
+copying mojo_hotloop.egg-info/requires.txt -> mojo_hotloop-0.2.1/mojo_hotloop.egg-info
+copying mojo_hotloop.egg-info/top_level.txt -> mojo_hotloop-0.2.1/mojo_hotloop.egg-info
+copying tests/test_bounded_string_dispatch.py -> mojo_hotloop-0.2.1/tests
+copying tests/test_cli.py -> mojo_hotloop-0.2.1/tests
+copying tests/test_compiler_adversarial.py -> mojo_hotloop-0.2.1/tests
+copying tests/test_generalization_e6.py -> mojo_hotloop-0.2.1/tests
+copying tests/test_generalization_holdout_e8.py -> mojo_hotloop-0.2.1/tests
+copying tests/test_math_correctness_final.py -> mojo_hotloop-0.2.1/tests
+copying tests/test_native_cache.py -> mojo_hotloop-0.2.1/tests
+copying tests/test_optimization_safety_e8.py -> mojo_hotloop-0.2.1/tests
+copying tests/test_preimport_bindings.py -> mojo_hotloop-0.2.1/tests
+copying tests/test_return_origin.py -> mojo_hotloop-0.2.1/tests
+copying tests/test_return_origin_constants.py -> mojo_hotloop-0.2.1/tests
+copying tests/test_return_provenance_independent.py -> mojo_hotloop-0.2.1/tests
+copying tests/test_runtime_qualification.py -> mojo_hotloop-0.2.1/tests
+copying tests/test_runtime_security.py -> mojo_hotloop-0.2.1/tests
+copying tests/test_security_remediation.py -> mojo_hotloop-0.2.1/tests
+copying tests/test_str_prefix_suffix.py -> mojo_hotloop-0.2.1/tests
+copying tests/test_two_blocker_correction.py -> mojo_hotloop-0.2.1/tests
+copying tests/test_unfamiliar_functions.py -> mojo_hotloop-0.2.1/tests
+copying tests/test_variadic_fallback.py -> mojo_hotloop-0.2.1/tests
+Writing mojo_hotloop-0.2.1/setup.cfg
+Creating tar archive
+removing 'mojo_hotloop-0.2.1' (and everything under it)

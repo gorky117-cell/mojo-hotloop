@@ -259,12 +259,13 @@ class TestOptimizationSafetyE8(unittest.TestCase):
         self.assertEqual(info["last_backend"], "python_fallback_slower")
         self.assertIn("fallback_reason", info)
 
-        # 2. NumPy ndarray input dynamically switches to native backend
+        # 2. NumPy ndarray inputs preserve Python semantics
         np_arr = np.array([4.0, 5.0, 6.0], dtype=np.float64)
+        before = self.mod.sum_arr_safe._call_count_native
         self.mod.sum_arr_safe(np_arr)
         info2 = inspect_dispatch(self.mod.sum_arr_safe)
-        self.assertEqual(info2["last_backend"], "native")
-        self.assertGreaterEqual(info2["call_count_native"], 1)
+        self.assertEqual(info2["last_backend"], "python_fallback_semantics")
+        self.assertEqual(info2["call_count_native"], before)
 
         # 3. String function routes natively
         self.mod.reverse_string_builder("hello")

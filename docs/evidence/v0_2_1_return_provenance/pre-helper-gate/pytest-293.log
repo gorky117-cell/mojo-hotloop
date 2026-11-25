@@ -1,0 +1,328 @@
+........................................................................ [ 24%]
+........................................................................ [ 49%]
+........................................................................ [ 73%]
+........................................................................ [ 98%]
+.....                                                                    [100%]
+=============================== warnings summary ===============================
+tests/test_generalization_e6.py::TestGeneralizationE6::test_02_distance_geometry_10_functions
+  /tmp/hotloop-provenance/verified/venv/lib/python3.12/site-packages/hotloop/decorator.py:315: HotloopFallbackWarning: [mojo-hotloop] manhattan_dist_arr: input requires Python object semantics
+    return python_semantics(args, kwargs, "input requires Python object semantics")
+
+tests/test_generalization_e6.py::TestGeneralizationE6::test_02_distance_geometry_10_functions
+  /tmp/hotloop-provenance/verified/venv/lib/python3.12/site-packages/hotloop/decorator.py:315: HotloopFallbackWarning: [mojo-hotloop] chebyshev_dist_arr: input requires Python object semantics
+    return python_semantics(args, kwargs, "input requires Python object semantics")
+
+tests/test_generalization_e6.py::TestGeneralizationE6::test_02_distance_geometry_10_functions
+  /tmp/hotloop-provenance/verified/venv/lib/python3.12/site-packages/hotloop/decorator.py:315: HotloopFallbackWarning: [mojo-hotloop] canberra_dist_arr: input requires Python object semantics
+    return python_semantics(args, kwargs, "input requires Python object semantics")
+
+tests/test_generalization_e6.py::TestGeneralizationE6::test_02_distance_geometry_10_functions
+  /tmp/hotloop-provenance/verified/venv/lib/python3.12/site-packages/hotloop/decorator.py:315: HotloopFallbackWarning: [mojo-hotloop] minkowski_dist_p3: input requires Python object semantics
+    return python_semantics(args, kwargs, "input requires Python object semantics")
+
+tests/test_generalization_e6.py::TestGeneralizationE6::test_02_distance_geometry_10_functions
+  /tmp/hotloop-provenance/verified/venv/lib/python3.12/site-packages/hotloop/decorator.py:315: HotloopFallbackWarning: [mojo-hotloop] shoelace_polygon_area: input requires Python object semantics
+    return python_semantics(args, kwargs, "input requires Python object semantics")
+
+tests/test_generalization_e6.py::TestGeneralizationE6::test_02_distance_geometry_10_functions
+  /tmp/hotloop-provenance/verified/venv/lib/python3.12/site-packages/hotloop/decorator.py:315: HotloopFallbackWarning: [mojo-hotloop] cosine_sim_arr: input requires Python object semantics
+    return python_semantics(args, kwargs, "input requires Python object semantics")
+
+tests/test_generalization_e6.py::TestGeneralizationE6::test_03_array_transforms_10_functions
+  /tmp/hotloop-provenance/verified/venv/lib/python3.12/site-packages/hotloop/decorator.py:315: HotloopFallbackWarning: [mojo-hotloop] running_prod_mod: input requires Python object semantics
+    return python_semantics(args, kwargs, "input requires Python object semantics")
+
+tests/test_generalization_e6.py::TestGeneralizationE6::test_03_array_transforms_10_functions
+  /tmp/hotloop-provenance/verified/venv/lib/python3.12/site-packages/hotloop/decorator.py:315: HotloopFallbackWarning: [mojo-hotloop] exp_weighted_average: input requires Python object semantics
+    return python_semantics(args, kwargs, "input requires Python object semantics")
+
+tests/test_generalization_e6.py::TestGeneralizationE6::test_03_array_transforms_10_functions
+  /tmp/hotloop-provenance/verified/venv/lib/python3.12/site-packages/hotloop/decorator.py:315: HotloopFallbackWarning: [mojo-hotloop] dot_prod_fast: input requires Python object semantics
+    return python_semantics(args, kwargs, "input requires Python object semantics")
+
+tests/test_generalization_e6.py::TestGeneralizationE6::test_03_array_transforms_10_functions
+  /tmp/hotloop-provenance/verified/venv/lib/python3.12/site-packages/hotloop/decorator.py:315: HotloopFallbackWarning: [mojo-hotloop] l2_norm_scaled: input requires Python object semantics
+    return python_semantics(args, kwargs, "input requires Python object semantics")
+
+tests/test_generalization_e6.py::TestGeneralizationE6::test_03_array_transforms_10_functions
+  /tmp/hotloop-provenance/verified/venv/lib/python3.12/site-packages/hotloop/decorator.py:315: HotloopFallbackWarning: [mojo-hotloop] count_above_threshold: input requires Python object semantics
+    return python_semantics(args, kwargs, "input requires Python object semantics")
+
+tests/test_generalization_e6.py::TestGeneralizationE6::test_03_array_transforms_10_functions
+  /tmp/hotloop-provenance/verified/venv/lib/python3.12/site-packages/hotloop/decorator.py:315: HotloopFallbackWarning: [mojo-hotloop] find_local_min_idx: input requires Python object semantics
+    return python_semantics(args, kwargs, "input requires Python object semantics")
+
+tests/test_generalization_e6.py::TestGeneralizationE6::test_03_array_transforms_10_functions
+  /tmp/hotloop-provenance/verified/venv/lib/python3.12/site-packages/hotloop/decorator.py:315: HotloopFallbackWarning: [mojo-hotloop] kurtosis_excess_eval: input requires Python object semantics
+    return python_semantics(args, kwargs, "input requires Python object semantics")
+
+tests/test_generalization_e6.py::TestGeneralizationE6::test_03_array_transforms_10_functions
+  /tmp/hotloop-provenance/verified/venv/lib/python3.12/site-packages/hotloop/decorator.py:315: HotloopFallbackWarning: [mojo-hotloop] sparse_dot_gather: input requires Python object semantics
+    return python_semantics(args, kwargs, "input requires Python object semantics")
+
+tests/test_generalization_e6.py::TestGeneralizationE6::test_03_array_transforms_10_functions
+  /tmp/hotloop-provenance/verified/venv/lib/python3.12/site-packages/hotloop/decorator.py:315: HotloopFallbackWarning: [mojo-hotloop] matrix_diagonal_trace: input requires Python object semantics
+    return python_semantics(args, kwargs, "input requires Python object semantics")
+
+tests/test_generalization_e6.py::TestGeneralizationE6::test_03_array_transforms_10_functions
+  /tmp/hotloop-provenance/verified/venv/lib/python3.12/site-packages/hotloop/decorator.py:315: HotloopFallbackWarning: [mojo-hotloop] spread_min_max: input requires Python object semantics
+    return python_semantics(args, kwargs, "input requires Python object semantics")
+
+tests/test_generalization_e6.py::TestGeneralizationE6::test_05_validation_search_bitwise_12_functions
+  /tmp/hotloop-provenance/verified/venv/lib/python3.12/site-packages/hotloop/decorator.py:315: HotloopFallbackWarning: [mojo-hotloop] binary_search_arr: input requires Python object semantics
+    return python_semantics(args, kwargs, "input requires Python object semantics")
+
+tests/test_generalization_holdout_e8.py::TestGeneralizationHoldoutE8::test_01_numerical_and_quadrature
+  /tmp/hotloop-provenance/verified/venv/lib/python3.12/site-packages/hotloop/decorator.py:315: HotloopFallbackWarning: [mojo-hotloop] horner_eval: input requires Python object semantics
+    return python_semantics(args, kwargs, "input requires Python object semantics")
+
+tests/test_generalization_holdout_e8.py::TestGeneralizationHoldoutE8::test_02_dsp_and_statistics
+  /tmp/hotloop-provenance/verified/venv/lib/python3.12/site-packages/hotloop/decorator.py:315: HotloopFallbackWarning: [mojo-hotloop] moving_variance_sum: input requires Python object semantics
+    return python_semantics(args, kwargs, "input requires Python object semantics")
+
+tests/test_generalization_holdout_e8.py::TestGeneralizationHoldoutE8::test_02_dsp_and_statistics
+  /tmp/hotloop-provenance/verified/venv/lib/python3.12/site-packages/hotloop/decorator.py:315: HotloopFallbackWarning: [mojo-hotloop] exp_smoothing_series: input requires Python object semantics
+    return python_semantics(args, kwargs, "input requires Python object semantics")
+
+tests/test_generalization_holdout_e8.py::TestGeneralizationHoldoutE8::test_02_dsp_and_statistics
+  /tmp/hotloop-provenance/verified/venv/lib/python3.12/site-packages/hotloop/decorator.py:315: HotloopFallbackWarning: [mojo-hotloop] correlation_covar_sum: input requires Python object semantics
+    return python_semantics(args, kwargs, "input requires Python object semantics")
+
+tests/test_generalization_holdout_e8.py::TestGeneralizationHoldoutE8::test_02_dsp_and_statistics
+  /tmp/hotloop-provenance/verified/venv/lib/python3.12/site-packages/hotloop/decorator.py:315: HotloopFallbackWarning: [mojo-hotloop] mean_absolute_dev: input requires Python object semantics
+    return python_semantics(args, kwargs, "input requires Python object semantics")
+
+tests/test_generalization_holdout_e8.py::TestGeneralizationHoldoutE8::test_02_dsp_and_statistics
+  /tmp/hotloop-provenance/verified/venv/lib/python3.12/site-packages/hotloop/decorator.py:315: HotloopFallbackWarning: [mojo-hotloop] count_signal_peaks: input requires Python object semantics
+    return python_semantics(args, kwargs, "input requires Python object semantics")
+
+tests/test_generalization_holdout_e8.py::TestGeneralizationHoldoutE8::test_05_geometry_finance_and_dp
+  /tmp/hotloop-provenance/verified/venv/lib/python3.12/site-packages/hotloop/decorator.py:315: HotloopFallbackWarning: [mojo-hotloop] polygon_perimeter_2d: input requires Python object semantics
+    return python_semantics(args, kwargs, "input requires Python object semantics")
+
+tests/test_generalization_holdout_e8.py::TestGeneralizationHoldoutE8::test_05_geometry_finance_and_dp
+  /tmp/hotloop-provenance/verified/venv/lib/python3.12/site-packages/hotloop/decorator.py:315: HotloopFallbackWarning: [mojo-hotloop] frobenius_norm_flat: input requires Python object semantics
+    return python_semantics(args, kwargs, "input requires Python object semantics")
+
+tests/test_generalization_holdout_e8.py::TestGeneralizationHoldoutE8::test_05_geometry_finance_and_dp
+  /tmp/hotloop-provenance/verified/venv/lib/python3.12/site-packages/hotloop/decorator.py:315: HotloopFallbackWarning: [mojo-hotloop] sum_clamped_values: input requires Python object semantics
+    return python_semantics(args, kwargs, "input requires Python object semantics")
+
+tests/test_generalization_holdout_e8.py::TestGeneralizationHoldoutE8::test_05_geometry_finance_and_dp
+  /tmp/hotloop-provenance/verified/venv/lib/python3.12/site-packages/hotloop/decorator.py:315: HotloopFallbackWarning: [mojo-hotloop] kadane_max_subarray: input requires Python object semantics
+    return python_semantics(args, kwargs, "input requires Python object semantics")
+
+tests/test_generalization_holdout_e8.py::TestGeneralizationHoldoutE8::test_05_geometry_finance_and_dp
+  /tmp/hotloop-provenance/verified/venv/lib/python3.12/site-packages/hotloop/decorator.py:315: HotloopFallbackWarning: [mojo-hotloop] max_drawdown_percent: input requires Python object semantics
+    return python_semantics(args, kwargs, "input requires Python object semantics")
+
+tests/test_native_cache.py::test_rejects_corruption_before_native_loader[binary]
+  /tmp/hotloop-provenance/verified/suite/tests/test_native_cache.py:95: HotloopFallbackWarning: [mojo-hotloop] Falling back to Python implementation for 'calculate': Native binary is missing or failed SHA256 verification
+    assert kernel(7) == 21
+
+tests/test_native_cache.py::test_rejects_corruption_before_native_loader[manifest]
+  /tmp/hotloop-provenance/verified/suite/tests/test_native_cache.py:95: HotloopFallbackWarning: [mojo-hotloop] Falling back to Python implementation for 'calculate': Expecting property name enclosed in double quotes: line 1 column 2 (char 1)
+    assert kernel(7) == 21
+
+tests/test_native_cache.py::test_rejects_corruption_before_native_loader[generated_sha256]
+  /tmp/hotloop-provenance/verified/suite/tests/test_native_cache.py:95: HotloopFallbackWarning: [mojo-hotloop] Falling back to Python implementation for 'calculate': Native build manifest filename mismatch
+    assert kernel(7) == 21
+
+tests/test_native_cache.py::test_rejects_corruption_before_native_loader[legacy]
+  /tmp/hotloop-provenance/verified/suite/tests/test_native_cache.py:95: HotloopFallbackWarning: [mojo-hotloop] Falling back to Python implementation for 'calculate': No verified cache entry for fast.so; rebuild with hotloop build
+    assert kernel(7) == 21
+
+tests/test_native_cache.py::test_shared_cache_rejected_before_loading[directory]
+  /tmp/hotloop-provenance/verified/suite/tests/test_native_cache.py:155: HotloopFallbackWarning: [mojo-hotloop] Falling back to Python implementation for 'calculate': Writable shared native cache directory
+    assert fn(7) == 21
+
+tests/test_native_cache.py::test_shared_cache_rejected_before_loading[manifest]
+  /tmp/hotloop-provenance/verified/suite/tests/test_native_cache.py:155: HotloopFallbackWarning: [mojo-hotloop] Falling back to Python implementation for 'calculate': Untrusted native cache file
+    assert fn(7) == 21
+
+tests/test_optimization_safety_e8.py::TestOptimizationSafetyE8::test_01_bounds_check_elimination_empty_arrays
+  /tmp/hotloop-provenance/verified/suite/tests/test_optimization_safety_e8.py:155: HotloopFallbackWarning: [mojo-hotloop] Python collection input/output detected for 'sum_arr_safe'; per-element FFI conversion overhead makes native execution slower than pure Python. Safely executing pure Python implementation. (force_native=True may enable a qualified read-only list kernel.)
+    actual = self.mod.sum_arr_safe(empty_list)
+
+tests/test_optimization_safety_e8.py::TestOptimizationSafetyE8::test_01_bounds_check_elimination_empty_arrays
+  /tmp/hotloop-provenance/verified/venv/lib/python3.12/site-packages/hotloop/decorator.py:315: HotloopFallbackWarning: [mojo-hotloop] sum_arr_safe: input requires Python object semantics
+    return python_semantics(args, kwargs, "input requires Python object semantics")
+
+tests/test_optimization_safety_e8.py::TestOptimizationSafetyE8::test_02_bounds_check_elimination_aliasing
+  /tmp/hotloop-provenance/verified/suite/tests/test_optimization_safety_e8.py:170: HotloopFallbackWarning: [mojo-hotloop] Python collection input/output detected for 'aliased_dot_product'; per-element FFI conversion overhead makes native execution slower than pure Python. Safely executing pure Python implementation. (force_native=True may enable a qualified read-only list kernel.)
+    actual = self.mod.aliased_dot_product(arr, arr)
+
+tests/test_optimization_safety_e8.py::TestOptimizationSafetyE8::test_02_bounds_check_elimination_aliasing
+  /tmp/hotloop-provenance/verified/venv/lib/python3.12/site-packages/hotloop/decorator.py:315: HotloopFallbackWarning: [mojo-hotloop] aliased_dot_product: input requires Python object semantics
+    return python_semantics(args, kwargs, "input requires Python object semantics")
+
+tests/test_return_origin.py::test_exceptions_and_side_effects
+  /tmp/hotloop-provenance/verified/suite/tests/test_return_origin.py:263: HotloopFallbackWarning: [mojo-hotloop] Falling back to Python implementation for 'side_effect': Native module has no qualified entry for 'side_effect' (Python list identity, mutation or control flow may require Python)
+    subject.side_effect(x,log,0)
+
+tests/test_return_origin.py::test_conservative_paths
+  /tmp/hotloop-provenance/verified/venv/lib/python3.12/site-packages/hotloop/decorator.py:390: HotloopFallbackWarning: [mojo-hotloop] selected_min: native conversion cannot preserve Python semantics
+    return python_semantics(args, kwargs, "native conversion cannot preserve Python semantics")
+
+tests/test_return_origin.py::test_conservative_paths
+  /tmp/hotloop-provenance/verified/venv/lib/python3.12/site-packages/hotloop/decorator.py:390: HotloopFallbackWarning: [mojo-hotloop] embedded: native conversion cannot preserve Python semantics
+    return python_semantics(args, kwargs, "native conversion cannot preserve Python semantics")
+
+tests/test_return_origin.py::test_conservative_paths
+  /tmp/hotloop-provenance/verified/suite/tests/test_return_origin.py:282: HotloopFallbackWarning: [mojo-hotloop] Falling back to Python implementation for 'mutable_alias': Native module has no qualified entry for 'mutable_alias' (Python list identity, mutation or control flow may require Python)
+    result=hotloop(**mode)(subject.mutable_alias._original)(values)
+
+tests/test_return_origin.py::test_loop_target_fallback
+  /tmp/hotloop-provenance/verified/venv/lib/python3.12/site-packages/hotloop/decorator.py:390: HotloopFallbackWarning: [mojo-hotloop] loop_target: native conversion cannot preserve Python semantics
+    return python_semantics(args, kwargs, "native conversion cannot preserve Python semantics")
+
+tests/test_return_origin.py::test_unary_bool_falls_back_without_wrong_identity
+  /tmp/hotloop-provenance/verified/venv/lib/python3.12/site-packages/hotloop/decorator.py:390: HotloopFallbackWarning: [mojo-hotloop] plus_bool: native conversion cannot preserve Python semantics
+    return python_semantics(args, kwargs, "native conversion cannot preserve Python semantics")
+
+tests/test_return_origin.py::test_unproven_helper_propagation
+  /tmp/hotloop-provenance/verified/venv/lib/python3.12/site-packages/hotloop/decorator.py:390: HotloopFallbackWarning: [mojo-hotloop] computed_bool_helper: native conversion cannot preserve Python semantics
+    return python_semantics(args, kwargs, "native conversion cannot preserve Python semantics")
+
+tests/test_return_provenance_independent.py::test_helper_rebinding_before_effects
+  /tmp/hotloop-provenance/verified/venv/lib/python3.12/site-packages/hotloop/decorator.py:390: HotloopFallbackWarning: [mojo-hotloop] ordered_print: native conversion cannot preserve Python semantics
+    return python_semantics(args, kwargs, "native conversion cannot preserve Python semantics")
+
+tests/test_return_provenance_independent.py::test_root_default_change_refuses_before_effects
+  /tmp/hotloop-provenance/verified/venv/lib/python3.12/site-packages/hotloop/decorator.py:298: HotloopFallbackWarning: [mojo-hotloop] default_owner: callable code/default ownership changed
+    return python_semantics(args,kwargs,"callable code/default ownership changed")
+
+tests/test_return_provenance_independent.py::test_ternary_remains_safe_fallback
+  /tmp/hotloop-provenance/verified/suite/tests/test_return_provenance_independent.py:304: HotloopFallbackWarning: [mojo-hotloop] Falling back to Python implementation for 'conditional_expression': No native binary found for conditional_owner.py
+    assert mod.conditional_expression(x,y,True) is x
+
+tests/test_return_provenance_independent.py::test_unknown_container_sharing_falls_back[shared_output-args0]
+  /tmp/hotloop-provenance/verified/venv/lib/python3.12/site-packages/hotloop/decorator.py:390: HotloopFallbackWarning: [mojo-hotloop] shared_output: native conversion cannot preserve Python semantics
+    return python_semantics(args, kwargs, "native conversion cannot preserve Python semantics")
+
+tests/test_return_provenance_independent.py::test_unknown_container_sharing_falls_back[repeated_output-args1]
+  /tmp/hotloop-provenance/verified/venv/lib/python3.12/site-packages/hotloop/decorator.py:390: HotloopFallbackWarning: [mojo-hotloop] repeated_output: native conversion cannot preserve Python semantics
+    return python_semantics(args, kwargs, "native conversion cannot preserve Python semantics")
+
+tests/test_return_provenance_independent.py::test_nested_definition_stays_python_without_preexecution
+  /tmp/hotloop-provenance/verified/suite/tests/test_return_provenance_independent.py:376: HotloopFallbackWarning: [mojo-hotloop] Falling back to Python implementation for 'outer': No native binary found for nested_scope.py
+    assert mod.outer(events) is expected and events==[1]
+
+tests/test_return_provenance_independent.py::test_indirect_container_sharing_is_not_boxed_twice
+  /tmp/hotloop-provenance/verified/venv/lib/python3.12/site-packages/hotloop/decorator.py:390: HotloopFallbackWarning: [mojo-hotloop] nested_container_sharing: native conversion cannot preserve Python semantics
+    return python_semantics(args, kwargs, "native conversion cannot preserve Python semantics")
+
+tests/test_return_provenance_independent.py::test_unsupported_signature_refuses_before_stream_effects[x: float, /-<lambda>]
+  /tmp/hotloop-provenance/verified/venv/lib/python3.12/site-packages/hotloop/decorator.py:390: HotloopFallbackWarning: [mojo-hotloop] f: native conversion cannot preserve Python semantics
+    return python_semantics(args, kwargs, "native conversion cannot preserve Python semantics")
+
+tests/test_security_remediation.py::test_signed_product[-9223372036854775808--1]
+  /tmp/hotloop-provenance/verified/suite/tests/test_security_remediation.py:122: HotloopFallbackWarning: [mojo-hotloop] Integer overflow in native execution for 'product'; falling back to arbitrary-precision Python: HOTLOOP_INTEGER_OVERFLOW: integer multiplication overflow
+    assert fn(a, b) == a * b
+
+tests/test_security_remediation.py::test_related_integer_operations[plus-9223372036854775807-1-python_fallback_overflow]
+  /tmp/hotloop-provenance/verified/suite/tests/test_security_remediation.py:146: HotloopFallbackWarning: [mojo-hotloop] Integer overflow in native execution for 'plus'; falling back to arbitrary-precision Python: HOTLOOP_INTEGER_OVERFLOW: integer addition overflow
+    assert fn(a,b) == fn._original(a,b)
+
+tests/test_security_remediation.py::test_related_integer_operations[minus--9223372036854775808-1-python_fallback_overflow]
+  /tmp/hotloop-provenance/verified/suite/tests/test_security_remediation.py:146: HotloopFallbackWarning: [mojo-hotloop] Integer overflow in native execution for 'minus'; falling back to arbitrary-precision Python: HOTLOOP_INTEGER_OVERFLOW: integer subtraction underflow
+    assert fn(a,b) == fn._original(a,b)
+
+tests/test_security_remediation.py::test_related_integer_operations[quotient--9223372036854775808--1-python_fallback_overflow]
+  /tmp/hotloop-provenance/verified/suite/tests/test_security_remediation.py:146: HotloopFallbackWarning: [mojo-hotloop] Integer overflow in native execution for 'quotient'; falling back to arbitrary-precision Python: HOTLOOP_INTEGER_OVERFLOW: integer division overflow
+    assert fn(a,b) == fn._original(a,b)
+
+tests/test_security_remediation.py::test_related_integer_operations[power-3037000500-2-python_fallback_overflow]
+  /tmp/hotloop-provenance/verified/suite/tests/test_security_remediation.py:146: HotloopFallbackWarning: [mojo-hotloop] Integer overflow in native execution for 'power'; falling back to arbitrary-precision Python: HOTLOOP_INTEGER_OVERFLOW: integer multiplication overflow
+    assert fn(a,b) == fn._original(a,b)
+
+tests/test_security_remediation.py::test_related_integer_operations[power-2--1-python_fallback_semantics]
+  /tmp/hotloop-provenance/verified/venv/lib/python3.12/site-packages/hotloop/decorator.py:390: HotloopFallbackWarning: [mojo-hotloop] power: native conversion cannot preserve Python semantics
+    return python_semantics(args, kwargs, "native conversion cannot preserve Python semantics")
+
+tests/test_security_remediation.py::test_related_integer_operations[left_shift-1-64-python_fallback_overflow]
+  /tmp/hotloop-provenance/verified/suite/tests/test_security_remediation.py:146: HotloopFallbackWarning: [mojo-hotloop] Integer overflow in native execution for 'left_shift'; falling back to arbitrary-precision Python: HOTLOOP_INTEGER_OVERFLOW: left shift overflow
+    assert fn(a,b) == fn._original(a,b)
+
+tests/test_security_remediation.py::test_exceptions_and_control_flow
+  /tmp/hotloop-provenance/verified/suite/tests/test_security_remediation.py:160: HotloopFallbackWarning: [mojo-hotloop] Falling back to Python implementation for 'loop_else': Native module has no qualified entry for 'loop_else' (Python list identity, mutation or control flow may require Python)
+    assert subject.loop_else(n) == subject.loop_else._original(n)
+
+tests/test_security_remediation.py::test_borrowed_identity_and_mutation[through_helper]
+  /tmp/hotloop-provenance/verified/suite/tests/test_security_remediation.py:172: HotloopFallbackWarning: [mojo-hotloop] Falling back to Python implementation for 'through_helper': Native module has no qualified entry for 'through_helper' (Python list identity, mutation or control flow may require Python)
+    assert wrapped(value) is value
+
+tests/test_security_remediation.py::test_borrowed_identity_and_mutation[return_alias]
+  /tmp/hotloop-provenance/verified/suite/tests/test_security_remediation.py:172: HotloopFallbackWarning: [mojo-hotloop] Falling back to Python implementation for 'return_alias': Native module has no qualified entry for 'return_alias' (Python list identity, mutation or control flow may require Python)
+    assert wrapped(value) is value
+
+tests/test_security_remediation.py::test_exception_and_rounding_edges
+  /tmp/hotloop-provenance/verified/venv/lib/python3.12/site-packages/hotloop/decorator.py:390: HotloopFallbackWarning: [mojo-hotloop] float_floor: native conversion cannot preserve Python semantics
+    return python_semantics(args, kwargs, "native conversion cannot preserve Python semantics")
+
+tests/test_security_remediation.py::test_exception_and_rounding_edges
+  /tmp/hotloop-provenance/verified/venv/lib/python3.12/site-packages/hotloop/decorator.py:390: HotloopFallbackWarning: [mojo-hotloop] real_power: native conversion cannot preserve Python semantics
+    return python_semantics(args, kwargs, "native conversion cannot preserve Python semantics")
+
+tests/test_security_remediation.py::test_exception_and_rounding_edges
+  /tmp/hotloop-provenance/verified/venv/lib/python3.12/site-packages/hotloop/decorator.py:390: HotloopFallbackWarning: [mojo-hotloop] int_ratio: native conversion cannot preserve Python semantics
+    return python_semantics(args, kwargs, "native conversion cannot preserve Python semantics")
+
+tests/test_unfamiliar_functions.py::TestUnfamiliarFunctions::test_01_scalar_numerical_10_functions
+  /tmp/hotloop-provenance/verified/venv/lib/python3.12/site-packages/hotloop/decorator.py:390: HotloopFallbackWarning: [mojo-hotloop] mixed_arith_calc: native conversion cannot preserve Python semantics
+    return python_semantics(args, kwargs, "native conversion cannot preserve Python semantics")
+
+tests/test_unfamiliar_functions.py::TestUnfamiliarFunctions::test_02_numpy_and_collection_10_functions
+  /tmp/hotloop-provenance/verified/venv/lib/python3.12/site-packages/hotloop/decorator.py:315: HotloopFallbackWarning: [mojo-hotloop] dot_product: input requires Python object semantics
+    return python_semantics(args, kwargs, "input requires Python object semantics")
+
+tests/test_unfamiliar_functions.py::TestUnfamiliarFunctions::test_02_numpy_and_collection_10_functions
+  /tmp/hotloop-provenance/verified/venv/lib/python3.12/site-packages/hotloop/decorator.py:315: HotloopFallbackWarning: [mojo-hotloop] variance_welford: input requires Python object semantics
+    return python_semantics(args, kwargs, "input requires Python object semantics")
+
+tests/test_unfamiliar_functions.py::TestUnfamiliarFunctions::test_02_numpy_and_collection_10_functions
+  /tmp/hotloop-provenance/verified/venv/lib/python3.12/site-packages/hotloop/decorator.py:315: HotloopFallbackWarning: [mojo-hotloop] argmax_float: input requires Python object semantics
+    return python_semantics(args, kwargs, "input requires Python object semantics")
+
+tests/test_unfamiliar_functions.py::TestUnfamiliarFunctions::test_02_numpy_and_collection_10_functions
+  /tmp/hotloop-provenance/verified/venv/lib/python3.12/site-packages/hotloop/decorator.py:315: HotloopFallbackWarning: [mojo-hotloop] count_peaks: input requires Python object semantics
+    return python_semantics(args, kwargs, "input requires Python object semantics")
+
+tests/test_unfamiliar_functions.py::TestUnfamiliarFunctions::test_02_numpy_and_collection_10_functions
+  /tmp/hotloop-provenance/verified/venv/lib/python3.12/site-packages/hotloop/decorator.py:315: HotloopFallbackWarning: [mojo-hotloop] prefix_sum_int: input requires Python object semantics
+    return python_semantics(args, kwargs, "input requires Python object semantics")
+
+tests/test_unfamiliar_functions.py::TestUnfamiliarFunctions::test_02_numpy_and_collection_10_functions
+  /tmp/hotloop-provenance/verified/venv/lib/python3.12/site-packages/hotloop/decorator.py:315: HotloopFallbackWarning: [mojo-hotloop] moving_avg_window: input requires Python object semantics
+    return python_semantics(args, kwargs, "input requires Python object semantics")
+
+tests/test_unfamiliar_functions.py::TestUnfamiliarFunctions::test_02_numpy_and_collection_10_functions
+  /tmp/hotloop-provenance/verified/venv/lib/python3.12/site-packages/hotloop/decorator.py:315: HotloopFallbackWarning: [mojo-hotloop] saxpy_sum: input requires Python object semantics
+    return python_semantics(args, kwargs, "input requires Python object semantics")
+
+tests/test_unfamiliar_functions.py::TestUnfamiliarFunctions::test_02_numpy_and_collection_10_functions
+  /tmp/hotloop-provenance/verified/venv/lib/python3.12/site-packages/hotloop/decorator.py:315: HotloopFallbackWarning: [mojo-hotloop] negative_index_pair: input requires Python object semantics
+    return python_semantics(args, kwargs, "input requires Python object semantics")
+
+tests/test_unfamiliar_functions.py::TestUnfamiliarFunctions::test_02_numpy_and_collection_10_functions
+  /tmp/hotloop-provenance/verified/venv/lib/python3.12/site-packages/hotloop/decorator.py:315: HotloopFallbackWarning: [mojo-hotloop] binary_search_sorted: input requires Python object semantics
+    return python_semantics(args, kwargs, "input requires Python object semantics")
+
+tests/test_unfamiliar_functions.py::TestUnfamiliarFunctions::test_02_numpy_and_collection_10_functions
+  /tmp/hotloop-provenance/verified/suite/tests/test_unfamiliar_functions.py:506: HotloopFallbackWarning: [mojo-hotloop] Python collection input/output detected for 'dot_product'; per-element FFI conversion overhead makes native execution slower than pure Python. Safely executing pure Python implementation. (force_native=True may enable a qualified read-only list kernel.)
+    res_fb = self.mod.dot_product([1.0, 2.0], [3.0, 4.0])
+
+tests/test_unfamiliar_functions.py::TestUnfamiliarFunctions::test_02_numpy_and_collection_10_functions
+  /tmp/hotloop-provenance/verified/suite/tests/test_unfamiliar_functions.py:521: HotloopFallbackWarning: [mojo-hotloop] Falling back to Python implementation for 'in_place_list_swap': Native module has no qualified entry for 'in_place_list_swap' (Python list identity, mutation or control flow may require Python)
+    act = fn(*arg_copy)
+
+tests/test_unfamiliar_functions.py::TestUnfamiliarFunctions::test_03_strings_unicode_and_helpers_10_functions
+  /tmp/hotloop-provenance/verified/venv/lib/python3.12/site-packages/hotloop/decorator.py:315: HotloopFallbackWarning: [mojo-hotloop] helper_composition: input requires Python object semantics
+    return python_semantics(args, kwargs, "input requires Python object semantics")
+
+tests/test_unfamiliar_functions.py::TestUnfamiliarFunctions::test_04_kwargs_truthiness_exceptions_and_edges
+  /tmp/hotloop-provenance/verified/venv/lib/python3.12/site-packages/hotloop/decorator.py:390: HotloopFallbackWarning: [mojo-hotloop] exception_parity_ops: native conversion cannot preserve Python semantics
+    return python_semantics(args, kwargs, "native conversion cannot preserve Python semantics")
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+293 passed, 80 warnings in 78.57s (0:01:18)

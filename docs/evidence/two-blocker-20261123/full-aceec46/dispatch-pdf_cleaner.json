@@ -1,0 +1,11 @@
+{
+  "application": "pdf_cleaner",
+  "public_wrappers": [
+    {
+      "function": "clean_pdf_text",
+      "native_calls": 1020,
+      "fallback_calls": 0,
+      "last_backend": "native"
+    }
+  ]
+}

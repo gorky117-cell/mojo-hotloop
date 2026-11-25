@@ -1,0 +1,58 @@
+FFF                                                                      [100%]
+=================================== FAILURES ===================================
+______________ test_decorated_helper_policy_is_preserved[default] ______________
+
+helper_imported_before_build = <module 'helper_subject' from '/tmp/pytest-of-gaurav/pytest-95/helper-before-build0/helper_subject.py'>
+mode = 'default'
+
+    @pytest.mark.parametrize("mode",["default","forced","strict"])
+    def test_decorated_helper_policy_is_preserved(helper_imported_before_build,mode):
+        module=helper_imported_before_build
+        with pytest.raises(HotloopNativeExecutionError):
+            module.parent._original(2.5)
+        fn=hotloop(force_native=mode=="forced",strict=mode=="strict")(module.parent._original)
+        assert fn._compiled is not None
+>       with pytest.raises(HotloopNativeExecutionError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE HotloopNativeExecutionError
+
+test_helper.py:446: Failed
+______________ test_decorated_helper_policy_is_preserved[forced] _______________
+
+helper_imported_before_build = <module 'helper_subject' from '/tmp/pytest-of-gaurav/pytest-95/helper-before-build0/helper_subject.py'>
+mode = 'forced'
+
+    @pytest.mark.parametrize("mode",["default","forced","strict"])
+    def test_decorated_helper_policy_is_preserved(helper_imported_before_build,mode):
+        module=helper_imported_before_build
+        with pytest.raises(HotloopNativeExecutionError):
+            module.parent._original(2.5)
+        fn=hotloop(force_native=mode=="forced",strict=mode=="strict")(module.parent._original)
+        assert fn._compiled is not None
+>       with pytest.raises(HotloopNativeExecutionError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE HotloopNativeExecutionError
+
+test_helper.py:446: Failed
+______________ test_decorated_helper_policy_is_preserved[strict] _______________
+
+helper_imported_before_build = <module 'helper_subject' from '/tmp/pytest-of-gaurav/pytest-95/helper-before-build0/helper_subject.py'>
+mode = 'strict'
+
+    @pytest.mark.parametrize("mode",["default","forced","strict"])
+    def test_decorated_helper_policy_is_preserved(helper_imported_before_build,mode):
+        module=helper_imported_before_build
+        with pytest.raises(HotloopNativeExecutionError):
+            module.parent._original(2.5)
+        fn=hotloop(force_native=mode=="forced",strict=mode=="strict")(module.parent._original)
+        assert fn._compiled is not None
+>       with pytest.raises(HotloopNativeExecutionError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE HotloopNativeExecutionError
+
+test_helper.py:446: Failed
+=========================== short test summary info ============================
+FAILED test_helper.py::test_decorated_helper_policy_is_preserved[default] - F...
+FAILED test_helper.py::test_decorated_helper_policy_is_preserved[forced] - Fa...
+FAILED test_helper.py::test_decorated_helper_policy_is_preserved[strict] - Fa...
+3 failed, 108 deselected in 4.17s

@@ -1,0 +1,32 @@
+{
+  "full_pytest": 296,
+  "independent_new_tests": 111,
+  "unchanged_nine_native": 9,
+  "unchanged_argument_origin_native": 41,
+  "security_original_tests": 129,
+  "application_scenarios": 7220,
+  "application_public_native_calls": 6220,
+  "application_public_fallback_calls": 3071,
+  "adversarial_pass": 49,
+  "adversarial_expected_rejection": 1,
+  "standalone_cache_tests": 6,
+  "published_defects_equal": 15,
+  "historical_tests": {
+    "passed": 75,
+    "failed": 11,
+    "failures": [
+      "tests/test_generalization_e6.py::TestGeneralizationE6::test_02_distance_geometry_10_functions",
+      "tests/test_generalization_e6.py::TestGeneralizationE6::test_03_array_transforms_10_functions",
+      "tests/test_generalization_e6.py::TestGeneralizationE6::test_05_validation_search_bitwise_12_functions",
+      "tests/test_optimization_safety_e8.py::TestOptimizationSafetyE8::test_10_dispatch_qualifier_cache_drift_safety",
+      "tests/test_runtime_security.py::TestRuntimeSecurityAndStability::test_02_numpy_wrong_dtype_shape_and_non_contiguous_safety",
+      "tests/test_runtime_security.py::TestRuntimeSecurityAndStability::test_07_inspect_dispatch_runtime_introspection",
+      "tests/test_unfamiliar_functions.py::TestUnfamiliarFunctions::test_01_scalar_numerical_10_functions",
+      "tests/test_unfamiliar_functions.py::TestUnfamiliarFunctions::test_02_numpy_and_collection_10_functions",
+      "tests/test_unfamiliar_functions.py::TestUnfamiliarFunctions::test_03_strings_unicode_and_helpers_10_functions",
+      "tests/test_unfamiliar_functions.py::TestUnfamiliarFunctions::test_04_kwargs_truthiness_exceptions_and_edges",
+      "tests/test_unfamiliar_functions.py::TestUnfamiliarFunctions::test_06_unfamiliar_speedups_summary"
+    ]
+  },
+  "decorated_helper_policy_cases": 3
+}

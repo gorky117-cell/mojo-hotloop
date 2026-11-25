@@ -1,0 +1,25 @@
+[
+  {
+    "value": 2.718281828459045,
+    "error": null,
+    "mode": "default",
+    "backend": "python_fallback_stale_cache",
+    "native_calls": 0,
+    "fallback_calls": 1
+  },
+  {
+    "value": 2.718281828459045,
+    "error": null,
+    "mode": "forced",
+    "backend": "python_fallback_stale_cache",
+    "native_calls": 0,
+    "fallback_calls": 1
+  },
+  {
+    "error": "HotloopNativeExecutionError",
+    "mode": "strict",
+    "backend": "native_error",
+    "native_calls": 0,
+    "fallback_calls": 0
+  }
+]

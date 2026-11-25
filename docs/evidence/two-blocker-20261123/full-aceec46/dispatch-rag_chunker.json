@@ -1,0 +1,23 @@
+{
+  "application": "rag_chunker",
+  "public_wrappers": [
+    {
+      "function": "chunk_document",
+      "native_calls": 0,
+      "fallback_calls": 1022,
+      "last_backend": "python_fallback_semantics"
+    },
+    {
+      "function": "chunk_document_offsets",
+      "native_calls": 20,
+      "fallback_calls": 0,
+      "last_backend": "native"
+    },
+    {
+      "function": "chunk_document",
+      "native_calls": 0,
+      "fallback_calls": 0,
+      "last_backend": "native_error"
+    }
+  ]
+}

@@ -1,10 +1,9 @@
 import os
 import sys
 import unittest
-import numpy as np
+from pathlib import Path
 
-repo_root = "/home/gaurav/mojo-hotloop"
-sys.path.insert(0, repo_root)
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from hotloop.decorator import hotloop, HotloopNativeExecutionError, HotloopFallbackWarning
 
@@ -16,11 +15,11 @@ class TestPerformanceDispatch(unittest.TestCase):
         os.environ.pop("HOTLOOP_STRICT_PERF", None)
 
     def test_01_scalar_function_defaults_to_native(self):
-        """Scalar math functions are qualified as faster and execute natively by default."""
-        from audit.bench_collatz.original import collatz_steps
-        res = collatz_steps(27)
-        self.assertEqual(res, 111)
-        self.assertEqual(collatz_steps._last_backend, "native")
+        """Check a scalar workload provided by the application suite."""
+        from examples.quant_backtest.original import stateful_trailing_backtest
+        args = (100, 200.0, 0.04, 0.001)
+        self.assertEqual(stateful_trailing_backtest(*args), stateful_trailing_backtest._original(*args))
+        self.assertEqual(stateful_trailing_backtest._last_backend, "native")
 
     def test_02_collection_function_defaults_to_python_fallback_slower(self):
         """Standard Python list inputs default to python_fallback_slower with warning."""

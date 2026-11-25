@@ -1,0 +1,17 @@
+{
+  "application": "ar_spatial",
+  "public_wrappers": [
+    {
+      "function": "find_closest_point_to_ray",
+      "native_calls": 0,
+      "fallback_calls": 1020,
+      "last_backend": "python_fallback_semantics"
+    },
+    {
+      "function": "find_closest_point_to_ray",
+      "native_calls": 1010,
+      "fallback_calls": 0,
+      "last_backend": "native"
+    }
+  ]
+}

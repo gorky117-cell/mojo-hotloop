@@ -1,0 +1,25 @@
+93d6b43fdc7a8c981ee6a7a735696e17400e6c5d Compile ordered float64 reductions from validated immutable NumPy inputs
+569c846d2b1f1a9352dc26994dac9f5fddb6feec Repair native semantic boundaries and verify cached extensions for 0.2.1
+618571dc6a007105a5408e115625d1dc03529c20 Preserve numeric parity and bind verified scalar entry paths
+061e38336c4e74e0e1dc0e0482f0ef743175affb Verify native build identity and pin typed numeric buffers
+45d702e8322fb9a6546e02d05dea870a975817ba docs(examples): add end-to-end NumPy ndarray acceleration guide and benchmark (#4)
+230f6d276c16e36455c36c03e245d4f7a4950f9a fix(ci): use core.summary.addCodeBlock in contributor assistant workflow
+aa49ca5596bea616d91166e6737a5cec0b716003 ci: add pytest to native-verification job dependencies
+89dae843424b93a176187e332b5ef592b2a7ab34 ci: enable feat/** triggers and add full pytest suite to native CI
+07e3189dbc2a7631d7942bb5280db9d63af7aea8 docs(release): update documentation, roadmap, security policy, and release notes for v0.2.0
+7f719a2ff028dc417a6b3161c14bd0b66d9a1505 chore(release): Phase E.8 - v0.2.0 release hardening, test isolation, and safety audit
+07d5938a31a4002cb43b34b78ad9ab7147699038 ci: install hypothesis for quant_backtest verification in native CI
+02d9d32561a60baa98862c53d77af1b9a74344b2 ci: make audit scripts portable and configure PYTHONPATH for verification
+855d23c873f40b97befe34071baaa2c92b877d30 docs(ci): improve benchmark transparency, repository organization and native verification
+202d9dfc7a7fcffa977adf7668ebe1c97989b23c docs: update Mojo 1.2.0 installation, GitHub wheel URL, and verified environment
+d9bd89b2759ee38caeebd658f89812a7cf9bd372 docs(readme): refine developer experience, verified quickstart, and community links
+38d0e84bd018615a7382da2b6ff3431b53dc795c fix(governance): clarify PR guidance delivery and make DCO regex case-insensitive
+c85ec482c44a1453965ebae59f973472330d6762 fix(ci): switch contributor checks to unprivileged pull_request workflow with strict DCO verification
+aaf69dce4268be9225e5372c580b62297c65a36f feat(governance): establish external developer collaboration, automated guidance, and maintainer protections
+b7d587e3ac2b9201e56253a5f7ecdd267da7301d docs: update independent project disclaimer and trademark notices for Gaurav Kumar Singh
+23fcd6580fbb4f059c48c2697f83e28873a018b0 chore(release): finalize v0.1.0 pre-publication release candidate for Gaurav Kumar Singh and gorky117-cell
+9bd4c0f03f61ce587994e24eac69810ed7a9aff7 chore(release): update setuptools>=77.0.3, set confirmed repo destination URL, and record final artifact checksums
+1ff527778ca04b712f3ebcae369534a377c434af chore(release): complete Apache-2.0 pre-publication licensing, NOTICE, and metadata certification
+6b64ff00fd34d2402b487733301221ffece32e63 v0.1.0 Developer Preview: harden AST transpiler, runtime safety, offline packaging, and benchmarks
+d41756740be942787f1b32a82561ac84615e2d78 v0.1.0: Release candidate — packaging, docs, CI, security, adversarial tests, license
+1651e485c4d069efb123d94ffa4a7c46812b526d Phase D Complete: Seven Real-World Use Cases, Clean Python Integration Audit, and Benchmark Report

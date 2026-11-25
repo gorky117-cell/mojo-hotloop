@@ -39,10 +39,11 @@ Security issues we care about:
 
 ## Security Design Notes
 
-- Offline-by-design: v0.2.0 compiles and runs completely offline with zero network calls or AI API keys; `.gitignore` excludes local `.env` files
+- Offline-by-design: The compiler builds and runs completely offline with zero network calls or AI API keys; `.gitignore` excludes local `.env` files
 - All `subprocess` calls use list-form arguments, never `shell=True`
 - No `eval()` or `exec()` on user inputs; AST transpiler uses Python's `ast.parse()` on source text
 - The `mojo` compiler binary path (`MOJO_BIN` / venv / `PATH`) is validated to exist before invocation
-- Generated shared libraries are checked for the ELF magic header (`\x7fELF`) before `dlopen`
+- v0.2.1 validates cache ownership, build context, and the binary digest before loading through a pinned Linux file descriptor. Trust the source directory, installed package, compiler and running user account.
+- Buffer exporters and NumPy objects use Python. Native list kernels operate on private copies of validated built-in elements.
 - Compilation writes `.mojo`, `.so`, and manifests atomically via temp files + `os.replace`
 - Thread-safe module cache (`threading.Lock`) guards shared module loading and fallback warnings

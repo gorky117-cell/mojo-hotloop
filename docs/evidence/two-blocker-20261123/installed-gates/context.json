@@ -1,0 +1,6 @@
+{
+  "pytest_root": "/tmp/pytest-of-gaurav/pytest-116",
+  "source": "full-aceec46 installed-artifact current pytest",
+  "package": "/tmp/hotloop-two-blocker-20261123/full-aceec46/venv/lib/python3.12/site-packages/hotloop",
+  "source_commit": "aceec467cd846289568927a2783e7f50bfe1e21b"
+}

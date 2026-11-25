@@ -1,0 +1,46 @@
+{
+  "python": "3.12.3 (main, Aug 14 2025, 17:47:21) [GCC 13.3.0]",
+  "executable": "/usr/bin/python3",
+  "machine": "x86_64",
+  "platform": "linux",
+  "source_import": "/tmp/hotloop-master-20261122/compat-3123/source",
+  "build_ok": true,
+  "build_diagnostic": "Successfully transpiled and built /tmp/hotloop-master-20261122/compat-3123/py3123/fast.so via AST engine.",
+  "rows": [
+    {
+      "mode": "default",
+      "backend": "python_fallback_semantics",
+      "identity": true,
+      "exception": null,
+      "native_calls": 0,
+      "fallback_calls": 1,
+      "native_entry_available": true,
+      "native_body_spy_called": false,
+      "warnings": [
+        "HotloopFallbackWarning"
+      ]
+    },
+    {
+      "mode": "forced",
+      "backend": "python_fallback_semantics",
+      "identity": true,
+      "exception": null,
+      "native_calls": 0,
+      "fallback_calls": 1,
+      "native_entry_available": true,
+      "native_body_spy_called": false,
+      "warnings": []
+    },
+    {
+      "mode": "strict",
+      "backend": "native_error",
+      "identity": null,
+      "exception": "HotloopNativeExecutionError",
+      "native_calls": 0,
+      "fallback_calls": 0,
+      "native_entry_available": true,
+      "native_body_spy_called": false,
+      "warnings": []
+    }
+  ]
+}

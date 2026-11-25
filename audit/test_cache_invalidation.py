@@ -6,14 +6,13 @@ import tempfile
 import time
 import unittest
 
-sys.path.insert(0, "/home/gaurav/mojo-hotloop")
 
 class TestCacheInvalidation(unittest.TestCase):
     def setUp(self):
         self.test_dir = tempfile.mkdtemp(prefix="hotloop_cache_test_")
         self.py_file = os.path.join(self.test_dir, "calc_mod.py")
-        self.venv_hotloop = "/home/gaurav/mojo-hotloop/.venv/bin/hotloop"
-        self.venv_python = "/home/gaurav/mojo-hotloop/.venv/bin/python"
+
+        self.venv_python = sys.executable
 
     def tearDown(self):
         shutil.rmtree(self.test_dir, ignore_errors=True)
@@ -30,7 +29,7 @@ def calc(x: int) -> int:
 
     def build_so(self):
         proc = subprocess.run(
-            [self.venv_hotloop, "build", self.py_file, "--engine=ast", "--no-verify"],
+            [self.venv_python, "-m", "hotloop.cli", "build", self.py_file, "--engine=ast", "--no-verify"],
             capture_output=True,
             text=True
         )
@@ -39,7 +38,7 @@ def calc(x: int) -> int:
     def run_check(self, x_val: int, env=None):
         script = f"""import sys
 sys.path.insert(0, {repr(self.test_dir)})
-sys.path.insert(0, "/home/gaurav/mojo-hotloop")
+
 from calc_mod import calc
 
 try:
@@ -136,7 +135,7 @@ except Exception as e:
         script = f"""import sys
 import time
 sys.path.insert(0, {repr(self.test_dir)})
-sys.path.insert(0, "/home/gaurav/mojo-hotloop")
+
 from calc_mod import calc
 
 r1 = calc(5)

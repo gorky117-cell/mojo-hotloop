@@ -3,7 +3,8 @@ import re
 import random
 import sys
 
-sys.path.insert(0, "/home/gaurav/mojo-hotloop")
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
 from examples.pii_scrubber.original import scrub_pii, check_luhn, check_verhoeff, check_phone, check_pan
 

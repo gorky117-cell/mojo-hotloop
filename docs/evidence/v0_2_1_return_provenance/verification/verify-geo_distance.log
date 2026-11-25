@@ -1,0 +1,11 @@
+[*] mojo-hotloop building '/tmp/hotloop-provenance/final-gate/suite/examples/geo_distance/original.py' using engine='ast', backend='mojo'
+[+] Build SUCCESS: [Engine: AST] Successfully transpiled and built /tmp/hotloop-provenance/final-gate/suite/examples/geo_distance/fast.so via AST engine.
+    Artifact: /tmp/hotloop-provenance/final-gate/suite/examples/geo_distance/fast.so
+[✓] Done.
+[*] Starting Stage D6: Geo Distance Verification Suite...
+/tmp/hotloop-provenance/final-gate/venv/lib/python3.12/site-packages/hotloop/decorator.py:315: HotloopFallbackWarning: [mojo-hotloop] accumulate_haversine_distance: input requires Python object semantics
+  return python_semantics(args, kwargs, "input requires Python object semantics")
+examples/geo_distance/verify.py:66: HotloopFallbackWarning: [mojo-hotloop] Python collection input/output detected for 'accumulate_haversine_distance'; per-element FFI conversion overhead makes native execution slower than pure Python. Safely executing pure Python implementation. (force_native=True may enable a qualified read-only list kernel.)
+  fb_res = accumulate_haversine_distance(lats, lons)
+  [✓] Deterministic cases passed (14 tests)
+[✓] Stage D6: Geo Distance PASSED: 1014 tests verified (77465 GPS waypoints, 100% matched against NumPy & Py, 1014 forced native boxed-list calls and 1014 ndarray Python fallback calls, 0 mismatches). Zero errors.
