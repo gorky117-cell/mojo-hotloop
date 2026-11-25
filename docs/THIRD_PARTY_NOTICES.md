@@ -1,134 +1,27 @@
-# Third-Party Notices — mojo-hotloop v0.1.0
+# Third-party notices and external toolchain
 
-This document lists all third-party Python dependencies, their licenses,
-and notes on algorithmic provenance.
+The Hotloop Python distribution declares Apache-2.0 for its own code and has no mandatory third-party Python runtime dependency in the corrective candidate. NumPy is an optional external dependency (BSD-3-Clause); the candidate preserves its Python semantics through fallback. Historical descriptions of automatic ndarray zero-copy admission are not current support promises.
 
----
+Setuptools is the external build backend (MIT). Optional benchmarking tools such as Numba, RapidFuzz and the manually written C++ references are comparison tools, not automatic Hotloop output or required inference services.
 
-## Runtime Dependencies
+## External Mojo / MAX SDK & Compiled Artifacts
 
-**None.** `mojo-hotloop` v0.1.0 has zero third-party Python runtime dependencies (`dependencies = []` in `pyproject.toml`). Only the Python 3.12+ standard library is required at runtime.
+1. **Hotloop package (`wheel` / `sdist`):** Distributed under Apache-2.0 with **zero** Modular, Mojo, or MAX binaries bundled inside the package.
+2. **Separate local SDK usage (`hotloop build`):** The Mojo SDK/compiler is independently installed by the user. Installed `mojo`, `mojo-compiler`, `mojo-compiler-mojo-libs`, `mojo-lldb-libs` (`1.2.0`), and `modular` (`26.7.0`) package metadata specifies `LicenseRef-MAX-Platform-Software-License` without shipping license text inside `.dist-info`. Current [upstream source licensing](https://github.com/modular/modular/blob/main/LICENSE) distinguishes Apache-2.0-with-LLVM-exception components from [MAX terms](https://www.modular.com/legal/max-license); those version-specific terms must not be conflated. No unverified Modular license or redistribution right is assumed or claimed.
+3. **Do not redistribute compiled Mojo `.so` artifacts:** Locally compiled native extensions (for example `fast.so`) incorporate Mojo-emitted object code and dynamically link Modular SDK shared libraries (`libKGENCompilerRTShared.so`, `libMSupportGlobals.so`, `libAsyncRTRuntimeGlobals.so`). Precompiled `.so` binaries are **not** Apache-2.0 redistributables and must **not** be redistributed; build native modules strictly for local execution under your own installed SDK license.
 
----
+## Modular Trademark Attribution
 
-## Optional Dependencies (not installed by default)
+Mojo Hotloop is an independent open-source project and is not affiliated with, operated by, sponsored by, or endorsed by Modular, Inc. MAX® and Mojo® are trademarks or registered trademarks of Modular, Inc., referenced solely to identify the external compiler toolchain. No trademark license or endorsement is claimed (see [Modular trademark policy](https://www.modular.com/legal/trademark)).
 
-### numpy
+## Application algorithm descriptions
 
-- **Package**: `numpy`
-- **License**: BSD 3-Clause
-- **Usage**: Zero-copy 1-D C-contiguous `float64`/`int64` `ndarray` pointer fast-path
-  in AST-generated C-ABI wrappers (`hotloop/ast_transpiler.py`) and runtime
-  qualification checks (`hotloop/decorator.py`). Activated automatically when a
-  compatible `numpy.ndarray` is passed at runtime.
-- **Source**: https://github.com/numpy/numpy
+These descriptions follow the actual Python sources, rather than certifying ownership or patent status:
 
----
+- OCR Matcher: bounded/banded Levenshtein dynamic programming; not a claim that the source implements Myers' diff algorithm.
+- AR Spatial: closest point to a ray among point coordinates; not a triangle-intersection implementation.
+- Geographic Distance: sequential Haversine calculations.
+- Quantitative Backtest: stateful price/stop simulation using a linear congruential generator.
+- PII: Luhn and Verhoeff checksum validation with text token scanning.
 
-## Build Dependencies
-
-### setuptools
-
-- **Package**: `setuptools >= 77.0.3`
-- **License**: MIT
-- **Usage**: Package build backend (`pyproject.toml`)
-
----
-
-## External Prerequisite Compiler (Not Bundled or Distributed)
-
-### Mojo Compiler & Modular Toolchain Compliance Review
-
-- **Provider**: Modular, Inc. ([modular.com](https://www.modular.com))
-- **Licensing Overview**: The Mojo standard library and core components are licensed under the Apache License v2.0 with LLVM Exceptions ([Modular Apache License](https://github.com/modular/modular/blob/main/Licenses/APACHE_LICENSE)). Portions of the Modular MAX platform are subject to separate proprietary terms.
-- **Redistribution Status**: **NOT BUNDLED OR REDISTRIBUTED**. Mojo Hotloop contains zero copied Modular source code, zero embedded Mojo runtime libraries, and zero Modular binary executables. The Mojo compiler CLI (`mojo`) is an external build-time and runtime prerequisite that developers install independently via Modular's official distribution channels.
-- **Independent Project Disclaimer**: Mojo Hotloop is an independent open-source project developed and maintained by Gaurav Kumar Singh and contributors. It is not affiliated with, operated by, sponsored by, or endorsed by Modular, Inc.
-- **Trademark Acknowledgement**: MAX® and Mojo® are trademarks of Modular, Inc. used under license.
-  - *Attribution Note & Legal Context*: This trademark notice is included in accordance with Modular, Inc.'s published Trademark Policy ([modular.com/legal/trademark](https://www.modular.com/legal/trademark)) for developers referencing the MAX® and Mojo® toolchains. Mojo Hotloop is an independently developed open-source tool and does not claim an exclusive commercial license or direct endorsement from Modular, Inc. Maintainers recommend periodic review of upstream trademark policies.
-
-#### Modular Trademark & Licensing Compliance Verification:
-1. **Independent Development**: Mojo Hotloop is an original Python-to-Mojo AST transpiler developed independently from scratch.
-2. **No Affiliation Claim**: The project makes no claim of official affiliation with Modular, Inc.
-3. **No Endorsement/Certification Claim**: The project clearly states that Modular, Inc. has not endorsed, reviewed, or certified Mojo Hotloop.
-4. **No Branding Misuse**: No Modular logos, graphics, or commercial trade dress are reproduced or embedded.
-5. **No Binary Redistribution**: Zero Modular or Mojo binaries are distributed in either the wheel package or source distribution (`mojo_hotloop-0.1.0-py3-none-any.whl`, `mojo_hotloop-0.1.0.tar.gz`).
-6. **Invocation Mechanism**: Mojo Hotloop only invokes the user's externally installed `mojo` compiler CLI via standard subprocess mechanisms (`mojo build --emit shared-lib`).
-- **Upstream Sources**: [https://github.com/modular/modular](https://github.com/modular/modular) and [https://www.modular.com/mojo](https://www.modular.com/mojo)
-
----
-
-## Algorithmic Provenance
-
-The following algorithms are **implemented from scratch** in Python and
-transpiled to Mojo by the AST transpiler. They are based on well-known
-published algorithms. No third-party source code has been wholesale copied
-into the mojo-hotloop distribution.
-
-### Myers Edit Distance (OCR Fuzzy Matcher)
-
-- **Algorithm**: Myers, E.W. (1986). "An O(ND) difference algorithm and its
-  variations." *Algorithmica*, 1(1-4), 251–266.
-- **Implementation**: Original Python implementation in
-  `examples/ocr_matcher/original.py`. Translated to Mojo via AST transpiler.
-- **Status**: Algorithm is in the public domain. Implementation is original.
-
-### Luhn Algorithm (PII Scrubber — credit card validation)
-
-- **Algorithm**: Luhn, H.P. (1960). US Patent 2,950,048.
-  The patent has long since expired. The algorithm is in the public domain.
-- **Implementation**: Original Python implementation in
-  `examples/pii_scrubber/original.py`.
-- **Status**: Algorithm is public domain. Implementation is original.
-
-### Verhoeff Algorithm (PII Scrubber — numeric checksum)
-
-- **Algorithm**: Verhoeff, J. (1969). "Error Detecting Decimal Codes."
-  Mathematical Centre Tract 29, Amsterdam.
-- **Implementation**: Original Python implementation using the standard
-  Verhoeff multiplication table (d₅), permutation table (p₅), and
-  inverse table. Tables are mathematical constants, not copyrightable.
-- **Status**: Algorithm is public domain. Tables are mathematical constants.
-  Implementation is original.
-
-### Haversine Formula (Geo Distance)
-
-- **Formula**: Standard spherical trigonometry formula. No copyright claim
-  possible on a mathematical formula.
-- **Implementation**: Original Python implementation in
-  `examples/geo_distance/original.py`.
-
-### LCG Pseudo-Random Number Generator (Quant Backtest)
-
-- **Algorithm**: Linear Congruential Generator with parameters from
-  Numerical Recipes (Knuth): a=1664525, c=1013904223, m=2^32.
-  These parameters are mathematical constants in the public domain.
-- **Implementation**: Original Python simulation in
-  `examples/quant_backtest/original.py`.
-
-### Möller–Trumbore Ray-Triangle Intersection (AR Spatial)
-
-- **Algorithm**: Möller, T. & Trumbore, B. (1997). "Fast, Minimum Storage
-  Ray-Triangle Intersection." *Journal of Graphics Tools*, 2(1), 21–28.
-- **Implementation**: Original Python implementation in
-  `examples/ar_spatial/original.py`.
-- **Status**: Algorithm is published in academic literature.
-  Implementation is original.
-
----
-
-## Statement of No Wholesale Code Copying
-
-> No third-party source code has been copied wholesale into the mojo-hotloop
-> distributed source (Python files in `hotloop/`, `examples/`).
->
-> All implementations listed above are original Python code that implement
-> published, public-domain algorithms. The corresponding Mojo code is generated
-> automatically by the mojo-hotloop AST transpiler from that Python source.
->
-> If a future audit identifies any code that was inadvertently copied from
-> a third-party source, please report it via a GitHub Security Advisory so
-> it can be properly attributed or replaced.
-
----
-
-*Last updated: 2026-11-16*
+Original contribution ownership and any future redistribution remain subject to maintainer review and existing Apache/DCO obligations. No SDK binary, precompiled `.so` artifact, logo, or vendor endorsement is distributed by this package.

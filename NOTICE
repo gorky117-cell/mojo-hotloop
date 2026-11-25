@@ -9,9 +9,9 @@ Mojo Hotloop is an independent open-source project developed and maintained by
 Gaurav Kumar Singh and contributors. It is not affiliated with, operated by,
 sponsored by, or endorsed by Modular, Inc.
 
-Trademark Notices:
-MAX® and Mojo® are trademarks of Modular, Inc. used under license.
-(Attribution provided in accordance with Modular, Inc.'s published Trademark Policy
-at https://www.modular.com/legal/trademark for developers referencing the MAX® and
-Mojo® toolchains. Mojo Hotloop does not claim an exclusive license, direct
-commercial partnership, or endorsement from Modular, Inc.)
+Trademark & External SDK Notices:
+MAX® and Mojo® are trademarks or registered trademarks of Modular, Inc.,
+referenced solely to identify the separate external toolchain supported for
+optional local compilation. No trademark license grant, exclusivity,
+endorsement, or partnership with Modular, Inc. is claimed
+(see https://www.modular.com/legal/trademark).

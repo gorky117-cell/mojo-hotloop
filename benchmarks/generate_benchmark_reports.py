@@ -2,7 +2,7 @@
 """
 generate_benchmark_reports.py
 
-Deterministic generator and consistency checker for mojo-hotloop public benchmark tables.
+Historical v0.1.0 render functions retained; current CLI delegates to the versioned review dataset.
 Reads from benchmarks/canonical_benchmarks_v0.1.0.json and generates/verifies:
 1. README.md benchmark table
 2. BENCHMARK_REPORT.md full report
@@ -271,16 +271,21 @@ def main():
     args = parser.parse_args()
 
     data = load_canonical_data()
-    if args.check:
-        if not check_consistency(data):
-            sys.exit(1)
-    elif args.update:
-        update_all(data)
-        if not check_consistency(data):
-            sys.exit(1)
+    # The v0.1.0 render functions remain as historical provenance. Current
+    # publication never overwrites those archived measurements.
+    import subprocess
+    current = os.path.join(REPO_ROOT, "tools", "render_current_benchmarks.py")
+    if args.check or args.update:
+        subprocess.run([sys.executable,current,"--check" if args.check else "--update"],check=True)
+        if args.check:
+            with open(BENCHMARK_REPORT_PATH,encoding="utf8") as f:
+                assert f.read().strip()==build_benchmark_report_content(data).strip(),"Historical report changed"
+            with open(DOCS_BENCHMARKS_PATH,encoding="utf8") as f:
+                assert build_docs_matrix(data) in f.read(),"Historical matrix changed"
+            print("Historical measurements retained; current tables independently checked.")
     else:
-        print("Specify --check or --update")
-        sys.exit(1)
+        parser.error("choose --check or --update")
+
 
 
 if __name__ == "__main__":

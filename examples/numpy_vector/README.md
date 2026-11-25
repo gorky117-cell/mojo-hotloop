@@ -1,3 +1,5 @@
+> **Historical v0.2.0 example.** The v0.2.1 corrective candidate withdraws ndarray native borrowing. Its original algorithm still runs through Python fallback; strict mode rejects unqualified ndarray calls. The original verification script below retains 30 native-route assertions that are intentionally incompatible with this candidate. It is preserved as historical evidence, not a current native quickstart or speedup claim. Use the scalar installed-package example in the [current README](../../README.md).
+
 # NumPy ndarray Zero-Copy Acceleration Example
 
 This example demonstrates how **Mojo Hotloop** automatically provides zero-copy C-pointer dispatch for 1-D C-contiguous `numpy.ndarray` (`float64` and `int64`) inputs.
