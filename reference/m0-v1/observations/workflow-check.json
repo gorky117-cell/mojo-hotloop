@@ -1,0 +1,9 @@
+{
+  "yaml_parsed": true,
+  "parser": "system PyYAML 6.0.1 BaseLoader",
+  "python_job_unchanged": true,
+  "dco_workflow_unchanged": true,
+  "exact_python": "3.12.16",
+  "runner_label": "ubuntu-24.04",
+  "hosted_run_verified": false
+}
